@@ -1,9 +1,7 @@
 
-# Bar App – Bottle + PostgreSQL (didattico)
-
-Due varianti:
+# Bar App 
+variante:
 - **single-file/**: tutto in un file (`app_pg.py`).
-- **split-version/**: struttura a più file con template e SQL separati.
 
 ## Requisiti
 ```
