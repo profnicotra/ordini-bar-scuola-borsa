@@ -30,7 +30,11 @@
 </head>
 <body>
   <div class="wrap">
-    {{!content}}
-  </div>
+  % if defined('base'):
+    {{!base}}            <!-- per i template che usano rebase('base', ...) -->
+  % elif defined('content'):
+    {{!content}}         <!-- per le chiamate tipo template('base', content=html) -->
+  % end
+</div>
 </body>
 </html>
