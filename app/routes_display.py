@@ -7,8 +7,7 @@ from . import app
 
 @app.get('/grazie')
 def grazie():
-    html = '<div class="card"><div class="title">Ordine inviato!</div><p>Grazie, la sala bar ha ricevuto la comanda.</p><a href="/" class="btn" style="margin-top:8px;display:inline-block">Nuovo ordine</a></div>'
-    return template('base', title='Grazie', refresh=3, content=html)
+    return 
 
 @app.get('/display')
 @app.get('/display/<stato>')
@@ -41,6 +40,6 @@ def display(stato=None):
                 'id': o['id'], 'stato': o['stato'], 'creato_il': o['creato_il'],
                 'posizione': o['posizione'], 'righe': righe
             })
-        return template('display', ordini=result, aperto=bar_aperto())
+
     finally:
         cur.close(); put_conn(con)
