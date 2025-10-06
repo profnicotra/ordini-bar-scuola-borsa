@@ -6,8 +6,8 @@ from . import app
 
 @app.post('/toggle')
 def toggle():
-    set_bar(not bar_aperto())
-    return redirect('/display')
+
+    return 
 
 @app.post('/stato/<oid:int>/<nuovo>')
 def cambia_stato(oid, nuovo):
@@ -17,4 +17,4 @@ def cambia_stato(oid, nuovo):
         con.commit()
     finally:
         cur.close(); put_conn(con, commit=False)
-    return redirect('/display')
+    return 
