@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>SCUOLA BORSA — Liquid Glass Personalizzato</title>
+<style>
+  :root{
+    --card-radius:20px;
+    --accent-1: linear-gradient(90deg,#4f46e5,#06b6d4);
+    --accent-2: linear-gradient(90deg,#7c3aed,#06b6d4);
+    --accent-3: linear-gradient(90deg,#ff7a59,#ffb86b);
+    --accent-4: linear-gradient(90deg,#06b6d4,#60a5fa);
+    --glass-border-light: rgba(255,255,255,0.65);
+    --glass-border-dark: rgba(255,255,255,0.06);
+    --menu-yellow: rgba(242,175,41,1);
+    --menu-yellow-2: rgba(255,205,80,0.95);
+    --outline-blue: rgba(51,118,180,1);
+    --outline-blue-30: rgba(51,118,180,0.30);
+    --outline-blue-12: rgba(51,118,180,0.12);
+    --title-red: rgba(158,30,45,1);
+    --card-ring: 1.5px;
+    --chip-pink: rgba(236,72,153,0.95);
+    --chip-green: rgba(34,197,94,0.95);
+  }
+
+  :root.light{
+    --bg: #f6fbff;
+    --page-bg: radial-gradient(1200px 600px at 10% 10%, rgba(99,102,241,0.06), transparent 10%),
+                 radial-gradient(1000px 500px at 90% 90%, rgba(6,182,212,0.04), transparent 8%),
+                 linear-gradient(180deg,#f7fbff,#ffffff);
+    --card-bg: rgba(255,255,255,0.75);
+    --panel-bg: rgba(255,255,255,0.6);
+    --text: #081028;
+    --muted: #475569;
+    --accent: var(--accent-1);
+    --glass-border: var(--glass-border-light);
+    --shadow: 0 24px 60px rgba(2,6,23,0.06);
+  }
+
+  :root.dark{
+    --bg: #06070a;
+    --page-bg:
+      radial-gradient(1000px 600px at 12% 20%, rgba(124,58,237,0.10), transparent 12%),
+      radial-gradient(900px 500px at 88% 80%, rgba(6,182,212,0.06), transparent 10%),
+      linear-gradient(180deg,#000000,#00121a);
+    --card-bg: rgba(255,255,255,0.04);
+    --panel-bg: rgba(255,255,255,0.03);
+    --text: #e6eef8;
+    --muted: #9aa8bf;
+    --accent: var(--accent-2);
+    --glass-border: var(--glass-border-dark);
+    --shadow: 0 26px 70px rgba(0,0,0,0.85);
+    --outline-blue: rgba(96,158,220,1);
+    --outline-blue-30: rgba(96,158,220,0.30);
+    --outline-blue-12: rgba(96,158,220,0.12);
+  }
+
+  html,body{height:100%;margin:0;}
+  body{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background: var(--bg);
+    font-family: "Segoe UI", Inter, system-ui, -apple-system, "Helvetica Neue", Arial;
+    color:var(--text);
+    padding:32px;
+    transition: background .35s ease, color .25s ease;
+    background-image: var(--page-bg);
+    overflow-x:hidden;
+  }
+
+  .win-box{
+    width:860px;
+    max-width:96%;
+    border-radius:var(--card-radius);
+    padding:34px;
+    position:relative;
+    background: var(--card-bg);
+    box-shadow: var(--shadow);
+    border: var(--card-ring) solid var(--outline-blue);
+    backdrop-filter: blur(18px) saturate(160%) contrast(1.02);
+    overflow:hidden;
+    transition: transform .28s cubic-bezier(.2,.9,.2,1);
+  }
+
+  .parallax { position:absolute; inset:0; pointer-events:none; z-index:1; overflow:visible; }
+  .blob{ position:absolute; filter: blur(64px) saturate(140%); opacity:0.22; pointer-events:none; mix-blend-mode: screen; transition: transform .15s linear; }
+  .blob.a{ width:560px;height:560px;border-radius:50%;top:-220px;left:-180px; background: radial-gradient(circle at 30% 30%, rgba(124,58,237,0.95), rgba(99,102,241,0.60) 35%, transparent 48%); }
+  .blob.b{ width:460px;height:460px;border-radius:50%;bottom:-200px;right:-160px; background: radial-gradient(circle at 70% 70%, rgba(6,182,212,0.90), rgba(96,165,250,0.40) 35%, transparent 48%); }
+  .blob.c{ width:360px;height:360px;border-radius:50%;top:20%;right:6%; background: radial-gradient(circle at 50% 50%, rgba(255,122,89,0.88), rgba(255,184,108,0.30) 40%, transparent 55%); opacity:0.18; filter: blur(56px) saturate(140%); }
+
+  .sheen { position:absolute; pointer-events:none; border-radius:inherit; inset:0; z-index:5;
+    background:
+    linear-gradient(120deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.04) 22%, rgba(255,255,255,0.02) 30%, transparent 45%),
+    linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02) 30%, transparent 60%);
+    mix-blend-mode: overlay; opacity:0.9; transform:translateZ(0);
+  }
+
+  .highlight { position:absolute; top:8%; right:6%; width:260px; height:92px; border-radius:40px; background: linear-gradient(90deg, rgba(255,255,255,0.28), rgba(255,255,255,0.06)); filter: blur(18px); opacity:0.7; pointer-events:none; mix-blend-mode: screen; }
+
+  .inner-edge { position:absolute; inset:6px; border-radius:calc(var(--card-radius) - 6px); pointer-events:none; border:1px solid rgba(255,255,255,0.06); mix-blend-mode: overlay; }
+
+  .theme-toggle{ position:absolute; left:18px; top:18px; z-index:8; display:flex; gap:8px; align-items:center; }
+  .theme-btn{ width:48px;height:38px;border-radius:11px;border:none;cursor:pointer; background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02)); color:var(--text); font-weight:700; display:flex;align-items:center;justify-content:center; border:1px solid rgba(255,255,255,0.04); backdrop-filter: blur(6px); }
+
+  .win-header{ display:flex; justify-content:center; align-items:center; height:86px; position:relative; z-index:6; }
+  .title{ font-weight:900; font-size:24px; letter-spacing:3px; color: var(--title-red); padding:8px 22px; border-radius:14px; text-transform:uppercase; text-shadow: 0 2px 10px rgba(0,0,0,0.06); border: 1px solid rgba(255,255,255,0.04); background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); }
+
+  .time{ position:absolute; right:18px; top:18px; z-index:7; padding:9px 14px; border-radius:12px; font-size:14px; background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02)); color:var(--muted); border:1px solid rgba(255,255,255,0.04); backdrop-filter: blur(6px); }
+
+  .win-body{ margin-top:18px; display:grid; grid-template-columns:1fr 320px; gap:22px; align-items:start; z-index:6; position:relative; }
+
+  .main-col{ display:flex; align-items:center; justify-content:center; min-height:300px; position:relative; }
+  .center-btn{ width:300px; height:74px; border-radius:18px; border:none; cursor:pointer; font-weight:900; font-size:18px; display:flex; align-items:center; justify-content:center; gap:12px; color:#081028; background-image: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02)), linear-gradient(90deg, var(--menu-yellow), var(--menu-yellow-2)); border:2px solid var(--outline-blue); box-shadow: 0 18px 40px rgba(2,6,23,0.10), 0 0 0 8px rgba(51,118,180,0.04) inset; backdrop-filter: blur(10px); position:relative; z-index:7; transition: transform .18s ease, box-shadow .18s ease, filter .18s ease; }
+  .center-btn::before{ content:""; width:18px;height:18px;border-radius:4px; background:linear-gradient(180deg,#fff,#c7d2fe); box-shadow: inset 0 1px 0 rgba(255,255,255,0.35); }
+  .center-btn::after{ content:""; position:absolute; left:8%; top:8%; width:84%; height:28%; border-radius:999px; background: linear-gradient(180deg, rgba(255,255,255,0.28), rgba(255,255,255,0.04)); filter: blur(8px); opacity:0.85; pointer-events:none; }
+  .center-btn:hover{ transform: translateY(-6px) scale(1.02); box-shadow: 0 46px 90px rgba(2,6,23,0.16), 0 0 0 12px rgba(51,118,180,0.06) inset; filter: saturate(1.05); }
+  .center-btn:active{ transform: translateY(0); }
+
+  .sidebar{ background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius:14px; padding:18px; border:2px solid var(--outline-blue); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); color:var(--muted); position:relative; z-index:6; background-clip: padding-box; box-shadow: 0 8px 30px rgba(2,6,23,0.06); }
+
+  .sidebar .list-title{ font-weight:900; color:var(--title-red); margin-bottom:8px; font-size:15px; display:inline-block; padding:6px 10px; border-radius:8px; background: linear-gradient(90deg, rgba(51,118,180,0.08), rgba(51,118,180,0.04)); }
+
+  .prices{ display:flex; flex-direction:column; gap:10px; }
+  .price-row{ display:flex; justify-content:space-between; align-items:center; padding:12px 14px; border-radius:12px; background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1.5px solid var(--outline-blue-12); box-shadow: 0 6px 18px rgba(2,6,23,0.04) inset; transition: transform .12s ease, background .12s ease; }
+  .price-row:hover{ transform: translateX(6px); background: linear-gradient(90deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02)); }
+  .price-row .item{ font-weight:800; color:var(--text); display:flex; align-items:center; gap:8px;}
+  .price-row .item .dot{ width:12px; height:12px; border-radius:4px; background:linear-gradient(180deg,#fff,rgba(255,255,255,0.06)); box-shadow: 0 2px 6px rgba(2,6,23,0.08) inset; }
+  .price-row .cost{ font-weight:900; color:var(--title-red); background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:6px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.03); }
+
+  .extras{ display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
+  .chip{ padding:7px 12px;border-radius:999px;background: linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01)); color:var(--title-red); font-weight:800; font-size:13px; border:1.5px solid var(--outline-blue-30); display:inline-flex; gap:8px; align-items:center; }
+  .chip.pink{ color:#fff; background: linear-gradient(90deg, rgba(236,72,153,0.18), rgba(236,72,153,0.08)); border-color: rgba(236,72,153,0.22); }
+  .chip.green{ color:#fff; background: linear-gradient(90deg, rgba(34,197,94,0.18), rgba(34,197,94,0.08)); border-color: rgba(34,197,94,0.22); }
+
+  .address{ margin-top:14px; font-size:13px; color:var(--title-red); display:flex; gap:8px; align-items:center; font-weight:800; border-top:1px dashed var(--outline-blue-12); padding-top:10px; }
+
+  .gloss-lines{ position:absolute; inset:0; pointer-events:none; z-index:4; border-radius:inherit; background-image: linear-gradient(135deg, rgba(255,255,255,0.06) 0 1px, transparent 1px), linear-gradient(135deg, rgba(255,255,255,0.03) 0 2px, transparent 2px); background-size: 140px 140px, 280px 280px; mix-blend-mode: overlay; opacity:0.6; filter: blur(6px); }
+
+  @media (max-width:980px){
+    .win-body{ grid-template-columns:1fr; }
+    .time{ right:12px; top:12px; }
+    .theme-toggle{ left:12px; top:12px; }
+    .win-box{ padding:22px; width:92%; }
+    .main-col{ min-height:240px; }
+    .center-btn{ width:88%; height:64px; }
+  }
+
+  .win-box:hover{ transform: translateY(-6px); }
+  .title.pulse{ animation: pulseColor 3.2s infinite; }
+  @keyframes pulseColor{ 0%{ box-shadow: 0 6px 20px rgba(124,58,237,0.06); } 50%{ box-shadow: 0 10px 30px rgba(6,182,212,0.08); transform: translateY(-2px); } 100%{ box-shadow: 0 6px 20px rgba(124,58,237,0.06); transform: translateY(0); } }
+</style>
+</head>
+<body>
+  <div class="win-box" role="region" aria-label="box liquid glass personalizzata">
+    <div class="parallax" id="parallax">
+      <div class="blob a" id="blobA"></div>
+      <div class="blob b" id="blobB"></div>
+      <div class="blob c" id="blobC"></div>
+    </div>
+
+    <div class="sheen"></div>
+    <div class="highlight"></div>
+    <div class="gloss-lines"></div>
+    <div class="inner-edge"></div>
+
+    <div class="theme-toggle">
+      <button class="theme-btn" id="toggleBtn" title="Cambia tema">🌙</button>
+    </div>
+
+    <div class="win-header">
+      <div class="title pulse">SCUOLA BORSA</div>
+      <div class="time" id="time">--:--</div>
+    </div>
+
+    <div class="win-body">
+      <div class="main-col">
+        <button class="center-btn" id="menuBtn">menù</button>
+      </div>
+
+      <div class="sidebar" aria-label="listino prezzi e indirizzo">
+        <div class="list-title">Listino        <div class="prices" id="prices">
+          <div class="price-row"><span class="item"><span class="dot" style="background:linear-gradient(90deg,#4f46e5,#06b6d4)"></span>Cappuccino</span><span class="cost">2,00€</span></div>
+          <div class="price-row"><span class="item"><span class="dot" style="background:linear-gradient(90deg,#7c3aed,#06b6d4)"></span>Caffè</span><span class="cost">1,00€</span></div>
+          <div class="price-row"><span class="item"><span class="dot" style="background:linear-gradient(90deg,#ff7a59,#ffb86b)"></span>Latte macchiato</span><span class="cost">2,50€</span></div>
+          <div class="price-row"><span class="item"><span class="dot" style="background:linear-gradient(90deg,#06b6d4,#60a5fa)"></span>Tè</span><span class="cost">1,50€</span></div>
+          <div class="price-row"><span class="item"><span class="dot" style="background:linear-gradient(90deg,#ff5a9e,#ffb86b)"></span>Brioche</span><span class="cost">1,20€</span></div>
+        </div>
+
+        <div class="extras" aria-hidden="false">
+          <div class="chip">Speciale</div>
+          <div class="chip pink">Promozione</div>
+          <div class="chip green">Takeaway</div>
+        </div>
+
+        <div class="address">
+          <span class="label">ES VIA:</span><span>BORSA 12, Milano</span>
+        </div>
+      </div>
+    </div> <!-- /win-body -->
+  </div> <!-- /win-box -->
+
+<script>
+  const root = document.documentElement;
+  const toggleBtn = document.getElementById('toggleBtn');
+
+  function applyTheme(t){
+    root.classList.remove('light','dark');
+    root.classList.add(t);
+    toggleBtn.textContent = t === 'dark' ? '☀️' : '🌙';
+    localStorage.setItem('themeSB', t);
+    if(t==='dark'){ document.body.style.background = '#06070a'; } else { document.body.style.background = ''; }
+  }
+
+  const saved = localStorage.getItem('themeSB') || 'light';
+  applyTheme(saved);
+
+  toggleBtn.addEventListener('click', ()=>{
+    const cur = root.classList.contains('dark') ? 'dark' : 'light';
+    applyTheme(cur==='dark' ? 'light' : 'dark');
+  });
+
+  function updateTime(){
+    const el = document.getElementById('time');
+    const now = new Date();
+    const hh = String(now.getHours()).padStart(2,'0');
+    const mm = String(now.getMinutes()).padStart(2,'0');
+    el.textContent = hh + ':' + mm;
+  }
+  updateTime();
+  setInterval(updateTime, 60000);
+
+  document.getElementById('menuBtn').addEventListener('click', function(){
+    const menu = [
+      'Cappuccino — 2,00€',
+      'Caffè — 1,00€',
+      'Latte macchiato — 2,50€',
+      'Tè — 1,50€',
+      'Brioche — 1,20€'
+    ].join('\n');
+    alert('Menu:\n' + menu);
+  });
+
+  // PARALLAX: muove le blob in base al movimento del mouse e allo scroll (mobile usa accelerometro)
+  (function(){
+    const blobA = document.getElementById('blobA');
+    const blobB = document.getElementById('blobB');
+    const blobC = document.getElementById('blobC');
+    let cx = window.innerWidth / 2;
+    let cy = window.innerHeight / 2;
+
+    function onMove(x, y){
+      const dx = (x - cx) / cx; // -1 .. 1
+      const dy = (y - cy) / cy;
+      // differenzia i livelli per profondità
+      blobA.style.transform = `translate3d(${dx * -18}px, ${dy * -10}px, 0) scale(1.02)`;
+      blobB.style.transform = `translate3d(${dx * 22}px, ${dy * 14}px, 0) scale(1.01)`;
+      blobC.style.transform = `translate3d(${dx * -10}px, ${dy * 20}px, 0) scale(1.03)`;
+    }
+
+    // mouse move
+    window.addEventListener('mousemove', (e)=> onMove(e.clientX, e.clientY));
+    // touch move
+    window.addEventListener('touchmove', (e)=> {
+      if(e.touches && e.touches[0]) onMove(e.touches[0].clientX, e.touches[0].clientY);
+    }, {passive:true});
+
+    // slight motion on scroll for depth parallax
+    window.addEventListener('scroll', ()=>{
+      const s = window.scrollY;
+      blobA.style.transform += ` translateY(${s * 0.02}px)`;
+      blobB.style.transform += ` translateY(${s * -0.01}px)`;
+    });
+
+    // device orientation (mobile)
+    if(window.DeviceOrientationEvent){
+      window.addEventListener('deviceorientation', (ev)=>{
+        const gx = ev.gamma || 0; // left-right
+        const gy = ev.beta || 0;  // front-back
+        onMove(cx + gx*6, cy + gy*6);
+      }, true);
+    }
+  })();
+
+  // small accessibility: allow keyboard open menu with Enter/Space
+  document.getElementById('menuBtn').addEventListener('keyup', (e)=>{
+    if(e.key === 'Enter' || e.key === ' ') e.target.click();
+  });
+</script>
+</body>
+</html>
