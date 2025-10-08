@@ -181,11 +181,9 @@
 
       <div class="sidebar" aria-label="listino prezzi e indirizzo">
         <div class="list-title">Listino        <div class="prices" id="prices">
-          <div class="price-row"><span class="item"><span class="dot" style="background:linear-gradient(90deg,#4f46e5,#06b6d4)"></span>Cappuccino</span><span class="cost">2,00€</span></div>
-          <div class="price-row"><span class="item"><span class="dot" style="background:linear-gradient(90deg,#7c3aed,#06b6d4)"></span>Caffè</span><span class="cost">1,00€</span></div>
-          <div class="price-row"><span class="item"><span class="dot" style="background:linear-gradient(90deg,#ff7a59,#ffb86b)"></span>Latte macchiato</span><span class="cost">2,50€</span></div>
-          <div class="price-row"><span class="item"><span class="dot" style="background:linear-gradient(90deg,#06b6d4,#60a5fa)"></span>Tè</span><span class="cost">1,50€</span></div>
-          <div class="price-row"><span class="item"><span class="dot" style="background:linear-gradient(90deg,#ff5a9e,#ffb86b)"></span>Brioche</span><span class="cost">1,20€</span></div>
+          {% for product in products %}
+            <div class="price-row"><span class="item"><span class="dot" style="background:linear-gradient(90deg,#4f46e5,#06b6d4)"></span>{{product.name}}</span><span class="cost">{{product.price}}€</span></div>
+          {% endfor %}
         </div>
 
         <div class="extras" aria-hidden="false">
