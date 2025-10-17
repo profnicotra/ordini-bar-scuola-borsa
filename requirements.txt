@@ -2,4 +2,3 @@ bottle
 psycopg2-binary
 flask
 flask-sqlalchemy
-psycopg2-binary
