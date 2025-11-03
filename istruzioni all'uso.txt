@@ -1,0 +1,6 @@
+bisogna installare l'applicazione, in questo percorso utilizzare: 
+pip install -e .
+
+per farlo partire serve:
+
+flask --app ordiniBarScuolaBorsa run
