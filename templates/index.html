@@ -1,12 +1,562 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
-    <link rel="stylesheet" href="../static/index.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home - Scuola Borsa</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #dcdbdb8b;
+      color: white;
+    }
+
+    /* ==============================
+       NAVBAR
+    ============================== */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 50px;
+      background-color: rgba(113, 31, 31, 0.8);
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 10;
+      transition: top 0.6s ease;
+    }
+
+    .navbar.hidden {
+      top: -100px;
+      transition: top 0.6s ease;
+    }
+
+    .navbar-left {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+    }
+
+    .logo {
+      width: 100px;
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 25px;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s;
+      cursor: pointer;
+    }
+
+    .nav-links a:hover {
+      color: #c73131;
+    }
+
+    .search-button button {
+      background-color: rgba(255, 255, 255, 0.15);
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      color: white;
+      font-weight: 600;
+      font-family: 'Montserrat', sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .search-button button:hover {
+      background-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .search-icon {
+      font-size: 16px;
+    }
+
+    /* ==============================
+       HERO SECTION
+    ============================== */
+    .hero {
+      height: 100vh;
+      background-image: url('https://capac.it/wp-content/uploads/2023/07/sala_bar.webp');
+      background-size: cover;
+      background-position: center;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 1;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero h2 {
+      font-size: 30px;
+      font-weight: 400;
+    }
+
+    .hero h1 {
+      font-size: 60px;
+      font-weight: 800;
+      margin: 20px 0;
+    }
+
+    .buttons {
+      margin-top: 30px;
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .menu {
+      color: black;
+      font-weight: 800;
+      font-size: 38px;
+      text-align: center;
+      font-family: 'Franklin Gothic Medium';
+    }
+
+    .btn {
+      padding: 12px 25px;
+      font-weight: 600;
+      border-radius: 25px;
+      text-decoration: none;
+      background-color: transparent;
+      border: 2px solid white;
+      color: white;
+      transition: all 0.3s ease;
+    }
+
+    .btn.red {
+      background-color: #e63946;
+      border-color: #e63946;
+    }
+
+    .btn:hover {
+      background-color: white;
+      color: black;
+    }
+
+    /* ==============================
+       MENU SECTION
+    ============================== */
+    h2 {
+      color: white;
+      text-align: center;
+      margin-top: 50px;
+    }
+
+    .linea-rossa {
+      border: none;
+      height: 2px;
+      background-color: rgb(1, 53, 39);
+      width: 70px;
+      margin: 10px auto 30px;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 280px;
+      margin: 50px auto;
+      max-width: 1000px;
+    }
+
+    .item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .cerchio {
+      width: 285px;
+      height: 289px;
+      background-color: rgb(1, 53, 39);
+      border-radius: 50%;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    .cerchio:hover {
+      cursor: pointer;
+      box-shadow: 0 0 25px rgba(255, 255, 255, 0.6);
+      transform: scale(1.05);
+    }
+
+    .etichetta {
+      margin-top: 15px;
+      color: rgb(1, 53, 39);
+      font-weight: bold;
+      font-size: 27px;
+    }
+
+    /* ==============================
+       SEZIONE "CHI SIAMO"
+    ============================== */
+    .hero-caffe {
+      background-image: url('https://static.wixstatic.com/media/a24994_47085ab594284fdc82027c945dda205b~mv2.jpg/v1/fill/w_640,h_396,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/a24994_47085ab594284fdc82027c945dda205b~mv2.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      color: white;
+      position: relative;
+      text-align: left;
+      overflow: hidden;
+    }
+
+    .hero-caffe::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+    }
+
+    .hero-caffe-content {
+      position: relative;
+      max-width: 600px;
+      padding: 40px;
+      margin-right: 80px;
+      z-index: 1;
+    }
+
+    .hero-caffe-content h1 {
+      font-size: 2.5em;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .hero-caffe-content p {
+      font-size: 1.1em;
+      line-height: 1.6;
+      margin-bottom: 30px;
+    }
+
+    .hero-caffe-content a {
+      display: inline-block;
+      padding: 12px 30px;
+      color: white;
+      border: 2px solid white;
+      border-radius: 25px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .hero-caffe-content a:hover {
+      background-color: white;
+      color: black;
+    }
+
+    /* ==============================
+       🔐 MODAL LOGIN / REGISTRAZIONE
+    ============================== */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 100;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.7);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background-color: white;
+      color: black;
+      padding: 40px;
+      border-radius: 15px;
+      width: 400px;
+      max-width: 90%;
+      text-align: center;
+      position: relative;
+      animation: fadeIn 0.4s;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(-30px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
+    .close {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      font-size: 22px;
+      color: #333;
+      cursor: pointer;
+    }
+
+    .modal h2 {
+      color: rgb(1, 53, 39);
+      margin-bottom: 20px;
+    }
+
+    .modal input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    .modal button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      background-color: rgb(1, 53, 39);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .modal button:hover {
+      background-color: #114d3d;
+    }
+
+    .switch-form {
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
+    .switch-form span {
+      color: #e63946;
+      cursor: pointer;
+      font-weight: 600;
+    }
+  </style>
 </head>
 <body>
-    <h1>Pagina home</h1>
+
+  <!-- NAVBAR -->
+  <header class="navbar" id="navbar">
+    <div class="navbar-left">
+      <div class="logo">
+        <img src="Downloads/borsa 2.png" alt="Logo" style="width: 100px;">
+      </div>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="#">Home</a></li>
+          <li><a href="#menu-section">Menu</a></li>
+          <li><a href="#chi-siamo">Chi siamo</a></li>
+          <li><a href="#">Servizi</a></li>
+          <li><a id="login-btn">Login</a></li>
+        </ul>
+      </nav>
+    </div>
+
+    <div class="search-button">
+      <button>
+        <i class="fas fa-search search-icon"></i>
+        Ricerca
+      </button>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div class="overlay"></div>
+    <div class="hero-content">
+      <h2>SCUOLA BORSA</h2>
+      <h1>SALA BAR</h1>
+      <div class="buttons">
+        <a href="#menu-section" class="btn red">Menu</a>
+        <a href="#" class="btn">Ordina</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- MENU -->
+  <section id="menu-section">
+    <h2 class="menu">IL NOSTRO MENÙ</h2>
+    <hr class="linea-rossa" />
+    <div class="container">
+      <div class="item">
+        <div class="cerchio">
+          <img src="Downloads/briosce 5.webp" alt="Brioche" style="width:250px; height:250px;">
+        </div>
+        <h3 class="etichetta">CIBO</h3>
+      </div>
+      <div class="item">
+        <div class="cerchio">
+          <img src="Downloads/cupcake 2.png" alt="Dolci" style="width:175px;height:255px; margin-right:20px;">
+        </div>
+        <h3 class="etichetta">DOLCI</h3>
+      </div>
+      <div class="item">
+        <div class="cerchio">
+          <img src="Downloads/bevande.png" alt="Bevande" style="width:175px;height:175px;">
+        </div>
+        <h3 class="etichetta">BEVANDE</h3>
+      </div>
+    </div>
+    <br></br>
+    <br></br>
+    <br></br>
+  </section>
+
+<section style="background-color: white;">
+  <br></br>
+  <br></br>
+ <br></br>
+  <br></br>
+</section>
+
+  <!-- CHI SIAMO -->
+  <section class="hero-caffe" id="chi-siamo" style="height: 600px;">
+    <div class="hero-caffe-content">
+      <h1>Una storia di impegno e innovazione</h1>
+      <p>
+        Dal 1861 al fianco della comunità:
+        la Scuola Paolo Borsa è un punto di riferimento a Monza
+        per la formazione professionale e la crescita culturale.
+      </p>
+      <a href="#">Scopri di più</a>
+    </div>
+  </section>
+
+  <section style="background-color: white;">
+  <br></br>
+  <br></br>
+ <br></br>
+  <br></br>
+  <br></br>
+  <br></br>
+ <br></br>
+  <br></br>
+   <br></br>
+  <br></br>
+ <br></br>
+  <br></br>
+  <br></br>
+  <br></br>
+ <br></br>
+  <br></br>
+</section>
+  <!-- 🔐 MODAL LOGIN / REGISTRAZIONE -->
+  <div class="modal" id="loginModal">
+    <div class="modal-content" id="loginForm">
+      <span class="close" id="closeModal">&times;</span>
+      <h2>Accedi al tuo account</h2>
+      <input type="email" placeholder="Email" required>
+      <input type="password" placeholder="Password" required>
+      <button>Accedi</button>
+      <div class="switch-form">
+        Non hai un account? <span id="showRegister">Registrati</span>
+      </div>
+    </div>
+
+    <div class="modal-content" id="registerForm" style="display:none;">
+      <span class="close" id="closeModal2">&times;</span>
+      <h2>Crea un nuovo account</h2>
+      <input type="text" placeholder="Nome completo" required>
+      <input type="email" placeholder="Email" required>
+      <input type="password" placeholder="Password" required>
+      <input type="password" placeholder="Conferma password" required>
+      <button>Registrati</button>
+      <div class="switch-form">
+        Hai già un account? <span id="showLogin">Accedi</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 🔐 LOGIN / REGISTRAZIONE
+    const modal = document.getElementById("loginModal");
+    const loginBtn = document.getElementById("login-btn");
+    const closeBtns = document.querySelectorAll(".close");
+    const loginForm = document.getElementById("loginForm");
+    const registerForm = document.getElementById("registerForm");
+    const showRegister = document.getElementById("showRegister");
+    const showLogin = document.getElementById("showLogin");
+
+    loginBtn.onclick = () => {
+      modal.style.display = "flex";
+      loginForm.style.display = "block";
+      registerForm.style.display = "none";
+    };
+
+    closeBtns.forEach(btn => btn.onclick = () => modal.style.display = "none");
+    showRegister.onclick = () => {
+      loginForm.style.display = "none";
+      registerForm.style.display = "block";
+    };
+    showLogin.onclick = () => {
+      registerForm.style.display = "none";
+      loginForm.style.display = "block";
+    };
+    window.onclick = (e) => {
+      if (e.target === modal) modal.style.display = "none";
+    };
+
+    // 🎯 NASCONDI NAVBAR QUANDO SCROLLI SOTTO LA HERO
+    const navbar = document.getElementById("navbar");
+    const hero = document.getElementById("hero");
+
+    window.addEventListener("scroll", () => {
+      const heroBottom = hero.offsetTop + hero.offsetHeight;
+      if (window.scrollY > heroBottom - 150) {
+        navbar.classList.add("hidden");
+      } else {
+        navbar.classList.remove("hidden");
+      }
+    });
+  </script>
+
 </body>
 </html>
