@@ -1,5 +1,5 @@
 from ordiniBarScuolaBorsa import app,render_template
 
 @app.route('/admin')
-def index():
+def admin():
     return render_template('admin.html')
