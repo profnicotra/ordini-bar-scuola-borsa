@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Menu- scuola borsa</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    /* === TUTTO STILE COPIATO INTEGRALMENTE DAL TUO CODICE === */
+    * { margin:0;padding:0;box-sizing:border-box; }
+    body { font-family:"Montserrat",sans-serif; background-color:black; color:white; }
+    .menu-hero{min-height:100vh;background-image:url("https://static.wixstatic.com/media/a24994_e95a621e8db84322a7402a21df89543b~mv2.jpg");background-size:cover;background-position:center;position:relative;display:flex;justify-content:center;align-items:flex-start;text-align:center;padding-top:100px;}
+        .menu-hero::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(17, 17, 17, 0.514);
+        z-index: 1;
+      }
+    .menu-hero::before{content:"";position:absolute;inset:0;background:rgba(0,0,0,0.55);backdrop-filter:blur(3px);z-index:1;}
+    .menu-content{position:relative;z-index:3;width:700px;text-align:center;}
+    .menu-title-wrapper{display:flex;align-items:flex-start;justify-content:center;gap:12px;margin-bottom:40px;}
+    .menu-subtitle{font-size:45px;font-weight:300;margin:0;}
+    .yellow-line{width:60px;height:4px;background-color:#d8a728;}
+    .menu-title{font-size:75px;font-style:italic;font-weight:800;margin:0;}
+    .menu-list{display:flex;justify-content:center;width:900px;margin-left:-120px;margin-top:50px;border:2px solid white;height:45px;}
+    .menu-list a{flex:1;display:flex;justify-content:center;align-items:center;color:white;text-decoration:none;font-weight:600;font-size:18px;background:transparent;border-right:1px solid white;cursor:pointer;transition:0.3s;letter-spacing:10px;font-family:Verdana;}
+    .menu-list a:last-child{border-right:none;}
+    .menu-list a.active{background:white;color:black;font-weight:700;}
+    #menu-lists{margin-top:20px;text-align:left;display:none;width:550px;margin-left:-120px;}
+    .menu-item{font-size:18px;margin-bottom:18px;display:flex;justify-content:space-between;font-weight:600;width:100%;opacity:0;transform:translateY(15px);animation:fadeUp 0.5s ease forwards;}
+    .menu-item:nth-child(1){animation-delay:0.05s;}
+    .menu-item:nth-child(2){animation-delay:0.15s;}
+    .menu-item:nth-child(3){animation-delay:0.25s;}
+    .menu-item:nth-child(4){animation-delay:0.35s;}
+    .menu-item:nth-child(5){animation-delay:0.45s;}
+    .menu-item:nth-child(6){animation-delay:0.55s;}
+    @keyframes fadeUp{to{opacity:1;transform:translateY(0);}}
+    .dots{flex-grow:10;border-bottom:2px dashed white;margin:0 10px;opacity:0.3;}
+    .price{display:flex;align-items:center;font-weight:600;}
+    .euro{font-size:16px;position:relative;top:-2px;margin-right:3px;opacity:0.8;}
+    .select-square{width:25px;height:25px;border:2px dashed white;border-radius:5px;margin-right:15px;cursor:pointer;transition:0.3s ease;}
+    .select-square.selected{background-color:#d8a728;border-color:#d8a728;}
+    #pronto-btn{margin-top:30px;padding:12px 25px;font-size:18px;font-weight:700;background-color:#d8a728;color:black;border:none;border-radius:5px;cursor:pointer;display:none;opacity:0;transform:translateY(15px);}
+    .show-btn{animation:fadeUp 0.5s ease forwards;}
+  </style>
+</head>
+<body>
+  <section class="menu-hero" id="the-menu">
+    <div class="menu-content">
+      <div class="menu-title-wrapper">
+        <div>
+          <h3 class="menu-subtitle">The</h3>
+          <div class="yellow-line"></div>
+        </div>
+        <h1 class="menu-title">Menu.</h1>
+      </div>
+      <div class="menu-list">
+        <a data-menu="share">CIBI</a>
+        <a data-menu="sustain">BEVANDE</a>
+        <a data-menu="indulge">DOLCI</a>
+      </div>
+      <div id="menu-lists"></div>
+      <button id="pronto-btn">Pronto</button>
+    </div>
+  </section>
+
+  <script>
+    const menuLinks=document.querySelectorAll(".menu-list a");
+    const listContainer=document.getElementById("menu-lists");
+    const prontoBtn=document.getElementById("pronto-btn");
+    const menuData={share:[["Pizzette",18],["Cup Cake",16],["Tramezzino",10],["Panino",8],["Focaccia",12],["Patatine",5]],sustain:[["Veggie Bowl",14],["Quinoa Salad",12],["Coca Cola",4],["Aranciata",3]],indulge:[["Frozen Nutella Cheesecake",18],["Chocolate Lava Cake",17],["Tiramisù",15],["Cannolo",12],["Gelato",3]]};
+    let selectedItems=JSON.parse(localStorage.getItem("selectedItems"))||{};
+    function updateProntoBtn(){if(Object.keys(selectedItems).length>0){prontoBtn.style.display="inline-block";prontoBtn.classList.add("show-btn");}else{prontoBtn.style.display="none";prontoBtn.classList.remove("show-btn");}}
+    function renderMenu(category){
+      const items=menuData[category];
+      listContainer.style.display="block";
+      listContainer.innerHTML=items.map(item=>`
+        <div class="menu-item">
+          <div style="display:flex;align-items:center;">
+            <div class="select-square ${selectedItems[item[0]]?"selected":""}"></div>
+            <span>${item[0]}</span>
+          </div>
+          <div class="dots"></div>
+          <span class="price"><span class="euro">€</span>${item[1]}</span>
+        </div>`).join("");
+      const squares=document.querySelectorAll(".select-square");
+      squares.forEach((sq,index)=>{
+        sq.addEventListener("click",()=>{
+          const name=items[index][0];
+          if(selectedItems[name]){delete selectedItems[name];sq.classList.remove("selected");}else{selectedItems[name]=items[index][1];sq.classList.add("selected");}
+          localStorage.setItem("selectedItems",JSON.stringify(selectedItems));
+          updateProntoBtn();
+        });
+      });
+    }
+    menuLinks.forEach(link=>{link.addEventListener("click",()=>{menuLinks.forEach(btn=>btn.classList.remove("active"));link.classList.add("active");renderMenu(link.dataset.menu);});});
+    prontoBtn.addEventListener("click",()=>{
+      const ordered=[];
+      for(const[name,price]of Object.entries(selectedItems)){ordered.push({name,price});}
+      localStorage.setItem("orderedItems",JSON.stringify(ordered));
+      window.location.href="bar5.html"; 
+    });
+    menuLinks[0].click();
+    updateProntoBtn();
+  </script>
+</body>
+</html>
