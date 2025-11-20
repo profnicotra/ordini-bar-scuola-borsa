@@ -1,169 +1,253 @@
-<!DOCTYPE html>
-<html lang="it">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Home - Scuola Borsa</title>
+  <!DOCTYPE html>
+  <html lang="it">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Scuola Borsa</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    body {
-      font-family: 'Montserrat', sans-serif;
-      background-color: black;
-      color: white;
-    }
+      /* ⭐ ANIMAZIONE SCROLL */
+      html {
+        scroll-behavior: smooth;
+      }
 
-    /* NAVBAR */
-    .navbar {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 50px;
-      padding: 20px 50px;
-      background-color: rgba(36, 36, 36, 0.64);
-      position: fixed;
-      width: 100%;
-      top: 0;
-      height: 150px;
-      z-index: 10;
-      transition: top 0.6s ease;
-    }
+      body {
+        font-family: 'Montserrat', sans-serif;
+        background-color: black;
+        color: white;
+      }
 
-    .navbar.hidden { top: -100px; }
+      /* NAVBAR */
+      .navbar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 50px;
+        padding: 20px 50px;
+        background-color: rgba(22, 22, 22, 0.784);
+        position: fixed;
+        width: 100%;
+        top: 0;
+        height: 150px;
+        z-index: 10;
+        transition: top 0.6s ease;
+      }
 
-    .logo-left { position: absolute; left: 50px; }
-    .logo-left img { width: 115px; }
+      .navbar.hidden { top: -100px; }
 
-    .nav-center ul { display: flex; gap: 40px; list-style: none; }
-    .nav-center a {
-      color: white;
-      font-weight: 600;
-      text-decoration: none;
-      font-size: 18px;
-      transition: 0.3s;
-    }
-    .nav-center a:hover { color:rgb(79, 79, 79); transition: 0,5s ease; box-shadow: inset; }
+      .logo-left { position: absolute; left: 50px; }
+      .logo-left img { width: 115px; }
 
-    .social-icons {
-      position: absolute;
-      right: 50px;
-      display: flex;
-      gap: 30px;
-    }
+      .nav-center ul { display: flex; gap: 40px; list-style: none; }
+      .nav-center a {
+        color: white;
+        font-weight: 600;
+        text-decoration: none;
+        font-size: 18px;
+        transition: 0.3s;
+        cursor: pointer;
+      }
+      .nav-center a:hover { color:rgb(79, 79, 79); transition: 0.5s ease; }
 
-    .social-icons a {
-      width: 35px;
-      height: 35px;
-      border: 3px solid white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      border-radius: 5px;
-      color: white;
-      font-size: 18px;
-      transition: 0.3s ease;
-      text-decoration: none;
-    }
-    .social-icons a:hover { background-color: white; color: black; }
+      .social-icons {
+        position: absolute;
+        right: 50px;
+        display: flex;
+        gap: 30px;
+      }
 
-    /* HERO */
-    .hero {
-      height: 100vh;
-      background-image: url('https://capac.it/wp-content/uploads/2023/07/sala_bar.webp');
-      background-size: cover;
-      background-position: center;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      overflow: hidden;
-    }
-    .hero::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      backdrop-filter: blur(2px);
-      background: rgba(0,0,0,0.45);
-      z-index: 1;
-    }
-    .hero-content { position: relative; z-index: 2; }
-    .hero h2 { font-size: 30px; font-weight: 400; }
-    .hero h1 { font-size: 60px; margin: 20px 0; font-weight: 800; }
-    .buttons { margin-top: 30px; display: flex; gap: 20px; justify-content: center; }
-    .btn {
-      padding: 12px 25px; font-weight: 600; border-radius: 25px;
-      text-decoration: none; background: transparent;
-      border: 2px solid white; color: white; transition: 0.3s ease;
-    }
-    .btn.red { background: #e63946; border-color: #e63946; }
-    .btn:hover { background: white; color: black; }
-    
-     .hero::after {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(31, 30, 30, 0.311);
-            z-index: 1;
-        }
+      .social-icons a {
+        width: 35px;
+        height: 35px;
+        border: 3px solid white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 5px;
+        color: white;
+        font-size: 18px;
+        transition: 0.3s ease;
+        text-decoration: none;
+      }
+      .social-icons a:hover { background-color: white; color: black; }
 
-  </style>
-</head>
+      /* HERO */
+      .hero {
+        height: 100vh;
+        background-image: url('https://static.wixstatic.com/media/a24994_e80e1267c121468ea62129502fda4b57~mv2.png/v1/fill/w_640,h_428,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/a24994_e80e1267c121468ea62129502fda4b57~mv2.png');
+        background-size: cover;
+        background-position: center;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        overflow: hidden;
+      }
+      .hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        backdrop-filter: blur(2px);
+        background: rgba(0,0,0,0.45);
+        z-index: 1;
+      }
+      .hero-content { position: relative; z-index: 2; }
+      .hero h2 { font-size: 30px; font-weight: 400; }
+      .hero h1 { font-size: 60px; margin: 20px 0; font-weight: 800; }
+      .buttons { margin-top: 30px; display: flex; gap: 20px; justify-content: center; }
+      .btn {
+        padding: 12px 25px; font-weight: 600; border-radius: 25px;
+        text-decoration: none; background: transparent;
+        border: 2px solid white; color: white; transition: 0.3s ease;
+      }
+      .btn.red { background: #e63946; border-color: #e63946; }
+      .btn:hover { background: white; color: black; }
+      
+      .hero::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(31, 30, 30, 0.311);
+        z-index: 1;
+      }
 
-<body>
+      /* SEZIONE TESTO + IMG */
+      .experience-section {
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        padding:120px 8%;
+        gap:60px;
+      }
 
-<header class="navbar" id="navbar">
-  <div class="logo-left">
-    <img src="Downloads/logo.png" alt="Logo">
-  </div>
+      .cocktail-box {
+        width:50%;
+      }
 
-  <nav class="nav-center">
-    <ul>
-      <li><a href="#">Home</a></li>
-      <li><a href="#the-menu">Menu</a></li>
-      <li><a href="#chi-siamo">Chi siamo</a></li>
-      <li><a href="#">Servizi</a></li>
-      <li><a id="login-btn">Login</a></li>
-    </ul>
-  </nav>
+      .cocktail-box h4 {
+        color:#ff9f43;
+        font-size:19px;
+        letter-spacing:2px;
+        margin-bottom:10px;
+      }
 
-  <div class="social-icons">
-    <a href="https://www.facebook.com/aziendaspecialediformazionescuolapaoloborsa/"><i class="fab fa-facebook-f"></i></a>
-    <a href="https://www.instagram.com/scuola_borsa/"><i class="fab fa-instagram"></i></a>
-    <a href="https://www.youtube.com/@ScuolaPaoloBorsaMonza"><i class="fab fa-youtube"></i></a>
-  </div>
-</header>
+      .cocktail-box h2 {
+        font-size:48px;
+        font-weight:800;
+        margin-bottom:25px;
+      }
 
-<section class="hero" id="hero">
-  <div class="hero-content">
-    <h2>SCUOLA BORSA</h2>
-    <h1>SALA BAR</h1>
-    <div class="buttons">
-      <a href="orders M.html" class="btn red">Menu</a>
-      <a href="#" class="btn">Ordina</a>
+      .cocktail-box p {
+        color:#cfcfcf;
+        font-size:17px;
+        line-height:1.7;
+        margin-bottom:20px;
+        font-weight: 500;
+      }
+
+      /* ⭐ BOTTONE GIALLO */
+      .yellow-btn {
+        background: #ff9f43;
+        padding: 14px 32px;
+        border-radius: 30px;
+        font-weight: 700;
+        color: black;
+        text-decoration: none;
+        font-size: 16px;
+        transition: 0.3s ease;
+        display: inline-block;
+        margin-top: 10px;
+      }
+      .yellow-btn:hover {
+        background:white;
+        color:black;
+      }
+
+    </style>
+  </head>
+
+  <body>
+
+  <header class="navbar" id="navbar">
+    <div class="logo-left">
+      <img src="Downloads/logo.png" alt="Logo">
     </div>
-  </div>
-</section>
+
+    <nav class="nav-center">
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#the-menu">Menu</a></li>
+        <li><a href="#chi-siamo">Chi siamo</a></li>
+        <li><a href="#">Servizi</a></li>
+        <li><a id="login-btn">Login</a></li>
+      </ul>
+    </nav>
+
+    <div class="social-icons">
+      <a href="https://www.facebook.com/aziendaspecialediformazionescuolapaoloborsa/"><i class="fab fa-facebook-f"></i></a>
+      <a href="https://www.instagram.com/scuola_borsa/"><i class="fab fa-instagram"></i></a>
+      <a href="https://www.youtube.com/@ScuolaPaoloBorsaMonza"><i class="fab fa-youtube"></i></a>
+    </div>
+  </header>
+
+  <section class="hero" id="hero">
+    <div class="hero-content">
+      <h2>SCUOLA BORSA</h2>
+      <h1>SALA BAR</h1>
+      <div class="buttons">
+        <a href="orders M.html" class="btn red">Menu</a>
+        <a href="#" class="btn">Ordina</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ⭐ SEZIONE STORIA CON ID -->
+  <section class="experience-section" id="chi-siamo">
+
+    <div class="cocktail-box">
+      <h4>SALA E BAR - SCUOLA BORSA</h4>
+      <h2>LA NOSTRA STORIA</h2>
+
+      <p>Dal 1861 al fianco della comunità: <br>la Scuola Paolo Borsa è un punto di riferimento<br> a Monza per la formazione professionale <br> la crescita culturale.</p>
+
+      <a href="#" class="yellow-btn">SCOPRI DI PIÙ</a>
+    </div>
+
+    <div style="width:50%; display:flex; justify-content:flex-end;">
+      <img src="Downloads/chi siamo 6.png" style="width:650px;">
+    </div>
+
+  </section>
 
 
-<script>
-  /* NAVBAR SCROLL */
-  const navbar = document.getElementById("navbar"); 
-  const hero = document.getElementById("hero");
+  <script>
+    /* NAVBAR SCROLL */
+    const navbar = document.getElementById("navbar"); 
+    const hero = document.getElementById("hero");
 
-  window.addEventListener("scroll", () => {
-    const heroBottom = hero.offsetTop + hero.offsetHeight;
-    navbar.classList.toggle("hidden", window.scrollY > heroBottom - 150);
-  });
+    window.addEventListener("scroll", () => {
+      const heroBottom = hero.offsetTop + hero.offsetHeight;
+      navbar.classList.toggle("hidden", window.scrollY > heroBottom - 150);
+    });
 
-</script>
+    /* ⭐ SMOOTH SCROLL per i link della navbar */
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener("click", function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute("href"));
+        if (target) target.scrollIntoView({ behavior: "smooth" });
+      });
+    });
+  </script>
 
-</body>
-</html>
+  </body>
+  </html>
