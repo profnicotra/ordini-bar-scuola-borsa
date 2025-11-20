@@ -62,3 +62,6 @@ class Impostazione(db.Model):
 
     def __repr__(self):
         return f"<Impostazione {self.chiave}>"
+    
+def scriviOrdine():
+    return NotImplementedError
