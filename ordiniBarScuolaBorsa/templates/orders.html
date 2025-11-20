@@ -5,7 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ordini</title>
 </head>
-<body>
-    <h1>Pagina ordini</h1>
-</body>
+    <body>
+        <h1>Pagina ordini</h1>
+        {% for i in range (nProducts) %}
+        <p>{{products[i]}} {{prices[i]}} {{available[i]}}</p>
+        {% endfor %}
+
+    </body>
 </html>
