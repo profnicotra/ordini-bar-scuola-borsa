@@ -79,79 +79,8 @@ class OrdineRigaNota(db.Model):
 class Impostazione(db.Model):
     __tablename__ = 'impostazioni'
     
-    chiave = db.Column(db.String, primary_key=True)
-    valore = db.Column(db.String)
+    chiave = db.Column(db.Text, primary_key=True)
+    valore = db.Column(db.Text)
 
-def is_bar_open():
-    bar_aperto = Impostazione.query.filter_by(chiave="bar_aperto").first()
-    if bar_aperto:
-        return bar_aperto.valore
-    return None
-
-def toggle_bar_open():
-    setting = Impostazione.query.filter_by(chiave="bar_aperto").first()
-    if setting:
-        new_value = 'false' if setting.valore.lower() == 'true' else 'true'
-        setting.valore = new_value
-        db.session.commit()
-        return new_value
-    else:
-        new_setting = Impostazione(chiave='bar_aperto', valore='true')
-        db.session.add(new_setting)
-        db.session.commit()
-        return 'true'
-    
-def get_products():
-    results = []
-
-    query = db.session.query(
-        Prodotto.nome.label('prodotto'),
-        Prodotto.prezzo_euro,
-        Prodotto.prezzo_interni,
-        NoteGruppo.esclusivo,
-        NoteGruppo.obbligatorio_default,
-        Note.nome.label('nota')
-    ).join(NoteGruppo, Prodotto.id == NoteGruppo.id_prodotto) \
-     .join(Note, Note.id_gruppo == NoteGruppo.id) \
-     .filter(Prodotto.attivo == True).all()
-    
-    for item in query:
-        results.append({
-            'prodotto': item.prodotto,
-            'prezzo_euro': item.prezzo_euro,
-            'prezzo_interni': item.prezzo_interni,
-            'esclusivo': item.esclusivo,
-            'obbligatorio_default': item.obbligatorio_default,
-            'nota': item.nota
-        })
-    
-    return results
-
-def get_queue():
-    results = []
-    
-    query = db.session.query(
-        Ordine.id,
-        Prodotto.nome.label('prodotto'),
-        OrdineRiga.quantita,
-        Note.nome.label('nota'),
-        Posizione.nome.label('posizione'),
-        Ordine.stato,
-        Ordine.totale_euro
-    ).join(OrdineRiga, Ordine.id == OrdineRiga.ordine_id) \
-     .join(Note, Note.id == OrdineRiga.id) \
-     .join(Posizione, Posizione.id == Ordine.posizione_id) \
-     .join(Prodotto, Prodotto.id == OrdineRiga.prodotto_id).all()
-    
-    for item in query:
-        results.append({
-            'id': item.id,
-            'prodotto': item.prodotto,
-            'quantita': item.quantita,
-            'nota': item.nota,
-            'posizione': item.posizione,
-            'stato': item.stato,
-            'totale_euro': item.totale_euro
-        })
-    
-    return results
+    def __repr__(self):
+        return f"<Impostazione {self.chiave}>"
