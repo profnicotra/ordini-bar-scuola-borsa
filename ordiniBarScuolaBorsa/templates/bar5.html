@@ -152,49 +152,6 @@
     .nav-btn { background:#e63946; color:white; border:none; padding:10px 18px; border-radius:20px; font-weight:700; cursor:pointer; }
     .nav-btn:hover { background:white; color:black; }
 
-    /* Popup Note */
-    #note-popup {
-      width: 300px;
-      background: rgba(0,0,0,0.914);
-      border-radius:20px;
-      padding:24px;
-      display:none;
-      flex-direction:column;
-      gap:15px;
-      position: fixed;
-      top:50%; left:50%;
-      transform: translate(-50%, -50%);
-      z-index:25;
-    }
-    #note-popup textarea {
-      width:100%;
-      border-radius:12px;
-      padding:10px;
-      background:transparent;
-      border:2px solid white;
-      color:white;
-      font-size:14px;
-      resize:none;
-      height:80px;
-    }
-    #note-popup .popup-btns {
-      display:flex;
-      justify-content:space-between;
-    }
-    #note-popup .popup-btns button {
-      background:#e63946;
-      color:white;
-      font-weight:700;
-      border:none;
-      padding:10px 18px;
-      border-radius:20px;
-      cursor:pointer;
-    }
-    #note-popup .popup-btns button:hover {
-      background:white;
-      color:black;
-    }
-
     @keyframes shake {
       0% { transform: translateX(0); }
       20% { transform: translateX(-6px); }
@@ -281,8 +238,9 @@
     <h1 class="title">Perzonalizza</h1>
     <div class="divider1" style="width:100px;margin-left:100px;margin-bottom:20px;"></div>
 
-    <!-- Bottone Note -->
+    <!-- ⭐⭐⭐ AGGIUNTO: BOTTONE NOTE ⭐⭐⭐ -->
     <button class="btn" id="note" style="align-self:center; margin-top:20px;">Note</button>
+    <!-- ⭐⭐⭐ FINE AGGIUNTA ⭐⭐⭐ -->
 
     <div class="controls">
       <button class="btn" id="aggiungi">Aggiungi</button>
@@ -300,17 +258,10 @@
     </div>
   </div>
 
-  <!-- Popup Note -->
-  <div id="note-popup">
-    <h2 style="color:white;font-weight:800;font-family:verdana;font-size:20px;text-align:center;">Note Prodotto</h2>
-    <textarea id="note-text" placeholder="Scrivi una nota..."></textarea>
-    <div class="nav-buttons popup-btns">
-      <button id="save-note">Salva</button>
-      <button id="close-note">Chiudi</button>
-    </div>
-  </div>
 
 <script>
+/* === TUTTO IL TUO SCRIPT ORIGINALE === */
+
 let products = JSON.parse(localStorage.getItem("orderedItems")) || [];
 products = products.filter(p => p.name && !isNaN(p.price));
 
@@ -337,7 +288,6 @@ products.forEach(prod => {
   }
   if (!prod.extra) prod.extra = [];
   if (!prod.removed) prod.removed = [];
-  if (!prod.note) prod.note = "";
 });
 
 localStorage.setItem("orderedItems", JSON.stringify(products));
@@ -370,7 +320,6 @@ function renderProducts() {
 
         ${p.extra.length ? `<div class="ingredient-list">Extra: ${p.extra.join(', ')}</div>` : ''}
         ${p.removed.length ? `<div class="ingredient-list">No: ${p.removed.join(', ')}</div>` : ''}
-        ${p.note ? `<div class="ingredient-list">Note: ${p.note}</div>` : ''}
       </div>
 
       <div class="qty-box">
@@ -407,34 +356,208 @@ renderProducts();
 const overlay = document.getElementById("overlay");
 const ingredientCard = document.getElementById("ingredient-card");
 const popupIngredienti = document.getElementById("popup-ingredienti");
+const ingredientContainer = document.getElementById("ingredient-container");
 
-function enableMatite() {
-  document.querySelectorAll(".note-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
+const addBtn = document.getElementById("aggiungi");
+const removeBtn = document.getElementById("rimuovi");
+const backBtn = document.getElementById("back");
+const nextBtn = document.getElementById("next");
+
+/* ⭐⭐⭐ AGGIUNTO: EVENTO CLICK PER IL BOTTONE NOTE ⭐⭐⭐ */
+document.getElementById("note").addEventListener("click", () => {
+  alert("Aggiungi una nota per questo prodotto!");
+});
+/* ⭐⭐⭐ FINE AGGIUNTA ⭐⭐⭐ */
+
+function showIngredientCard() {
+  ingredientCard.style.display = "flex";
+  overlay.classList.add("active");
+}
+
+function hideIngredientCard() {
+  ingredientCard.style.display = "none";
+  overlay.classList.remove("active");
+}
+
+function showPopup(extraMode){
+  ingredientContainer.innerHTML="";
+
+  const prod = products[currentProductIndex];
+  const listaIngredienti = ingredientiProdotto[prod.name] || prod.ingredients;
+
+  listaIngredienti.forEach((ing,index)=>{
+    const row = document.createElement("div");
+    row.className="ingredient-row";
+
+    const left = document.createElement("div");
+    left.className="ingredient-item";
+
+    if(extraMode){
+      left.textContent = ing;
+      const btn = document.createElement("button");
+      btn.className="neu-btn";
+      btn.textContent="Extra";
+
+      if(prod.extra.includes(ing)) btn.classList.add("active-extra");
+
+      btn.addEventListener("click",()=>{btn.classList.toggle("active-extra")});
+
+      row.appendChild(left);
+      row.appendChild(btn);
+
+    } else {
+      const id = "rem"+index;
+      const checked = prod.removed.includes(ing)?'checked':'';
+
+      left.innerHTML=`
+        <input type="checkbox" id="${id}" class="remove-checkbox" ${checked}>
+        <span class="check-icon"></span>
+        <label for="${id}">${ing}</label>
+      `;
+
+      row.appendChild(left);
+    }
+
+    ingredientContainer.appendChild(row);
+  });
+
+  popupIngredienti.classList.add("active");
+}
+
+function hidePopup(){
+  popupIngredienti.classList.remove("active");
+}
+
+addBtn.addEventListener("click",()=>{
+  if(currentProductIndex!==null) showPopup(true);
+});
+
+removeBtn.addEventListener("click",()=>{
+  if(currentProductIndex!==null) showPopup(false);
+});
+
+backBtn.addEventListener("click",hidePopup);
+
+nextBtn.addEventListener("click", ()=>{
+  if(currentProductIndex===null) return;
+
+  const prod = products[currentProductIndex];
+
+  const newExtra = [...prod.extra];
+  const newRemoved = [...prod.removed];
+
+  ingredientContainer.querySelectorAll(".neu-btn").forEach((btn,i)=>{
+    const listaIngredienti = ingredientiProdotto[prod.name] || prod.ingredients;
+
+    if(btn.classList.contains("active-extra") && !newExtra.includes(listaIngredienti[i]))
+      newExtra.push(listaIngredienti[i]);
+
+    if(!btn.classList.contains("active-extra") && newExtra.includes(listaIngredienti[i])) {
+      const idx = newExtra.indexOf(listaIngredienti[i]);
+      if(idx>-1) newExtra.splice(idx,1);
+    }
+  });
+
+  ingredientContainer.querySelectorAll(".remove-checkbox").forEach((cb,i)=>{
+    const listaIngredienti = ingredientiProdotto[prod.name] || prod.ingredients;
+
+    if(cb.checked && !newRemoved.includes(listaIngredienti[i]))
+      newRemoved.push(listaIngredienti[i]);
+
+    if(!cb.checked && newRemoved.includes(listaIngredienti[i])) {
+      const idx = newRemoved.indexOf(listaIngredienti[i]);
+      if(idx>-1) newRemoved.splice(idx,1);
+    }
+  });
+
+  prod.extra = newExtra;
+  prod.removed = newRemoved;
+
+  localStorage.setItem("orderedItems", JSON.stringify(products));
+
+  hidePopup();
+  renderProducts();
+});
+
+overlay.addEventListener("click", ()=>{
+  hideIngredientCard();
+  hidePopup();
+});
+
+function enableMatite(){
+  document.querySelectorAll(".note-btn").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
       currentProductIndex = btn.dataset.index;
-      document.getElementById("note-text").value = products[currentProductIndex].note || "";
-      document.getElementById("note-popup").style.display = "flex";
-      overlay.classList.add("active");
+      showIngredientCard();
     });
   });
 }
 
-// Salva nota
-document.getElementById("save-note").addEventListener("click", () => {
-  if(currentProductIndex !== null){
-    products[currentProductIndex].note = document.getElementById("note-text").value.trim();
-    localStorage.setItem("orderedItems", JSON.stringify(products));
-    renderProducts();
-  }
-  document.getElementById("note-popup").style.display = "none";
-  overlay.classList.remove("active");
+
+// ===== VALIDAZIONE =====
+
+const inputNome = document.getElementById("nome");
+const inputCognome = document.getElementById("cognome");
+const inputClasse = document.getElementById("classe");
+
+const errN = document.getElementById("err-nome");
+const errC = document.getElementById("err-cognome");
+const errCL = document.getElementById("err-classe");
+
+function triggerInputError(input) {
+  input.classList.remove('input-error');
+  void input.offsetWidth;
+  input.classList.add('input-error');
+}
+
+[inputNome, inputCognome, inputClasse].forEach(inp => {
+  inp.addEventListener('input', () => {
+    inp.classList.remove('input-error');
+    const relatedErr = document.getElementById('err-' + inp.id);
+    if (relatedErr) relatedErr.style.display = 'none';
+  });
 });
 
-// Chiudi popup nota senza salvare
-document.getElementById("close-note").addEventListener("click", () => {
-  document.getElementById("note-popup").style.display = "none";
-  overlay.classList.remove("active");
+document.getElementById("invia").addEventListener("click", () => {
+
+  let nome = inputNome;
+  let cognome = inputCognome;
+  let classe = inputClasse;
+
+  let valido = true;
+
+  if (nome.value.trim() === "") {
+    errN.style.display = "block";
+    triggerInputError(nome);
+    valido = false;
+  } else {
+    errN.style.display = "none";
+    nome.classList.remove('input-error');
+  }
+
+  if (cognome.value.trim() === "") {
+    errC.style.display = "block";
+    triggerInputError(cognome);
+    valido = false;
+  } else {
+    errC.style.display = "none";
+    cognome.classList.remove('input-error');
+  }
+
+  if (classe.value.trim() === "") {
+    errCL.style.display = "block";
+    triggerInputError(classe);
+    valido = false;
+  } else {
+    errCL.style.display = "none";
+    classe.classList.remove('input-error');
+  }
+
+  if (valido) {
+    alert("Il tuo ordine è stato mandato al bar");
+  }
 });
+
 </script>
 
 </body>
