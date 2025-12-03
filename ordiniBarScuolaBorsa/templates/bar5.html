@@ -151,6 +151,7 @@
     .nav-buttons { display:flex; justify-content:space-between; width:100%; margin-top:12px; }
     .nav-btn { background:#e63946; color:white; border:none; padding:10px 18px; border-radius:20px; font-weight:700; cursor:pointer; }
     .nav-btn:hover { background:white; color:black; }
+    .nav-btn1 { background:#e63946; color:white; border:none; padding:10px 18px; border-radius:20px; font-weight:700; cursor:pointer;width:150px;height: 43px;font-family: verdana;font-size: 15px;border: 2px solid white; }
 
     @keyframes shake {
       0% { transform: translateX(0); }
@@ -239,22 +240,22 @@
     <div class="divider1" style="width:100px;margin-left:100px;margin-bottom:20px;"></div>
 
     <!-- ⭐⭐⭐ AGGIUNTO: BOTTONE NOTE ⭐⭐⭐ -->
-    <button class="btn" id="note" style="align-self:center; margin-top:20px;">Note</button>
+    <button class="nav-btn1" id="note" style="align-self:center; margin-top:20px;border:2px soli white;">Note</button>
     <!-- ⭐⭐⭐ FINE AGGIUNTA ⭐⭐⭐ -->
 
     <div class="controls">
       <button class="btn" id="aggiungi">Aggiungi</button>
-      <button class="btn" id="rimuovi">Rimuovi</button>
+      <button class="btn" id="rimuovi" style="background-color:transparent ;color: transparent;">Rimuovi</button>
     </div>
   </div>
 
   <div id="popup-ingredienti">
-    <h2 style="color:white;font-weight:800;font-family:verdana;font-size:20px;text-align:center;">LISTA INGREDIENTI</h2>
+    <h2 style="color:white;font-weight:800;font-family:verdana;font-size:20px;text-align:center;">AGGIUNGI NOTE</h2>
     <div class="divider"></div>
     <div id="ingredient-container"></div>
     <div class="nav-buttons">
       <button class="nav-btn" id="next">Salva</button>
-      <button class="nav-btn" id="back">Indietro</button>
+      <button class="nav-btn" id="back">Chiudi</button>
     </div>
   </div>
 
