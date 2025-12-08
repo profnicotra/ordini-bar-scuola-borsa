@@ -37,7 +37,7 @@
     .navbar.hidden { top: -100px; }
 
     .logo-left { position: absolute; left: 50px; }
-    .logo-left img { width: 115px; }
+    .logo-left img { width: 120px; }
 
     .nav-center ul { display: flex; gap: 40px; list-style: none; }
     .nav-center a {
@@ -345,6 +345,45 @@
   padding: 0.75rem 1rem;
   color: whitesmoke;
 }
+/* STILE BOTTONE ORARIO E STATO */
+#status-button {
+    width: 200px;
+    padding: 12px;
+    border: none;
+    border-radius: 20px;
+    background:rgba(22, 22, 22, 0.929);
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    margin-left: 25px;
+    
+}
+
+#status-button .content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#status-button .left {
+    text-align: left;
+}
+
+#status-button .right {
+    font-weight: bold;
+    font-size: 20px;
+}
+
+#status-button .open {
+    color:#e63946;
+}
+
+#status-button .closed {
+    color: #f44336;
+}
+
 .input-group input:focus { border-color: white; }
 
 .forgot { display: flex; justify-content: flex-end; font-size: 0.75rem; line-height: 1rem; color: rgba(156, 163, 175,1); margin: 8px 0 14px 0; }
@@ -369,6 +408,19 @@
     <img src="https://raw.githubusercontent.com/Rashmika274/ordini-bar-scuola-borsa/main/static/logo.png" alt="Logo">
   </div>
 
+  <!-- BOTTONE ORARIO E STATO -->
+  <div id="status-button-container" style="position:absolute; left:180px; top:50%; transform:translateY(-50%);">
+    <button id="status-button">
+        <div class="content">
+            <div class="left">
+                <div id="time"></div>
+                <div id="date"></div>
+            </div>
+            <div class="right" id="status"></div>
+        </div>
+    </button>
+  </div>
+
   <nav class="nav-center">
     <ul>
       <li><a href="#">Home</a></li>
@@ -385,6 +437,7 @@
     <a href="https://www.youtube.com/@ScuolaPaoloBorsaMonza"><i class="fab fa-youtube"></i></a>
   </div>
 </header>
+
 
 <section class="hero" id="hero">
   <div class="hero-content">
@@ -601,6 +654,40 @@ toLogin.addEventListener("click", () => {
   socialMessage.style.display = "flex";
   titleText.innerText = "Login";
 });
+// --- BOTTONE ORARIO E STATO ---
+function updateStatusButton() {
+    let now = new Date();
+
+    // ORARIO ATTUALE
+    let hours = now.getHours();
+    let minutes = now.getMinutes().toString().padStart(2, "0");
+    document.getElementById("time").innerText = `${hours.toString().padStart(2,"0")}:${minutes}`;
+
+    // DATA ATTUALE
+    let day = now.getDate();
+    let monthNames = ["Gen", "Feb", "Mar", "Apr", "Mag", "Giu",
+                      "Lug", "Ago", "Set", "Ott", "Nov", "Dic"];
+    let month = monthNames[now.getMonth()];
+    document.getElementById("date").innerText = `${day} ${month}`;
+
+    // OPEN/CLOSED
+    let openHour = 9;
+    let closeHour = 18;
+    let statusElement = document.getElementById("status");
+
+    if (hours >= openHour && hours < closeHour) {
+        statusElement.innerText = "OPEN";
+        statusElement.className = "right open";
+    } else {
+        statusElement.innerText = "CLOSED";
+        statusElement.className = "right closed";
+    }
+}
+
+// aggiorna ogni secondo
+setInterval(updateStatusButton, 1000);
+updateStatusButton();
+
 </script>
 
 </body>

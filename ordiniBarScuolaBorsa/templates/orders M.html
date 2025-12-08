@@ -1,279 +1,115 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Menu- scuola borsa</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-
-  <style>
-    * { margin:0;padding:0;box-sizing:border-box; }
-    body { font-family:"Montserrat",sans-serif; background-color:black; color:white; }
-
-    .menu-hero{
-      min-height:100vh;
-      background-image:url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrvMAfCqsehmJvRUBbDTG0xeR6rlCMzEccNg&s");
-      background-size:cover;
-      background-position:center;
-      position:relative;
-      display:flex;
-      justify-content:center;
-      align-items:flex-start;
-      text-align:center;
-      padding-top:180px;
-    }
-
-    .menu-hero::after {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(31, 30, 30, 0.505);
-        z-index: 1;
-    }
-
-    .navbar {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 50px;
-      padding: 20px 50px;
-      background-color: rgba(22, 22, 22, 0.784);
-      position: fixed;
-      width: 100%;
-      top: 0;
-      height: 150px;
-      z-index: 10;
-      transition: top 0.6s ease;
-    }
-
-    .navbar.hidden { top: -100px; }
-
-    .logo-left { position: absolute; left: 50px; }
-    .logo-left img { width: 115px; }
-
-    .nav-center ul { display: flex; gap: 40px; list-style: none; }
-    .nav-center a {
-      color: white;
-      font-weight: 600;
-      text-decoration: none;
-      font-size: 18px;
-      transition: 0.3s;
-      cursor: pointer;
-    }
-    .nav-center a:hover { color:rgb(79, 79, 79); }
-
-    .social-icons {
-      position: absolute;
-      right: 50px;
-      display: flex;
-      gap: 30px;
-    }
-
-    .social-icons a {
-      width: 35px;
-      height: 35px;
-      border: 3px solid white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      border-radius: 5px;
-      color: white;
-      font-size: 18px;
-      transition: 0.3s ease;
-      text-decoration: none;
-    }
-    .social-icons a:hover { background-color: white; color: black; }
-
-    .menu-hero::before{content:"";position:absolute;inset:0;background:rgba(0,0,0,0.55);backdrop-filter:blur(3px);z-index:1;}
-
-    .menu-content{position:relative;z-index:3;width:700px;text-align:center;}
-
-    .menu-title-wrapper{
-      display:flex;
-      align-items:flex-start;
-      justify-content:center;
-      gap:12px;
-      margin-bottom:15px;
-    }
-
-    .menu-subtitle{font-size:45px;font-weight:300;margin:0;}
-    .yellow-line{width:60px;height:4px;background-color:#e63946;}
-    .menu-title{font-size:75px;font-style:italic;font-weight:800;margin:0;}
-
-    .menu-list{
-      display:flex;
-      border-radius:5px;
-      justify-content:center;
-      width:900px;
-      margin-left:-120px;
-      margin-top:20px;
-      border:2px solid white;
-      height:45px;
-    }
-
-    .menu-list a{
-      flex:1;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      color:white;
-      border-radius:5px;
-      text-decoration:none;
-      font-weight:600;
-      font-size:18px;
-      background:transparent;
-      border-right:1px solid white;
-      cursor:pointer;
-      transition:0.3s;
-      letter-spacing:10px;
-      font-family:Verdana;
-    }
-    .menu-list a:last-child{border-right:none;}
-    .menu-list a.active{background:white;color:black;font-weight:700;}
-
-    #menu-lists{
-      margin-top:20px;
-      text-align:left;
-      display:none;
-      width:550px;
-      margin-left:-120px;
-      min-height:250px;
-    }
-
-    .menu-item{
-      font-size:18px;
-      margin-bottom:18px;
-      display:flex;
-      justify-content:space-between;
-      font-weight:600;
-      width:100%;
-      opacity:0;
-      transform:translateY(15px);
-      animation:fadeUp 0.5s ease forwards;
-    }
-
-    @keyframes fadeUp{to{opacity:1;transform:translateY(0);}}
-
-
-    .dots{flex-grow:10;border-bottom:2px dashed white;margin:0 10px;opacity:0.3;}
-    .price{display:flex;align-items:center;font-weight:600;}
-    .euro{font-size:16px;position:relative;top:-2px;margin-right:3px;opacity:0.8;}
-
-    .select-square{
-      width:25px;height:25px;border:2px dashed white;border-radius:5px;margin-right:15px;cursor:pointer;transition:0.3s ease;
-    }
-    .select-square.selected{background-color:#e63946;border-color:#e63946;}
-
-    #pronto-btn{
-      margin-top:10px; 
-      padding:12px 25px;
-      font-size:20px;
-      display: inline-block;
-      font-weight:800;
-      padding: 14px 32px;
-      width:200px;
-      background-color:#e63946;
-      color:white;
-      border:none;
-      border-radius:30px;
-      cursor:pointer;
-      display:none;
-      opacity:0;
-      transform:translateY(15px);
-    }
-
-    #pronto-btn:hover{ background:white; color:black; }
-
-    .show-btn{animation:fadeUp 0.7s ease forwards;}
-
-    /* LOGIN & REGISTER (COPIATO DAL PRIMO FILE) */
-#login-modal {
-  display: none;
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Menu- scuola borsa</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+<style>
+* { margin:0;padding:0;box-sizing:border-box; }
+body { font-family:"Montserrat",sans-serif; background-color:black; color:white; }
+.menu-hero{ min-height:100vh; background-image:url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrvMAfCqsehmJvRUBbDTG0xeR6rlCMzEccNg&s"); background-size:cover; background-position:center; position:relative; display:flex; justify-content:center; align-items:flex-start; text-align:center; padding-top:180px; }
+.menu-hero::after { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(31, 30, 30, 0.505); z-index: 1; }
+.navbar { display: flex; align-items: center; justify-content: center; gap: 50px; padding: 20px 50px; background-color: rgba(22, 22, 22, 0.784); position: fixed; width: 100%; top: 0; height: 150px; z-index: 10; transition: top 0.6s ease; }
+.navbar.hidden { top: -100px; }
+.logo-left { position: absolute; left: 50px; }
+.logo-left img { width: 115px; }
+.nav-center ul { display: flex; gap: 40px; list-style: none; }
+.nav-center a { color: white; font-weight: 600; text-decoration: none; font-size: 18px; transition: 0.3s; cursor: pointer; }
+.nav-center a:hover { color:rgb(79, 79, 79); }
+.social-icons { position: absolute; right: 50px; display: flex; gap: 30px; }
+.social-icons a { width: 35px; height: 35px; border: 3px solid white; display: flex; justify-content: center; align-items: center; border-radius: 5px; color: white; font-size: 18px; transition: 0.3s ease; text-decoration: none; }
+.social-icons a:hover { background-color: white; color: black; }
+.menu-hero::before{content:"";position:absolute;inset:0;background:rgba(0,0,0,0.55);backdrop-filter:blur(3px);z-index:1;}
+.menu-content{position:relative;z-index:3;width:700px;text-align:center;}
+.menu-title-wrapper{ display:flex; align-items:flex-start; justify-content:center; gap:12px; margin-bottom:15px; }
+.menu-subtitle{font-size:45px;font-weight:300;margin:0;}
+.yellow-line{width:60px;height:4px;background-color:#e63946;}
+.menu-title{font-size:75px;font-style:italic;font-weight:800;margin:0;}
+.menu-list{ display:flex; border-radius:5px; justify-content:center; width:900px; margin-left:-120px; margin-top:20px; border:2px solid white; height:45px; }
+.menu-list a{ flex:1; display:flex; justify-content:center; align-items:center; color:white; border-radius:5px; text-decoration:none; font-weight:600; font-size:18px; background:transparent; border-right:1px solid white; cursor:pointer; transition:0.3s; letter-spacing:10px; font-family:Verdana; }
+.menu-list a:last-child{border-right:none;}
+.menu-list a.active{background:white;color:black;font-weight:700;}
+#menu-lists{ margin-top:20px; text-align:left; display:none; width:550px; margin-left:-120px; min-height:250px; }
+.menu-item{ font-size:18px; margin-bottom:18px; display:flex; justify-content:space-between; font-weight:600; width:100%; opacity:0; transform:translateY(15px); animation:fadeUp 0.5s ease forwards; }
+@keyframes fadeUp{to{opacity:1;transform:translateY(0);}}
+.dots{flex-grow:10;border-bottom:2px dashed white;margin:0 10px;opacity:0.3;}
+.price{display:flex;align-items:center;font-weight:600;}
+.euro{font-size:16px;position:relative;top:-2px;margin-right:3px;opacity:0.8;}
+.select-square{ width:25px;height:25px;border:2px dashed white;border-radius:5px;margin-right:15px;cursor:pointer;transition:0.3s ease; }
+.select-square.selected{background-color:#e63946;border-color:#e63946;}
+#error-box {
   position: fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background: rgba(0,0,0,0.8);
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.form-container {
-  width: 320px;
-  border-radius: 0.75rem;
-  background-color: rgba(22, 22, 22, 0.784);
-  padding: 2rem;
-  color: white;
-}
-
-.title {
-  text-align: center;
-  font-size: 1.5rem;
-  line-height: 2rem;
+  left: 20px;
+  bottom: 20px;
+  background: #f4cccc;
+  border-left: 5px solid #e06666;
+  padding: 15px 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgb(0 0 0 / 0.2);
+  color: #cc4b4b;
   font-weight: 700;
-  margin-bottom: 1rem;
+  font-family: "Montserrat", sans-serif;
+  font-size: 18px;
+  display: none;
 }
-
+#error-box p {
+  margin: 0;
+  opacity: 0.6;
+}
+#error-box .close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  cursor: pointer;
+  font-weight: 900;
+  font-size: 20px;
+  color: #cc4b4b;
+  border: none;
+  background: none;
+}
+#pronto-btn{ margin-top:10px; padding:12px 25px; font-size:20px; display: inline-block; font-weight:800; padding: 14px 32px; width:200px; background-color:#e63946; color:white; border:none; border-radius:30px; cursor:pointer; display:none; opacity:0; transform:translateY(15px); }
+#pronto-btn:hover{ background:white; color:black; }
+.show-btn{animation:fadeUp 0.7s ease forwards;}
+/* LOGIN & REGISTER (COPIATO DAL PRIMO FILE) */
+#login-modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 1000; }
+.form-container { width: 320px; border-radius: 0.75rem; background-color: rgba(22, 22, 22, 0.784); padding: 2rem; color: white; }
+.title { text-align: center; font-size: 1.5rem; line-height: 2rem; font-weight: 700; margin-bottom: 1rem; }
 .form { margin-top: 1.5rem; }
-
 .input-group { margin-top: 0.25rem; font-size: 0.875rem; line-height: 1.25rem; }
 .input-group label { display: block; margin-bottom: 4px; color: white; }
-.input-group input {
-  width: 100%;
-  border-radius: 0.375rem;
-  border: 1px solid white;
-  outline: 0;
-  background-color: rgba(22, 22, 22, 0.508);
-  padding: 0.75rem 1rem;
-  color: whitesmoke;
-}
+.input-group input { width: 100%; border-radius: 0.375rem; border: 1px solid white; outline: 0; background-color: rgba(22, 22, 22, 0.508); padding: 0.75rem 1rem; color: whitesmoke; }
 .input-group input:focus { border-color: white; }
-
 .forgot { display: flex; justify-content: flex-end; font-size: 0.75rem; color: rgba(156, 163, 175,1); margin: 8px 0 14px 0; }
 .forgot a,.signup a { color: rgba(243, 244, 246, 1); text-decoration: none; font-size: 14px; }
-
 .sign { display: block; width: 100%; background-color: #e63946; padding: 0.75rem; text-align: center; color: white; border: none; border-radius: 0.375rem; font-weight: 600; cursor:pointer; }
-
 .social-message { display: flex; align-items: center; padding-top: 1rem; }
 .line { height: 1px; flex: 1 1 0%; background-color: rgba(55, 65, 81, 1); }
 .social-message .message { padding: 0 0.75rem; font-size: 0.875rem; color: rgba(156, 163, 175, 1); }
-
 #register-form { margin-top: 1rem; display:none; }
-
-  </style>
+</style>
 </head>
-
 <body>
-
 <header class="navbar" id="navbar">
   <div class="logo-left">
     <img src="https://raw.githubusercontent.com/Rashmika274/ordini-bar-scuola-borsa/main/static/logo.png" alt="Logo">
   </div>
-
   <nav class="nav-center">
     <ul>
-      <li><a href="Index.html M.html#hero">Home</a></li>
-      <li><a href="Index.html M.html#chi-siamo">Chi siamo</a></li>
-      <li><a href="Index.html M.html#gallery">Galleria</a></li>
-      <li><a href="Index.html M.html#contatti">Contatti</a></li>
+      <li><a href="Index.html M2.html#hero">Home</a></li>
+      <li><a href="Index.html M2.html#chi-siamo">Chi siamo</a></li>
+      <li><a href="Index.html M2.html#gallery">Galleria</a></li>
+      <li><a href="Index.html M2.html#contatti">Contatti</a></li>
       <li><a id="login-btn">Login</a></li>
     </ul>
   </nav>
-
   <div class="social-icons">
     <a href="https://www.facebook.com/aziendaspecialediformazionescuolapaoloborsa/"><i class="fab fa-facebook-f"></i></a>
     <a href="https://www.instagram.com/scuola_borsa/"><i class="fab fa-instagram"></i></a>
     <a href="https://www.youtube.com/@ScuolaPaoloBorsaMonza"><i class="fab fa-youtube"></i></a>
   </div>
-
 </header>
-
 
 <section class="menu-hero" id="the-menu">
   <div class="menu-content">
@@ -282,36 +118,36 @@
         <h3 class="menu-subtitle">The</h3>
         <div class="yellow-line"></div>
       </div>
-      <h1 class="menu-title">Menu.</h1>
+      <h1 class="menu-title">Menu</h1>
     </div>
-
     <div class="menu-list">
       <a data-menu="share">CIBI</a>
       <a data-menu="sustain">BEVANDE</a>
       <a data-menu="indulge">DOLCI</a>
     </div>
-
     <div id="menu-lists"></div>
-
     <h4><button id="pronto-btn">PRONTO</button></h4>
   </div>
 </section>
+
+<!-- ERROR BOX -->
+<div id="error-box">
+  <strong>Error !</strong><br>
+  <p>Oh no!<br>You should login before</p>
+  <button class="close-btn" aria-label="Close Error">&times;</button>
+</div>
 
 <!-- LOGIN MODAL -->
 <div id="login-modal">
   <div style="position:relative;">
     <span id="close-login" style="position:absolute; top:-20px; right:-20px; cursor:pointer; font-size:30px; color:white;">&times;</span>
-
     <div class="form-container">
-      
       <p class="title">Login</p>
-
       <form class="form" id="login-form">
         <div class="input-group">
           <label for="username">Username</label>
           <input type="text" name="username" id="username">
         </div>
-
         <div class="input-group">
           <label for="password">Password</label>
           <input type="password" name="password" id="password">
@@ -319,132 +155,137 @@
             <a href="#">Forgot Password ?</a>
           </div>
         </div>
-
         <button class="sign">Sign in</button>
       </form>
-
       <div class="social-message">
         <div class="line"></div>
         <p class="message">Login with social accounts</p>
         <div class="line"></div>
       </div>
-
       <p class="signup">
-        Don't have an account? <a id="to-register" style="cursor:pointer;">Sign up</a>
+        Don't have an account?
+        <a id="to-register" style="cursor:pointer;">Sign up</a>
       </p>
-
       <div id="register-form">
         <form class="form" id="register-form-inner">
           <div class="input-group">
             <label>First Name</label>
             <input type="text" id="reg-first">
           </div>
-
           <div class="input-group">
             <label>Last Name</label>
             <input type="text" id="reg-last">
           </div>
-
           <div class="input-group">
             <label>Email</label>
             <input type="email" id="reg-email">
           </div>
-
           <div class="input-group">
             <label>Password</label>
             <input type="password" id="reg-pass">
           </div>
-
           <div class="input-group">
             <label>Confirm Password</label>
             <input type="password" id="reg-pass2">
           </div>
-
           <button class="sign" style="margin-top:6px;">Create Account</button>
         </form>
-
         <p class="signup">
-          Already have an account? <a id="to-login" style="cursor:pointer;">Sign in</a>
+          Already have an account?
+          <a id="to-login" style="cursor:pointer;">Sign in</a>
         </p>
       </div>
-
     </div>
   </div>
 </div>
 
 <script>
-  const menuLinks=document.querySelectorAll(".menu-list a");
-  const listContainer=document.getElementById("menu-lists");
-  const prontoBtn=document.getElementById("pronto-btn");
+const menuLinks=document.querySelectorAll(".menu-list a");
+const listContainer=document.getElementById("menu-lists");
+const prontoBtn=document.getElementById("pronto-btn");
+const menuData={
+  share:[["Pizzette",2],["Ravioli",30],["Risotto",15],["Panino",8],["Focaccia",2],["Patatine",4]],
+  sustain:[["Capuccino",2.5],["caffe",2],["Tè",1.5],["Iced Coffee",5]],
+  indulge:[["Biscotti",3],["Torta",5],["Tiramisù",5],["Gelato",5],["Pancake",3]]
+};
 
-  const menuData={
-    share:[["Pizzette",2],["Ravioli",30],["Risotto",15],["Panino",8],["Focaccia",2],["Patatine",4]],
-    sustain:[["Capuccino",2,50],["caffe",2],["Tè",1,50],["Iced Coffee",5]],
-    indulge:[["Biscotti",3],["Torta",5],["Tiramisù",5],["Gelato",5],["Pancake",3]]
-  };
+// Carichiamo selectedItems da localStorage
+let selectedItems=JSON.parse(localStorage.getItem("selectedItems"))||{};
+// Rimuoviamo subito selectedItems per partire puliti (reset)
+localStorage.removeItem("selectedItems");
+selectedItems = {};
+updateProntoBtn();
 
-  let selectedItems=JSON.parse(localStorage.getItem("selectedItems"))||{};
-
-  function updateProntoBtn(){
-    if(Object.keys(selectedItems).length>0){
-      prontoBtn.style.display="inline-block";
-      prontoBtn.classList.add("show-btn");
-    } else {
-      prontoBtn.style.display="none";
-      prontoBtn.classList.remove("show-btn");
-    }
+function updateProntoBtn(){
+  if(Object.keys(selectedItems).length>0){
+    prontoBtn.style.display="inline-block";
+    prontoBtn.classList.add("show-btn");
+  } else {
+    prontoBtn.style.display="none";
+    prontoBtn.classList.remove("show-btn");
   }
+}
 
-  function renderMenu(category){
-    const items=menuData[category];
-    listContainer.style.display="block";
-    listContainer.innerHTML=items.map(item=>`
-      <div class="menu-item">
-        <div style="display:flex;align-items:center;">
-          <div class="select-square ${selectedItems[item[0]]?"selected":""}"></div>
-          <span>${item[0]}</span>
-        </div>
-        <div class="dots"></div>
-        <span class="price"><span class="euro">€</span>${item[1]}</span>
-      </div>`).join("");
-
-    const squares=document.querySelectorAll(".select-square");
-    squares.forEach((sq,index)=>{
-      sq.addEventListener("click",()=>{
-        const name=items[index][0];
-        if(selectedItems[name]){
-          delete selectedItems[name];
-          sq.classList.remove("selected");
-        } else {
-          selectedItems[name]=items[index][1];
-          sq.classList.add("selected");
-        }
-        localStorage.setItem("selectedItems",JSON.stringify(selectedItems));
-        updateProntoBtn();
-      });
-    });
-  }
-
-  menuLinks.forEach(link=>{
-    link.addEventListener("click",()=>{
-      menuLinks.forEach(btn=>btn.classList.remove("active"));
-      link.classList.add("active");
-      renderMenu(link.dataset.menu);
+function renderMenu(category){
+  const items=menuData[category];
+  listContainer.style.display="block";
+  listContainer.innerHTML=items.map(item=>`
+    <div class="menu-item" style="animation-delay:${0.1*items.indexOf(item)}s">
+      <div style="display:flex;align-items:center;">
+        <div class="select-square ${selectedItems[item[0]]?"selected":""}"></div>
+        <span>${item[0]}</span>
+      </div>
+      <div class="dots"></div>
+      <span class="price"><span class="euro">€</span>${item[1]}</span>
+    </div>
+  `).join("");
+  const squares=document.querySelectorAll(".select-square");
+  squares.forEach((sq,index)=>{
+    sq.addEventListener("click",()=>{
+      const name=items[index][0];
+      if(selectedItems[name]){
+        delete selectedItems[name];
+        sq.classList.remove("selected");
+      } else {
+        selectedItems[name]=items[index][1];
+        sq.classList.add("selected");
+      }
+      localStorage.setItem("selectedItems",JSON.stringify(selectedItems));
+      updateProntoBtn();
     });
   });
+}
 
-  prontoBtn.addEventListener("click",()=>{
-    const ordered=[];
-    for(const[name,price]of Object.entries(selectedItems)){
-      ordered.push({name,price});
-    }
-    localStorage.setItem("orderedItems",JSON.stringify(ordered));
-    window.location.href="bar5.html"; 
+// Codice errore visuale
+const errorBox = document.getElementById("error-box");
+const errorCloseBtn = errorBox.querySelector(".close-btn");
+errorCloseBtn.addEventListener("click", () => {
+  errorBox.style.display = "none";
+});
+
+menuLinks.forEach(link=>{
+  link.addEventListener("click",()=>{
+    menuLinks.forEach(btn=>btn.classList.remove("active"));
+    link.classList.add("active");
+    renderMenu(link.dataset.menu);
   });
+});
 
-  menuLinks[0].click();
-  updateProntoBtn();
+prontoBtn.addEventListener("click",()=>{
+  if(Object.keys(selectedItems).length === 0){
+    errorBox.style.display = "block";
+    return;
+  }
+  const ordered=[];
+  for(const[name,price]of Object.entries(selectedItems)){
+    ordered.push({name,price});
+  }
+  localStorage.setItem("orderedItems",JSON.stringify(ordered));
+  window.location.href="bar5.html";
+});
 
+menuLinks[0].click();
+updateProntoBtn();
 
 /* LOGIN MODAL JS */
 const loginBtn = document.getElementById('login-btn');
@@ -457,7 +298,7 @@ const toLogin = document.getElementById("to-login");
 const titleText = document.querySelector(".title");
 const socialMessage = document.querySelector(".social-message");
 
-// open
+// open loginBtn
 loginBtn.addEventListener('click', () => {
   loginModal.style.display = 'flex';
 });
@@ -471,23 +312,19 @@ window.addEventListener('click', (e) => {
   if (e.target === loginModal) loginModal.style.display = 'none';
 });
 
-// switch register
-toRegister.addEventListener("click", () => {
+toRegister.addEventListener('click', () => {
   loginFormElem.style.display = "none";
   registerFormElem.style.display = "block";
+  titleText.textContent = "Sign up";
   socialMessage.style.display = "none";
-  titleText.innerText = "Register";
 });
 
-// switch login
-toLogin.addEventListener("click", () => {
+toLogin.addEventListener('click', () => {
   loginFormElem.style.display = "block";
   registerFormElem.style.display = "none";
+  titleText.textContent = "Login";
   socialMessage.style.display = "flex";
-  titleText.innerText = "Login";
 });
-
 </script>
-
 </body>
 </html>
