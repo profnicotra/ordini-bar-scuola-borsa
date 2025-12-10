@@ -11,16 +11,95 @@
 body { font-family:"Montserrat",sans-serif; background-color:black; color:white; }
 .menu-hero{ min-height:100vh; background-image:url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrvMAfCqsehmJvRUBbDTG0xeR6rlCMzEccNg&s"); background-size:cover; background-position:center; position:relative; display:flex; justify-content:center; align-items:flex-start; text-align:center; padding-top:180px; }
 .menu-hero::after { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(31, 30, 30, 0.505); z-index: 1; }
-.navbar { display: flex; align-items: center; justify-content: center; gap: 50px; padding: 20px 50px; background-color: rgba(22, 22, 22, 0.784); position: fixed; width: 100%; top: 0; height: 150px; z-index: 10; transition: top 0.6s ease; }
-.navbar.hidden { top: -100px; }
-.logo-left { position: absolute; left: 50px; }
-.logo-left img { width: 115px; }
-.nav-center ul { display: flex; gap: 40px; list-style: none; }
-.nav-center a { color: white; font-weight: 600; text-decoration: none; font-size: 18px; transition: 0.3s; cursor: pointer; }
-.nav-center a:hover { color:rgb(79, 79, 79); }
-.social-icons { position: absolute; right: 50px; display: flex; gap: 30px; }
-.social-icons a { width: 35px; height: 35px; border: 3px solid white; display: flex; justify-content: center; align-items: center; border-radius: 5px; color: white; font-size: 18px; transition: 0.3s ease; text-decoration: none; }
-.social-icons a:hover { background-color: white; color: black; }
+.navbar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 50px;
+      padding: 20px 50px;
+      background-color: rgba(22, 22, 22, 0.784);
+      position: fixed;
+      width: 100%;
+      top: 0;
+      height: 150px;
+      z-index: 10;
+      transition: top 0.6s ease;
+    }
+
+    .navbar.hidden { top: -100px; }
+
+    .logo-left { position: absolute; left: 50px; }
+    .logo-left img { width: 120px; }
+
+    .nav-center ul { display: flex; gap: 40px; list-style: none; }
+    .nav-center a {
+      color: white;
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 18px;
+      transition: 0.3s;
+      cursor: pointer;
+    }
+    .nav-center a:hover { color:rgb(79, 79, 79); }
+
+    .social-icons {
+      position: absolute;
+      right: 50px;
+      display: flex;
+      gap: 30px;
+    }
+
+    .social-icons a {
+      width: 35px;
+      height: 35px;
+      border: 3px solid white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 5px;
+      color: white;
+      font-size: 18px;
+      transition: 0.3s ease;
+      text-decoration: none;
+    }
+    .social-icons a:hover { background-color: white; color: black; }
+    #status-button {
+    width: 200px;
+    padding: 12px;
+    border: none;
+    border-radius: 20px;
+    background:rgba(22, 22, 22, 0.929);
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    margin-left: 25px;
+    
+}
+
+#status-button .content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#status-button .left {
+    text-align: left;
+}
+
+#status-button .right {
+    font-weight: bold;
+    font-size: 20px;
+}
+
+#status-button .open {
+    color: green;
+}
+
+#status-button .closed {
+    color:  #e63946;
+}
 .menu-hero::before{content:"";position:absolute;inset:0;background:rgba(0,0,0,0.55);backdrop-filter:blur(3px);z-index:1;}
 .menu-content{position:relative;z-index:3;width:700px;text-align:center;}
 .menu-title-wrapper{ display:flex; align-items:flex-start; justify-content:center; gap:12px; margin-bottom:15px; }
@@ -91,19 +170,38 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
 </style>
 </head>
 <body>
+</head>
+
+<body>
+
 <header class="navbar" id="navbar">
   <div class="logo-left">
     <img src="https://raw.githubusercontent.com/Rashmika274/ordini-bar-scuola-borsa/main/static/logo.png" alt="Logo">
   </div>
+
+  <!-- BOTTONE ORARIO E STATO -->
+  <div id="status-button-container" style="position:absolute; left:180px; top:50%; transform:translateY(-50%);">
+    <button id="status-button">
+        <div class="content">
+            <div class="left">
+                <div id="time"></div>
+                <div id="date"></div>
+            </div>
+            <div class="right" id="status"></div>
+        </div>
+    </button>
+  </div>
+
   <nav class="nav-center">
     <ul>
-      <li><a href="Index.html M2.html#hero">Home</a></li>
-      <li><a href="Index.html M2.html#chi-siamo">Chi siamo</a></li>
-      <li><a href="Index.html M2.html#gallery">Galleria</a></li>
-      <li><a href="Index.html M2.html#contatti">Contatti</a></li>
+      <li><a href="#">Home</a></li>
+      <li><a href="#chi-siamo">Chi siamo</a></li>
+      <li><a href="#gallery">Galleria</a></li>
+      <li><a href="#contatti">Contatti</a></li>
       <li><a id="login-btn">Login</a></li>
     </ul>
   </nav>
+
   <div class="social-icons">
     <a href="https://www.facebook.com/aziendaspecialediformazionescuolapaoloborsa/"><i class="fab fa-facebook-f"></i></a>
     <a href="https://www.instagram.com/scuola_borsa/"><i class="fab fa-instagram"></i></a>
@@ -281,7 +379,7 @@ prontoBtn.addEventListener("click",()=>{
     ordered.push({name,price});
   }
   localStorage.setItem("orderedItems",JSON.stringify(ordered));
-  window.location.href="bar5.html";
+  window.location.href="bar.html";
 });
 
 menuLinks[0].click();
@@ -325,6 +423,39 @@ toLogin.addEventListener('click', () => {
   titleText.textContent = "Login";
   socialMessage.style.display = "flex";
 });
+// --- BOTTONE ORARIO E STATO ---
+function updateStatusButton() {
+    let now = new Date();
+
+    // ORARIO ATTUALE
+    let hours = now.getHours();
+    let minutes = now.getMinutes().toString().padStart(2, "0");
+    document.getElementById("time").innerText = `${hours.toString().padStart(2,"0")}:${minutes}`;
+
+    // DATA ATTUALE
+    let day = now.getDate();
+    let monthNames = ["Gen", "Feb", "Mar", "Apr", "Mag", "Giu",
+                      "Lug", "Ago", "Set", "Ott", "Nov", "Dic"];
+    let month = monthNames[now.getMonth()];
+    document.getElementById("date").innerText = `${day} ${month}`;
+
+    // OPEN/CLOSED
+    let openHour = 9;
+    let closeHour = 18;
+    let statusElement = document.getElementById("status");
+
+    if (hours >= openHour && hours < closeHour) {
+        statusElement.innerText = "OPEN";
+        statusElement.className = "right open";
+    } else {
+        statusElement.innerText = "CLOSED";
+        statusElement.className = "right closed";
+    }
+}
+
+// aggiorna ogni secondo
+setInterval(updateStatusButton, 1000);
+updateStatusButton();
 </script>
 </body>
 </html>

@@ -407,6 +407,10 @@ h2 {
     height: 36px;
     stroke:white;
 }
+.info-input::placeholder {
+    color: var(--placeholder-color, white);
+}
+
 
 #success-popup h2 {
     color:white;
@@ -423,6 +427,7 @@ h2 {
     font-weight: 600;
 }
 
+
 #success-close {
     position: absolute;
     top: 12px;
@@ -432,6 +437,9 @@ h2 {
     font-size: 22px;
     cursor: pointer;
     color: white;
+}
+.option-radio:checked {
+    accent-color: #e63946;;
 }
 </style>
 </head>
@@ -458,9 +466,9 @@ h2 {
     <h3 style="margin-top:40px;text-align: center;font-size: 23px;">INFO</h3>
     <div class="divider"></div>
 
-    <input id="nome" type="text" class="info-input" placeholder="Nome"/>
-    <input id="cognome" type="text" class="info-input" placeholder="Cognome"/>
-    <input id="classe" type="text" class="info-input" placeholder="Classe" list="lista-classi"/>
+    <input id="nome" type="text" class="note-input" placeholder="Nome"/>
+    <input id="cognome" type="text" class="note-input" placeholder="Cognome"/>
+    <input id="classe" type="text" class="note-input" placeholder="Classe" list="lista-classi"/>
     <datalist id="lista-classi">
         <option value="1D Operatore Informatica">
         <option value="2D Operatore Informatica">
@@ -514,16 +522,6 @@ h2 {
         <span class="option-label" id="labelPlus"></span>
     </label>
 
-    <label class="option-row">
-        <input type="radio" name="opzioneIngrediente" value="minus" class="option-radio">
-        <span class="option-label" id="labelMinus"></span>
-    </label>
-
-    <label class="option-row">
-        <input type="radio" name="opzioneIngrediente" value="no" class="option-radio">
-        <span class="option-label" id="labelNo"></span>
-    </label>
-
     <button id="popup-optioni-save">Salva</button>
 </div>
 <!-- POPUP SUCCESSO ORDINE -->
@@ -541,289 +539,295 @@ h2 {
     <p>Grazie per l'ordine<br>Puoi ritirare il tuo ordine al bar della sala da 10 minuti.</p>
 </div>
 </body>
-<script>
-let products = JSON.parse(localStorage.getItem("orderedItems")) || [];
-products = products.filter(p => p.name && !isNaN(p.price));
 
-const productContainer = document.getElementById("product-container");
-const totalPriceEl = document.getElementById("total");
+</body>
+</html>
+><script>
+    document.addEventListener("DOMContentLoaded", function () {
 
-const ingredientiProdotto = {
-    "Focaccia": ["Pane", "Pomodoro", "Mozzarella"],
-    "Cup Cake": ["Farina", "Zucchero", "Burro", "Uova", "Vaniglia"],
-    "Pizzette": ["Pomodoro", "Mozzarella", "Basilico"],
-    "Panino": ["Pane", "Prosciutto", "Formaggio", "Insalata"],
-};
+    let products = JSON.parse(localStorage.getItem("orderedItems")) || [];
+    products = products.filter(p => p.name && !isNaN(p.price));
 
-function defaultIngredienti(nome) {
-    return [`${nome} Base`, "Sale", "Olio", "Ingrediente Standard"];
-}
+    const productContainer = document.getElementById("product-container");
+    const totalPriceEl = document.getElementById("total");
 
-products.forEach(prod => {
-    if (!prod.ingredients || prod.ingredients.length === 0) {
-        prod.ingredients = ingredientiProdotto[prod.name] || defaultIngredienti(prod.name);
-        prod.extra = prod.extra || [];
+    const ingredientiProdotto = {
+        "Focaccia": ["Pane", "Pomodoro", "Mozzarella"],
+        "Cup Cake": ["Farina", "Zucchero", "Burro", "Uova", "Vaniglia"],
+        "Pizzette": ["Pomodoro", "Mozzarella", "Basilico"],
+        "Panino": ["Pane", "Prosciutto", "Formaggio", "Insalata"],
+    };
+
+    function defaultIngredienti(nome) {
+        return [`${nome} Base`, "Sale", "Olio", "Ingrediente Standard"];
     }
-});
-localStorage.setItem("orderedItems", JSON.stringify(products));
 
-let currentProductIndex = null;
-let currentIngredient = null;
-
-/* ================================
-   RENDER LISTA PRODOTTI
-================================ */
-function renderProducts() {
-    productContainer.innerHTML = "";
-    let total = 0;
-
-    products.forEach((p,i) => {
-        let row = document.createElement("div");
-        row.className = "product-row";
-
-        let extraHTML = p.extra && p.extra.length ? `<div class="ingredient-list">${p.extra.join(', ')}</div>` : '';
-
-        row.innerHTML = `
-        <div class="product-name">
-            <div style="display:flex; align-items:center; gap:10px;">
-                <button class="note-btn" data-index="${i}"
-                    style="width:42px;height:42px;border-radius:50%; background:#f5f0e7;border:2px solid #d9d4cc; display:flex;justify-content:center;align-items:center;cursor:pointer;">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
-                        stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 20h9"/>
-                        <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/>
-                    </svg>
-                </button>
-                <span>${p.name}</span>
-            </div>
-            ${extraHTML}
-        </div>
-
-        <div class="qty-box">
-            <button class="qty-btn" data-index="${i}" data-action="minus">-</button>
-            <span class="qty">${p.qty || 1}</span>
-            <button class="qty-btn" data-index="${i}" data-action="plus">+</button>
-        </div>
-
-        <div class="price">€${p.price * (p.qty || 1)}</div>
-        `;
-
-        productContainer.appendChild(row);
-        total += p.price * (p.qty || 1);
+    products.forEach(prod => {
+        if (!prod.ingredients || prod.ingredients.length === 0) {
+            prod.ingredients = ingredientiProdotto[prod.name] || defaultIngredienti(prod.name);
+            prod.extra = prod.extra || [];
+        }
     });
 
-    totalPriceEl.textContent = `€${total},00`;
+    localStorage.setItem("orderedItems", JSON.stringify(products));
 
-    document.querySelectorAll(".qty-btn").forEach(btn => {
-        btn.addEventListener("click", () => {
-            let index = btn.dataset.index;
-            if (btn.dataset.action === "plus") products[index].qty++;
-            else products[index].qty = Math.max(1, products[index].qty - 1);
-            localStorage.setItem("orderedItems", JSON.stringify(products));
-            renderProducts();
+    let currentProductIndex = null;
+    let currentIngredient = null;
+
+    /* ================================
+       RENDER LISTA PRODOTTI
+    ================================= */
+    function renderProducts() {
+        productContainer.innerHTML = "";
+        let total = 0;
+
+        products.forEach((p, i) => {
+            let extraHTML = p.extra?.length
+                ? `<div class="ingredient-list">${p.extra.join(", ")}</div>`
+                : "";
+
+            let row = document.createElement("div");
+            row.className = "product-row";
+
+            row.innerHTML = `
+                <div class="product-name">
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <button class="note-btn" data-index="${i}"
+                            style="width:42px;height:42px;border-radius:50%; background:#f5f0e7;border:2px solid #d9d4cc; display:flex;justify-content:center;align-items:center;cursor:pointer;">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+                                stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 20h9"/>
+                                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/>
+                            </svg>
+                        </button>
+                        <span>${p.name}</span>
+                    </div>
+                    ${extraHTML}
+                </div>
+
+                <div class="qty-box">
+                    <button class="qty-btn" data-index="${i}" data-action="minus">-</button>
+                    <span class="qty">${p.qty || 1}</span>
+                    <button class="qty-btn" data-index="${i}" data-action="plus">+</button>
+                </div>
+
+                <div class="price">€${p.price * (p.qty || 1)}</div>
+            `;
+
+            productContainer.appendChild(row);
+            total += p.price * (p.qty || 1);
         });
-    });
 
-    enableMatite();
-}
-
-renderProducts();
-
-/* ================================
-   POPUP INGREDIENTI
-================================ */
-const overlay = document.getElementById("overlay");
-const ingredientCard = document.getElementById("ingredient-card");
-const popupIngredienti = document.getElementById("popup-ingredienti");
-const ingredientContainer = document.getElementById("ingredient-container");
-
-function showIngredientCard() {
-    ingredientCard.style.display = "flex";
-    overlay.classList.add("active");
-}
-
-function hideIngredientCard() {
-    ingredientCard.style.display = "none";
-}
-
-document.getElementById("apriIngredienti").addEventListener("click", () => {
-    hideIngredientCard();
-    showPopupIngredienti();
-});
-
-/* ================================
-   CLICK FUORI → chiudi solo AGGIUNGI NOTE
-================================ */
-
-overlay.addEventListener("click", () => {
-    // Se è aperto SOLO il card "Aggiungi Note"
-    if (ingredientCard.style.display === "flex") {
-        ingredientCard.style.display = "none";
-        overlay.classList.remove("active"); // 👈 rimuove overlay
+        totalPriceEl.textContent = `€${total},00`;
     }
-});
 
+    /* ================================
+       FIX DEFINITIVO + / − (FUNZIONA SEMPRE)
+    ================================= */
+    productContainer.addEventListener("click", function (e) {
+    // Bottoni + e -
+   if (e.target.classList.contains("qty-btn")) {
+    const index = e.target.dataset.index;
+    const action = e.target.dataset.action;
 
-/* ================================
-   NOTE PRODOTTI
-================================ */
-function showPopupIngredienti() {
-    popupIngredienti.classList.add("active");
-    overlay.classList.add("active");
-
-    ingredientContainer.innerHTML = "";
-    const prod = products[currentProductIndex];
-    prod.ingredients.forEach(ing => {
-        let row = document.createElement("div");
-        row.className = "ingredient-row";
-
-        let nome = document.createElement("span");
-        nome.textContent = ing;
-
-        let plusBtn = document.createElement("div");
-        plusBtn.className = "wrapper";
-        plusBtn.innerHTML = `<div class="circle">+</div>`;
-
-        plusBtn.addEventListener("click", () => openPopupOpzioni(prod, ing));
-
-        row.appendChild(nome);
-        row.appendChild(plusBtn);
-        ingredientContainer.appendChild(row);
-    });
+    // aggiorna quantità
+   if (action === "plus") {
+    if ((products[index].qty || 1) < 10) {
+        products[index].qty = (products[index].qty || 1) + 1;
+    }
+} else {
+    products[index].qty = Math.max(1, (products[index].qty || 1) - 1);
 }
 
-function enableMatite() {
-    document.querySelectorAll(".note-btn").forEach((btn, i) => {
-        btn.addEventListener("click", () => {
-            currentProductIndex = i;
+
+    // salva subito
+    localStorage.setItem("orderedItems", JSON.stringify(products));
+
+    // aggiorna il DOM senza refresh
+    renderProducts();
+    return;
+}
+
+
+        // NOTE BUTTON
+        const noteBtn = e.target.closest(".note-btn");
+        if (noteBtn) {
+            currentProductIndex = noteBtn.dataset.index;
             showIngredientCard();
+        }
+    });
+
+    /* ================================
+       POPUP INGREDIENTI
+    ================================= */
+    const overlay = document.getElementById("overlay");
+    const ingredientCard = document.getElementById("ingredient-card");
+    const popupIngredienti = document.getElementById("popup-ingredienti");
+    const ingredientContainer = document.getElementById("ingredient-container");
+
+    function showIngredientCard() {
+        ingredientCard.style.display = "flex";
+        overlay.classList.add("active");
+    }
+
+    function hideIngredientCard() {
+        ingredientCard.style.display = "none";
+    }
+
+    document.getElementById("apriIngredienti").addEventListener("click", () => {
+        hideIngredientCard();
+        showPopupIngredienti();
+    });
+
+    overlay.addEventListener("click", () => {
+        if (ingredientCard.style.display === "flex") {
+            ingredientCard.style.display = "none";
+            overlay.classList.remove("active");
+        }
+    });
+
+    /* ================================
+       NOTE PRODOTTI
+    ================================= */
+    function showPopupIngredienti() {
+        popupIngredienti.classList.add("active");
+        overlay.classList.add("active");
+
+        ingredientContainer.innerHTML = "";
+
+        const prod = products[currentProductIndex];
+
+        prod.ingredients.forEach(ing => {
+            let row = document.createElement("div");
+            row.className = "ingredient-row";
+
+            row.innerHTML = `
+                <span>${ing}</span>
+                <div class="wrapper"><div class="circle">+</div></div>
+            `;
+
+            row.querySelector(".circle").addEventListener("click", () => {
+                openPopupOpzioni(prod, ing);
+            });
+
+            ingredientContainer.appendChild(row);
+        });
+    }
+
+    /* ================================
+       POPUP OPZIONI INGREDIENTI
+    ================================= */
+    const popupOpzioni = document.getElementById("popup-optioni-ingrediente");
+    const labelPlus = document.getElementById("labelPlus");
+
+    let lastSelectedOption = null;
+
+    function openPopupOpzioni(prod, ing) {
+        currentIngredient = { prod, ing };
+        labelPlus.innerHTML = `+&nbsp;&nbsp;${ing}`;
+
+        let radios = document.querySelectorAll('input[name="opzioneIngrediente"]');
+        radios.forEach(r => r.checked = false);
+
+        let saved = prod.extra.find(e => e.includes(`+ ${ing}`));
+        if (saved) {
+            document.querySelector('input[value="plus"]').checked = true;
+            lastSelectedOption = document.querySelector('input[value="plus"]');
+        }
+
+        popupOpzioni.classList.add("active");
+        overlay.classList.add("active");
+    }
+
+    document.querySelectorAll('input[name="opzioneIngrediente"]').forEach(radio => {
+        radio.addEventListener("click", function () {
+            if (lastSelectedOption === this) {
+                this.checked = false;
+                lastSelectedOption = null;
+            } else lastSelectedOption = this;
         });
     });
-}
 
-/* ================================
-   POPUP OPZIONI INGREDIENTI
-================================ */
-const popupOpzioni = document.getElementById("popup-optioni-ingrediente");
-const labelPlus = document.getElementById("labelPlus");
-const labelMinus = document.getElementById("labelMinus");
-const labelNo = document.getElementById("labelNo");
-const saveOpzioniBtn = document.getElementById("popup-optioni-save");
+    document.getElementById("popup-optioni-save").addEventListener("click", () => {
+        const scelta = document.querySelector('input[name="opzioneIngrediente"]:checked');
 
-let lastSelectedOption = null;
+        const prod = currentIngredient.prod;
+        const ing = currentIngredient.ing;
 
-function openPopupOpzioni(prod, ing) {
-    currentIngredient = { prod, ing };
+        prod.extra = prod.extra.filter(e => !e.includes(`+ ${ing}`));
 
-    labelPlus.textContent = `+ ${ing}`;
-    labelMinus.textContent = `- ${ing}`;
-    labelNo.textContent = `Nessuna ${ing}`;
-
-    document.querySelectorAll('input[name="opzioneIngrediente"]').forEach(r => r.checked = false);
-    lastSelectedOption = null;
-
-    let saved = prod.extra.find(e =>
-        e.includes(`+ ${ing}`) ||
-        e.includes(`- ${ing}`) ||
-        e.includes(`no ${ing}`)
-    );
-
-    if (saved) {
-        if (saved.includes(`+ ${ing}`)) {
-            let r = document.querySelector('input[value="plus"]');
-            r.checked = true;
-            lastSelectedOption = r;
+        if (scelta && scelta.value === "plus") {
+            prod.extra.push(`+ ${ing}`);
         }
-        if (saved.includes(`- ${ing}`)) {
-            let r = document.querySelector('input[value="minus"]');
-            r.checked = true;
-            lastSelectedOption = r;
-        }
-        if (saved.includes(`no ${ing}`)) {
-            let r = document.querySelector('input[value="no"]');
-            r.checked = true;
-            lastSelectedOption = r;
-        }
-    }
 
-    popupOpzioni.classList.add("active");
-    overlay.classList.add("active");
-}
+        localStorage.setItem("orderedItems", JSON.stringify(products));
+        renderProducts();
 
-/* TOGGLE RADIO BUTTON */
-document.querySelectorAll('input[name="opzioneIngrediente"]').forEach(radio => {
-    radio.addEventListener("click", function () {
-        if (lastSelectedOption === this) {
-            this.checked = false;
-            lastSelectedOption = null;
-        } else {
-            lastSelectedOption = this;
-        }
+        popupOpzioni.classList.remove("active");
     });
-});
 
-/* SALVATAGGIO OPZIONE (Chiude popup opzioni, NON chiude note prodotti) */
-saveOpzioniBtn.addEventListener("click", () => {
-    const sceltaRadio = document.querySelector('input[name="opzioneIngrediente"]:checked');
+    /* ================================
+       CHIUDI NOTE
+    ================================= */
+    document.getElementById("back").addEventListener("click", () => {
+        popupIngredienti.classList.remove("active");
+        overlay.classList.remove("active");
+    });
 
-    const prod = currentIngredient.prod;
-    const ing = currentIngredient.ing;
+    document.getElementById("next").addEventListener("click", () => {
+        localStorage.setItem("orderedItems", JSON.stringify(products));
+        renderProducts();
+        popupIngredienti.classList.remove("active");
+        overlay.classList.remove("active");
+    });
 
-    prod.extra = prod.extra.filter(e =>
-        !e.includes(`+ ${ing}`) &&
-        !e.includes(`- ${ing}`) &&
-        !e.includes(`no ${ing}`)
-    );
+    /* ================================
+       VALIDAZIONE
+    ================================= */
+    const btnInvia = document.getElementById("invia");
+    const nomeInput = document.getElementById("nome");
+    const cognomeInput = document.getElementById("cognome");
+    const classeInput = document.getElementById("classe");
 
-    if (sceltaRadio) {
-        const scelta = sceltaRadio.value;
-        if (scelta === "plus") prod.extra.push(`+ ${ing}`);
-        if (scelta === "minus") prod.extra.push(`- ${ing}`);
-        if (scelta === "no") prod.extra.push(`no ${ing}`);
-    }
+    const successPopup = document.getElementById("success-popup");
 
-    localStorage.setItem("orderedItems", JSON.stringify(products));
-    renderProducts();
-
-    // chiude SOLO popup opzioni
-    popupOpzioni.classList.remove("active");
-});
-
-/* CHIUDI NOTE PRODOTTI → senza salvare */
-document.getElementById("back").addEventListener("click", () => {
-    popupIngredienti.classList.remove("active");
-    overlay.classList.remove("active");
-});
-
-/* SALVA NOTE PRODOTTI → salva tutto e chiude */
-document.getElementById("next").addEventListener("click", () => {
-    localStorage.setItem("orderedItems", JSON.stringify(products));
-    renderProducts();
-
-    popupIngredienti.classList.remove("active");
-    overlay.classList.remove("active");
-});
-
-/* ================================
-   VALIDAZIONE + POPUP SUCCESSO
-================================ */
-const btnInvia = document.getElementById("invia");
-const nomeInput = document.getElementById("nome");
-const cognomeInput = document.getElementById("cognome");
-const classeInput = document.getElementById("classe");
-
-const successPopup = document.getElementById("success-popup");
-
-btnInvia.addEventListener("click", () => {
+   btnInvia.addEventListener("click", () => {
     let valid = true;
 
-    [nomeInput, cognomeInput, classeInput].forEach(input => {
+    function checkNameField(input, label) {
+        let value = input.value.trim();
+
+        // regex: solo lettere, lunghezza minima 3
+        let validName = /^[A-Za-zÀ-ÖØ-öø-ÿ]{4,}$/;
+
         input.classList.remove("input-error");
-        if (!input.value.trim()) {
+
+        if (!validName.test(value)) {
             valid = false;
+
+            // shake + bordo rosso
             input.classList.add("input-error");
+
+            // cancella contenuto
+            input.value = "";
+
+            // placeholder rosso
+            input.placeholder = `⚠ Scrivi il ${label}`;
+
+            // forza colore placeholder rosso
+            input.style.setProperty("--placeholder-color", "#e63946");
         }
-    });
+    }
+
+    checkNameField(nomeInput, "nome");
+    checkNameField(cognomeInput, "cognome");
+
+    // classe obbligatoria come prima
+    if (!classeInput.value.trim()) {
+        valid = false;
+        classeInput.classList.add("input-error");
+        classeInput.placeholder = "⚠ Scrivi la classe";
+    }
 
     if (!valid) {
         nomeInput.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -838,15 +842,16 @@ btnInvia.addEventListener("click", () => {
     overlay.classList.add("active");
     successPopup.classList.add("active");
 });
+    document.getElementById("success-close").addEventListener("click", () => {
+        localStorage.removeItem("orderedItems");
+        location.reload();
+    });
 
-/* X → cancella ordine + refresh */
-document.getElementById("success-close").addEventListener("click", () => {
-    localStorage.removeItem("orderedItems");
-    location.reload();
+    /* ================================
+       START
+    ================================= */
+    renderProducts();
+
 });
 
-
 </script>
-
-</body>
-</html>
