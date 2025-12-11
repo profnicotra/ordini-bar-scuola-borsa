@@ -63,43 +63,6 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
       text-decoration: none;
     }
     .social-icons a:hover { background-color: white; color: black; }
-    #status-button {
-    width: 200px;
-    padding: 12px;
-    border: none;
-    border-radius: 20px;
-    background:rgba(22, 22, 22, 0.929);
-    color: white;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    font-family: 'Montserrat', sans-serif;
-    margin-left: 25px;
-    
-}
-
-#status-button .content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-#status-button .left {
-    text-align: left;
-}
-
-#status-button .right {
-    font-weight: bold;
-    font-size: 20px;
-}
-
-#status-button .open {
-    color: green;
-}
-
-#status-button .closed {
-    color:  #e63946;
-}
 .menu-hero::before{content:"";position:absolute;inset:0;background:rgba(0,0,0,0.55);backdrop-filter:blur(3px);z-index:1;}
 .menu-content{position:relative;z-index:3;width:700px;text-align:center;}
 .menu-title-wrapper{ display:flex; align-items:flex-start; justify-content:center; gap:12px; margin-bottom:15px; }
@@ -120,23 +83,34 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
 .select-square.selected{background-color:#e63946;border-color:#e63946;}
 #error-box {
   position: fixed;
-  left: 20px;
-  bottom: 20px;
-  background: #f4cccc;
-  border-left: 5px solid #e06666;
+  top: -200px; /* era bottom:20px -> ORA è nascosto sopra */
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgb(26, 26, 26);;
   padding: 15px 20px;
   border-radius: 10px;
   box-shadow: 0 2px 10px rgb(0 0 0 / 0.2);
-  color: #cc4b4b;
+  color: whitesmoke;
   font-weight: 700;
   font-family: "Montserrat", sans-serif;
   font-size: 18px;
-  display: none;
+  display: block;
+  width: 330px;
+  transition: top 0.5s ease;
+  z-index: 9999; 
+  border: 1px solid whitesmoke;
 }
+
+#error-box.show {
+  top: 40px;   /* posizione quando scende */
+}
+
 #error-box p {
   margin: 0;
   opacity: 0.6;
+  color: whitesmoke;
 }
+
 #error-box .close-btn {
   position: absolute;
   top: 10px;
@@ -148,9 +122,23 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
   border: none;
   background: none;
 }
-#pronto-btn{ margin-top:10px; padding:12px 25px; font-size:20px; display: inline-block; font-weight:800; padding: 14px 32px; width:200px; background-color:#e63946; color:white; border:none; border-radius:30px; cursor:pointer; display:none; opacity:0; transform:translateY(15px); }
+
+#pronto-btn{
+    margin-top:10px;
+    padding:14px 32px;
+    width:200px;
+    font-size:20px;
+    font-weight:800;
+    background-color:#e63946;
+    color:white;
+    border:none;
+    border-radius:30px;
+    cursor:pointer;
+    opacity:0;
+    transform:translateY(15px);
+    animation:fadeUp 0.7s ease forwards;
+}
 #pronto-btn:hover{ background:white; color:black; }
-.show-btn{animation:fadeUp 0.7s ease forwards;}
 /* LOGIN & REGISTER (COPIATO DAL PRIMO FILE) */
 #login-modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 1000; }
 .form-container { width: 320px; border-radius: 0.75rem; background-color: rgba(22, 22, 22, 0.784); padding: 2rem; color: white; }
@@ -170,34 +158,17 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
 </style>
 </head>
 <body>
-</head>
-
-<body>
 
 <header class="navbar" id="navbar">
   <div class="logo-left">
     <img src="https://raw.githubusercontent.com/Rashmika274/ordini-bar-scuola-borsa/main/static/logo.png" alt="Logo">
   </div>
-
-  <!-- BOTTONE ORARIO E STATO -->
-  <div id="status-button-container" style="position:absolute; left:180px; top:50%; transform:translateY(-50%);">
-    <button id="status-button">
-        <div class="content">
-            <div class="left">
-                <div id="time"></div>
-                <div id="date"></div>
-            </div>
-            <div class="right" id="status"></div>
-        </div>
-    </button>
-  </div>
-
   <nav class="nav-center">
     <ul>
-      <li><a href="#">Home</a></li>
-      <li><a href="#chi-siamo">Chi siamo</a></li>
-      <li><a href="#gallery">Galleria</a></li>
-      <li><a href="#contatti">Contatti</a></li>
+      <li><a href="index.html#home">Home</a></li>
+      <li><a href="index.html#chi siamo">Chi siamo</a></li>
+      <li><a href="index.html#gallery">Galleria</a></li>
+      <li><a href="index.html#contatti">Contatti</a></li>
       <li><a id="login-btn">Login</a></li>
     </ul>
   </nav>
@@ -224,14 +195,14 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
       <a data-menu="indulge">DOLCI</a>
     </div>
     <div id="menu-lists"></div>
-    <h4><button id="pronto-btn">PRONTO</button></h4>
+    <button id="pronto-btn" class="show-btn">PRONTO</button>
   </div>
 </section>
 
 <!-- ERROR BOX -->
 <div id="error-box">
-  <strong>Error !</strong><br>
-  <p>Oh no!<br>You should login before</p>
+  <strong>Errore !</strong><br>
+  <p>Oh no!<br>Devi selezionare almeno un piatto</p>
   <button class="close-btn" aria-label="Close Error">&times;</button>
 </div>
 
@@ -239,64 +210,72 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
 <div id="login-modal">
   <div style="position:relative;">
     <span id="close-login" style="position:absolute; top:-20px; right:-20px; cursor:pointer; font-size:30px; color:white;">&times;</span>
+
     <div class="form-container">
+      
+      <!-- LOGIN FORM -->
       <p class="title">Login</p>
       <form class="form" id="login-form">
         <div class="input-group">
-          <label for="username">Username</label>
-          <input type="text" name="username" id="username">
+          <label for="username"style="color: white;">Username</label>
+          <input type="text" name="username" id="username" placeholder="">
         </div>
         <div class="input-group">
-          <label for="password">Password</label>
-          <input type="password" name="password" id="password">
+          <label for="password"style="color: white;">Password</label>
+          <input type="password" name="password" id="password" placeholder="">
           <div class="forgot">
             <a href="#">Forgot Password ?</a>
           </div>
         </div>
-        <button class="sign">Sign in</button>
+        <button class="sign" style="color: white;">Sign in</button>
       </form>
+
+      <!-- SOCIAL LOGIN MESSAGE -->
       <div class="social-message">
         <div class="line"></div>
-        <p class="message">Login with social accounts</p>
+        <p class="message" style="color: rgba(245, 245, 245, 0.742);">Login with social accounts</p>
         <div class="line"></div>
       </div>
-      <p class="signup">
-        Don't have an account?
-        <a id="to-register" style="cursor:pointer;">Sign up</a>
+
+      <!-- LINK TO REGISTER -->
+      <p class="signup" style="color:rgba(245, 245, 245, 0.742);">
+        Don't have an account? <a id="to-register" style="cursor:pointer;">Sign up</a>
       </p>
-      <div id="register-form">
+
+      <!-- REGISTER FORM -->
+      <div id="register-form" style="display:none;">
+        <p class="title"></p>
         <form class="form" id="register-form-inner">
           <div class="input-group">
-            <label>First Name</label>
-            <input type="text" id="reg-first">
+            <label for="reg-first" style="color: white;">First Name</label>
+            <input type="text" id="reg-first" placeholder="">
           </div>
           <div class="input-group">
-            <label>Last Name</label>
-            <input type="text" id="reg-last">
+            <label for="reg-last" style="color: white;" >Last Name</label>
+            <input type="text" id="reg-last" placeholder="">
           </div>
           <div class="input-group">
-            <label>Email</label>
-            <input type="email" id="reg-email">
+            <label for="reg-email" style="color: white;" >Email</label>
+            <input type="email" id="reg-email" placeholder="">
           </div>
           <div class="input-group">
-            <label>Password</label>
-            <input type="password" id="reg-pass">
+            <label for="reg-pass" style="color: white;" >Password</label>
+            <input type="password" id="reg-pass" placeholder="">
           </div>
           <div class="input-group">
-            <label>Confirm Password</label>
-            <input type="password" id="reg-pass2">
+            <label for="reg-pass2" style="color: white;" >Confirm Password</label>
+            <input type="password" id="reg-pass2" placeholder="">
           </div>
-          <button class="sign" style="margin-top:6px;">Create Account</button>
+          <button class="sign" style="color:white; margin-top:6px;">Create Account</button>
         </form>
-        <p class="signup">
-          Already have an account?
-          <a id="to-login" style="cursor:pointer;">Sign in</a>
+        <p class="signup" style="color:rgba(245, 245, 245, 0.742);">
+          Already have an account? <a id="to-login" style="cursor:pointer;">Sign in</a>
         </p>
       </div>
+
     </div>
   </div>
 </div>
-
 <script>
 const menuLinks=document.querySelectorAll(".menu-list a");
 const listContainer=document.getElementById("menu-lists");
@@ -312,17 +291,7 @@ let selectedItems=JSON.parse(localStorage.getItem("selectedItems"))||{};
 // Rimuoviamo subito selectedItems per partire puliti (reset)
 localStorage.removeItem("selectedItems");
 selectedItems = {};
-updateProntoBtn();
 
-function updateProntoBtn(){
-  if(Object.keys(selectedItems).length>0){
-    prontoBtn.style.display="inline-block";
-    prontoBtn.classList.add("show-btn");
-  } else {
-    prontoBtn.style.display="none";
-    prontoBtn.classList.remove("show-btn");
-  }
-}
 
 function renderMenu(category){
   const items=menuData[category];
@@ -370,10 +339,16 @@ menuLinks.forEach(link=>{
 });
 
 prontoBtn.addEventListener("click",()=>{
-  if(Object.keys(selectedItems).length === 0){
-    errorBox.style.display = "block";
-    return;
-  }
+ if(Object.keys(selectedItems).length === 0){
+  errorBox.classList.add("show");
+
+  setTimeout(() => {
+    errorBox.classList.remove("show");
+  }, 3000);
+
+  return;
+}
+
   const ordered=[];
   for(const[name,price]of Object.entries(selectedItems)){
     ordered.push({name,price});
@@ -383,79 +358,51 @@ prontoBtn.addEventListener("click",()=>{
 });
 
 menuLinks[0].click();
-updateProntoBtn();
+
 
 /* LOGIN MODAL JS */
 const loginBtn = document.getElementById('login-btn');
 const loginModal = document.getElementById('login-modal');
 const closeLogin = document.getElementById('close-login');
-const loginFormElem = document.getElementById("login-form");
-const registerFormElem = document.getElementById("register-form");
-const toRegister = document.getElementById("to-register");
-const toLogin = document.getElementById("to-login");
-const titleText = document.querySelector(".title");
-const socialMessage = document.querySelector(".social-message");
 
-// open loginBtn
 loginBtn.addEventListener('click', () => {
   loginModal.style.display = 'flex';
 });
 
-// close
 closeLogin.addEventListener('click', () => {
   loginModal.style.display = 'none';
 });
 
 window.addEventListener('click', (e) => {
-  if (e.target === loginModal) loginModal.style.display = 'none';
+  if (e.target === loginModal) {
+    loginModal.style.display = 'none';
+  }
 });
 
-toRegister.addEventListener('click', () => {
-  loginFormElem.style.display = "none";
-  registerFormElem.style.display = "block";
-  titleText.textContent = "Sign up";
+// SWITCH LOGIN ↔ REGISTER
+const loginForm = document.getElementById("login-form");
+const registerForm = document.getElementById("register-form");
+const toRegister = document.getElementById("to-register");
+const toLogin = document.getElementById("to-login");
+const formContainer = document.querySelector(".form-container");
+const socialMessage = document.querySelector(".social-message");
+const titleText = formContainer.querySelector(".title");
+
+// Mostra register
+toRegister.addEventListener("click", () => {
+  loginForm.style.display = "none";
+  registerForm.style.display = "block";
   socialMessage.style.display = "none";
+  titleText.innerText = "Register";
 });
 
-toLogin.addEventListener('click', () => {
-  loginFormElem.style.display = "block";
-  registerFormElem.style.display = "none";
-  titleText.textContent = "Login";
+// Torna a login
+toLogin.addEventListener("click", () => {
+  loginForm.style.display = "block";
+  registerForm.style.display = "none";
   socialMessage.style.display = "flex";
+  titleText.innerText = "Login";
 });
-// --- BOTTONE ORARIO E STATO ---
-function updateStatusButton() {
-    let now = new Date();
-
-    // ORARIO ATTUALE
-    let hours = now.getHours();
-    let minutes = now.getMinutes().toString().padStart(2, "0");
-    document.getElementById("time").innerText = `${hours.toString().padStart(2,"0")}:${minutes}`;
-
-    // DATA ATTUALE
-    let day = now.getDate();
-    let monthNames = ["Gen", "Feb", "Mar", "Apr", "Mag", "Giu",
-                      "Lug", "Ago", "Set", "Ott", "Nov", "Dic"];
-    let month = monthNames[now.getMonth()];
-    document.getElementById("date").innerText = `${day} ${month}`;
-
-    // OPEN/CLOSED
-    let openHour = 9;
-    let closeHour = 18;
-    let statusElement = document.getElementById("status");
-
-    if (hours >= openHour && hours < closeHour) {
-        statusElement.innerText = "OPEN";
-        statusElement.className = "right open";
-    } else {
-        statusElement.innerText = "CLOSED";
-        statusElement.className = "right closed";
-    }
-}
-
-// aggiorna ogni secondo
-setInterval(updateStatusButton, 1000);
-updateStatusButton();
 </script>
 </body>
 </html>
