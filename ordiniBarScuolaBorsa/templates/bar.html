@@ -369,12 +369,12 @@ h2 {
 
 #success-popup {
     position: fixed;
-    border:1px solid rgba(245, 245, 245, 0.696);
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) scale(.7);
     width: 330px;
-    background: rgba(0, 0, 0, 0.964);
+    background: rgb(0, 0, 0);
+    border: 1px solid wheat;
     border-radius: 20px;
     padding: 30px;
     text-align: center;
@@ -382,6 +382,7 @@ h2 {
     flex-direction: column;
     gap: 18px;
     z-index: 200;
+    box-shadow: 0 2px 10px rgb(0 0 0 / 0.2);
     transition: .25s ease;
     font-family: Arial, sans-serif;
 }
@@ -411,7 +412,6 @@ h2 {
     color: var(--placeholder-color, white);
 }
 
-
 #success-popup h2 {
     color:white;
     font-size: 22px;
@@ -419,12 +419,12 @@ h2 {
 }
 
 #success-popup p {
-    font-size: 14px;
+    font-size: 16px;
     margin: 0;
     line-height: 20px;
-    color:#e63946;
-    font-family: verdana;
-    font-weight: 600;
+    color:white;
+    font-family:"Montserrat",sans-serif;
+    font-weight: 500;
 }
 
 
@@ -436,10 +436,10 @@ h2 {
     border: none;
     font-size: 22px;
     cursor: pointer;
-    color: white;
+    color:  #e63946;
 }
 .option-radio:checked {
-    accent-color: #e63946;;
+    accent-color: #e63946;
 }
 </style>
 </head>
@@ -459,9 +459,9 @@ h2 {
 
     <div class="divider"></div>
 
-    <h2 style="margin-top:60px;">Feedback</h2>
+    <h2 style="margin-top:60px;">NOTE GENERALI</h2>
     <div class="divider"></div>
-    <input type="text" class="note-input" placeholder="Feedback"/>
+    <input type="text" class="note-input" placeholder="Note Generali"/>
 
     <h3 style="margin-top:40px;text-align: center;font-size: 23px;">INFO</h3>
     <div class="divider"></div>
@@ -818,16 +818,35 @@ h2 {
             input.style.setProperty("--placeholder-color", "#e63946");
         }
     }
+    function checkClasseField(input) {
+    let value = input.value.trim();
+    input.classList.remove("input-error");
+
+    // prende tutte le opzioni del datalist
+    let opzioni = Array.from(document.querySelectorAll("#lista-classi option"))
+                      .map(o => o.value);
+
+    // SE quello che ha scritto NON è una delle opzioni
+    if (!opzioni.includes(value)) {
+        input.classList.add("input-error"); // bordo rosso + shake
+        input.value = ""; // elimina quello che ha scritto
+        input.placeholder = "⚠ Scrivi la classe"; // messaggio rosso
+        input.style.setProperty("--placeholder-color", "#e63946");
+        return false;
+    }
+
+    return true;
+}
+
 
     checkNameField(nomeInput, "nome");
     checkNameField(cognomeInput, "cognome");
 
     // classe obbligatoria come prima
-    if (!classeInput.value.trim()) {
-        valid = false;
-        classeInput.classList.add("input-error");
-        classeInput.placeholder = "⚠ Scrivi la classe";
-    }
+   if (!checkClasseField(classeInput)) {
+    valid = false;
+}
+
 
     if (!valid) {
         nomeInput.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -855,3 +874,4 @@ h2 {
 });
 
 </script>
+
