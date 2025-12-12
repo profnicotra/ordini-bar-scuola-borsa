@@ -95,7 +95,9 @@ h2 {
     justify-content:center;
     align-items:center;
     gap:8px;
+    margin-right:24px;   /* 🔥 sposta tutto il blocco a destra */
 }
+
 .qty-btn {
     background: rgba(255,255,255,0.18);
     padding:4px 12px;
@@ -130,9 +132,11 @@ h2 {
 .total-price {
     font-size:25px;
     font-weight:700;
-    min-width:90px;
-    text-align:right;
+    width: 100%;          /* 🔥 prende tutto lo spazio disponibile */
+    text-align: center;
+    margin-left:px;   /* 🔥 centra il testo */
 }
+
 .checkout-btn {
     background:#e63946;
     color:white;
@@ -386,6 +390,27 @@ h2 {
     transition: .25s ease;
     font-family: Arial, sans-serif;
 }
+.clear-btn {
+    width: 90px;
+    height: 55px;
+    border-radius: 50%;
+    background: #e63946;
+    border: 2px solid white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    margin-right: 12px;
+    transition: 0.2s;
+}
+
+.clear-btn:hover {
+    background: white;
+}
+
+.clear-btn:hover svg {
+    stroke: black;
+}
 
 #success-popup.active {
     display: flex;
@@ -451,7 +476,7 @@ h2 {
 
     <div class="header-row">
         <div style="text-align:left;padding-left:8px;">Prodotto</div>
-        <div>Quantità</div>
+        <div style="margin-right:30px;">Quantità</div>
         <div style="text-align:right;">Prezzo</div>
     </div>
 
@@ -463,7 +488,7 @@ h2 {
     <div class="divider"></div>
     <input type="text" class="note-input" placeholder="Note Generali"/>
 
-    <h3 style="margin-top:40px;text-align: center;font-size: 23px;">INFO</h3>
+    <h3 style="margin-top:40px;text-align: center;font-size: 23px;margin-right: 19px;">INFO</h3>
     <div class="divider"></div>
 
     <input id="nome" type="text" class="note-input" placeholder="Nome"/>
@@ -483,8 +508,22 @@ h2 {
 </div>
 
 <div class="total-card">
+
+    <!-- 🔥 BOTTONE CESTINO -->
+    <button id="clearCartBtn" class="clear-btn">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"
+            stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+            <path d="M10 11v6"></path>
+            <path d="M14 11v6"></path>
+            <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path>
+        </svg>
+    </button>
+
     <div class="total-price" id="total">€0,00</div>
     <button class="checkout-btn" id="invia">INVIA</button>
+
 </div>
 
 <!-- overlay -->
@@ -536,7 +575,7 @@ h2 {
     </div>
 
     <h2>Ordine convalidato</h2>
-    <p>Grazie per l'ordine<br>Puoi ritirare il tuo ordine al bar della sala da 10 minuti.</p>
+    <p>Grazie per l'ordine<br>Noi ti porterà il tuo ordine da 10 minuti.</p>
 </div>
 </body>
 
@@ -547,7 +586,7 @@ h2 {
 
     let products = JSON.parse(localStorage.getItem("orderedItems")) || [];
     products = products.filter(p => p.name && !isNaN(p.price));
-
+    console.log(products)
     const productContainer = document.getElementById("product-container");
     const totalPriceEl = document.getElementById("total");
 
@@ -798,7 +837,7 @@ h2 {
         let value = input.value.trim();
 
         // regex: solo lettere, lunghezza minima 3
-        let validName = /^[A-Za-zÀ-ÖØ-öø-ÿ]{4,}$/;
+        let validName = /^[A-Za-zÀ-ÖØ-öø-ÿ]{3,}$/;
 
         input.classList.remove("input-error");
 
@@ -858,6 +897,10 @@ h2 {
         return;
     }
 
+
+    //CREATE A HTTP POST FUNCTION TOWARDS /orders with the order data. If success show success popup
+    //if failure show popup with failure to contact server.
+
     overlay.classList.add("active");
     successPopup.classList.add("active");
 });
@@ -872,6 +915,13 @@ h2 {
     renderProducts();
 
 });
+document.getElementById("clearCartBtn").addEventListener("click", () => {
+    if (confirm("Vuoi cancellare tutti i prodotti?")) {
+        localStorage.removeItem("orderedItems");
+        location.reload();
+    }
+});
+
 
 </script>
 
