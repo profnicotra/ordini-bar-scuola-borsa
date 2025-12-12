@@ -1,8 +1,8 @@
-from ordiniBarScuolaBorsa import app,render_template
-import json
+from flask import Blueprint, render_template
 
+bp = Blueprint("admin", __name__, url_prefix="/admin")
 
-@app.route('/admin')
+@bp.get("/")
 def admin():
     
 
@@ -15,7 +15,7 @@ def admin():
     #    json.dump(data)
         
 
-    print(data)
+    #print(data)
 
     return render_template("admin.html")
 #     with open("C:\\Users\\24-info-22\\Desktop\\ANNO 25-26\\Linguaggi di programmazione\\ordini-bar-scuola-borsa\\ordiniBarScuolaBorsa\\products.json", "w") as products:

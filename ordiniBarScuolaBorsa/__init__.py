@@ -1,16 +1,32 @@
-from flask import Flask, render_template
+from flask import Flask
+from ordiniBarScuolaBorsa.models import db
 
-from ordiniBarScuolaBorsa.models import db, Prodotto, Posizione, Ordine, OrdineRiga, Impostazione, is_bar_open, toggle_bar_open
+def create_app():
+    app = Flask(__name__)
+    app.config.from_pyfile("config.py")
 
-app = Flask(__name__)
-app.config.from_pyfile('config.py')
-db.init_app(app)
+    db.init_app(app)
 
-import ordiniBarScuolaBorsa.index
-import ordiniBarScuolaBorsa.menu
-import ordiniBarScuolaBorsa.queue
-import ordiniBarScuolaBorsa.orders
-import ordiniBarScuolaBorsa.admin
+    # importa e registra i blueprint
+    from ordiniBarScuolaBorsa.index import bp as index_bp
+    app.register_blueprint(index_bp)
 
-with app.app_context():
-    db.create_all()
+    # ripeti per gli altri moduli
+    from ordiniBarScuolaBorsa.menu import bp as menu_bp
+    app.register_blueprint(menu_bp)
+
+    from ordiniBarScuolaBorsa.queue import bp as queue_bp
+    app.register_blueprint(queue_bp)
+
+    from ordiniBarScuolaBorsa.orders import bp as orders_bp
+    app.register_blueprint(orders_bp)
+
+    from ordiniBarScuolaBorsa.admin import bp as admin_bp
+    app.register_blueprint(admin_bp)
+
+    with app.app_context():
+        db.create_all()
+
+    return app
+
+app = create_app()

@@ -142,7 +142,8 @@ def get_queue():
         Ordine.stato,
         Ordine.totale_euro
     ).join(OrdineRiga, Ordine.id == OrdineRiga.ordine_id) \
-     .join(Note, Note.id == OrdineRiga.id) \
+     .join(OrdineRigaNota, OrdineRigaNota.ordine_riga_id == OrdineRiga.id) \
+     .join(Note, Note.id == OrdineRigaNota.nota_id) \
      .join(Posizione, Posizione.id == Ordine.posizione_id) \
      .join(Prodotto, Prodotto.id == OrdineRiga.prodotto_id).all()
     

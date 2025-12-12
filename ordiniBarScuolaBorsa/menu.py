@@ -1,5 +1,7 @@
-from ordiniBarScuolaBorsa import app,render_template
+from flask import Blueprint, render_template
 
-@app.route('/menu')
+bp = Blueprint("menu", __name__, url_prefix="/menu")
+
+@bp.get("/")
 def menu():
-    return render_template('menu.html')
+    return render_template('bar.html')

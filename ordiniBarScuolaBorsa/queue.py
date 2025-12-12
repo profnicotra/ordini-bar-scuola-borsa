@@ -1,5 +1,7 @@
-from ordiniBarScuolaBorsa import app,render_template
+from flask import Blueprint
 
-@app.route('/queue')
+bp = Blueprint("queue", __name__, url_prefix="/queue")
+
+@bp.get("/")
 def queue():
     return render_template('queue.html')

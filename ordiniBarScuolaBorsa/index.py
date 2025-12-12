@@ -1,5 +1,7 @@
-from ordiniBarScuolaBorsa import app,render_template
+from flask import Blueprint, render_template
 
-@app.route('/')
+bp = Blueprint("index", __name__)
+
+@bp.get("/")
 def index():
     return render_template('index.html')
