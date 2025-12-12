@@ -6,13 +6,13 @@ import json
 def admin():
     
 
-    with open("C:\\Users\\24-info-22\\Desktop\\ANNO 25-26\\Linguaggi di programmazione\\ordini-bar-scuola-borsa\\ordiniBarScuolaBorsa\\products.json", "r") as products:
-        data = json.load(products)
+   # with open("C:\\Users\\24-info-22\\Desktop\\ANNO 25-26\\Linguaggi di programmazione\\ordini-bar-scuola-borsa\\ordiniBarScuolaBorsa\\products.json", "r") as products:
+   #     data = json.load(products)
 
-    data.update("id:3")
+    #data.update("id:3")
     
-    with open ("C:\\Users\\24-info-22\\Desktop\\ANNO 25-26\\Linguaggi di programmazione\\ordini-bar-scuola-borsa\\ordiniBarScuolaBorsa\\products.json", "w"):
-        json.dump(data)
+    #with open ("C:\\Users\\24-info-22\\Desktop\\ANNO 25-26\\Linguaggi di programmazione\\ordini-bar-scuola-borsa\\ordiniBarScuolaBorsa\\products.json", "w"):
+    #    json.dump(data)
         
 
     print(data)
