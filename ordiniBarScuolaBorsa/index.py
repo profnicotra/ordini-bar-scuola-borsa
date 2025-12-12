@@ -4,4 +4,7 @@ bp = Blueprint("index", __name__)
 
 @bp.get("/")
 def index():
-    return render_template('index.html')
+    data = {"title" : "Bar Scuola Borsa",
+        "open": True,   
+        "items" : []}
+    return render_template('index.html', data=data)
