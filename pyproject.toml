@@ -3,7 +3,8 @@ name = "ordiniBarScuolaBorsa"
 version = "1.0.0"
 description = "ordini del bar della scuola borsa"
 dependencies = [
-    "flask"
+    "flask",
+    "flask-sqlalchemy"
 ]
 
 [build-system]

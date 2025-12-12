@@ -165,10 +165,10 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
   </div>
   <nav class="nav-center">
     <ul>
-      <li><a href="index.html#home">Home</a></li>
-      <li><a href="index.html#chi siamo">Chi siamo</a></li>
-      <li><a href="index.html#gallery">Galleria</a></li>
-      <li><a href="index.html#contatti">Contatti</a></li>
+      <li><a href="/">Home</a></li>
+      <li><a href="/chi siamo">Chi siamo</a></li>
+      <li><a href="/gallery">Galleria</a></li>
+      <li><a href="/contatti">Contatti</a></li>
       <li><a id="login-btn">Login</a></li>
     </ul>
   </nav>
@@ -354,7 +354,7 @@ prontoBtn.addEventListener("click",()=>{
     ordered.push({name,price});
   }
   localStorage.setItem("orderedItems",JSON.stringify(ordered));
-  window.location.href="bar.html";
+  window.location.href="/menu";
 });
 
 menuLinks[0].click();
