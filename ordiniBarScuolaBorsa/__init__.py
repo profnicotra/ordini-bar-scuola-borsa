@@ -11,7 +11,6 @@ def create_app():
     from ordiniBarScuolaBorsa.index import bp as index_bp
     app.register_blueprint(index_bp)
 
-    # ripeti per gli altri moduli
     from ordiniBarScuolaBorsa.menu import bp as menu_bp
     app.register_blueprint(menu_bp)
 
@@ -23,6 +22,9 @@ def create_app():
 
     from ordiniBarScuolaBorsa.admin import bp as admin_bp
     app.register_blueprint(admin_bp)
+
+    from ordiniBarScuolaBorsa.toggle import bp as toggle_bp
+    app.register_blueprint(toggle_bp)
 
     with app.app_context():
         db.create_all()

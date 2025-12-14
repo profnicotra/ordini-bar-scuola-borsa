@@ -7,6 +7,7 @@ class Prodotto(db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String, nullable=False)
+    costo = db.column(db.Numeric(10, 2))
     prezzo_euro = db.Column(db.Numeric(10, 2))
     margine = db.Column(db.Numeric(10, 2))
     prezzo_interni = db.Column(db.Numeric(10, 2))
