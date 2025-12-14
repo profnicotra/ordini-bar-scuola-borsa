@@ -466,6 +466,56 @@ h2 {
 .option-radio:checked {
     accent-color: #e63946;
 }
+#error-box {
+    font-family: "Montserrat",sans-serif; 
+  position: fixed;
+  top: -200px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgb(26, 26, 26);
+  padding: 15px 20px;
+  border-radius: 10px;
+  color: whitesmoke;
+  font-weight: 700;
+  width: 330px;
+  transition: top 0.5s ease;
+  z-index: 9999;
+  border: 1px solid whitesmoke;
+}
+
+#error-box.show {
+  top: 40px;
+}
+
+#error-box .confirm-btn {
+  margin-top: 12px;
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  background: #e63946;
+  color: white;
+  border: none;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: verdana;
+  font-weight: 800;
+}
+#error-box .confirm-btn:hover {
+  background:white;
+  color: black;
+}
+
+#error-box .close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 20px;
+  color: #e63946;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
 </style>
 </head>
 
@@ -577,6 +627,15 @@ h2 {
     <h2>Ordine convalidato</h2>
     <p>Grazie per l'ordine<br>Noi ti porterà il tuo ordine da 10 minuti.</p>
 </div>
+<div id="error-box">
+  <strong style="font-family: verdana;font-weight:800;font-size: 17px;">Attenzione!</strong><br>
+  <p style="font-weight: 600;font-size: 15px;">Vuoi cancellare tutti gli ordini?</p>
+
+  <button class="confirm-btn">SÌ</button>
+
+  <button class="close-btn" aria-label="Close Error">&times;</button>
+</div>
+
 </body>
 
 </body>
@@ -915,11 +974,25 @@ h2 {
     renderProducts();
 
 });
-document.getElementById("clearCartBtn").addEventListener("click", () => {
-    if (confirm("Vuoi cancellare tutti i prodotti?")) {
-        localStorage.removeItem("orderedItems");
-        location.reload();
-    }
+const errorBox = document.getElementById("error-box");
+const clearBtn = document.getElementById("clearCartBtn");
+const confirmClearBtn = errorBox.querySelector(".confirm-btn");
+const closeErrorBtn = errorBox.querySelector(".close-btn");
+
+// MOSTRA ERROR BOX
+clearBtn.addEventListener("click", () => {
+    errorBox.classList.add("show");
+});
+
+// CHIUDI SENZA FARE NULLA
+closeErrorBtn.addEventListener("click", () => {
+    errorBox.classList.remove("show");
+});
+
+// CONFERMA → SVUOTA ORDINE
+confirmClearBtn.addEventListener("click", () => {
+    localStorage.removeItem("orderedItems");
+    location.reload();
 });
 
 
