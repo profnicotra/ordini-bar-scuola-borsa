@@ -5,29 +5,37 @@
     <title>Stato bar</title>
     <style>
       body {
-        font-family: sans-serif;
+        font-family:'Montserrat', sans-serif;
         display: flex;
         justify-content: center;
         align-items: center;
         height: 100vh;
         margin: 0;
-        background-color: #f5f5f5;
+        background-color: rgba(0, 0, 0, 0.922);
       }
       .big-button {
         font-size: 2rem;
         padding: 1rem 2rem;
         cursor: pointer;
-      }
+        cursor:pointer;
+        background-color:#e63946;
+      color:white;
+      border-radius: 20px;
+      font-size: 19px;
+      font-weight: 800;
+      font-family: verdana;
+      border:2px solid white;
+    }
+    .big-button:hover{
+      background-color:white;
+      color: black;
+    }
     </style>
   </head>
   <body>
     <form method="post" action="/toggle">
       <button type="submit" class="big-button">
-        {% if data.open %}
-          Chiudi bar
-        {% else %}
-          Apri bar
-        {% endif %}
+       APRI/CHIUDI
       </button>
     </form>
   </body>
