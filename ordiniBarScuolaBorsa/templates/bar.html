@@ -395,7 +395,7 @@ h2 {
     height: 55px;
     border-radius: 50%;
     background: #e63946;
-    border: 2px solid white;
+    border: 1px solid white;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -515,6 +515,85 @@ h2 {
   border: none;
   cursor: pointer;
 }
+.nav-buttons .nav-btn:hover {
+    background:white;
+    color:black;
+}
+#popup-allergeni-ingrediente {
+    width: 250px;
+    background: rgba(0,0,0,0.92);
+    padding: 24px;
+    border-radius: 22px;
+    display: none;
+    flex-direction: column;
+    gap: 15px;
+    font-weight:400;
+    font-size:14px;
+    font-family: 'Montserrat', sans-serif;
+    color: white;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(.7);
+    transition: .25s ease;
+    z-index: 30;
+    font-size:15px;
+}
+
+#popup-allergeni-ingrediente.active {
+    display: flex;
+    transform: translate(-50%, -50%) scale(1);
+}
+/* ============================= */
+/* ALLERGENI – CERCHIO TIPO RADIO */
+/* ============================= */
+
+/* ============================= */
+/* ALLERGENI – STILE OPTION CARD */
+/* ============================= */
+
+.allergene-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+}
+
+/* checkbox mascherato come radio */
+.allergene-radio {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid white;
+    background: transparent;
+    position: relative;
+    cursor: pointer;
+    background-color: rgb(236, 236, 236);
+}
+
+/* pallino interno (IDENTICO al radio) */
+.allergene-radio::after {
+    content: "";
+    width: 12px;
+    height: 12px;
+    background: #e63946;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    transition: 0.15s ease;
+    border-color: #e63946;
+   
+}
+
+/* selezionato */
+.allergene-radio:checked::after {
+    transform: translate(-50%, -50%) scale(1);
+}
+
 
 </style>
 </head>
@@ -572,7 +651,7 @@ h2 {
     </button>
 
     <div class="total-price" id="total">€0,00</div>
-    <button class="checkout-btn" id="invia">INVIA</button>
+    <button class="checkout-btn" id="invia" style="border: 1px solid white;">INVIA</button>
 
 </div>
 
@@ -596,10 +675,12 @@ h2 {
     <div class="divider"></div>
 
     <div id="ingredient-container"></div>
+    
+       <div class="nav-buttons">
+    <button class="nav-btn" id="back">Chiudi</button>
+    <button class="nav-btn" id="open-allergeni" style="border: 3px solid white;">Allergeni</button>
+</div>
 
-    <div class="nav-buttons">
-        <button class="nav-btn" id="next">Salva</button>
-        <button class="nav-btn" id="back">Chiudi</button>
     </div>
 </div>
 
@@ -613,6 +694,22 @@ h2 {
 
     <button id="popup-optioni-save">Salva</button>
 </div>
+<!-- POPUP ALLERGENI -->
+<div id="popup-allergeni-ingrediente">
+    <h2 style="text-align:center; color:white; font-family:verdana; font-weight:800; margin-bottom:1px;">Seleziona Allergeni</h2>
+    <div class="divider"></div>
+    <div id="allergeni-container" style="display:flex; flex-direction:column; gap:10px;"></div>
+    <button id="popup-allergeni-save" style="
+        background:#e63946; 
+        border:none; 
+        padding:12px; 
+        color:white; 
+        font-weight:700; 
+        border-radius:25px; 
+        cursor:pointer; 
+        margin-top:15px;">Salva</button>
+</div>
+
 <!-- POPUP SUCCESSO ORDINE -->
 <div id="success-popup">
     <button id="success-close">✕</button>
@@ -639,13 +736,12 @@ h2 {
 </body>
 
 </body>
-</html>
-><script>
-    document.addEventListener("DOMContentLoaded", function () {
+<script>
+document.addEventListener("DOMContentLoaded", function () {
 
     let products = JSON.parse(localStorage.getItem("orderedItems")) || [];
     products = products.filter(p => p.name && !isNaN(p.price));
-    console.log(products)
+
     const productContainer = document.getElementById("product-container");
     const totalPriceEl = document.getElementById("total");
 
@@ -664,6 +760,7 @@ h2 {
         if (!prod.ingredients || prod.ingredients.length === 0) {
             prod.ingredients = ingredientiProdotto[prod.name] || defaultIngredienti(prod.name);
             prod.extra = prod.extra || [];
+            prod.allergeni = prod.allergeni || [];
         }
     });
 
@@ -680,9 +777,15 @@ h2 {
         let total = 0;
 
         products.forEach((p, i) => {
-            let extraHTML = p.extra?.length
-                ? `<div class="ingredient-list">${p.extra.join(", ")}</div>`
-                : "";
+            let extraHTML = "";
+            if (p.extra?.length) {
+                extraHTML += `<div class="ingredient-list">${p.extra.join(", ")}</div>`;
+            }
+
+            if (p.allergeni?.length) {
+                // aggiunge gli allergeni sotto il prodotto nello stesso stile
+                extraHTML += `<div class="ingredient-list allergeni-list">Senza: ${p.allergeni.join(", ")}</div>`;
+            }
 
             let row = document.createElement("div");
             row.className = "product-row";
@@ -720,32 +823,25 @@ h2 {
     }
 
     /* ================================
-       FIX DEFINITIVO + / − (FUNZIONA SEMPRE)
+       QUANTITÀ + / −
     ================================= */
     productContainer.addEventListener("click", function (e) {
-    // Bottoni + e -
-   if (e.target.classList.contains("qty-btn")) {
-    const index = e.target.dataset.index;
-    const action = e.target.dataset.action;
+        if (e.target.classList.contains("qty-btn")) {
+            const index = e.target.dataset.index;
+            const action = e.target.dataset.action;
 
-    // aggiorna quantità
-   if (action === "plus") {
-    if ((products[index].qty || 1) < 10) {
-        products[index].qty = (products[index].qty || 1) + 1;
-    }
-} else {
-    products[index].qty = Math.max(1, (products[index].qty || 1) - 1);
-}
+            if (action === "plus") {
+                if ((products[index].qty || 1) < 10) {
+                    products[index].qty = (products[index].qty || 1) + 1;
+                }
+            } else {
+                products[index].qty = Math.max(1, (products[index].qty || 1) - 1);
+            }
 
-
-    // salva subito
-    localStorage.setItem("orderedItems", JSON.stringify(products));
-
-    // aggiorna il DOM senza refresh
-    renderProducts();
-    return;
-}
-
+            localStorage.setItem("orderedItems", JSON.stringify(products));
+            renderProducts();
+            return;
+        }
 
         // NOTE BUTTON
         const noteBtn = e.target.closest(".note-btn");
@@ -792,7 +888,6 @@ h2 {
         overlay.classList.add("active");
 
         ingredientContainer.innerHTML = "";
-
         const prod = products[currentProductIndex];
 
         prod.ingredients.forEach(ing => {
@@ -817,7 +912,6 @@ h2 {
     ================================= */
     const popupOpzioni = document.getElementById("popup-optioni-ingrediente");
     const labelPlus = document.getElementById("labelPlus");
-
     let lastSelectedOption = null;
 
     function openPopupOpzioni(prod, ing) {
@@ -848,7 +942,6 @@ h2 {
 
     document.getElementById("popup-optioni-save").addEventListener("click", () => {
         const scelta = document.querySelector('input[name="opzioneIngrediente"]:checked');
-
         const prod = currentIngredient.prod;
         const ing = currentIngredient.ing;
 
@@ -865,6 +958,45 @@ h2 {
     });
 
     /* ================================
+       POPUP ALLERGENI
+    ================================= */
+    const popupAllergeni = document.getElementById("popup-allergeni-ingrediente");
+    const allergeniContainer = document.getElementById("allergeni-container");
+
+    function openPopupAllergeni(prod) {
+        allergeniContainer.innerHTML = "";
+        prod.allergeni = prod.allergeni || [];
+
+        prod.ingredients.forEach(ing => {
+            const row = document.createElement("div");
+            row.className = "allergene-row";
+
+            row.innerHTML = `
+                <label class="allergene-row">
+                    <input type="checkbox" class="allergene-radio" value="${ing}" ${prod.allergeni.includes(ing) ? "checked" : ""}>
+                    <span> Senza ${ing}</span>
+                </label>
+            `;
+
+            allergeniContainer.appendChild(row);
+        });
+
+        popupAllergeni.classList.add("active");
+        overlay.classList.add("active");
+    }
+
+    document.getElementById("popup-allergeni-save").addEventListener("click", () => {
+        const prod = products[currentProductIndex];
+        prod.allergeni = Array.from(allergeniContainer.querySelectorAll("input:checked"))
+                               .map(cb => cb.value);
+
+        localStorage.setItem("orderedItems", JSON.stringify(products));
+        popupAllergeni.classList.remove("active");
+        overlay.classList.remove("active");
+        renderProducts();
+    });
+
+    /* ================================
        CHIUDI NOTE
     ================================= */
     document.getElementById("back").addEventListener("click", () => {
@@ -872,97 +1004,69 @@ h2 {
         overlay.classList.remove("active");
     });
 
-    document.getElementById("next").addEventListener("click", () => {
-        localStorage.setItem("orderedItems", JSON.stringify(products));
-        renderProducts();
-        popupIngredienti.classList.remove("active");
-        overlay.classList.remove("active");
+    document.getElementById("open-allergeni").addEventListener("click", () => {
+        const prod = products[currentProductIndex];
+        openPopupAllergeni(prod);
     });
 
     /* ================================
-       VALIDAZIONE
+       VALIDAZIONE E INVIO ORDINE
     ================================= */
     const btnInvia = document.getElementById("invia");
     const nomeInput = document.getElementById("nome");
     const cognomeInput = document.getElementById("cognome");
     const classeInput = document.getElementById("classe");
-
     const successPopup = document.getElementById("success-popup");
 
-   btnInvia.addEventListener("click", () => {
-    let valid = true;
+    btnInvia.addEventListener("click", () => {
+        let valid = true;
 
-    function checkNameField(input, label) {
-        let value = input.value.trim();
+        function checkNameField(input, label) {
+            let value = input.value.trim();
+            let validName = /^[A-Za-zÀ-ÖØ-öø-ÿ]{3,}$/;
 
-        // regex: solo lettere, lunghezza minima 3
-        let validName = /^[A-Za-zÀ-ÖØ-öø-ÿ]{3,}$/;
-
-        input.classList.remove("input-error");
-
-        if (!validName.test(value)) {
-            valid = false;
-
-            // shake + bordo rosso
-            input.classList.add("input-error");
-
-            // cancella contenuto
-            input.value = "";
-
-            // placeholder rosso
-            input.placeholder = `⚠ Scrivi il ${label}`;
-
-            // forza colore placeholder rosso
-            input.style.setProperty("--placeholder-color", "#e63946");
+            input.classList.remove("input-error");
+            if (!validName.test(value)) {
+                valid = false;
+                input.classList.add("input-error");
+                input.value = "";
+                input.placeholder = `⚠ Scrivi il ${label}`;
+                input.style.setProperty("--placeholder-color", "#e63946");
+            }
         }
-    }
-    function checkClasseField(input) {
-    let value = input.value.trim();
-    input.classList.remove("input-error");
 
-    // prende tutte le opzioni del datalist
-    let opzioni = Array.from(document.querySelectorAll("#lista-classi option"))
-                      .map(o => o.value);
+        function checkClasseField(input) {
+            let value = input.value.trim();
+            let opzioni = Array.from(document.querySelectorAll("#lista-classi option")).map(o => o.value);
 
-    // SE quello che ha scritto NON è una delle opzioni
-    if (!opzioni.includes(value)) {
-        input.classList.add("input-error"); // bordo rosso + shake
-        input.value = ""; // elimina quello che ha scritto
-        input.placeholder = "⚠ Scrivi la classe"; // messaggio rosso
-        input.style.setProperty("--placeholder-color", "#e63946");
-        return false;
-    }
+            if (!opzioni.includes(value)) {
+                input.classList.add("input-error");
+                input.value = "";
+                input.placeholder = "⚠ Scrivi la classe";
+                input.style.setProperty("--placeholder-color", "#e63946");
+                return false;
+            }
+            return true;
+        }
 
-    return true;
-}
+        checkNameField(nomeInput, "nome");
+        checkNameField(cognomeInput, "cognome");
+        if (!checkClasseField(classeInput)) valid = false;
 
+        if (!valid) {
+            nomeInput.scrollIntoView({ behavior: "smooth", block: "center" });
+            return;
+        }
 
-    checkNameField(nomeInput, "nome");
-    checkNameField(cognomeInput, "cognome");
+        if (products.length === 0) {
+            alert("Devi ordinare almeno un prodotto!");
+            return;
+        }
 
-    // classe obbligatoria come prima
-   if (!checkClasseField(classeInput)) {
-    valid = false;
-}
+        overlay.classList.add("active");
+        successPopup.classList.add("active");
+    });
 
-
-    if (!valid) {
-        nomeInput.scrollIntoView({ behavior: "smooth", block: "center" });
-        return;
-    }
-
-    if (products.length === 0) {
-        alert("Devi ordinare almeno un prodotto!");
-        return;
-    }
-
-
-    //CREATE A HTTP POST FUNCTION TOWARDS /orders with the order data. If success show success popup
-    //if failure show popup with failure to contact server.
-
-    overlay.classList.add("active");
-    successPopup.classList.add("active");
-});
     document.getElementById("success-close").addEventListener("click", () => {
         localStorage.removeItem("orderedItems");
         location.reload();
@@ -973,28 +1077,21 @@ h2 {
     ================================= */
     renderProducts();
 
+    /* ================================
+       SVUOTA ORDINE
+    ================================= */
+    const errorBox = document.getElementById("error-box");
+    const clearBtn = document.getElementById("clearCartBtn");
+    const confirmClearBtn = errorBox.querySelector(".confirm-btn");
+    const closeErrorBtn = errorBox.querySelector(".close-btn");
+
+    clearBtn.addEventListener("click", () => errorBox.classList.add("show"));
+    closeErrorBtn.addEventListener("click", () => errorBox.classList.remove("show"));
+    confirmClearBtn.addEventListener("click", () => {
+        localStorage.removeItem("orderedItems");
+        location.reload();
+    });
+
 });
-const errorBox = document.getElementById("error-box");
-const clearBtn = document.getElementById("clearCartBtn");
-const confirmClearBtn = errorBox.querySelector(".confirm-btn");
-const closeErrorBtn = errorBox.querySelector(".close-btn");
-
-// MOSTRA ERROR BOX
-clearBtn.addEventListener("click", () => {
-    errorBox.classList.add("show");
-});
-
-// CHIUDI SENZA FARE NULLA
-closeErrorBtn.addEventListener("click", () => {
-    errorBox.classList.remove("show");
-});
-
-// CONFERMA → SVUOTA ORDINE
-confirmClearBtn.addEventListener("click", () => {
-    localStorage.removeItem("orderedItems");
-    location.reload();
-});
-
-
 </script>
-
+</html>
