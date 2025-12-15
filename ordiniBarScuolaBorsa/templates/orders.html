@@ -338,24 +338,54 @@ menuLinks.forEach(link=>{
   });
 });
 
-prontoBtn.addEventListener("click",()=>{
- if(Object.keys(selectedItems).length === 0){
-  errorBox.classList.add("show");
+let currentCategory = "share"; // default CIBI
 
-  setTimeout(() => {
-    errorBox.classList.remove("show");
-  }, 3000);
-
-  return;
-}
-
-  const ordered=[];
-  for(const[name,price]of Object.entries(selectedItems)){
-    ordered.push({name,price});
-  }
-  localStorage.setItem("orderedItems",JSON.stringify(ordered));
-  window.location.href="/menu";
+menuLinks.forEach(link => {
+  link.addEventListener("click", () => {
+    menuLinks.forEach(btn => btn.classList.remove("active"));
+    link.classList.add("active");
+    currentCategory = link.dataset.menu; // aggiorna categoria attiva
+    renderMenu(currentCategory);
+  });
 });
+
+prontoBtn.addEventListener("click", () => {
+  if (Object.keys(selectedItems).length === 0) {
+    // Aggiorna il messaggio in base alla categoria
+    let tipo = "";
+    switch (currentCategory) {
+      case "share":
+        tipo = "piatto di cibo";
+        break;
+      case "sustain":
+        tipo = "bevanda";
+        break;
+      case "indulge":
+        tipo = "dolce";
+        break;
+      default:
+        tipo = "prodotto";
+    }
+
+    errorBox.querySelector("p").innerHTML = `Oh no!<br>Devi selezionare almeno un ${tipo}`;
+    errorBox.classList.add("show");
+
+    setTimeout(() => {
+      errorBox.classList.remove("show");
+    }, 3000);
+
+    return;
+  }
+
+  // Se ci sono selezioni, salva ordine e vai alla pagina menu
+  const ordered = [];
+  for (const [name, price] of Object.entries(selectedItems)) {
+    ordered.push({ name, price });
+  }
+  localStorage.setItem("orderedItems", JSON.stringify(ordered));
+  window.location.href = "/menu";
+});
+
 
 menuLinks[0].click();
 
