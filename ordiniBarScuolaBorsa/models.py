@@ -115,8 +115,8 @@ def get_products():
         NoteGruppo.esclusivo,
         NoteGruppo.obbligatorio_default,
         Note.nome.label('nota')
-    ).join(NoteGruppo, Prodotto.id == NoteGruppo.id_prodotto) \
-     .join(Note, Note.id_gruppo == NoteGruppo.id) \
+    ).join(NoteGruppo, Prodotto.id == NoteGruppo.id_prodotto, isouter=True) \
+     .join(Note, NoteGruppo.id == Note.id_gruppo, isouter=True) \
      .filter(Prodotto.attivo == True).all()
     
     for item in query:
