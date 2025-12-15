@@ -1,4 +1,4 @@
- * { margin: 0; padding: 0; box-sizing: border-box; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; }
 
     body {
@@ -447,7 +447,6 @@
 
 /* REGISTER FORM */
 #register-form { margin-top: 1rem; }
-
 /*css del pagina orders*/
 * { margin:0;padding:0;box-sizing:border-box; }
 body { font-family:"Montserrat",sans-serif; background-color:black; color:white; }
@@ -985,7 +984,7 @@ h2 {
     height: 55px;
     border-radius: 50%;
     background: #e63946;
-    border: 2px solid white;
+    border: 1px solid white;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1056,3 +1055,182 @@ h2 {
 .option-radio:checked {
     accent-color: #e63946;
 }
+#error-box {
+    font-family: "Montserrat",sans-serif; 
+  position: fixed;
+  top: -200px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgb(26, 26, 26);
+  padding: 15px 20px;
+  border-radius: 10px;
+  color: whitesmoke;
+  font-weight: 700;
+  width: 330px;
+  transition: top 0.5s ease;
+  z-index: 9999;
+  border: 1px solid whitesmoke;
+}
+
+#error-box.show {
+  top: 40px;
+}
+
+#error-box .confirm-btn {
+  margin-top: 12px;
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  background: #e63946;
+  color: white;
+  border: none;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: verdana;
+  font-weight: 800;
+}
+#error-box .confirm-btn:hover {
+  background:white;
+  color: black;
+}
+
+#error-box .close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 20px;
+  color: #e63946;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.nav-buttons .nav-btn:hover {
+    background:white;
+    color:black;
+}
+#popup-allergeni-ingrediente {
+    width: 250px;
+    background: rgba(0,0,0,0.92);
+    padding: 24px;
+    border-radius: 22px;
+    display: none;
+    flex-direction: column;
+    gap: 15px;
+    font-weight:400;
+    font-size:14px;
+    font-family: 'Montserrat', sans-serif;
+    color: white;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(.7);
+    transition: .25s ease;
+    z-index: 30;
+    font-size:15px;
+}
+
+#popup-allergeni-ingrediente.active {
+    display: flex;
+    transform: translate(-50%, -50%) scale(1);
+}
+/* ============================= */
+/* ALLERGENI – CERCHIO TIPO RADIO */
+/* ============================= */
+
+/* ============================= */
+/* ALLERGENI – STILE OPTION CARD */
+/* ============================= */
+
+.allergene-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+}
+
+/* checkbox mascherato come radio */
+.allergene-radio {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid white;
+    background: transparent;
+    position: relative;
+    cursor: pointer;
+    background-color: rgb(236, 236, 236);
+}
+
+/* pallino interno (IDENTICO al radio) */
+.allergene-radio::after {
+    content: "";
+    width: 12px;
+    height: 12px;
+    background: #e63946;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    transition: 0.15s ease;
+    border-color: #e63946;
+   
+}
+
+/* selezionato */
+.allergene-radio:checked::after {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* css del toggle.html */
+ body {
+        font-family:'Montserrat', sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 150vh;
+        margin: 0;
+        position: relative;
+        overflow: hidden;
+      }
+
+      /* Sfondo con overlay */
+      body::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url('https://raw.githubusercontent.com/profnicotra/ordini-bar-scuola-borsa/main/ordiniBarScuolaBorsa/static/open%20o%20close.jpg') center/cover no-repeat;
+        z-index: 0; /* sotto il contenuto */
+        filter: brightness(0.5); /* rende l'immagine più scura */
+      }
+
+      /* Contenuto sopra l'overlay */
+      .content {
+        position: relative;
+        z-index: 5; /* sopra il background scuro */
+      }
+
+      .big-button {
+        width:260px;
+        font-size: 2rem;
+        padding: 1rem 2rem;
+        cursor: pointer;
+        background-color:#e63946;
+        color:white;
+        border-radius: 20px;
+        font-size: 19px;
+        font-weight: 800;
+        font-family: verdana;
+        border:2px solid white;
+        margin-bottom:300px;
+        letter-spacing:2px;
+      }
+
+      .big-button:hover{
+        background-color:white;
+        color: black;
+      }
