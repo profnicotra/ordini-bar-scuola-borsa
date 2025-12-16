@@ -1,68 +1,71 @@
 <!doctype html>
 <html lang="it">
-  <head>
-    <meta charset="utf-8">
-    <title>Stato bar</title>
-    <style>
-      body {
-        font-family:'Montserrat', sans-serif;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 150vh;
-        margin: 0;
-        position: relative;
-        overflow: hidden;
-      }
+<head>
+<meta charset="utf-8">
+<title>Stato bar</title>
 
-      /* Sfondo con overlay */
-      body::after {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: url('https://raw.githubusercontent.com/profnicotra/ordini-bar-scuola-borsa/main/ordiniBarScuolaBorsa/static/open%20o%20close.jpg') center/cover no-repeat;
-        z-index: 0; /* sotto il contenuto */
-        filter: brightness(0.5); /* rende l'immagine più scura */
-      }
+<style>
+body {
+  font-family: 'Montserrat', sans-serif;
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
 
-      /* Contenuto sopra l'overlay */
-      .content {
-        position: relative;
-        z-index: 5; /* sopra il background scuro */
-      }
+/* sfondo */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: url('https://raw.githubusercontent.com/profnicotra/ordini-bar-scuola-borsa/main/ordiniBarScuolaBorsa/static/open%20o%20close.jpg') center/cover no-repeat;
+  filter: brightness(0.5);
+  z-index: -1;
+}
 
-      .big-button {
-        width:260px;
-        font-size: 2rem;
-        padding: 1rem 2rem;
-        cursor: pointer;
-        background-color:#e63946;
-        color:white;
-        border-radius: 20px;
-        font-size: 19px;
-        font-weight: 800;
-        font-family: verdana;
-        border:2px solid white;
-        margin-bottom:300px;
-        letter-spacing:2px;
-      }
+/* contenitore */
+.content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(4px);
+  background: rgba(30, 30, 30, 0.553);
+}
 
-      .big-button:hover{
-        background-color:white;
-        color: black;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="content">
-      <form method="post" action="/toggle">
-        <button type="submit" class="big-button">
-          APERTO/CHIUSO
-        </button>
-      </form>
-    </div>
-  </body>
+/* bottone */
+.big-button {
+  width: 270px;
+  height:65px;
+  padding: 1rem;
+  font-size: 18px;
+  font-weight: 800;
+  font-family: Verdana;
+  letter-spacing: 2px;
+  background-color: #e63946;
+  color: white;
+  border-radius: 20px;
+  border: 2px solid white;
+  cursor: pointer;
+}
+
+.big-button:hover {
+  background-color: white;
+  color: black;
+}
+</style>
+</head>
+
+<body>
+<div class="content">
+  <form method="post" action="/toggle">
+    <button type="submit" class="big-button">
+      APERTO / CHIUSO
+    </button>
+  </form>
+</div>
+</body>
 </html>
