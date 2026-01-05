@@ -1,4 +1,4 @@
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+     * { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; }
 
     body {
@@ -446,7 +446,7 @@
 .social-message .message { padding-left: 0.75rem; padding-right: 0.75rem; font-size: 0.875rem; line-height: 1.25rem; color: rgba(156, 163, 175, 1); }
 
 /* REGISTER FORM */
-#register-form { margin-top: 1rem; }
+#register-form { margin-top: 1rem; } 
 /*css del pagina orders*/
 * { margin:0;padding:0;box-sizing:border-box; }
 body { font-family:"Montserrat",sans-serif; background-color:black; color:white; }
@@ -839,7 +839,7 @@ h2 {
 /* popup ingredienti */
 #popup-ingredienti {
     width: 300px;
-    background: rgba(0, 0, 0, 0.873);
+    background: rgba(0, 0, 0, 0.934);
     padding:20px;
     border-radius:30px;
     display:none;
@@ -1182,55 +1182,277 @@ h2 {
 .allergene-radio:checked::after {
     transform: translate(-50%, -50%) scale(1);
 }
+.note-top-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
 
-/* css del toggle.html */
- body {
-        font-family:'Montserrat', sans-serif;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 150vh;
-        margin: 0;
-        position: relative;
-        overflow: hidden;
-      }
+.note-action-btn {
+    background: #e63946;
+    border: 2px solid white;
+    color: white;
+    padding: 8px 18px;
+    border-radius: 20px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: 0.2s;
+    font-size: 14px;
+}
 
-      /* Sfondo con overlay */
-      body::after {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: url('https://raw.githubusercontent.com/profnicotra/ordini-bar-scuola-borsa/main/ordiniBarScuolaBorsa/static/open%20o%20close.jpg') center/cover no-repeat;
-        z-index: 0; /* sotto il contenuto */
-        filter: brightness(0.5); /* rende l'immagine più scura */
-      }
+.note-action-btn:hover {
+    background: white;
+    color: black;
+}
+#popup-ingredienti .divider {
+    margin-top: 0px;     /* avvicina al blocco bottoni */
+    margin-bottom: -4px;  /* niente spazio sotto */
+}
+#popup-extra-ingredienti {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0,0,0,0.92);
+    padding: 20px;
+    border-radius: 15px;
+    z-index: 1001;
+    width: 300px;
+    color: white;
+}
 
-      /* Contenuto sopra l'overlay */
-      .content {
-        position: relative;
-        z-index: 5; /* sopra il background scuro */
-      }
+#popup-extra-ingredienti.active {
+    display: flex;
+    flex-direction: column;
+}
 
-      .big-button {
-        width:260px;
-        font-size: 2rem;
-        padding: 1rem 2rem;
-        cursor: pointer;
-        background-color:#e63946;
-        color:white;
-        border-radius: 20px;
-        font-size: 19px;
-        font-weight: 800;
-        font-family: verdana;
-        border:2px solid white;
-        margin-bottom:300px;
-        letter-spacing:2px;
-      }
+#extra-ingredienti-container label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.ingredient-row {
+    margin-top: 10px; /* distanza sopra ogni ingrediente */
+}
+#popup-allergeni-ingrediente input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid white;
+    background-color: transparent;
+    cursor: pointer;
+    position: relative;
+}
 
-      .big-button:hover{
-        background-color:white;
-        color: black;
-      }
+#popup-allergeni-ingrediente input[type="checkbox"]:checked::after {
+    content: "";
+    width: 16px;
+    height: 16px;
+    background: #e63946;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+/* ==========================
+   Checkbox extra stile card
+========================== */
+
+.extra-card-label input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #d9d4cc;
+    border-radius: 50%;
+    display: inline-block;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.2s, border 0.2s;
+}
+
+.extra-card-label input[type="checkbox"]:checked {
+    background-color: #e63946; /* colore rosso come allergeni */
+   
+}
+
+.extra-card-label input[type="checkbox"]:checked::after {
+    content: '';
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background:transparent;
+}
+
+.extra-card-label span {
+    font-size: 16px;
+    color:white;
+}
+/*css del pagina toggle.html*/
+body {
+  font-family: 'Montserrat', sans-serif;
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+/* sfondo */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: url('https://raw.githubusercontent.com/profnicotra/ordini-bar-scuola-borsa/main/ordiniBarScuolaBorsa/static/open%20o%20close.jpg') center/cover no-repeat;
+  filter: brightness(0.5);
+  z-index: -1;
+}
+
+/* contenitore */
+.content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(4px);
+  background: rgba(30, 30, 30, 0.553);
+}
+
+/* bottone */
+.big-button {
+  width: 270px;
+  height:65px;
+  padding: 1rem;
+  font-size: 18px;
+  font-weight: 800;
+  font-family: Verdana;
+  letter-spacing: 2px;
+  background-color: #e63946;
+  color: white;
+  border-radius: 20px;
+  border: 2px solid white;
+  cursor: pointer;
+}
+
+.big-button:hover {
+  background-color: white;
+  color: black;
+}
+/* css della pagina queue.html */
+body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Montserrat', sans-serif;
+      background-color: #111111;
+      color: #f5f5f5;
+    }
+    header {
+      background-color: #161616;
+      padding: 20px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 3px solid #e63946;
+    }
+    header h1 {
+      font-size: 28px;
+      font-weight: 800;
+      margin: 0;
+    }
+    main {
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+    .order-card {
+      background-color: rgba(0, 0, 0, 0.823);
+      border-left: 7px solid #e63946;
+      border-radius: 8px;
+      padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    }
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .order-title {
+      font-size: 20px;
+      font-weight: 700;
+    }
+    .order-status {
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+    }
+    /* Status colors */
+    .status-nuovo {
+      background-color:#e63946;
+      color: #0d0d0d;
+    }
+    .status-in-preparazione {
+      background-color: #e9c46a;
+      color: #0d0d0d;
+    }
+    .status-pronto {
+      background-color:rgba(2, 87, 2, 0.988);
+      color: #000000;
+    }
+    .status-consegnato {
+      background-color: #2a9d8f;
+      color: #0d0d0d;
+    }
+    .status-annullato {
+      background-color: #e63946;
+      color: #ffffff;
+    }
+    .customer-info {
+      margin-bottom: 8px;
+      font-size: 14px;
+      opacity: 0.85;
+    }
+    .order-items {
+      border-top: 1px solid #333;
+      margin-top: 10px;
+      padding-top: 10px1;
+    }
+    .item {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 6px;
+      font-size: 15px;
+    }
+    .item-name {
+      display: flex;
+      flex-direction: column;
+      padding-top: 7px;
+    }
+    .item-note {
+      font-size: 12px;
+      color: #e63946;
+      margin-top: 2px;
+    }
+    .order-footer {
+      border-top: 1px solid #333;
+      margin-top: 14px;
+      padding-top: 8px;
+      display: flex;
+      justify-content: space-between;
+      font-weight: 600;
+    }
