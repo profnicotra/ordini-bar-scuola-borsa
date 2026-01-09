@@ -7,6 +7,7 @@ class Prodotto(db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String, nullable=False)
+    costo = db.column(db.Numeric(10, 2))
     prezzo_euro = db.Column(db.Numeric(10, 2))
     margine = db.Column(db.Numeric(10, 2))
     prezzo_interni = db.Column(db.Numeric(10, 2))
@@ -114,8 +115,8 @@ def get_products():
         NoteGruppo.esclusivo,
         NoteGruppo.obbligatorio_default,
         Note.nome.label('nota')
-    ).join(NoteGruppo, Prodotto.id == NoteGruppo.id_prodotto) \
-     .join(Note, Note.id_gruppo == NoteGruppo.id) \
+    ).join(NoteGruppo, Prodotto.id == NoteGruppo.id_prodotto, isouter=True) \
+     .join(Note, NoteGruppo.id == Note.id_gruppo, isouter=True) \
      .filter(Prodotto.attivo == True).all()
     
     for item in query:
@@ -142,7 +143,8 @@ def get_queue():
         Ordine.stato,
         Ordine.totale_euro
     ).join(OrdineRiga, Ordine.id == OrdineRiga.ordine_id) \
-     .join(Note, Note.id == OrdineRiga.id) \
+     .join(OrdineRigaNota, OrdineRigaNota.ordine_riga_id == OrdineRiga.id) \
+     .join(Note, Note.id == OrdineRigaNota.nota_id) \
      .join(Posizione, Posizione.id == Ordine.posizione_id) \
      .join(Prodotto, Prodotto.id == OrdineRiga.prodotto_id).all()
     

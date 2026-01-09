@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Home - Scuola Borsa</title>
+  <title>Bar Scuola Borsa</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -37,7 +37,7 @@
     .navbar.hidden { top: -100px; }
 
     .logo-left { position: absolute; left: 50px; }
-    .logo-left img { width: 115px; }
+    .logo-left img { width: 120px; }
 
     .nav-center ul { display: flex; gap: 40px; list-style: none; }
     .nav-center a {
@@ -345,6 +345,105 @@
   padding: 0.75rem 1rem;
   color: whitesmoke;
 }
+/* STILE BOTTONE ORARIO E STATO */
+#status-button {
+    width: 200px;
+    padding: 12px;
+    border: none;
+    border-radius: 20px;
+    background:rgba(22, 22, 22, 0.929);
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    margin-left: 25px;
+    
+}
+
+#status-button .content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#status-button .left {
+    text-align: left;
+}
+
+#status-button .right {
+    font-weight: bold;
+    font-size: 20px;
+}
+
+#status-button .open {
+    color: green;
+}
+
+#status-button .closed {
+    color:  #e63946;
+}
+/* OVERLAY SCURO */
+#closed-overlay {
+  display: none; /* nascosto finché non serve */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(3px);
+  background: rgba(0, 0, 0, 0.65);
+  z-index: 99999;
+
+  justify-content: center;
+  align-items: center;
+}
+
+
+/* POPUP CENTRATO */
+#closed-popup {
+  width: 360px;
+  padding: 1.5rem;
+  background-color: rgba(6, 6, 6, 0.89);;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0px 15px 40px rgba(0,0,0,0.4);
+}
+
+/* Testi */
+#closed-popup .title {
+  font-weight: 800;
+  font-size: 20px;
+  color: whitesmoke;
+}
+
+#closed-popup .description {
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  line-height: 1.4rem;
+  color: white;
+}
+
+/* Pulsante OK */
+#closed-popup .accept {
+  margin-top: 1.2rem;
+  font-size: 0.85rem;
+  background-color: #e63946;
+  font-weight: 700;
+  border-radius: 8px;
+  color: white;
+  padding: 0.7rem 1.4rem;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+#closed-popup .accept:hover {
+  background-color: white;
+  color: black;
+}
+
+
 .input-group input:focus { border-color: white; }
 
 .forgot { display: flex; justify-content: flex-end; font-size: 0.75rem; line-height: 1rem; color: rgba(156, 163, 175,1); margin: 8px 0 14px 0; }
@@ -369,9 +468,22 @@
     <img src="https://raw.githubusercontent.com/Rashmika274/ordini-bar-scuola-borsa/main/static/logo.png" alt="Logo">
   </div>
 
+  <!-- BOTTONE ORARIO E STATO -->
+  <div id="status-button-container" style="position:absolute; left:180px; top:50%; transform:translateY(-50%);">
+    <button id="status-button">
+        <div class="content">
+            <div class="left">
+                <div id="time"></div>
+                <div id="date"></div>
+            </div>
+            <div class="right" id="status"></div>
+        </div>
+    </button>
+  </div>
+
   <nav class="nav-center">
     <ul>
-      <li><a href="#">Home</a></li>
+      <li><a href="/">Home</a></li>
       <li><a href="#chi-siamo">Chi siamo</a></li>
       <li><a href="#gallery">Galleria</a></li>
       <li><a href="#contatti">Contatti</a></li>
@@ -386,12 +498,13 @@
   </div>
 </header>
 
+
 <section class="hero" id="hero">
   <div class="hero-content">
     <h2>SCUOLA BORSA</h2>
     <h1>SALA BAR</h1>
     <div class="buttons">
-      <a href="orders M.html" class="btn red">Ordina Ora</a>
+      <a href="/orders" class="btn red">Ordina Ora</a>
     </div>
   </div>
 </section>
@@ -541,6 +654,20 @@
     </div>
   </div>
 </div>
+<!-- POPUP ORARIO CHIUSO (OVERLAY + CENTRATO) -->
+<div id="closed-overlay">
+    <div id="closed-popup" class="cookie-card">
+        <span class="title">⚠️ Servizio non disponibile</span>
+        <p class="description">
+            Il bar è attualmente <strong>CHIUSO</strong>.<br>
+            Gli servizi non sono più disponibile <b>.
+        </p>
+        <div class="actions" style="justify-content: center;">
+            <button class="accept" id="close-popup-btn" style="font-weight:800;">OK</button>
+        </div>
+    </div>
+</div>
+
 <script>
   const navbar = document.getElementById("navbar"); 
   const hero = document.getElementById("hero");
@@ -601,6 +728,67 @@ toLogin.addEventListener("click", () => {
   socialMessage.style.display = "flex";
   titleText.innerText = "Login";
 });
+// --- BOTTONE ORARIO E STATO ---
+function updateStatusButton() {
+    let now = new Date();
+
+    // ORARIO ATTUALE
+    let hours = now.getHours();
+    let minutes = now.getMinutes().toString().padStart(2, "0");
+    document.getElementById("time").innerText = `${hours.toString().padStart(2,"0")}:${minutes}`;
+
+    // DATA ATTUALE
+    let day = now.getDate();
+    let monthNames = ["Gen", "Feb", "Mar", "Apr", "Mag", "Giu",
+                      "Lug", "Ago", "Set", "Ott", "Nov", "Dic"];
+    let month = monthNames[now.getMonth()];
+    document.getElementById("date").innerText = `${day} ${month}`;
+
+    // OPEN/CLOSED
+    let openHour = 8;
+    let closeHour = 18;
+    let statusElement = document.getElementById("status");
+
+    if (hours >= openHour && hours < closeHour) {
+        statusElement.innerText = "OPEN";
+        statusElement.className = "right open";
+    } else {
+        statusElement.innerText = "CLOSED";
+        statusElement.className = "right closed";
+    }
+}
+
+// aggiorna ogni secondo
+setInterval(updateStatusButton, 1000);
+updateStatusButton();
+// --- POPUP CENTRALE SE FUORI ORARIO ---
+function checkClosedPopup() {
+    let now = new Date();
+    let hours = now.getHours();
+
+    let openHour = 8;
+    let closeHour = 18;
+
+    if (hours < openHour || hours >= closeHour) {
+        // mostra overlay + popup
+        document.getElementById("closed-overlay").style.display = "flex";
+
+        // blocca scroll
+        document.body.style.overflow = "hidden";
+    }
+}
+
+// pulsante OK chiude il popup
+document.getElementById("close-popup-btn").addEventListener("click", () => {
+    // Reindirizza l’utente fuori dal sito
+    window.location.href = "https://www.google.com";  
+});
+
+// mostra popup appena caricata pagina
+checkClosedPopup();
+
+
+
 </script>
 
 </body>

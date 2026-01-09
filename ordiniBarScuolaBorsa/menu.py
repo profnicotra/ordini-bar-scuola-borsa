@@ -1,9 +1,13 @@
-from ordiniBarScuolaBorsa import app,render_template
-import json
+from flask import Blueprint, render_template
+from ordiniBarScuolaBorsa.models import get_products
 
-@app.route('/menu')
+bp = Blueprint("menu", __name__, url_prefix="/menu")
+
+@bp.get("/")
 def menu():
-    with open ("./menu.json","r") as data:
-        productMenu=json.read(data)
-    print(productMenu)
-    return render_template('menu.html')
+    a = get_products()
+    print (a)
+    data = {"title" : "Menu Bar Scuola Borsa",
+            "open": True,   
+            "items" : []}
+    return render_template('bar.html', data=data)

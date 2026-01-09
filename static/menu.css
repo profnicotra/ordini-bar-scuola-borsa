@@ -1,0 +1,188 @@
+/* Menu page styles extracted */
+* { margin:0;padding:0;box-sizing:border-box; }
+body { font-family:"Montserrat",sans-serif; background-color:black; color:white; }
+
+.menu-hero{
+  min-height:100vh;
+  background-image:url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrvMAfCqsehmJvRUBbDTG0xeR6rlCMzEccNg&s");
+  background-size:cover;
+  background-position:center;
+  position:relative;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  text-align:center;
+  padding-top:180px;
+}
+
+.menu-hero::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(31, 30, 30, 0.505);
+    z-index: 1;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 50px;
+  padding: 20px 50px;
+  background-color: rgba(22, 22, 22, 0.784);
+  position: fixed;
+  width: 100%;
+  top: 0;
+  height: 150px;
+  z-index: 10;
+  transition: top 0.6s ease;
+}
+
+.navbar.hidden { top: -100px; }
+
+.logo-left { position: absolute; left: 50px; }
+.logo-left img { width: 115px; }
+
+.nav-center ul { display: flex; gap: 40px; list-style: none; }
+.nav-center a {
+  color: white;
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 18px;
+  transition: 0.3s;
+  cursor: pointer;
+}
+.nav-center a:hover { color:rgb(79, 79, 79); }
+
+.social-icons {
+  position: absolute;
+  right: 50px;
+  display: flex;
+  gap: 30px;
+}
+
+.social-icons a {
+  width: 35px;
+  height: 35px;
+  border: 3px solid white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  color: white;
+  font-size: 18px;
+  transition: 0.3s ease;
+  text-decoration: none;
+}
+.social-icons a:hover { background-color: white; color: black; }
+
+.menu-hero::before{content:"";position:absolute;inset:0;background:rgba(0,0,0,0.55);backdrop-filter:blur(3px);z-index:1;}
+
+.menu-content{position:relative;z-index:3;width:700px;text-align:center;}
+
+.menu-title-wrapper{
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  gap:12px;
+  margin-bottom:15px;
+}
+
+.menu-subtitle{font-size:45px;font-weight:300;margin:0;}
+.yellow-line{width:60px;height:4px;background-color:#e63946;}
+.menu-title{font-size:75px;font-style:italic;font-weight:800;margin:0;}
+
+.menu-list{
+  display:flex;
+  justify-content:center;
+  width:900px;
+  margin-left:-120px;
+  margin-top:20px;
+  border:2px solid white;
+  height:45px;
+}
+
+.menu-list a{
+  flex:1;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  color:white;
+  text-decoration:none;
+  font-weight:600;
+  font-size:18px;
+  background:transparent;
+  border-right:1px solid white;
+  cursor:pointer;
+  transition:0.3s;
+  letter-spacing:10px;
+  font-family:Verdana;
+}
+.menu-list a:last-child{border-right:none;}
+.menu-list a.active{background:white;color:black;font-weight:700;}
+
+#menu-lists{
+  margin-top:20px;
+  text-align:left;
+  display:none;
+  width:550px;
+  margin-left:-120px;
+
+  /* ▼▼▼ UNICA MODIFICA FATTA ▼▼▼ */
+  min-height:250px;
+}
+
+.menu-item{
+  font-size:18px;
+  margin-bottom:18px;
+  display:flex;
+  justify-content:space-between;
+  font-weight:600;
+  width:100%;
+  opacity:0;
+  transform:translateY(15px);
+  animation:fadeUp 0.5s ease forwards;
+}
+
+.menu-item:nth-child(1){animation-delay:0.05s;}
+.menu-item:nth-child(2){animation-delay:0.15s;}
+.menu-item:nth-child(3){animation-delay:0.25s;}
+.menu-item:nth-child(4){animation-delay:0.35s;}
+.menu-item:nth-child(5){animation-delay:0.45s;}
+.menu-item:nth-child(6){animation-delay:0.55s;}
+
+@keyframes fadeUp{to{opacity:1;transform:translateY(0);}}
+
+.dots{flex-grow:10;border-bottom:2px dashed white;margin:0 10px;opacity:0.3;}
+.price{display:flex;align-items:center;font-weight:600;}
+.euro{font-size:16px;position:relative;top:-2px;margin-right:3px;opacity:0.8;}
+
+.select-square{
+  width:25px;height:25px;border:2px dashed white;border-radius:5px;margin-right:15px;cursor:pointer;transition:0.3s ease;
+}
+.select-square.selected{background-color:#e63946;border-color:#e63946;}
+
+#pronto-btn{
+  margin-top:10px; 
+  padding:12px 25px;
+  font-size:20px;
+  display: inline-block;
+  font-weight:800;
+  padding: 14px 32px;
+  width:200px;
+  background-color:#e63946;
+  color:white;
+  border:none;
+  border-radius:30px;
+  cursor:pointer;
+  display:none;
+  opacity:0;
+  transform:translateY(15px);
+}
+
+#pronto-btn:hover{ background:white; color:black; }
+
+.show-btn{animation:fadeUp 0.7s ease forwards;}
