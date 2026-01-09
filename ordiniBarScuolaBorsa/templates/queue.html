@@ -113,7 +113,56 @@
       padding-top: 8px;
       display: flex;
       justify-content: space-between;
+      align-items: center;
       font-weight: 600;
+    }
+    .order-actions {
+      display: flex;
+      gap: 10px;
+      margin-left: auto;
+    }
+    .btn-delete {
+      background-color: #e63946;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 13px;
+      transition: all 0.3s ease;
+    }
+    .btn-delete:hover {
+      background-color: #c71c23;
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(230, 57, 70, 0.4);
+    }
+    .btn-delete:active {
+      transform: scale(0.98);
+    }
+    .btn-pronto {
+      background-color: #02a502;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 13px;
+      transition: all 0.3s ease;
+    }
+    .btn-pronto:hover {
+      background-color: #028902;
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(2, 169, 2, 0.4);
+    }
+    .btn-pronto:active {
+      transform: scale(0.98);
+    }
+    .btn-pronto:disabled {
+      background-color: #555;
+      cursor: not-allowed;
+      opacity: 0.5;
     }
   </style>
 </head>
@@ -141,8 +190,14 @@
         </div>
       </div>
       <div class="order-footer">
-        <span>Totale</span>
-        <span>€4,50</span>
+        <div>
+          <span>Totale</span>
+          <span style="margin-left: 40px;">€4,50</span>
+        </div>
+        <div class="order-actions">
+          <button class="btn-pronto" onclick="markReady(this)">Pronto</button>
+          <button class="btn-delete" onclick="removeOrder(this)">Elimina</button>
+        </div>
       </div>
     </div>
     <!-- Ordine 2 -->
@@ -160,8 +215,14 @@
         </div>
       </div>
       <div class="order-footer">
-        <span>Totale</span>
-        <span>€2,50</span>
+        <div>
+          <span>Totale</span>
+          <span style="margin-left: 40px;">€2,50</span>
+        </div>
+        <div class="order-actions">
+          <button class="btn-pronto" onclick="markReady(this)" disabled>Pronto</button>
+          <button class="btn-delete" onclick="removeOrder(this)">Elimina</button>
+        </div>
       </div>
     </div>
     <!-- Ordine 3 -->
@@ -179,10 +240,51 @@
         </div>
       </div>
       <div class="order-footer">
-        <span>Totale</span>
-        <span>€9,00</span>
+        <div>
+          <span>Totale</span>
+          <span style="margin-left: 40px;">€9,00</span>
+        </div>
+        <div class="order-actions">
+          <button class="btn-pronto" onclick="markReady(this)">Pronto</button>
+          <button class="btn-delete" onclick="removeOrder(this)">Elimina</button>
+        </div>
       </div>
     </div>
   </main>
+
+  <script>
+    function removeOrder(button) {
+      const orderCard = button.closest('.order-card');
+      if (orderCard) {
+        orderCard.style.transition = 'all 0.3s ease';
+        orderCard.style.opacity = '0';
+        orderCard.style.transform = 'translateX(100%)';
+        
+        setTimeout(() => {
+          orderCard.remove();
+        }, 300);
+      }
+    }
+
+    function markReady(button) {
+      const orderCard = button.closest('.order-card');
+      if (orderCard) {
+        const statusBadge = orderCard.querySelector('.order-status');
+        const currentStatus = statusBadge.textContent.trim();
+        
+        // Cambia solo se non è già "Pronto"
+        if (currentStatus !== 'Pronto') {
+          // Rimuove le classi di stato precedenti
+          statusBadge.classList.remove('status-nuovo', 'status-in-preparazione', 'status-consegnato', 'status-annullato');
+          // Aggiunge la classe pronto
+          statusBadge.classList.add('status-pronto');
+          // Cambia il testo
+          statusBadge.textContent = 'Pronto';
+          // Disabilita il pulsante dopo aver fatto il cambio
+          button.disabled = true;
+        }
+      }
+    }
+  </script>
 </body>
 </html>
