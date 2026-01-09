@@ -180,6 +180,8 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
 </style>
 </head>
 <body>
+<div id="contenitore"
+  data="{{data}}"></div>
 
 <header class="navbar" id="navbar">
   <div class="logo-left">
@@ -303,6 +305,8 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
   </div>
 </div>
 <script>
+const datiDB = document.getElementById("contenitore").getAttribute("data");
+console.log(datiDB);
 const menuLinks=document.querySelectorAll(".menu-list a");
 const listContainer=document.getElementById("menu-lists");
 const prontoBtn=document.getElementById("pronto-btn");
