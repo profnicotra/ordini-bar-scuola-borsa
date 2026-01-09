@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Coda Ordini Sala Bar</title>
-  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
   <style>
     body {
@@ -30,8 +29,9 @@
     main {
       padding: 40px;
       display: flex;
-      flex-direction: column;
-      gap: 25px;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 40px;
     }
     .order-card {
       background-color: rgba(0, 0, 0, 0.823);
@@ -41,6 +41,7 @@
       display: flex;
       flex-direction: column;
       box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      width: 400px;
     }
     .order-header {
       display: flex;
@@ -57,29 +58,13 @@
       text-transform: uppercase;
       padding: 4px 12px;
       border-radius: 12px;
-      font-size: 12px;
+      font-size: 11px;
     }
-    /* Status colors */
-    .status-nuovo {
-      background-color:#e63946;
-      color: #0d0d0d;
-    }
-    .status-in-preparazione {
-      background-color: #e9c46a;
-      color: #0d0d0d;
-    }
-    .status-pronto {
-      background-color:rgba(2, 87, 2, 0.988);
-      color: #000000;
-    }
-    .status-consegnato {
-      background-color: #2a9d8f;
-      color: #0d0d0d;
-    }
-    .status-annullato {
-      background-color: #e63946;
-      color: #ffffff;
-    }
+    .status-nuovo { background-color:#e63946; color:#0d0d0d; }
+    .status-in-preparazione { background-color:#e9c46a; color:#0d0d0d; }
+    .status-pronto { background-color:rgba(2, 87, 2, 0.988); color:#000; }
+    .status-consegnato { background-color:#2a9d8f; color:#0d0d0d; }
+    .status-annullato { background-color:#e63946; color:#fff; }
     .customer-info {
       margin-bottom: 8px;
       font-size: 14px;
@@ -126,38 +111,22 @@
       color: white;
       border: none;
       padding: 8px 16px;
-      border-radius: 6px;
+      border-radius: 10px;
       cursor: pointer;
       font-weight: 700;
       font-size: 13px;
       transition: all 0.3s ease;
     }
-    .btn-delete:hover {
-      background-color: #c71c23;
-      transform: scale(1.05);
-      box-shadow: 0 4px 12px rgba(230, 57, 70, 0.4);
-    }
-    .btn-delete:active {
-      transform: scale(0.98);
-    }
     .btn-pronto {
-      background-color: #02a502;
+      background-color: rgba(2, 87, 2, 0.988);
       color: white;
       border: none;
       padding: 8px 16px;
-      border-radius: 6px;
+      border-radius: 10px;
       cursor: pointer;
       font-weight: 700;
       font-size: 13px;
       transition: all 0.3s ease;
-    }
-    .btn-pronto:hover {
-      background-color: #028902;
-      transform: scale(1.05);
-      box-shadow: 0 4px 12px rgba(2, 169, 2, 0.4);
-    }
-    .btn-pronto:active {
-      transform: scale(0.98);
     }
     .btn-pronto:disabled {
       background-color: #555;
@@ -167,124 +136,97 @@
   </style>
 </head>
 <body>
-  <header>
-    <h1 style="margin-left:470px;font-family: verdana;font-weight:800;">CODA DA ORDINI SALA BAR</h1>
-  </header>
-  <main>
-    <!-- Ordine 1 -->
-    <div class="order-card">
-      <div class="order-header">
-        <div class="order-title">Ordine #101</div>
-        <div class="order-status status-in-preparazione">In preparazione</div>
-      </div>
-      <div class="customer-info">Mario Rossi – Aula 1</div>
-      <div class="customer-info">12/12/2025 09:15</div>
-      <div class="order-items">
-        <div class="item">
-          <div class="item-name">Caffè <span class="item-note">Senza zucchero</span></div>
-          <div>x2</div>
-        </div>
-        <div class="item">
-          <div class="item-name">Cornetto</div>
-          <div>x1</div>
-        </div>
-      </div>
-      <div class="order-footer">
-        <div>
-          <span>Totale</span>
-          <span style="margin-left: 40px;">€4,50</span>
-        </div>
-        <div class="order-actions">
-          <button class="btn-pronto" onclick="markReady(this)">Pronto</button>
-          <button class="btn-delete" onclick="removeOrder(this)">Elimina</button>
-        </div>
-      </div>
-    </div>
-    <!-- Ordine 2 -->
-    <div class="order-card">
-      <div class="order-header">
-        <div class="order-title">Ordine #102</div>
-        <div class="order-status status-pronto">Pronto</div>
-      </div>
-      <div class="customer-info">Sara Bianchi – Aula 3</div>
-      <div class="customer-info">12/12/2025 09:20</div>
-      <div class="order-items">
-        <div class="item">
-          <div class="item-name">Cappuccino <span class="item-note">Latte di soia</span></div>
-          <div>x1</div>
-        </div>
-      </div>
-      <div class="order-footer">
-        <div>
-          <span>Totale</span>
-          <span style="margin-left: 40px;">€2,50</span>
-        </div>
-        <div class="order-actions">
-          <button class="btn-pronto" onclick="markReady(this)" disabled>Pronto</button>
-          <button class="btn-delete" onclick="removeOrder(this)">Elimina</button>
-        </div>
-      </div>
-    </div>
-    <!-- Ordine 3 -->
-    <div class="order-card">
-      <div class="order-header">
-        <div class="order-title">Ordine #103</div>
-        <div class="order-status status-nuovo">Nuovo</div>
-      </div>
-      <div class="customer-info">Luigi Verdi – Aula 2</div>
-      <div class="customer-info">12/12/2025 09:25</div>
-      <div class="order-items">
-        <div class="item">
-          <div class="item-name">Panino</div>
-          <div>x3</div>
-        </div>
-      </div>
-      <div class="order-footer">
-        <div>
-          <span>Totale</span>
-          <span style="margin-left: 40px;">€9,00</span>
-        </div>
-        <div class="order-actions">
-          <button class="btn-pronto" onclick="markReady(this)">Pronto</button>
-          <button class="btn-delete" onclick="removeOrder(this)">Elimina</button>
-        </div>
-      </div>
-    </div>
-  </main>
+<header>
+  <h1 style="margin-left:470px;font-family: verdana;font-weight:800;">CODA DA ORDINI SALA BAR</h1>
+</header>
 
-  <script>
-    function removeOrder(button) {
-      const orderCard = button.closest('.order-card');
-      if (orderCard) {
-        orderCard.style.transition = 'all 0.3s ease';
-        orderCard.style.opacity = '0';
-        orderCard.style.transform = 'translateX(100%)';
-        
-        setTimeout(() => {
-          orderCard.remove();
-        }, 300);
-      }
-    }
+<main>
+  <!-- Ordine 101 -->
+  <div class="order-card">
+    <div class="order-header">
+      <div class="order-title"  style="font-size: 18px;font-weight: 900;">Ordine #01</div>
+      <div class="order-status status-in-preparazione">In preparazione</div>
+    </div>
+    <div class="customer-info">Mario Rossi – Aula 1</div>
+    <div class="customer-info">12/12/2025 09:15</div>
+    <div class="order-items">
+      <div class="item">
+        <div class="item-name">Caffè <span class="item-note">Senza zucchero</span></div>
+        <div>x2</div>
+      </div>
+      <div class="item">
+        <div class="item-name">Cornetto</div>
+        <div>x1</div>
+      </div>
+    </div>
+    <div class="order-footer">
+      <span>Totale €4,50</span>
+      <div class="order-actions">
+        <button class="btn-pronto" onclick="markReady(this)">Pronto</button>
+        <button class="btn-delete" onclick="removeOrder(this)">Elimina</button>
+      </div>
+    </div>
+  </div>
 
-    function markReady(button) {
-      const orderCard = button.closest('.order-card');
-      if (orderCard) {
-        const statusBadge = orderCard.querySelector('.order-status');
-        const currentStatus = statusBadge.textContent.trim();
-        
-        // Cambia solo se non è già "Pronto"
-        if (currentStatus !== 'Pronto') {
-          // Rimuove le classi di stato precedenti
-          statusBadge.classList.remove('status-nuovo', 'status-in-preparazione', 'status-consegnato', 'status-annullato');
-          // Aggiunge la classe pronto
-          statusBadge.classList.add('status-pronto');
-          // Cambia il testo
-          statusBadge.textContent = 'Pronto';
-          // Disabilita il pulsante dopo aver fatto il cambio
-          button.disabled = true;
-        }
-      }
-    }
-  </script>
+  <!-- Ordine 102 -->
+  <div class="order-card">
+    <div class="order-header">
+      <div class="order-title" style="font-size: 18px;font-weight: 900;">Ordine #02</div>
+      <div class="order-status status-pronto">Pronto</div>
+    </div>
+    <div class="customer-info">Sara Bianchi – Aula 3</div>
+    <div class="customer-info">12/12/2025 09:20</div>
+    <div class="order-items">
+      <div class="item">
+        <div class="item-name">Cappuccino <span class="item-note">Latte di soia</span></div>
+        <div>x1</div>
+      </div>
+    </div>
+    <div class="order-footer">
+      <span>Totale €2,50</span>
+      <div class="order-actions">
+        <button class="btn-pronto" disabled>Pronto</button>
+        <button class="btn-delete" onclick="removeOrder(this)">Elimina</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ordine 103 -->
+  <div class="order-card">
+    <div class="order-header">
+      <div class="order-title" style="font-size: 18px;font-weight: 900;">Ordine #03</div>
+      <div class="order-status status-nuovo">Consegnato</div>
+    </div>
+    <div class="customer-info">Luigi Verdi – Aula 2</div>
+    <div class="customer-info">12/12/2025 09:25</div>
+    <div class="order-items">
+      <div class="item">
+        <div class="item-name">Panino</div>
+        <div>x3</div>
+      </div>
+    </div>
+    <div class="order-footer">
+      <span>Totale €9,00</span>
+       <div class="order-actions">
+        <button class="btn-pronto" onclick="markReady(this)">Pronto</button>
+        <button class="btn-delete" onclick="removeOrder(this)">Elimina</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+function removeOrder(button) {
+  const orderCard = button.closest('.order-card');
+  orderCard.remove();
+}
+function markReady(button) {
+  const card = button.closest('.order-card');
+  const status = card.querySelector('.order-status');
+  status.textContent = 'Pronto';
+  status.className = 'order-status status-pronto';
+  button.disabled = true;
+}
+</script>
 </body>
 </html>
