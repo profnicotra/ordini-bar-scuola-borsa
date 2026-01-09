@@ -1,5 +1,5 @@
 
-# Bar App – Bottle + PostgreSQL (didattico)
+# Bar App – PostgreSQL (didattico)
 
 Due varianti:
 - **single-file/**: tutto in un file (`app_pg.py`).
