@@ -31,7 +31,7 @@
       display: flex;
       flex-direction: row;
       flex-wrap: wrap;
-      gap: 40px;
+      gap: 30px;
     }
     .order-card {
       background-color: rgba(0, 0, 0, 0.823);
@@ -97,9 +97,25 @@
       margin-top: 14px;
       padding-top: 8px;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
+      flex-direction: column;
+      align-items: flex-start;
       font-weight: 600;
+    }
+    .order-notes {
+      font-size: 13px;
+      color: white;
+      font-size: 15px;
+      margin-bottom: 6px;
+      width: 100%;
+    }
+    .order-total {
+      border-top: 1px solid #333;
+      padding-top: 6px;
+      margin-top: 6px;
+      width: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
     .order-actions {
       display: flex;
@@ -141,10 +157,10 @@
 </header>
 
 <main>
-  <!-- Ordine 101 -->
+  <!-- Ordine 01 -->
   <div class="order-card">
     <div class="order-header">
-      <div class="order-title"  style="font-size: 18px;font-weight: 900;">Ordine #01</div>
+      <div class="order-title" style="font-size:18px;font-weight:900;">Ordine #01</div>
       <div class="order-status status-in-preparazione">In preparazione</div>
     </div>
     <div class="customer-info">Mario Rossi – Aula 1</div>
@@ -160,18 +176,21 @@
       </div>
     </div>
     <div class="order-footer">
-      <span>Totale €4,50</span>
-      <div class="order-actions">
-        <button class="btn-pronto" onclick="markReady(this)">Pronto</button>
-        <button class="btn-delete" onclick="removeOrder(this)">Elimina</button>
+      <div class="order-notes" style="color: white;">Note Generali</div>
+      <div class="order-total">
+        <span>Totale €4,50</span>
+        <div class="order-actions">
+          <button class="btn-pronto" onclick="markReady(this)">Pronto</button>
+          <button class="btn-delete" onclick="removeOrder(this)">Elimina</button>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Ordine 102 -->
+  <!-- Ordine 02 -->
   <div class="order-card">
     <div class="order-header">
-      <div class="order-title" style="font-size: 18px;font-weight: 900;">Ordine #02</div>
+      <div class="order-title" style="font-size:18px;font-weight:900;">Ordine #02</div>
       <div class="order-status status-pronto">Pronto</div>
     </div>
     <div class="customer-info">Sara Bianchi – Aula 3</div>
@@ -183,18 +202,21 @@
       </div>
     </div>
     <div class="order-footer">
-      <span>Totale €2,50</span>
-      <div class="order-actions">
-        <button class="btn-pronto" disabled>Pronto</button>
-        <button class="btn-delete" onclick="removeOrder(this)">Elimina</button>
+      <div class="order-notes">Note Generali</div>
+      <div class="order-total">
+        <span>Totale €2,50</span>
+        <div class="order-actions">
+          <button class="btn-pronto" disabled>Pronto</button>
+          <button class="btn-delete" onclick="removeOrder(this)">Elimina</button>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Ordine 103 -->
+  <!-- Ordine 03 -->
   <div class="order-card">
     <div class="order-header">
-      <div class="order-title" style="font-size: 18px;font-weight: 900;">Ordine #03</div>
+      <div class="order-title" style="font-size:18px;font-weight:900;">Ordine #03</div>
       <div class="order-status status-nuovo">Consegnato</div>
     </div>
     <div class="customer-info">Luigi Verdi – Aula 2</div>
@@ -206,10 +228,13 @@
       </div>
     </div>
     <div class="order-footer">
-      <span>Totale €9,00</span>
-       <div class="order-actions">
-        <button class="btn-pronto" onclick="markReady(this)">Pronto</button>
-        <button class="btn-delete" onclick="removeOrder(this)">Elimina</button>
+      <div class="order-notes">Note Generali</div>
+      <div class="order-total">
+        <span>Totale €9,00</span>
+        <div class="order-actions">
+          <button class="btn-pronto" onclick="markReady(this)">Pronto</button>
+          <button class="btn-delete" onclick="removeOrder(this)">Elimina</button>
+        </div>
       </div>
     </div>
   </div>
@@ -217,8 +242,7 @@
 
 <script>
 function removeOrder(button) {
-  const orderCard = button.closest('.order-card');
-  orderCard.remove();
+  button.closest('.order-card').remove();
 }
 function markReady(button) {
   const card = button.closest('.order-card');
