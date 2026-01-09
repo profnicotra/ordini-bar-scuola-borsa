@@ -114,7 +114,7 @@
     }
 
     .btn.red { background: #e63946 }
-    :hover.btn.red { background: white; color: black; }
+    .btn.red:hover { background: white; color: black; }
 
     /* STORIA */
     .experience-section {
@@ -404,7 +404,7 @@
 #closed-popup {
   width: 360px;
   padding: 1.5rem;
-  background-color: rgba(6, 6, 6, 0.89);;
+  background-color: rgba(6, 6, 6, 0.89);
   border-radius: 12px;
   text-align: center;
   box-shadow: 0px 15px 40px rgba(0,0,0,0.4);
@@ -595,11 +595,11 @@
       <p class="title">Login</p>
       <form class="form" id="login-form">
         <div class="input-group">
-          <label for="username"style="color: white;">Username</label>
+          <label for="username" style="color: white;">Username</label>
           <input type="text" name="username" id="username" placeholder="">
         </div>
         <div class="input-group">
-          <label for="password"style="color: white;">Password</label>
+          <label for="password" style="color: white;">Password</label>
           <input type="password" name="password" id="password" placeholder="">
           <div class="forgot">
             <a href="#">Forgot Password ?</a>
@@ -660,7 +660,7 @@
         <span class="title">⚠️ Servizio non disponibile</span>
         <p class="description">
             Il bar è attualmente <strong>CHIUSO</strong>.<br>
-            Gli servizi non sono più disponibile <b>.
+            I servizi non sono più disponibili.
         </p>
         <div class="actions" style="justify-content: center;">
             <button class="accept" id="close-popup-btn" style="font-weight:800;">OK</button>
@@ -729,19 +729,42 @@ toLogin.addEventListener("click", () => {
   titleText.innerText = "Login";
 });
 // --- BOTTONE ORARIO E STATO ---
+function getRomeTimeParts() {
+    const now = new Date();
+    const formatter = new Intl.DateTimeFormat('it-IT', {
+        timeZone: 'Europe/Rome',
+        hour: 'numeric',
+        minute: 'numeric',
+        day: 'numeric',
+        month: 'numeric',
+        year: 'numeric',
+        hour12: false
+    });
+    const parts = formatter.formatToParts(now);
+    const map = {};
+    parts.forEach(p => map[p.type] = p.value);
+    
+    return {
+        hours: parseInt(map.hour),
+        minutes: parseInt(map.minute),
+        day: parseInt(map.day),
+        month: parseInt(map.month) - 1 // mesi in JS sono 0-11
+    };
+}
+
 function updateStatusButton() {
-    let now = new Date();
+    const romeTime = getRomeTimeParts();
 
     // ORARIO ATTUALE
-    let hours = now.getHours();
-    let minutes = now.getMinutes().toString().padStart(2, "0");
+    let hours = romeTime.hours;
+    let minutes = romeTime.minutes.toString().padStart(2, "0");
     document.getElementById("time").innerText = `${hours.toString().padStart(2,"0")}:${minutes}`;
 
     // DATA ATTUALE
-    let day = now.getDate();
+    let day = romeTime.day;
     let monthNames = ["Gen", "Feb", "Mar", "Apr", "Mag", "Giu",
                       "Lug", "Ago", "Set", "Ott", "Nov", "Dic"];
-    let month = monthNames[now.getMonth()];
+    let month = monthNames[romeTime.month];
     document.getElementById("date").innerText = `${day} ${month}`;
 
     // OPEN/CLOSED
@@ -763,8 +786,8 @@ setInterval(updateStatusButton, 1000);
 updateStatusButton();
 // --- POPUP CENTRALE SE FUORI ORARIO ---
 function checkClosedPopup() {
-    let now = new Date();
-    let hours = now.getHours();
+    const romeTime = getRomeTimeParts();
+    let hours = romeTime.hours;
 
     let openHour = 8;
     let closeHour = 18;
