@@ -9,5 +9,5 @@ def menu():
     print (a)
     data = {"title" : "Menu Bar Scuola Borsa",
             "open": True,   
-            "items" : []}
+            "items" : get_products()}
     return render_template('bar.html', data=data)
