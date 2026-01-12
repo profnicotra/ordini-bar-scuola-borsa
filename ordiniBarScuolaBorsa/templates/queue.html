@@ -7,162 +7,409 @@
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       padding: 0;
       font-family: 'Montserrat', sans-serif;
-      background-color: #111111;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
       color: #f5f5f5;
+      min-height: 100vh;
     }
+
     header {
-      background-color: #161616;
-      padding: 20px 40px;
+      background: linear-gradient(90deg, #161616 0%, #1f1f1f 100%);
+      padding: 25px 40px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 3px solid #e63946;
+      border-bottom: 4px solid #e63946;
+      box-shadow: 0 8px 32px rgba(230, 57, 70, 0.2);
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
+
     header h1 {
-      font-size: 28px;
+      font-size: 32px;
       font-weight: 800;
       margin: 0;
+      background: linear-gradient(90deg, #e63946, #ff6b6b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 1px;
+      text-shadow: 0 0 30px rgba(230, 57, 70, 0.3);
     }
+
     main {
       padding: 40px;
       display: flex;
       flex-direction: column;
       gap: 25px;
+      max-width: 1200px;
+      margin: 0 auto;
     }
+
     .order-card {
-      background-color: rgba(0, 0, 0, 0.823);
-      border-left: 7px solid #e63946;
-      border-radius: 8px;
-      padding: 20px 24px;
+      background: linear-gradient(135deg, rgba(15, 15, 15, 0.9) 0%, rgba(25, 25, 25, 0.9) 100%);
+      border-left: 6px solid #e63946;
+      border-radius: 12px;
+      padding: 24px 28px;
       display: flex;
       flex-direction: column;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), 0 0 20px rgba(230, 57, 70, 0.1);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      animation: slideIn 0.5s ease-out;
     }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .order-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.9), 0 0 30px rgba(230, 57, 70, 0.2);
+      border-left-color: #ff6b6b;
+    }
+
     .order-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 12px;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.08);
     }
+
     .order-title {
-      font-size: 20px;
-      font-weight: 700;
+      font-size: 22px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: 0.5px;
     }
+
     .order-status {
       font-weight: 700;
       text-transform: uppercase;
-      padding: 4px 12px;
-      border-radius: 12px;
+      padding: 6px 16px;
+      border-radius: 20px;
       font-size: 12px;
+      letter-spacing: 0.5px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      font-size: 11px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
-    /* Status colors */
+
+    /* Status colors with glow effects */
     .status-nuovo {
-      background-color:#e63946;
-      color: #0d0d0d;
-    }
-    .status-in-preparazione {
-      background-color: #e9c46a;
-      color: #0d0d0d;
-    }
-    .status-pronto {
-      background-color:rgba(2, 87, 2, 0.988);
-      color: #000000;
-    }
-    .status-consegnato {
-      background-color: #2a9d8f;
-      color: #0d0d0d;
-    }
-    .status-annullato {
-      background-color: #e63946;
+      background: linear-gradient(135deg, #e63946 0%, #ff6b6b 100%);
       color: #ffffff;
+      box-shadow: 0 4px 15px rgba(230, 57, 70, 0.4);
     }
+
+    .status-in-preparazione {
+      background: linear-gradient(135deg, #e9c46a 0%, #f5d547 100%);
+      color: #000000;
+      box-shadow: 0 4px 15px rgba(233, 196, 106, 0.3);
+    }
+
+    .status-pronto {
+      background: linear-gradient(135deg, #02a502 0%, #04d604 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 15px rgba(2, 165, 2, 0.4);
+    }
+
+    .status-consegnato {
+      background: linear-gradient(135deg, #2a9d8f 0%, #35c9af 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 15px rgba(42, 157, 143, 0.3);
+    }
+
+    .status-annullato {
+      background: linear-gradient(135deg, #e63946 0%, #a61d2c 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 15px rgba(230, 57, 70, 0.4);
+    }
+
     .customer-info {
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       font-size: 14px;
-      opacity: 0.85;
+      opacity: 0.9;
+      color: #e0e0e0;
+      font-weight: 500;
     }
+
+    .customer-info:first-of-type::before {
+      content: "👤 ";
+      margin-right: 6px;
+    }
+
+    .customer-info:nth-of-type(2)::before {
+      content: "🕐 ";
+      margin-right: 6px;
+      opacity: 0.7;
+    }
+
     .order-items {
-      border-top: 1px solid #333;
-      margin-top: 10px;
-      padding-top: 10px1;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      margin-top: 14px;
+      padding-top: 14px;
+      background: rgba(255, 255, 255, 0.02);
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 14px;
     }
+
     .item {
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
       font-size: 15px;
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
+
+    .item:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+    }
+
     .item-name {
       display: flex;
       flex-direction: column;
-      padding-top: 7px;
+      padding-top: 4px;
+      flex: 1;
     }
+
+    .item-name::before {
+      content: "🛒 ";
+      margin-right: 6px;
+    }
+
     .item-note {
       font-size: 12px;
-      color: #e63946;
-      margin-top: 2px;
+      color: #ff9999;
+      margin-top: 3px;
+      font-style: italic;
+      opacity: 0.85;
     }
+
+    .item-note::before {
+      content: "📝 ";
+      margin-right: 4px;
+    }
+
     .order-footer {
-      border-top: 1px solid #333;
-      margin-top: 14px;
-      padding-top: 8px;
+      border-top: 2px solid rgba(255, 255, 255, 0.08);
+      margin-top: 16px;
+      padding-top: 12px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       font-weight: 600;
     }
+
+    .order-footer > div:first-child {
+      font-size: 16px;
+      color: #4ecdc4;
+      display: flex;
+      gap: 20px;
+    }
+
     .order-actions {
       display: flex;
-      gap: 10px;
+      gap: 12px;
       margin-left: auto;
     }
+
     .btn-delete {
-      background-color: #e63946;
+      background: linear-gradient(135deg, #e63946 0%, #c71c23 100%);
       color: white;
       border: none;
-      padding: 8px 16px;
-      border-radius: 6px;
+      padding: 10px 18px;
+      border-radius: 8px;
       cursor: pointer;
       font-weight: 700;
       font-size: 13px;
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 15px rgba(230, 57, 70, 0.3);
+      position: relative;
+      overflow: hidden;
     }
+
+    .btn-delete::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.2);
+      transition: left 0.3s ease;
+    }
+
+    .btn-delete:hover::before {
+      left: 100%;
+    }
+
     .btn-delete:hover {
-      background-color: #c71c23;
-      transform: scale(1.05);
-      box-shadow: 0 4px 12px rgba(230, 57, 70, 0.4);
+      background: linear-gradient(135deg, #ff6b6b 0%, #e63946 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(230, 57, 70, 0.5);
     }
+
     .btn-delete:active {
-      transform: scale(0.98);
+      transform: translateY(0) scale(0.98);
     }
+
     .btn-pronto {
-      background-color: #02a502;
+      background: linear-gradient(135deg, #02a502 0%, #04d604 100%);
       color: white;
       border: none;
-      padding: 8px 16px;
-      border-radius: 6px;
+      padding: 10px 18px;
+      border-radius: 8px;
       cursor: pointer;
       font-weight: 700;
       font-size: 13px;
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 15px rgba(2, 165, 2, 0.3);
+      position: relative;
+      overflow: hidden;
     }
+
+    .btn-pronto::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.2);
+      transition: left 0.3s ease;
+    }
+
+    .btn-pronto:hover::before {
+      left: 100%;
+    }
+
     .btn-pronto:hover {
-      background-color: #028902;
-      transform: scale(1.05);
-      box-shadow: 0 4px 12px rgba(2, 169, 2, 0.4);
+      background: linear-gradient(135deg, #04d604 0%, #02a502 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(2, 165, 2, 0.5);
     }
+
     .btn-pronto:active {
-      transform: scale(0.98);
+      transform: translateY(0) scale(0.98);
     }
+
     .btn-pronto:disabled {
-      background-color: #555;
+      background: linear-gradient(135deg, #444444 0%, #333333 100%);
       cursor: not-allowed;
       opacity: 0.5;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      transform: none;
+    }
+
+    .btn-pronto:disabled:hover {
+      transform: none;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Empty state */
+    #orders-container:empty::after {
+      content: "📋 Nessun ordine in coda";
+      display: block;
+      padding: 60px 20px;
+      text-align: center;
+      opacity: 0.7;
+      font-size: 18px;
+    }
+
+    /* Scrollbar styling */
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(135deg, #e63946 0%, #ff6b6b 100%);
+      border-radius: 5px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(135deg, #ff6b6b 0%, #e63946 100%);
+    }
+
+    /* Loading animation */
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.5;
+      }
+    }
+
+    .loading {
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    /* Responsivo */
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: 24px;
+      }
+
+      main {
+        padding: 20px;
+        gap: 15px;
+      }
+
+      .order-card {
+        padding: 16px 20px;
+      }
+
+      .order-header {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+      }
+
+      .order-actions {
+        width: 100%;
+        justify-content: flex-end;
+      }
+
+      .order-footer {
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-start;
+      }
+
+      .btn-delete, .btn-pronto {
+        padding: 8px 14px;
+        font-size: 12px;
+      }
     }
   </style>
 </head>

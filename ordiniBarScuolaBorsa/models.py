@@ -132,31 +132,44 @@ def get_products():
     return results
 
 def get_queue():
-    results = []
-    
-    query = db.session.query(
-        Ordine.id,
-        Prodotto.nome.label('prodotto'),
-        OrdineRiga.quantita,
-        Note.nome.label('nota'),
-        Posizione.nome.label('posizione'),
-        Ordine.stato,
-        Ordine.totale_euro
-    ).join(OrdineRiga, Ordine.id == OrdineRiga.ordine_id) \
-     .join(OrdineRigaNota, OrdineRigaNota.ordine_riga_id == OrdineRiga.id) \
-     .join(Note, Note.id == OrdineRigaNota.nota_id) \
-     .join(Posizione, Posizione.id == Ordine.posizione_id) \
-     .join(Prodotto, Prodotto.id == OrdineRiga.prodotto_id).all()
-    
-    for item in query:
-        results.append({
-            'id': item.id,
-            'prodotto': item.prodotto,
-            'quantita': item.quantita,
-            'nota': item.nota,
-            'posizione': item.posizione,
-            'stato': item.stato,
-            'totale_euro': item.totale_euro
-        })
-    
-    return results
+    """Recupera tutti gli ordini dalla coda con i loro dettagli"""
+    try:
+        # Primo: prendi tutti gli ordini
+        ordini = db.session.query(Ordine).order_by(Ordine.creato_il.desc()).all()
+        
+        results = []
+        
+        for ordine in ordini:
+            # Per ogni ordine, prendi le righe
+            righe = db.session.query(OrdineRiga).filter(OrdineRiga.ordine_id == ordine.id).all()
+            
+            for riga in righe:
+                # Per ogni riga, prendi il prodotto
+                prodotto = db.session.query(Prodotto).filter(Prodotto.id == riga.prodotto_id).first()
+                
+                # Per ogni riga, prendi le note
+                note_query = db.session.query(Note).join(
+                    OrdineRigaNota, Note.id == OrdineRigaNota.nota_id
+                ).filter(OrdineRigaNota.ordine_riga_id == riga.id).all()
+                
+                # Se non ci sono note, crea un record comunque
+                if not note_query:
+                    note_query = [None]
+                
+                for nota in note_query:
+                    results.append({
+                        'id': ordine.id,
+                        'prodotto': prodotto.nome if prodotto else 'Prodotto sconosciuto',
+                        'quantita': riga.quantita,
+                        'nota': nota.nome if nota else None,
+                        'posizione': ordine.posizione.nome if ordine.posizione else 'N/A',
+                        'stato': ordine.stato,
+                        'totale_euro': float(ordine.totale_euro) if ordine.totale_euro else 0,
+                        'creato_il': ordine.creato_il.strftime('%d/%m/%Y %H:%M') if ordine.creato_il else ''
+                    })
+        
+        return results
+    except Exception as e:
+        import logging
+        logging.error(f"Errore in get_queue: {str(e)}", exc_info=True)
+        raise
