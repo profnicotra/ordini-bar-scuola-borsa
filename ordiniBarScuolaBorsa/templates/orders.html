@@ -288,10 +288,15 @@ const menuData={
 
 // Carichiamo selectedItems da localStorage
 let selectedItems=JSON.parse(localStorage.getItem("selectedItems"))||{};
-// Rimuoviamo subito selectedItems per partire puliti (reset)
-localStorage.removeItem("selectedItems");
-selectedItems = {};
 
+function updateProntoBtn() {
+  if (Object.keys(selectedItems).length > 0) {
+    prontoBtn.style.opacity = "1";
+    prontoBtn.style.transform = "translateY(0)";
+  } else {
+    // optional: hide if empty
+  }
+}
 
 function renderMenu(category){
   const items=menuData[category];
@@ -327,22 +332,14 @@ function renderMenu(category){
 const errorBox = document.getElementById("error-box");
 const errorCloseBtn = errorBox.querySelector(".close-btn");
 errorCloseBtn.addEventListener("click", () => {
-  errorBox.style.display = "none";
-});
-
-menuLinks.forEach(link=>{
-  link.addEventListener("click",()=>{
-    menuLinks.forEach(btn=>btn.classList.remove("active"));
-    link.classList.add("active");
-    renderMenu(link.dataset.menu);
-  });
+  errorBox.classList.remove("show");
 });
 
 let currentCategory = "share"; // default CIBI
 
-menuLinks.forEach(link => {
-  link.addEventListener("click", () => {
-    menuLinks.forEach(btn => btn.classList.remove("active"));
+menuLinks.forEach(link=>{
+  link.addEventListener("click",()=>{
+    menuLinks.forEach(btn=>btn.classList.remove("active"));
     link.classList.add("active");
     currentCategory = link.dataset.menu; // aggiorna categoria attiva
     renderMenu(currentCategory);
@@ -388,6 +385,7 @@ prontoBtn.addEventListener("click", () => {
 
 
 menuLinks[0].click();
+updateProntoBtn();
 
 
 /* LOGIN MODAL JS */

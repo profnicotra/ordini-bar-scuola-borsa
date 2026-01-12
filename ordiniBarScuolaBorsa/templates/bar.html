@@ -856,9 +856,6 @@ h2 {
   <button class="close-btn" aria-label="Close Error">&times;</button>
 </div>
 
-</body>
-
-</body>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
@@ -1108,7 +1105,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const cognomeInput = document.getElementById("cognome");
     const classeInput = document.getElementById("classe");
     const successPopup = document.getElementById("success-popup");
-    const overlayGlobal = document.getElementById("overlay");
 
     btnInvia.addEventListener("click", () => {
         let valid = true;
@@ -1155,7 +1151,7 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        overlayGlobal.classList.add("active");
+        overlay.classList.add("active");
         successPopup.classList.add("active");
     });
 
