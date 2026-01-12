@@ -3,1198 +3,466 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Ordina + Ingredienti</title>
-
+<title>Menu- scuola borsa</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 <style>
-/* --- STILI ORIGINALI (immutati) --- */
-/* --- STILI ORIGINALI (immutati) --- */
-body {
-    margin: 0;
-    padding: 0;
-    font-family: "SF Pro Display", Arial, sans-serif;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background-image: url("https://static.wixstatic.com/media/a24994_e95a621e8db84322a7402a21df89543b~mv2.jpg");
-    background-size: cover;
-    position: relative;
-    overflow: hidden;
-}
-body::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(31, 30, 30, 0.722);
-    backdrop-filter: blur(6px);
-    z-index: 0;
-}
-.card, .total-card {
-    position: relative;
-    z-index: 5;
-    background-color: rgba(0, 0, 0, 0.841);
-}
-.card {
-    width: 400px;
-    border-radius: 18px;
-    padding: 22px;
-    color: white;
-    text-align: left;
-    backdrop-filter: blur(4px);
-    margin-bottom: 18px;
-    max-height: 350px;
-    overflow-y: auto;
-}
-h2 {
-    text-align: center;
-    margin-top: 0;
-    margin-bottom: 10px;
-    font-size: 22px;
-    font-weight: 700;
-}
-.divider {
-    height: 3px;
-    background:#e63946;
-    margin: 20px 0 16px 0;
-    border-radius: 30px;
-}
-.divider1 {
-    height:3px;
-    background:#e63946;
-    border-radius:30px;
-}
-.header-row, .product-row {
-    display: grid;
-    grid-template-columns: 140px 140px 80px;
-    text-align: center;
-    align-items: center;
-}
-.header-row {
-    margin-bottom:12px;
-    font-size:18px;
-    font-weight:600;
-}
-.product-row {
-    margin-bottom:18px;
-    font-size:15px;
-    position: relative;
-}
-.product-name {
-    text-align:left;
-    display:flex;
-    flex-direction:column;
-    align-items:flex-start;
-    gap:5px;
-}
-.qty-box {
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    gap:8px;
-    margin-right:24px;   /* 🔥 sposta tutto il blocco a destra */
-}
+* { margin:0;padding:0;box-sizing:border-box; }
+body { font-family:"Montserrat",sans-serif; background-color:black; color:white; }
+.menu-hero{ min-height:100vh; background-image:url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrvMAfCqsehmJvRUBbDTG0xeR6rlCMzEccNg&s"); background-size:cover; background-position:center; position:relative; display:flex; justify-content:center; align-items:flex-start; text-align:center; padding-top:180px; }
+.menu-hero::after { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(31, 30, 30, 0.505); z-index: 1; }
+.navbar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 50px;
+      padding: 20px 50px;
+      background-color: rgba(22, 22, 22, 0.784);
+      position: fixed;
+      width: 100%;
+      top: 0;
+      height: 150px;
+      z-index: 10;
+      transition: top 0.6s ease;
+    }
 
-.qty-btn {
-    background: rgba(255,255,255,0.18);
-    padding:4px 12px;
-    border-radius:8px;
-    border:none;
-    font-size:18px;
-    color:white;
-    cursor:pointer;
-}
-.price {
-    text-align:right;
-    padding-right:8px;
-    font-size:17px;
-    font-weight:500;
-    font-family:'Segoe UI';
-}
-.ingredient-list {
-    font-size:13px;
-    color:#e63946;
-    font-weight:600;
-}
-.total-card {
-    width:410px;
-    padding:16px;
-    border-radius:0 0 16px 16px;
-    margin-top:-15px;
-    display:flex;
-    color:white;
-    justify-content:space-between;
-    align-items:center;
-}
-.total-price {
-    font-size:25px;
-    font-weight:700;
-    width: 100%;          /* 🔥 prende tutto lo spazio disponibile */
-    text-align: center;
-    margin-left:px;   /* 🔥 centra il testo */
-}
+    .navbar.hidden { top: -100px; }
 
-.checkout-btn {
-    background:#e63946;
-    color:white;
-    border:none;
-    padding:10px 26px;
-    font-size:16px;
-    font-weight:800;
-    border-radius:30px;
-    cursor:pointer;
-    transition:0.2s;
-}
-.checkout-btn:hover {
-    background:white;
-    color:black;
-}
-.card::-webkit-scrollbar {
-    width:10px;
-}
-.card::-webkit-scrollbar-track {
-    background:#333;
-    border-radius:10px;
-}
-.card::-webkit-scrollbar-thumb {
-    background-color:white;
-    border-radius:10px;
-    border:2px solid #333;
-}
-.card::-webkit-scrollbar-thumb:hover {
-    background-color:#e63946;
-}
-.note-input, .info-input {
-    font-size:100%;
-    padding:0.8em;
-    outline:none;
-    border:2px solid white;
-    background-color:transparent;
-    border-radius:20px;
-    width:365px;
-    color:white;
-    margin-top:8px;
-}
-.input-error {
-    border-color:#e63946 !important;
-    animation: shake 0.3s;
-}
-@keyframes shake {
-    0% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    50% { transform: translateX(5px); }
-    75% { transform: translateX(-5px); }
-    100% { transform: translateX(0); }
-}
+    .logo-left { position: absolute; left: 50px; }
+    .logo-left img { width: 120px; }
 
-/* POPUP — overlay */
-.overlay {
-    position: fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    background: rgba(0,0,0,0.6);
-    opacity: 0;
-    display:none;
-    transition: opacity .3s ease;
-    z-index:10;
-}
-.overlay.active {
-    display:block;
-    opacity:1;
-}
+    .nav-center ul { display: flex; gap: 40px; list-style: none; }
+    .nav-center a {
+      color: white;
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 18px;
+      transition: 0.3s;
+      cursor: pointer;
+    }
+    .nav-center a:hover { color:rgb(79, 79, 79); }
 
-/* CARD - Aggiungi Note */
-#ingredient-card {
-    width: 300px;
-    background: rgba(0, 0, 0, 0.914);
-    border-radius: 20px;
-    padding: 24px;
-    display: none;
-    flex-direction: column;
-    gap: 20px;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 15;
-    font-family: 'Franklin Gothic Medium';
-    font-size: 5px;
-}
-#ingredient-card .title {
-    color:white;
-    text-align:center;
-    font-size:24px;
-    font-weight:800;
-}
-#ingredient-card .controls {
-    display:flex;
-    justify-content:space-between;
-    margin-top:20px;
-}
-#ingredient-card .btn {
-    width:115px;
-    padding:14px;
-    border-radius:25px;
-    background:#e63946;
-    color:white;
-    font-weight:800;
-    border:none;
-    cursor:pointer;
-}
+    .social-icons {
+      position: absolute;
+      right: 50px;
+      display: flex;
+      gap: 30px;
+    }
 
-/* popup ingredienti */
-#popup-ingredienti {
-    width: 300px;
-    background: rgba(0, 0, 0, 0.934);
-    padding:20px;
-    border-radius:30px;
-    display:none;
-    flex-direction: column;
-    gap:15px;
-    color:white;
-    position: fixed;
-    top:50%;
-    left:50%;
-    transform: translate(-50%, -50%) scale(.6);
-    transition: .25s ease;
-    z-index:20;
-}
-#popup-ingredienti.active {
-    display:flex;
-    transform: translate(-50%, -50%) scale(1);
-}
-
-.ingredient-row {
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    width:100%;
-    margin-bottom:18px;
-}
-
-/* --- BOTTONE + circolare --- */
-.wrapper {
-  display: inline-flex;
-}
-.wrapper .circle {
-  cursor:pointer;
-  width:42px;
-  height:42px;
-  border-radius:50%;
-  background:#e63946;
-  color:white;
-  font-size:24px;
-  font-weight:700;
-  border:2px solid white;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-}
-
-/* nav buttons */
-.nav-buttons {
-    display:flex;
-    justify-content:space-between;
-    width:100%;
-    margin-top:12px;
-}
-.nav-btn {
-    background:#e63946;
-    color:white;
-    border:none;
-    padding:10px 18px;
-    border-radius:20px;
-    font-weight:700;
-    cursor:pointer;
-}
-
-/* ---------------------------- */
-/*   NUOVO POPUP OPZIONI */
-/* ---------------------------- */
-
-#popup-optioni-ingrediente {
-    width: 220px;
-    background: rgba(0,0,0,0.92);
-    padding: 24px;
-    border-radius: 22px;
-    display: none;
-    flex-direction: column;
-    gap: 15px;
-    font-weight:400;
-    font-size:14px;
-   font-family: 'Montserrat', sans-serif;
-    color: white;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(.7);
-    transition: .25s ease;
-    z-index: 30;
-}
-
-#popup-optioni-ingrediente.active {
-    display: flex;
-    transform: translate(-50%, -50%) scale(1);
-}
-
-.option-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.option-radio {
-    width: 18px;
-    height: 18px;
-}
-
-.option-label {
-    font-size: 16px;
-    cursor: pointer;
-}
-
-#popup-optioni-save {
-    background:#e63946;
-    border:none;
-    padding:12px;
-    color:white;
-    font-weight:700;
-    border-radius:25px;
-    cursor:pointer;
-}
-/* ============================= */
-/* POPUP SUCCESSO ORDINE (NUOVO) */
-/* ============================= */
-
-#success-popup {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(.7);
-    width: 330px;
-    background: rgb(0, 0, 0);
-    border: 1px solid wheat;
-    border-radius: 20px;
-    padding: 30px;
-    text-align: center;
-    display: none;
-    flex-direction: column;
-    gap: 18px;
-    z-index: 200;
-    box-shadow: 0 2px 10px rgb(0 0 0 / 0.2);
-    transition: .25s ease;
-    font-family: Arial, sans-serif;
-}
-.clear-btn {
-    width: 90px;
-    height: 55px;
-    border-radius: 50%;
-    background: #e63946;
-    border: 1px solid white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    margin-right: 12px;
-    transition: 0.2s;
-}
-
-.clear-btn:hover {
-    background: white;
-}
-
-.clear-btn:hover svg {
-    stroke: black;
-}
-
-#success-popup.active {
-    display: flex;
-    transform: translate(-50%, -50%) scale(1);
-}
-
-#success-popup .icon-circle {
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    background: #e63947c3;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0 auto;
-}
-
-#success-popup .icon-circle svg {
-    width: 36px;
-    height: 36px;
-    stroke:white;
-}
-.info-input::placeholder {
-    color: var(--placeholder-color, white);
-}
-
-#success-popup h2 {
-    color:white;
-    font-size: 22px;
-    margin: 0;
-}
-
-#success-popup p {
-    font-size: 16px;
-    margin: 0;
-    line-height: 20px;
-    color:white;
-    font-family:"Montserrat",sans-serif;
-    font-weight: 500;
-}
-
-
-#success-close {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    background: transparent;
-    border: none;
-    font-size: 22px;
-    cursor: pointer;
-    color:  #e63946;
-}
-.option-radio:checked {
-    accent-color: #e63946;
-}
+    .social-icons a {
+      width: 35px;
+      height: 35px;
+      border: 3px solid white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 5px;
+      color: white;
+      font-size: 18px;
+      transition: 0.3s ease;
+      text-decoration: none;
+    }
+    .social-icons a:hover { background-color: white; color: black; }
+.menu-hero::before{content:"";position:absolute;inset:0;background:rgba(0,0,0,0.55);backdrop-filter:blur(3px);z-index:1;}
+.menu-content{position:relative;z-index:3;width:700px;text-align:center;}
+.menu-title-wrapper{ display:flex; align-items:flex-start; justify-content:center; gap:12px; margin-bottom:15px; }
+.menu-subtitle{font-size:45px;font-weight:300;margin:0;}
+.yellow-line{width:60px;height:4px;background-color:#e63946;}
+.menu-title{font-size:75px;font-style:italic;font-weight:800;margin:0;}
+.menu-list{ display:flex; border-radius:5px; justify-content:center; width:900px; margin-left:-120px; margin-top:20px; border:2px solid white; height:45px; }
+.menu-list a{ flex:1; display:flex; justify-content:center; align-items:center; color:white; border-radius:5px; text-decoration:none; font-weight:600; font-size:18px; background:transparent; border-right:1px solid white; cursor:pointer; transition:0.3s; letter-spacing:10px; font-family:Verdana; }
+.menu-list a:last-child{border-right:none;}
+.menu-list a.active{background:white;color:black;font-weight:700;}
+#menu-lists{ margin-top:20px; text-align:left; display:none; width:550px; margin-left:-120px; min-height:250px; }
+.menu-item{ font-size:18px; margin-bottom:18px; display:flex; justify-content:space-between; font-weight:600; width:100%; opacity:0; transform:translateY(15px); animation:fadeUp 0.5s ease forwards; }
+@keyframes fadeUp{to{opacity:1;transform:translateY(0);}}
+.dots{flex-grow:10;border-bottom:2px dashed white;margin:0 10px;opacity:0.3;}
+.price{display:flex;align-items:center;font-weight:600;}
+.euro{font-size:16px;position:relative;top:-2px;margin-right:3px;opacity:0.8;}
+.select-square{ width:25px;height:25px;border:2px dashed white;border-radius:5px;margin-right:15px;cursor:pointer;transition:0.3s ease; }
+.select-square.selected{background-color:#e63946;border-color:#e63946;}
 #error-box {
-    font-family: "Montserrat",sans-serif; 
   position: fixed;
-  top: -200px;
+  top: -200px; /* era bottom:20px -> ORA è nascosto sopra */
   left: 50%;
   transform: translateX(-50%);
-  background: rgb(26, 26, 26);
+  background: rgb(26, 26, 26);;
   padding: 15px 20px;
   border-radius: 10px;
+  box-shadow: 0 2px 10px rgb(0 0 0 / 0.2);
   color: whitesmoke;
   font-weight: 700;
+  font-family: "Montserrat", sans-serif;
+  font-size: 18px;
+  display: block;
   width: 330px;
   transition: top 0.5s ease;
-  z-index: 9999;
+  z-index: 9999; 
   border: 1px solid whitesmoke;
 }
 
 #error-box.show {
-  top: 40px;
+  top: 40px;   /* posizione quando scende */
 }
 
-#error-box .confirm-btn {
-  margin-top: 12px;
-  width: 100%;
-  padding: 10px;
-  border-radius: 10px;
-  background: #e63946;
-  color: white;
-  border: none;
-  font-weight: 800;
-  cursor: pointer;
-  font-family: verdana;
-  font-weight: 800;
-}
-#error-box .confirm-btn:hover {
-  background:white;
-  color: black;
+#error-box p {
+  margin: 0;
+  opacity: 0.6;
+  color: whitesmoke;
 }
 
 #error-box .close-btn {
   position: absolute;
   top: 10px;
   right: 15px;
-  font-size: 20px;
-  color: #e63946;
-  background: none;
-  border: none;
   cursor: pointer;
+  font-weight: 900;
+  font-size: 20px;
+  color: #cc4b4b;
+  border: none;
+  background: none;
 }
-.nav-buttons .nav-btn:hover {
-    background:white;
-    color:black;
+
+#pronto-btn{
+    margin-top:10px;
+    padding:14px 32px;
+    width:200px;
+    font-size:20px;
+    font-weight:800;
+    background-color:#e63946;
+    color:white;
+    border:none;
+    border-radius:30px;
+    cursor:pointer;
+    opacity:0;
+    transform:translateY(15px);
+    animation:fadeUp 0.7s ease forwards;
 }
-#popup-allergeni-ingrediente {
-    width: 250px;
-    background: rgba(0,0,0,0.92);
-    padding: 24px;
-    border-radius: 22px;
-    display: none;
-    flex-direction: column;
-    gap: 15px;
-    font-weight:400;
-    font-size:14px;
-    font-family: 'Montserrat', sans-serif;
+#pronto-btn:hover{ background:white; color:black; }
+.back-btn {
+    position: absolute;
+    top: 170px;
+    left: 50px;
+    background-color: #e63946;
     color: white;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(.7);
-    transition: .25s ease;
-    z-index: 30;
-    font-size:15px;
-}
-
-#popup-allergeni-ingrediente.active {
-    display: flex;
-    transform: translate(-50%, -50%) scale(1);
-}
-/* ============================= */
-/* ALLERGENI – CERCHIO TIPO RADIO */
-/* ============================= */
-
-/* ============================= */
-/* ALLERGENI – STILE OPTION CARD */
-/* ============================= */
-
-.allergene-row {
+    border: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 16px;
+    transition: 0.3s ease;
+    z-index: 11;
     display: flex;
     align-items: center;
-    gap: 12px;
-    cursor: pointer;
+    gap: 8px;
 }
-
-/* checkbox mascherato come radio */
-.allergene-radio {
-    appearance: none;
-    -webkit-appearance: none;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    border: 2px solid white;
-    background: transparent;
-    position: relative;
-    cursor: pointer;
-    background-color: rgb(236, 236, 236);
-}
-
-/* pallino interno (IDENTICO al radio) */
-.allergene-radio::after {
-    content: "";
-    width: 12px;
-    height: 12px;
-    background: #e63946;
-    border-radius: 50%;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(0);
-    transition: 0.15s ease;
-    border-color: #e63946;
-   
-}
-
-/* selezionato */
-.allergene-radio:checked::after {
-    transform: translate(-50%, -50%) scale(1);
-}
-.note-top-buttons {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 12px;
-}
-
-.note-action-btn {
-    background: #e63946;
-    border: 2px solid white;
-    color: white;
-    padding: 8px 18px;
-    border-radius: 20px;
-    font-weight: 800;
-    cursor: pointer;
-    transition: 0.2s;
-    font-size: 14px;
-}
-
-.note-action-btn:hover {
-    background: white;
+.back-btn:hover {
+    background-color: white;
     color: black;
 }
-#popup-ingredienti .divider {
-    margin-top: 0px;     /* avvicina al blocco bottoni */
-    margin-bottom: -4px;  /* niente spazio sotto */
-}
-#popup-extra-ingredienti {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(0,0,0,0.92);
-    padding: 20px;
-    border-radius: 15px;
-    z-index: 1001;
-    width: 300px;
-    color: white;
-}
-
-#popup-extra-ingredienti.active {
-    display: flex;
-    flex-direction: column;
-}
-
-#extra-ingredienti-container label {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-.ingredient-row {
-    margin-top: 10px; /* distanza sopra ogni ingrediente */
-}
-#popup-allergeni-ingrediente input[type="checkbox"] {
-    appearance: none;
-    -webkit-appearance: none;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    border: 2px solid white;
-    background-color: transparent;
-    cursor: pointer;
-    position: relative;
-}
-
-#popup-allergeni-ingrediente input[type="checkbox"]:checked::after {
-    content: "";
-    width: 16px;
-    height: 16px;
-    background: #e63946;
-    border-radius: 50%;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-/* ==========================
-   Checkbox extra stile card
-========================== */
-
-.extra-card-label input[type="checkbox"] {
-    appearance: none;
-    -webkit-appearance: none;
-    width: 20px;
-    height: 20px;
-    border: 2px solid #d9d4cc;
-    border-radius: 50%;
-    display: inline-block;
-    position: relative;
-    cursor: pointer;
-    transition: background 0.2s, border 0.2s;
-}
-
-.extra-card-label input[type="checkbox"]:checked {
-    background-color: #e63946; /* colore rosso come allergeni */
-   
-}
-
-.extra-card-label input[type="checkbox"]:checked::after {
-    content: '';
-    position: absolute;
-    top: 4px;
-    left: 4px;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background:transparent;
-}
-
-.extra-card-label span {
-    font-size: 16px;
-    color:white;
-}
-
-
+/* LOGIN & REGISTER (COPIATO DAL PRIMO FILE) */
+#login-modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 1000; }
+.form-container { width: 320px; border-radius: 0.75rem; background-color: rgba(22, 22, 22, 0.784); padding: 2rem; color: white; }
+.title { text-align: center; font-size: 1.5rem; line-height: 2rem; font-weight: 700; margin-bottom: 1rem; }
+.form { margin-top: 1.5rem; }
+.input-group { margin-top: 0.25rem; font-size: 0.875rem; line-height: 1.25rem; }
+.input-group label { display: block; margin-bottom: 4px; color: white; }
+.input-group input { width: 100%; border-radius: 0.375rem; border: 1px solid white; outline: 0; background-color: rgba(22, 22, 22, 0.508); padding: 0.75rem 1rem; color: whitesmoke; }
+.input-group input:focus { border-color: white; }
+.forgot { display: flex; justify-content: flex-end; font-size: 0.75rem; color: rgba(156, 163, 175,1); margin: 8px 0 14px 0; }
+.forgot a,.signup a { color: rgba(243, 244, 246, 1); text-decoration: none; font-size: 14px; }
+.sign { display: block; width: 100%; background-color: #e63946; padding: 0.75rem; text-align: center; color: white; border: none; border-radius: 0.375rem; font-weight: 600; cursor:pointer; }
+.social-message { display: flex; align-items: center; padding-top: 1rem; }
+.line { height: 1px; flex: 1 1 0%; background-color: rgba(55, 65, 81, 1); }
+.social-message .message { padding: 0 0.75rem; font-size: 0.875rem; color: rgba(156, 163, 175, 1); }
+#register-form { margin-top: 1rem; display:none; }
 </style>
 </head>
-
 <body>
-<div class="card">
-    <h2 style="font-size:30px;font-weight:800;font-family:verdana;">ORDINA</h2>
-    <div class="divider"></div>
+<div id="contenitore"
+  data="{{data}}"></div>
 
-    <div class="header-row">
-        <div style="text-align:left;padding-left:8px;">Prodotto</div>
-        <div style="margin-right:30px;">Quantità</div>
-        <div style="text-align:right;">Prezzo</div>
+<header class="navbar" id="navbar">
+  <div class="logo-left">
+    <img src="https://raw.githubusercontent.com/Rashmika274/ordini-bar-scuola-borsa/main/static/logo.png" alt="Logo">
+  </div>
+  <nav class="nav-center">
+    <ul>
+      <li><a href="/">Home</a></li>
+      <li><a href="/chi siamo">Chi siamo</a></li>
+      <li><a href="/gallery">Galleria</a></li>
+      <li><a href="/contatti">Contatti</a></li>
+      <li><a id="login-btn">Login</a></li>
+    </ul>
+  </nav>
+
+  <div class="social-icons">
+    <a href="https://www.facebook.com/aziendaspecialediformazionescuolapaoloborsa/"><i class="fab fa-facebook-f"></i></a>
+    <a href="https://www.instagram.com/scuola_borsa/"><i class="fab fa-instagram"></i></a>
+    <a href="https://www.youtube.com/@ScuolaPaoloBorsaMonza"><i class="fab fa-youtube"></i></a>
+  </div>
+</header>
+
+<button class="back-btn" onclick="window.history.back()">
+  <i class="fas fa-arrow-left"></i> Indietro
+</button>
+
+<section class="menu-hero" id="the-menu">
+  <div class="menu-content">
+    <div class="menu-title-wrapper">
+      <div>
+        <h3 class="menu-subtitle">The</h3>
+        <div class="yellow-line"></div>
+      </div>
+      <h1 class="menu-title">Menu</h1>
     </div>
-
-    <div id="product-container"></div>
-
-    <div class="divider"></div>
-
-    <h2 style="margin-top:60px;">NOTE GENERALI</h2>
-    <div class="divider"></div>
-    <input type="text" class="note-input" placeholder="Note Generali"/>
-
-    <h3 style="margin-top:40px;text-align: center;font-size: 23px;margin-right: 19px;">INFO</h3>
-    <div class="divider"></div>
-
-    <input id="nome" type="text" class="note-input" placeholder="Nome"/>
-    <input id="cognome" type="text" class="note-input" placeholder="Cognome"/>
-    <input id="classe" type="text" class="note-input" placeholder="Classe" list="lista-classi"/>
-    <datalist id="lista-classi">
-        <option value="1D Operatore Informatica">
-        <option value="2D Operatore Informatica">
-        <option value="3D Operatore Informatica">
-        <option value="1D Bar&Cucina">
-        <option value="2D Bar&Cucina">
-        <option value="3D Bar&Cucina">
-        <option value="1D Agricoltura">
-        <option value="2D Agricoltura">
-        <option value="3D Agricoltura">
-    </datalist>
-</div>
-
-<div class="total-card">
-
-    <!-- 🔥 BOTTONE CESTINO -->
-    <button id="clearCartBtn" class="clear-btn">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"
-            stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="3 6 5 6 21 6"></polyline>
-            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
-            <path d="M10 11v6"></path>
-            <path d="M14 11v6"></path>
-            <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path>
-        </svg>
-    </button>
-
-    <div class="total-price" id="total">€0,00</div>
-    <button class="checkout-btn" id="invia" style="border: 1px solid white;">INVIA</button>
-
-</div>
-
-<!-- overlay -->
-<div class="overlay" id="overlay"></div>
-
-<!-- popup selezione ingredienti -->
-<div id="ingredient-card">
-    <h1 class="title">AGGIUNGI NOTE</h1>
-    <div class="divider1" style="width:100px;margin-left:100px;margin-bottom:20px;"></div>
-    <div class="controls" style="justify-content:center;">
-        <button class="btn" id="apriIngredienti">NOTE</button>
+    <div class="menu-list">
+      <a data-menu="share">CIBI</a>
+      <a data-menu="sustain">BEVANDE</a>
+      <a data-menu="indulge">DOLCI</a>
     </div>
-</div>
+    <div id="menu-lists"></div>
+    <button id="pronto-btn" class="show-btn">PRONTO</button>
+  </div>
+</section>
 
-<!-- POPUP Note prodotti -->
-<div id="popup-ingredienti">
-    <h2 style="color:white;font-weight:800;font-family:verdana;font-size:20px;text-align:center;">
-        Note Prodotti
-    </h2>
-
-    <div class="note-top-buttons">
-        <button class="note-action-btn" id="aggiungi-ingrediente">Aggiungi</button>
-        <button class="note-action-btn" id="open-allergeni-top">Allergeni</button>
-    </div>
-
-    <div class="divider"></div>
-
-    <!-- 🔥 QUESTO SERVE -->
-    <div id="ingredient-container"></div>
-
-    <div class="nav-buttons">
-        <button class="nav-btn" id="back" style="margin-left: 113px;">Chiudi</button>
-    </div>
-</div>
-
-<!-- POPUP EXTRA INGREDIENTI -->
-<div id="popup-extra-ingredienti">
-    <h2 style="text-align:center; color:white; font-family:verdana; font-weight:800;">Aggiungi Extra</h2>
-    <div class="divider"></div>
-    <div id="extra-ingredienti-container" style="display:flex; flex-direction:column; gap:10px; padding: 10px;"></div>
-    <button id="popup-extra-save" style="
-        background:#e63946;  
-        border:none; 
-        padding:12px; 
-        color:white; 
-        font-weight:700; 
-        border-radius:25px; 
-        cursor:pointer; 
-        margin-top:15px;">Salva</button>
-</div>
-
-<!-- POPUP ALLERGENI -->
-<div id="popup-allergeni-ingrediente">
-    <h2 style="text-align:center; color:white; font-family:verdana; font-weight:800; margin-bottom:1px;">Seleziona Allergeni</h2>
-    <div class="divider"></div>
-    <div id="allergeni-container" style="display:flex; flex-direction:column; gap:10px;"></div>
-    <button id="popup-allergeni-save" style="
-        background:#e63946; 
-        border:none; 
-        padding:12px; 
-        color:white; 
-        font-weight:700; 
-        border-radius:25px; 
-        cursor:pointer; 
-        margin-top:15px;">Salva</button>
-</div>
-
-<!-- POPUP SUCCESSO ORDINE -->
-<div id="success-popup">
-    <button id="success-close">✕</button>
-
-    <div class="icon-circle">
-        <svg fill="none" stroke-width="2" stroke="green" stroke-linecap="round"
-            stroke-linejoin="round" viewBox="0 0 24 24">
-            <path d="M20 6L9 17l-5-5"></path>
-        </svg>
-    </div>
-
-    <h2>Ordine convalidato</h2>
-    <p>Grazie per l'ordine<br>Noi ti porterà il tuo ordine da 10 minuti.</p>
-</div>
+<!-- ERROR BOX -->
 <div id="error-box">
-  <strong style="font-family: verdana;font-weight:800;font-size: 17px;">Attenzione!</strong><br>
-  <p style="font-weight: 600;font-size: 15px;">Vuoi cancellare tutti gli ordini?</p>
-
-  <button class="confirm-btn">SÌ</button>
-
+  <strong>Errore !</strong><br>
+  <p>Oh no!<br>Devi selezionare almeno un piatto</p>
   <button class="close-btn" aria-label="Close Error">&times;</button>
 </div>
 
-</body>
+<!-- LOGIN MODAL -->
+<div id="login-modal">
+  <div style="position:relative;">
+    <span id="close-login" style="position:absolute; top:-20px; right:-20px; cursor:pointer; font-size:30px; color:white;">&times;</span>
 
-</body>
+    <div class="form-container">
+      
+      <!-- LOGIN FORM -->
+      <p class="title">Login</p>
+      <form class="form" id="login-form">
+        <div class="input-group">
+          <label for="username"style="color: white;">Username</label>
+          <input type="text" name="username" id="username" placeholder="">
+        </div>
+        <div class="input-group">
+          <label for="password"style="color: white;">Password</label>
+          <input type="password" name="password" id="password" placeholder="">
+          <div class="forgot">
+            <a href="#">Forgot Password ?</a>
+          </div>
+        </div>
+        <button class="sign" style="color: white;">Sign in</button>
+      </form>
+
+      <!-- SOCIAL LOGIN MESSAGE -->
+      <div class="social-message">
+        <div class="line"></div>
+        <p class="message" style="color: rgba(245, 245, 245, 0.742);">Login with social accounts</p>
+        <div class="line"></div>
+      </div>
+
+      <!-- LINK TO REGISTER -->
+      <p class="signup" style="color:rgba(245, 245, 245, 0.742);">
+        Don't have an account? <a id="to-register" style="cursor:pointer;">Sign up</a>
+      </p>
+
+      <!-- REGISTER FORM -->
+      <div id="register-form" style="display:none;">
+        <p class="title"></p>
+        <form class="form" id="register-form-inner">
+          <div class="input-group">
+            <label for="reg-first" style="color: white;">First Name</label>
+            <input type="text" id="reg-first" placeholder="">
+          </div>
+          <div class="input-group">
+            <label for="reg-last" style="color: white;" >Last Name</label>
+            <input type="text" id="reg-last" placeholder="">
+          </div>
+          <div class="input-group">
+            <label for="reg-email" style="color: white;" >Email</label>
+            <input type="email" id="reg-email" placeholder="">
+          </div>
+          <div class="input-group">
+            <label for="reg-pass" style="color: white;" >Password</label>
+            <input type="password" id="reg-pass" placeholder="">
+          </div>
+          <div class="input-group">
+            <label for="reg-pass2" style="color: white;" >Confirm Password</label>
+            <input type="password" id="reg-pass2" placeholder="">
+          </div>
+          <button class="sign" style="color:white; margin-top:6px;">Create Account</button>
+        </form>
+        <p class="signup" style="color:rgba(245, 245, 245, 0.742);">
+          Already have an account? <a id="to-login" style="cursor:pointer;">Sign in</a>
+        </p>
+      </div>
+
+    </div>
+  </div>
+</div>
 <script>
-document.addEventListener("DOMContentLoaded", function () {
+const datiDB = document.getElementById("contenitore").getAttribute("data");
+console.log(datiDB);
+const menuLinks=document.querySelectorAll(".menu-list a");
+const listContainer=document.getElementById("menu-lists");
+const prontoBtn=document.getElementById("pronto-btn");
+const menuData={
+  share:[["Pizzette",2],["Ravioli",30],["Risotto",15],["Panino",8],["Focaccia",2],["Patatine",4]],
+  sustain:[["Capuccino",2.5],["caffe",2],["Tè",1.5],["Iced Coffee",5]],
+  indulge:[["Biscotti",3],["Torta",5],["Tiramisù",5],["Gelato",5],["Pancake",3]]
+};
 
-    let products = JSON.parse(localStorage.getItem("orderedItems")) || [];
-    products = products.filter(p => p.name && !isNaN(p.price));
+// Carichiamo selectedItems da localStorage
+let selectedItems=JSON.parse(localStorage.getItem("selectedItems"))||{};
+// Rimuoviamo subito selectedItems per partire puliti (reset)
+localStorage.removeItem("selectedItems");
+selectedItems = {};
 
-    const productContainer = document.getElementById("product-container");
-    const totalPriceEl = document.getElementById("total");
 
-    const ingredientiProdotto = {
-        "Focaccia": ["Pane", "Pomodoro", "Mozzarella"],
-        "Cup Cake": ["Farina", "Zucchero", "Burro", "Uova", "Vaniglia"],
-        "Pizzette": ["Pomodoro", "Mozzarella", "Basilico"],
-        "Panino": ["Pane", "Prosciutto", "Formaggio", "Insalata"],
-    };
-
-    function defaultIngredienti(nome) {
-        return [`${nome} Base`, "Sale", "Olio", "Ingrediente Standard"];
-    }
-
-    products.forEach(prod => {
-        if (!prod.ingredients || prod.ingredients.length === 0) {
-            prod.ingredients = ingredientiProdotto[prod.name] || defaultIngredienti(prod.name);
-            prod.extra = prod.extra || [];
-            prod.allergeni = prod.allergeni || [];
-        }
+function renderMenu(category){
+  const items=menuData[category];
+  listContainer.style.display="block";
+  listContainer.innerHTML=items.map(item=>`
+    <div class="menu-item" style="animation-delay:${0.1*items.indexOf(item)}s">
+      <div style="display:flex;align-items:center;">
+        <div class="select-square ${selectedItems[item[0]]?"selected":""}"></div>
+        <span>${item[0]}</span>
+      </div>
+      <div class="dots"></div>
+      <span class="price"><span class="euro">€</span>${item[1]}</span>
+    </div>
+  `).join("");
+  const squares=document.querySelectorAll(".select-square");
+  squares.forEach((sq,index)=>{
+    sq.addEventListener("click",()=>{
+      const name=items[index][0];
+      if(selectedItems[name]){
+        delete selectedItems[name];
+        sq.classList.remove("selected");
+      } else {
+        selectedItems[name]=items[index][1];
+        sq.classList.add("selected");
+      }
+      localStorage.setItem("selectedItems",JSON.stringify(selectedItems));
+      updateProntoBtn();
     });
+  });
+}
 
-    localStorage.setItem("orderedItems", JSON.stringify(products));
-
-    let currentProductIndex = null;
-    let currentProdExtra = null;
-
-    /* ================================
-       RENDER LISTA PRODOTTI
-    ================================= */
-    function renderProducts() {
-        productContainer.innerHTML = "";
-        let total = 0;
-
-        products.forEach((p, i) => {
-            let extraHTML = "";
-            if (p.extra?.length) {
-                extraHTML += `<div class="ingredient-list">${p.extra.join(", ")}</div>`;
-            }
-
-            if (p.allergeni?.length) {
-                extraHTML += `<div class="ingredient-list allergeni-list">Senza: ${p.allergeni.join(", ")}</div>`;
-            }
-
-            let row = document.createElement("div");
-            row.className = "product-row";
-
-            row.innerHTML = `
-                <div class="product-name">
-                    <div style="display:flex; align-items:center; gap:10px;">
-                        <button class="note-btn" data-index="${i}"
-                            style="width:42px;height:42px;border-radius:50%; background:#f5f0e7;border:2px solid #d9d4cc; display:flex;justify-content:center;align-items:center;cursor:pointer;">
-                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
-                                stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M12 20h9"/>
-                                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/>
-                            </svg>
-                        </button>
-                        <span>${p.name}</span>
-                    </div>
-                    ${extraHTML}
-                </div>
-
-                <div class="qty-box">
-                    <button class="qty-btn" data-index="${i}" data-action="minus">-</button>
-                    <span class="qty">${p.qty || 1}</span>
-                    <button class="qty-btn" data-index="${i}" data-action="plus">+</button>
-                </div>
-
-                <div class="price">€${p.price * (p.qty || 1)}</div>
-            `;
-
-            productContainer.appendChild(row);
-            total += p.price * (p.qty || 1);
-        });
-
-        totalPriceEl.textContent = `€${total},00`;
-    }
-
-    /* ================================
-       QUANTITÀ + / −
-    ================================= */
-    productContainer.addEventListener("click", function (e) {
-        if (e.target.classList.contains("qty-btn")) {
-            const index = e.target.dataset.index;
-            const action = e.target.dataset.action;
-
-            if (action === "plus") {
-                if ((products[index].qty || 1) < 10) {
-                    products[index].qty = (products[index].qty || 1) + 1;
-                }
-            } else {
-                products[index].qty = Math.max(1, (products[index].qty || 1) - 1);
-            }
-
-            localStorage.setItem("orderedItems", JSON.stringify(products));
-            renderProducts();
-            return;
-        }
-
-        const noteBtn = e.target.closest(".note-btn");
-        if (noteBtn) {
-            currentProductIndex = noteBtn.dataset.index;
-            showIngredientCard();
-        }
-    });
-
-    /* ================================
-       POPUP INGREDIENTI
-    ================================= */
-    const overlay = document.getElementById("overlay");
-    const ingredientCard = document.getElementById("ingredient-card");
-    const popupIngredienti = document.getElementById("popup-ingredienti");
-    const ingredientContainer = document.getElementById("ingredient-container");
-
-    function showIngredientCard() {
-        ingredientCard.style.display = "flex";
-        overlay.classList.add("active");
-    }
-
-    function hideIngredientCard() {
-        ingredientCard.style.display = "none";
-    }
-
-    document.getElementById("apriIngredienti").addEventListener("click", () => {
-        hideIngredientCard();
-        showPopupIngredienti();
-    });
-
-    /* ================================
-       NOTE PRODOTTI
-    ================================= */
-    function showPopupIngredienti() {
-        popupIngredienti.classList.add("active");
-        overlay.classList.add("active");
-
-        ingredientContainer.innerHTML = "";
-        const prod = products[currentProductIndex];
-
-        prod.ingredients.forEach(ing => {
-            let row = document.createElement("div");
-            row.className = "ingredient-row";
-            row.innerHTML = `<span>${ing}</span>`;
-            ingredientContainer.appendChild(row);
-        });
-    }
-
-    /* ================================
-       POPUP ALLERGENI
-    ================================= */
-    const popupAllergeni = document.getElementById("popup-allergeni-ingrediente");
-    const allergeniContainer = document.getElementById("allergeni-container");
-
-    function openPopupAllergeni(prod) {
-        allergeniContainer.innerHTML = "";
-        prod.allergeni = prod.allergeni || [];
-
-        prod.ingredients.forEach(ing => {
-            const row = document.createElement("div");
-            row.innerHTML = `
-                <label class="allergene-row">
-                    <input type="checkbox" value="${ing}" ${prod.allergeni.includes(ing) ? "checked" : ""}>
-                    <span> Senza ${ing}</span>
-                </label>
-            `;
-            allergeniContainer.appendChild(row);
-        });
-
-        popupAllergeni.classList.add("active");
-        overlay.classList.add("active");
-    }
-
-    document.getElementById("popup-allergeni-save").addEventListener("click", () => {
-        const prod = products[currentProductIndex];
-        prod.allergeni = Array.from(allergeniContainer.querySelectorAll("input:checked"))
-            .map(cb => cb.value);
-
-        localStorage.setItem("orderedItems", JSON.stringify(products));
-        popupAllergeni.classList.remove("active");
-        overlay.classList.remove("active");
-        renderProducts();
-    });
-
-    /* ================================
-       BOTTONI IN ALTO NOTE PRODOTTI + EXTRA
-    ================================= */
-    const popupExtra = document.getElementById("popup-extra-ingredienti");
-    const extraContainer = document.getElementById("extra-ingredienti-container");
-
-    document.getElementById("aggiungi-ingrediente").addEventListener("click", () => {
-        const prod = products[currentProductIndex];
-        currentProdExtra = prod;
-
-        extraContainer.innerHTML = "";
-
-        // Checkbox extra nello stesso stile degli allergeni
-        prod.ingredients.forEach(ing => {
-            const label = document.createElement("label");
-            label.className = "extra-card-label";
-            label.innerHTML = `
-                <input type="checkbox" value="${ing}" ${prod.extra.includes(`+ ${ing}`) ? "checked" : ""}>
-                <span>+ ${ing}</span>
-            `;
-            extraContainer.appendChild(label);
-        });
-
-        popupExtra.classList.add("active");
-        overlay.classList.add("active");
-    });
-
-    document.getElementById("popup-extra-save").addEventListener("click", () => {
-        const prod = currentProdExtra;
-        const checkboxes = extraContainer.querySelectorAll("input[type='checkbox']");
-
-        prod.extra = [];
-        checkboxes.forEach(cb => {
-            if (cb.checked) prod.extra.push(`+ ${cb.value}`);
-        });
-
-        localStorage.setItem("orderedItems", JSON.stringify(products));
-        renderProducts();
-
-        popupExtra.classList.remove("active");
-    });
-
-    document.getElementById("open-allergeni-top").addEventListener("click", () => {
-        const prod = products[currentProductIndex];
-        openPopupAllergeni(prod);
-    });
-
-    document.getElementById("back").addEventListener("click", () => {
-        popupIngredienti.classList.remove("active");
-        overlay.classList.remove("active");
-    });
-
-    /* ================================
-       VALIDAZIONE E INVIO ORDINE
-    ================================= */
-    const btnInvia = document.getElementById("invia");
-    const nomeInput = document.getElementById("nome");
-    const cognomeInput = document.getElementById("cognome");
-    const classeInput = document.getElementById("classe");
-    const successPopup = document.getElementById("success-popup");
-    const overlayGlobal = document.getElementById("overlay");
-
-    btnInvia.addEventListener("click", () => {
-        let valid = true;
-
-        function checkNameField(input, label) {
-            let value = input.value.trim();
-            let validName = /^[A-Za-zÀ-ÖØ-öø-ÿ]{3,}$/;
-
-            input.classList.remove("input-error");
-            if (!validName.test(value)) {
-                valid = false;
-                input.classList.add("input-error");
-                input.value = "";
-                input.placeholder = `⚠ Scrivi il ${label}`;
-                input.style.setProperty("--placeholder-color", "#e63946");
-            }
-        }
-
-        function checkClasseField(input) {
-            let value = input.value.trim();
-            let opzioni = Array.from(document.querySelectorAll("#lista-classi option")).map(o => o.value);
-
-            if (!opzioni.includes(value)) {
-                input.classList.add("input-error");
-                input.value = "";
-                input.placeholder = "⚠ Scrivi la classe";
-                input.style.setProperty("--placeholder-color", "#e63946");
-                return false;
-            }
-            return true;
-        }
-
-        checkNameField(nomeInput, "nome");
-        checkNameField(cognomeInput, "cognome");
-        if (!checkClasseField(classeInput)) valid = false;
-
-        if (!valid) {
-            nomeInput.scrollIntoView({ behavior: "smooth", block: "center" });
-            return;
-        }
-
-        if (!products.length) {
-            alert("Devi ordinare almeno un prodotto!");
-            return;
-        }
-
-        overlayGlobal.classList.add("active");
-        successPopup.classList.add("active");
-    });
-
-    /* ================================
-       CHIUSURA SUCCESS + RESET ORDINE
-    ================================= */
-    document.getElementById("success-close").addEventListener("click", () => {
-        localStorage.removeItem("orderedItems");
-        location.reload();
-    });
-
-    /* ================================
-       SVUOTA ORDINE (CESTINO)
-    ================================= */
-    const errorBox = document.getElementById("error-box");
-    const clearBtn = document.getElementById("clearCartBtn");
-    const confirmClearBtn = errorBox.querySelector(".confirm-btn");
-    const closeErrorBtn = errorBox.querySelector(".close-btn");
-
-    clearBtn.addEventListener("click", () => {
-        errorBox.classList.add("show");
-    });
-
-    closeErrorBtn.addEventListener("click", () => {
-        errorBox.classList.remove("show");
-    });
-
-    confirmClearBtn.addEventListener("click", () => {
-        localStorage.removeItem("orderedItems");
-        location.reload();
-    });
-
-    /* ================================
-       START
-    ================================= */
-    renderProducts();
-
+// Codice errore visuale
+const errorBox = document.getElementById("error-box");
+const errorCloseBtn = errorBox.querySelector(".close-btn");
+errorCloseBtn.addEventListener("click", () => {
+  errorBox.style.display = "none";
 });
 
-</script>
+menuLinks.forEach(link=>{
+  link.addEventListener("click",()=>{
+    menuLinks.forEach(btn=>btn.classList.remove("active"));
+    link.classList.add("active");
+    renderMenu(link.dataset.menu);
+  });
+});
 
+let currentCategory = "share"; // default CIBI
+
+menuLinks.forEach(link => {
+  link.addEventListener("click", () => {
+    menuLinks.forEach(btn => btn.classList.remove("active"));
+    link.classList.add("active");
+    currentCategory = link.dataset.menu; // aggiorna categoria attiva
+    renderMenu(currentCategory);
+  });
+});
+
+prontoBtn.addEventListener("click", () => {
+  if (Object.keys(selectedItems).length === 0) {
+    // Aggiorna il messaggio in base alla categoria
+    let tipo = "";
+    switch (currentCategory) {
+      case "share":
+        tipo = "piatto di cibo";
+        break;
+      case "sustain":
+        tipo = "bevanda";
+        break;
+      case "indulge":
+        tipo = "dolce";
+        break;
+      default:
+        tipo = "prodotto";
+    }
+
+    errorBox.querySelector("p").innerHTML = `Oh no!<br>Devi selezionare almeno un ${tipo}`;
+    errorBox.classList.add("show");
+
+    setTimeout(() => {
+      errorBox.classList.remove("show");
+    }, 3000);
+
+    return;
+  }
+
+  // Se ci sono selezioni, salva ordine e vai alla pagina menu
+  const ordered = [];
+  for (const [name, price] of Object.entries(selectedItems)) {
+    ordered.push({ name, price });
+  }
+  localStorage.setItem("orderedItems", JSON.stringify(ordered));
+  window.location.href = "/orders";
+});
+
+
+menuLinks[0].click();
+
+
+/* LOGIN MODAL JS */
+const loginBtn = document.getElementById('login-btn');
+const loginModal = document.getElementById('login-modal');
+const closeLogin = document.getElementById('close-login');
+
+loginBtn.addEventListener('click', () => {
+  loginModal.style.display = 'flex';
+});
+
+closeLogin.addEventListener('click', () => {
+  loginModal.style.display = 'none';
+});
+
+window.addEventListener('click', (e) => {
+  if (e.target === loginModal) {
+    loginModal.style.display = 'none';
+  }
+});
+
+// SWITCH LOGIN ↔ REGISTER
+const loginForm = document.getElementById("login-form");
+const registerForm = document.getElementById("register-form");
+const toRegister = document.getElementById("to-register");
+const toLogin = document.getElementById("to-login");
+const formContainer = document.querySelector(".form-container");
+const socialMessage = document.querySelector(".social-message");
+const titleText = formContainer.querySelector(".title");
+
+// Mostra register
+toRegister.addEventListener("click", () => {
+  loginForm.style.display = "none";
+  registerForm.style.display = "block";
+  socialMessage.style.display = "none";
+  titleText.innerText = "Register";
+});
+
+// Torna a login
+toLogin.addEventListener("click", () => {
+  loginForm.style.display = "block";
+  registerForm.style.display = "none";
+  socialMessage.style.display = "flex";
+  titleText.innerText = "Login";
+});
+</script>
+</body>
 </html>

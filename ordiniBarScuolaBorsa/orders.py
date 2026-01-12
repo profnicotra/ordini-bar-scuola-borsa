@@ -8,4 +8,4 @@ def orders():
     data = {"title" : "Menu Bar Scuola Borsa",
         "open": True,   
         "items" : [models.get_products()]}
-    return render_template('orders.html', data = data)3
+    return render_template('orders.html', data = data)
