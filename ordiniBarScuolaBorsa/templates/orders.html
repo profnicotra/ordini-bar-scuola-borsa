@@ -867,6 +867,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const productContainer = document.getElementById("product-container");
     const totalPriceEl = document.getElementById("total");
+//salvare i prodotti ordinati//
+    function saveOrderedItems() {
+        localStorage.setItem("orderedItems", JSON.stringify(products));
+        window.orderedProducts = products;
+    }
+
+    // espone i prodotti ordinati come variabile globale per uso esterno
+    window.orderedProducts = products;
 
     const ingredientiProdotto = {
         "Focaccia": ["Pane", "Pomodoro", "Mozzarella"],
@@ -887,7 +895,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    localStorage.setItem("orderedItems", JSON.stringify(products));
+    saveOrderedItems();
 
     let currentProductIndex = null;
     let currentProdExtra = null;
@@ -960,7 +968,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 products[index].qty = Math.max(1, (products[index].qty || 1) - 1);
             }
 
-            localStorage.setItem("orderedItems", JSON.stringify(products));
+            saveOrderedItems();
             renderProducts();
             return;
         }
@@ -1042,7 +1050,7 @@ document.addEventListener("DOMContentLoaded", function () {
         prod.allergeni = Array.from(allergeniContainer.querySelectorAll("input:checked"))
             .map(cb => cb.value);
 
-        localStorage.setItem("orderedItems", JSON.stringify(products));
+        saveOrderedItems();
         popupAllergeni.classList.remove("active");
         overlay.classList.remove("active");
         renderProducts();
@@ -1084,7 +1092,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (cb.checked) prod.extra.push(`+ ${cb.value}`);
         });
 
-        localStorage.setItem("orderedItems", JSON.stringify(products));
+        saveOrderedItems();
         renderProducts();
 
         popupExtra.classList.remove("active");
