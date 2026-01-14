@@ -893,13 +893,25 @@ document.addEventListener("DOMContentLoaded", function () {
     const productContainer = document.getElementById("product-container");
     const totalPriceEl = document.getElementById("total");
 
-//salvare i prodotti ordinati//
+    // ======= LISTA ALLERGENI Aggiunta =======
+    const allergenOptions = [
+        { key: "Glutine", label: "Glutine Free", icon: "🌾" },
+        { key: "Lattosio", label: "Lattosio Free", icon: "🥛" },
+        { key: "Uova", label: "Uova Free", icon: "🥚" },
+        { key: "FruttaSecca", label: "Frutta Secca Free", icon: "🥜" },
+        { key: "Soia", label: "Soia Free", icon: "🌱" },
+        { key: "Pesce", label: "Pesce Free", icon: "🐟" },
+        { key: "Crostacei", label: "Crostacei Free", icon: "🦐" },
+        { key: "Sesamo", label: "Sesamo Free", icon: "🌻" }
+    ];
+    // ======= FINE LISTA ALLERGENI =======
+
+    //salvare i prodotti ordinati//
     function saveOrderedItems() {
         localStorage.setItem("orderedItems", JSON.stringify(products));
         window.orderedProducts = products;
     }
 
-    // espone i prodotti ordinati come variabile globale per uso esterno
     window.orderedProducts = products;
 
     const ingredientiProdotto = {
@@ -917,7 +929,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!prod.ingredients || prod.ingredients.length === 0) {
             prod.ingredients = ingredientiProdotto[prod.name] || defaultIngredienti(prod.name);
             prod.extra = prod.extra || [];
-            prod.allergeni = prod.allergeni || [];
+            prod.allergeni = prod.allergeni || []; 
         }
     });
 
@@ -940,7 +952,11 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             if (p.allergeni?.length) {
-                extraHTML += `<div class="ingredient-list allergeni-list">Senza: ${p.allergeni.join(", ")}</div>`;
+                let allergyText = p.allergeni.map(key => {
+                    const o = allergenOptions.find(a => a.key === key);
+                    return o ? `${o.icon} ${o.label}` : key;
+                }).join(", ");
+                extraHTML += `<div class="ingredient-list allergeni-list">${allergyText}</div>`;
             }
 
             let row = document.createElement("div");
@@ -1047,7 +1063,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     /* ================================
-       POPUP ALLERGENI
+       POPUP ALLERGENI (aggiornata)
     ================================= */
     const popupAllergeni = document.getElementById("popup-allergeni-ingrediente");
     const allergeniContainer = document.getElementById("allergeni-container");
@@ -1056,12 +1072,14 @@ document.addEventListener("DOMContentLoaded", function () {
         allergeniContainer.innerHTML = "";
         prod.allergeni = prod.allergeni || [];
 
-        prod.ingredients.forEach(ing => {
+        allergenOptions.forEach(opt => {
             const row = document.createElement("div");
+            row.className = "allergene-row";
             row.innerHTML = `
-                <label class="allergene-row">
-                    <input type="checkbox" value="${ing}" ${prod.allergeni.includes(ing) ? "checked" : ""}>
-                    <span> Senza ${ing}</span>
+                <label>
+                    <input type="checkbox" value="${opt.key}" ${prod.allergeni.includes(opt.key) ? "checked" : ""}>
+                    <span style="font-size:18px; margin-right:6px;">${opt.icon}</span>
+                    ${opt.label}
                 </label>
             `;
             allergeniContainer.appendChild(row);
