@@ -706,7 +706,29 @@ h2 {
     font-size: 16px;
     color:white;
 }
-
+.back-btn {
+    position: absolute;
+    top: 170px;
+    left: 50px;
+    background-color: #e63946;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 16px;
+    transition: 0.3s ease;
+    z-index: 11;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top:525px;
+}
+.back-btn:hover {
+    background-color: white;
+    color: black;
+}
 
 </style>
 </head>
@@ -855,6 +877,9 @@ h2 {
 
   <button class="close-btn" aria-label="Close Error">&times;</button>
 </div>
+<button class="back-btn" onclick="window.history.back()">
+  <i></i>Indietro
+</button>
 
 </body>
 
