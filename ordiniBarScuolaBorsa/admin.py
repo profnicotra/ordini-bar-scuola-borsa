@@ -1,16 +1,22 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request, redirect
+
 
 bp = Blueprint("admin", __name__, url_prefix="/admin")
 
 @bp.get("/")
 def admin():
-    
-
     data = {"title" : "Amministrazione Bar Scuola Borsa",
         "open": True,   
         "items" : []}
-
     return render_template("admin.html", data=data)
-#     with open("C:\\Users\\24-info-22\\Desktop\\ANNO 25-26\\Linguaggi di programmazione\\ordini-bar-scuola-borsa\\ordiniBarScuolaBorsa\\products.json", "w") as products:
-#         data.append(newProduct)
-#         json.dump(data, products)
+
+@bp.route("/add_product", methods = ["POST"])
+def add_product():
+    product_id = request.form.get("id")
+    product_name = request.form.get("nome_prodotto")
+    product_price = request.form.get("prezzo")
+    product_margin = request.form.get("margine")
+    product_internal_price = request.form.get("prezzo_interno")
+
+    print (f"ID: {product_id}\nNome: {product_name}\nPrezzo: {product_price}\nMargine: {product_margin}\nPrezzo interno {product_internal_price}")
+    return redirect("/admin")
