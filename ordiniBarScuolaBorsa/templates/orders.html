@@ -593,6 +593,15 @@ h2 {
 .allergene-radio:checked::after {
     transform: translate(-50%, -50%) scale(1);
 }
+.allergene-row span {
+    display: inline-block;
+}
+.allergene-icon {
+    transform: translateY(-8px);
+}
+.allergene-label {
+    transform: translateY(-8px);
+}
 .note-top-buttons {
     display: flex;
     justify-content: space-between;
@@ -952,9 +961,9 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             if (p.allergeni?.length) {
-                let allergyText = p.allergeni.map(key => {
-                    const o = allergenOptions.find(a => a.key === key);
-                    return o ? `${o.icon} ${o.label}` : key;
+                let allergyText = p.allergeni.map(k => {
+                    const o = allergenOptions.find(a => a.key === k || a.label === k);
+                    return o ? o.label : k;
                 }).join(", ");
                 extraHTML += `<div class="ingredient-list allergeni-list">${allergyText}</div>`;
             }
@@ -984,14 +993,14 @@ document.addEventListener("DOMContentLoaded", function () {
                     <button class="qty-btn" data-index="${i}" data-action="plus">+</button>
                 </div>
 
-                <div class="price">€${(p.price * (p.qty || 1)).toLocaleString('it-IT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</div>
+                <div class="price">€${(p.price * (p.qty || 1)).toLocaleString('it-IT', {minimumFractionDigits: 0, maximumFractionDigits: 2})}</div>
             `;
 
             productContainer.appendChild(row);
             total += p.price * (p.qty || 1);
         });
 
-        totalPriceEl.textContent = `€${total.toLocaleString('it-IT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+        totalPriceEl.textContent = `€${total.toLocaleString('it-IT', {minimumFractionDigits: 0, maximumFractionDigits: 2})}`;
     }
 
     /* ================================
@@ -1077,9 +1086,9 @@ document.addEventListener("DOMContentLoaded", function () {
             row.className = "allergene-row";
             row.innerHTML = `
                 <label>
-                    <input type="checkbox" value="${opt.key}" ${prod.allergeni.includes(opt.key) ? "checked" : ""}>
-                    <span style="font-size:18px; margin-right:6px;">${opt.icon}</span>
-                    ${opt.label}
+                    <input type="checkbox" value="${opt.label}" ${prod.allergeni.includes(opt.key) || prod.allergeni.includes(opt.label) ? "checked" : ""}>
+                    <span class="allergene-icon" style="font-size:18px; margin-right:6px;">${opt.icon}</span>
+                    <span class="allergene-label">${opt.label}</span>
                 </label>
             `;
             allergeniContainer.appendChild(row);
