@@ -984,14 +984,14 @@ document.addEventListener("DOMContentLoaded", function () {
                     <button class="qty-btn" data-index="${i}" data-action="plus">+</button>
                 </div>
 
-                <div class="price">€${(p.price * (p.qty || 1)).toLocaleString('it-IT', {minimumFractionDigits: 0, maximumFractionDigits: 2})}</div>
+                <div class="price">€${(p.price * (p.qty || 1)).toLocaleString('it-IT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</div>
             `;
 
             productContainer.appendChild(row);
             total += p.price * (p.qty || 1);
         });
 
-        totalPriceEl.textContent = `€${total.toLocaleString('it-IT', {minimumFractionDigits: 0, maximumFractionDigits: 2})}`;
+        totalPriceEl.textContent = `€${total.toLocaleString('it-IT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
     }
 
     /* ================================
