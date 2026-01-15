@@ -61,7 +61,7 @@ body::after {
 
 <body>
 <div class="content">
-  <form method="post" action="/toggle">
+  <form method="post" action="{{ url_for('index.index') }}">
     <button type="submit" class="big-button">
       APERTO / CHIUSO
     </button>

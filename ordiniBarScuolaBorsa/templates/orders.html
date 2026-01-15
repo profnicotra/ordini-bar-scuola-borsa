@@ -867,7 +867,7 @@ h2 {
     </div>
 
     <h2>Ordine convalidato</h2>
-    <p>Grazie per l'ordine<br>Noi ti porterà il tuo ordine da 10 minuti.</p>
+    <p>grazie per aver ordinato da noi<br> il tuo ordine ti sarà consegnato al più presto</p>
 </div>
 <div id="error-box">
   <strong style="font-family: verdana;font-weight:800;font-size: 17px;">Attenzione!</strong><br>
@@ -984,14 +984,14 @@ document.addEventListener("DOMContentLoaded", function () {
                     <button class="qty-btn" data-index="${i}" data-action="plus">+</button>
                 </div>
 
-                <div class="price">€${p.price * (p.qty || 1)}</div>
+                <div class="price">€${(p.price * (p.qty || 1)).toLocaleString('it-IT', {minimumFractionDigits: 0, maximumFractionDigits: 2})}</div>
             `;
 
             productContainer.appendChild(row);
             total += p.price * (p.qty || 1);
         });
 
-        totalPriceEl.textContent = `€${total},00`;
+        totalPriceEl.textContent = `€${total.toLocaleString('it-IT', {minimumFractionDigits: 0, maximumFractionDigits: 2})}`;
     }
 
     /* ================================
