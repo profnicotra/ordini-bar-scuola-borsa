@@ -1,4 +1,0 @@
-bottle
-psycopg2-binary
-flask
-flask-sqlalchemy

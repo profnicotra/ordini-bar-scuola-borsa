@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bar Scuola Borsa</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: black;
+      color: white;
+    }
+
+    /* NAVBAR */
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 50px;
+      padding: 20px 50px;
+      background-color: rgba(22, 22, 22, 0.784);
+      position: fixed;
+      width: 100%;
+      top: 0;
+      height: 150px;
+      z-index: 10;
+      transition: top 0.6s ease;
+    }
+
+    .navbar.hidden { top: -100px; }
+
+    .logo-left { position: absolute; left: 50px; }
+    .logo-left img { width: 120px; }
+
+    .nav-center ul { display: flex; gap: 40px; list-style: none; }
+    .nav-center a {
+      color: white;
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 18px;
+      transition: 0.3s;
+      cursor: pointer;
+    }
+    .nav-center a:hover { color:rgb(79, 79, 79); }
+
+    .social-icons {
+      position: absolute;
+      right: 50px;
+      display: flex;
+      gap: 30px;
+    }
+
+    .social-icons a {
+      width: 35px;
+      height: 35px;
+      border: 3px solid white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 5px;
+      color: white;
+      font-size: 18px;
+      transition: 0.3s ease;
+      text-decoration: none;
+    }
+    .social-icons a:hover { background-color: white; color: black; }
+
+    /* HERO */
+    .hero {
+      height: 100vh;
+      background-image: url('https://static.wixstatic.com/media/a24994_e80e1267c121468ea62129502fda4b57~mv2.png/v1/fill/w_640,h_428,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/a24994_e80e1267c121468ea62129502fda4b57~mv2.png');
+      background-size: cover;
+      background-position: center;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      backdrop-filter: blur(2px);
+      background: rgba(0,0,0,0.45);
+      z-index: 1;
+    }
+
+    .hero-content { position: relative; z-index: 2; }
+    .hero h2 { font-size: 30px; font-weight: 400; }
+    .hero h1 { font-size: 60px; margin: 20px 0; font-weight: 800; }
+    .buttons { margin-top: 30px; display: flex; gap: 20px; justify-content: center; }
+
+    .btn {
+      padding: 12px 25px;
+      font-weight: 600;
+      border-radius: 25px;
+      text-decoration: none;
+      background: transparent;
+      color: white;
+      transition: 0.3s ease;
+      width:200px;
+      font-size:20px;
+      font-weight: 800;
+    }
+
+    .btn.red { background: #e63946 }
+    .btn.red:hover { background: white; color: black; }
+
+    /* STORIA */
+    .experience-section {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:120px 8%;
+      gap:60px;
+      background-color: #151515e1;
+    }
+
+    .cocktail-box { 
+      width:70%;
+      margin-bottom: 50px;
+      margin-top: -40px;
+    }
+
+    .cocktail-box h4 {
+      color:#e63946;
+      font-size:19px;
+      letter-spacing:2px;
+      margin-bottom:10px;
+    }
+
+    .cocktail-box h2 {
+      font-size:48px;
+      font-weight:800;
+      margin-bottom:25px;
+    }
+
+    .cocktail-box p {
+      color:#cfcfcf;
+      font-size:17px;
+      line-height:1.7;
+      margin-bottom:20px;
+      font-weight: 500;
+    }
+
+    .yellow-btn {
+      background:#e63946;
+      padding: 14px 32px;
+      border-radius: 30px;
+      font-weight: 700;
+      color:white;
+      text-decoration: none;
+      font-size: 16px;
+      transition: 0.3s ease;
+      display: inline-block;
+      margin-top: 10px;
+    }
+
+    .yellow-btn:hover { background:white; color:black; }
+
+    /* GALLERIA */
+    .gallery-section {
+      background-color:#1c1c1ce3;
+      padding: 120px 8%;
+      text-align: center;
+    } 
+     .hero::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(31, 30, 30, 0.505);
+        z-index: 1;
+      }
+
+    .gallery-title {
+      font-size: 48px;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    .gallery-visit {
+      color:#e63946;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      display: block;
+      margin-bottom: 10px;
+      margin-top: 10px;
+    }
+
+    .gallery-main-title {
+      font-size: 36px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .yellow-line{
+      width:120px;
+      height:4px;
+      background-color:#e63946;
+      margin: 10px auto 30px auto;
+      border-radius: 20px;
+    }
+
+    .gallery-text {
+      color: #cfcfcf;
+      font-size: 15px;
+      max-width: 800px;
+      margin: 0 auto 50px auto;
+      line-height: 1.6;
+    }
+
+    .gallery-row {
+      display: flex;
+      justify-content: center;
+      gap: 80px;
+    }
+
+    .gallery-row img {
+      width: 350px;
+      object-fit: cover;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border-radius: 20px
+    }
+
+    .gallery-row img:hover {
+      cursor: pointer;
+      transform: translateY(-4px) scale(1.03);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+      z-index: 2;
+    }
+
+    /* CONTATTI */
+    .contacts-section {
+      background-color: #151515;
+      padding: 100px 8%;
+      display: flex;
+      justify-content: space-between;
+      gap: 60px;
+      
+    }
+
+    .contact-column h3 {
+      font-size: 26px;
+      margin-bottom: 20px;
+      color: white;
+    }
+
+    .contact-column ul {
+      list-style: none;
+      color: #cfcfcf;
+      line-height: 2;
+    }
+
+    .contact-column a {
+      color: #cfcfcf;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+
+    .contact-column a:hover {
+      color: #ff9f43;
+    }
+
+    .newsletter input {
+      width: 250px;
+      padding: 10px;
+      border-radius: 5px;
+      border: none;
+      margin-right: 10px;
+    }
+      .newsletter button:hover {
+      cursor: pointer;
+      transform: translateY(1px) scale(1.01);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+      z-index: 2;
+    }
+
+    .newsletter button {
+      padding: 10px 18px;
+      border: none;
+      background: #e63946;
+      color: black;
+      border-radius: 5px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: Verdana;
+      font-size:13px;
+    }
+
+    /* LOGIN MODAL */
+  /* LOGIN & REGISTER MODAL */
+#login-modal {
+  display: none;
+  position: fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background: rgba(0,0,0,0.8);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.form-container {
+  width: 320px;
+  border-radius: 0.75rem;
+  background-color: rgba(22, 22, 22, 0.784);
+  padding: 2rem;
+  color: white;
+}
+
+.title {
+  text-align: center;
+  font-size: 1.5rem;
+  line-height: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.form { margin-top: 1.5rem; }
+
+.input-group { margin-top: 0.25rem; font-size: 0.875rem; line-height: 1.25rem; }
+.input-group label { display: block; margin-bottom: 4px; color: rgba(22,22,22,0.784); }
+.input-group input {
+  width: 100%;
+  border-radius: 0.375rem;
+  border: 1px solid white;
+  outline: 0;
+  background-color: rgba(22, 22, 22, 0.508);
+  padding: 0.75rem 1rem;
+  color: whitesmoke;
+}
+/* STILE BOTTONE ORARIO E STATO */
+#status-button {
+    width: 200px;
+    padding: 12px;
+    border: none;
+    border-radius: 20px;
+    background:rgba(22, 22, 22, 0.929);
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    margin-left: 25px;
+    
+}
+
+#status-button .content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#status-button .left {
+    text-align: left;
+}
+
+#status-button .right {
+    font-weight: bold;
+    font-size: 20px;
+}
+
+#status-button .open {
+    color: green;
+}
+
+#status-button .closed {
+    color:  #e63946;
+}
+/* OVERLAY SCURO */
+#closed-overlay {
+  display: none; /* nascosto finché non serve */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(3px);
+  background: rgba(0, 0, 0, 0.65);
+  z-index: 99999;
+
+  justify-content: center;
+  align-items: center;
+}
+
+
+/* POPUP CENTRATO */
+#closed-popup {
+  width: 360px;
+  padding: 1.5rem;
+  background-color: rgba(6, 6, 6, 0.89);
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0px 15px 40px rgba(0,0,0,0.4);
+}
+
+/* Testi */
+#closed-popup .title {
+  font-weight: 800;
+  font-size: 20px;
+  color: whitesmoke;
+}
+
+#closed-popup .description {
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  line-height: 1.4rem;
+  color: white;
+}
+
+/* Pulsante OK */
+#closed-popup .accept {
+  margin-top: 1.2rem;
+  font-size: 0.85rem;
+  background-color: #e63946;
+  font-weight: 700;
+  border-radius: 8px;
+  color: white;
+  padding: 0.7rem 1.4rem;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+#closed-popup .accept:hover {
+  background-color: white;
+  color: black;
+}
+
+
+.input-group input:focus { border-color: white; }
+
+.forgot { display: flex; justify-content: flex-end; font-size: 0.75rem; line-height: 1rem; color: rgba(156, 163, 175,1); margin: 8px 0 14px 0; }
+.forgot a,.signup a { color: rgba(243, 244, 246, 1); text-decoration: none; font-size: 14px; }
+.forgot a:hover, .signup a:hover { text-decoration: underline rgba(167, 139, 250, 1); }
+
+.sign { display: block; width: 100%; background-color: #e63946; padding: 0.75rem; text-align: center; color: rgba(17, 24, 39, 1); border: none; border-radius: 0.375rem; font-weight: 600; cursor:pointer; }
+
+.social-message { display: flex; align-items: center; padding-top: 1rem; }
+.line { height: 1px; flex: 1 1 0%; background-color: rgba(55, 65, 81, 1); }
+.social-message .message { padding-left: 0.75rem; padding-right: 0.75rem; font-size: 0.875rem; line-height: 1.25rem; color: rgba(156, 163, 175, 1); }
+
+/* REGISTER FORM */
+#register-form { margin-top: 1rem; }
+  </style>
+</head>
+
+<body>
+
+<header class="navbar" id="navbar">
+  <div class="logo-left">
+    <img src="https://raw.githubusercontent.com/Rashmika274/ordini-bar-scuola-borsa/main/static/logo.png" alt="Logo">
+  </div>
+
+  <!-- BOTTONE ORARIO E STATO -->
+  <div id="status-button-container" style="position:absolute; left:180px; top:50%; transform:translateY(-50%);">
+    <button id="status-button">
+        <div class="content">
+            <div class="left">
+                <div id="time"></div>
+                <div id="date"></div>
+            </div>
+            <div class="right" id="status"></div>
+        </div>
+    </button>
+  </div>
+
+  <nav class="nav-center">
+    <ul>
+      <li><a href="/">Home</a></li>
+      <li><a href="#chi-siamo">Chi siamo</a></li>
+      <li><a href="#gallery">Galleria</a></li>
+      <li><a href="#contatti">Contatti</a></li>
+      <li><a id="login-btn">Login</a></li>
+    </ul>
+  </nav>
+
+  <div class="social-icons">
+    <a href="https://www.facebook.com/aziendaspecialediformazionescuolapaoloborsa/"><i class="fab fa-facebook-f"></i></a>
+    <a href="https://www.instagram.com/scuola_borsa/"><i class="fab fa-instagram"></i></a>
+    <a href="https://www.youtube.com/@ScuolaPaoloBorsaMonza"><i class="fab fa-youtube"></i></a>
+  </div>
+</header>
+
+
+<section class="hero" id="hero">
+  <div class="hero-content">
+    <h2>SCUOLA BORSA</h2>
+    <h1>SALA BAR</h1>
+    <div class="buttons">
+      <a href="/menu" class="btn red">Ordina Ora</a>
+    </div>
+  </div>
+</section>
+
+<!-- SEZIONE STORIA -->  
+<section class="experience-section" id="chi-siamo">
+  <div class="cocktail-box">
+    <h4 >SALA E BAR - SCUOLA BORSA</h4>
+    <h2>LA NOSTRA STORIA</h2>
+    <p>Dal 1861 al fianco della comunità:<br>
+    la Scuola Paolo Borsa è un punto di riferimento<br>
+    a Monza per la formazione professionale<br>
+    e la crescita culturale.</p>
+    <a href="https://www.scuola-borsa.it/corsi-tempo-libero" class="yellow-btn">SCOPRI DI PIÙ</a>
+  </div>
+
+  <div style="width:50%; display:flex; justify-content:flex-end;">
+    <img src="https://raw.githubusercontent.com/Rashmika274/ordini-bar-scuola-borsa/main/static/chi%20siamo%206.png" style="width:800px; margin-left:50px;border-radius: 20px;">
+  </div>
+</section>
+
+<!-- ⭐⭐⭐ GALLERIA -->
+<section id="gallery" class="gallery-section">
+  <span class="gallery-visit"> SALA E BAR - SCUOLA BORSA</span>
+
+  <h3 class="gallery-main-title">I NOSTRI MOMENTI</h3>
+  <div class="yellow-line"></div>
+
+  <p class="gallery-text">
+   Al Bar della Scuola Paolo Borsa di Monza, ogni giorno è un'occasione per imparare e crescere. Gli studenti mettono in pratica le loro abilità, offrendo un servizio attento e professionale. I momenti vissuti qui raccontano storie di passione, dedizione e collaborazione. Questa galleria celebra la nostra esperienza e il nostro spirito di squadra.
+  </p>
+
+  <div class="gallery-row">
+    <img src="https://raw.githubusercontent.com/Rashmika274/ordini-bar-scuola-borsa/main/static/galleria%201.jpeg" alt="">
+    <img src="https://raw.githubusercontent.com/Rashmika274/ordini-bar-scuola-borsa/main/static/galleria%202.jpeg" alt="">
+    <img src="https://raw.githubusercontent.com/Rashmika274/ordini-bar-scuola-borsa/main/static/galleria%203.jpeg" alt="">
+  </div>
+
+</section>
+
+<!-- ⭐⭐⭐ CONTATTI -->
+<section class="contacts-section" id="contatti">
+
+  <div class="contact-column">
+    <img src="https://raw.githubusercontent.com/Rashmika274/ordini-bar-scuola-borsa/main/static/logo.png"  style="width:120px; margin-bottom:20px;">
+    <p style="color:#cfcfcf; max-width:250px;font-weight:500;">
+      Sala Bar - Scuola Borsa <br>
+      Professionalità, accoglienza e tradizione dal 1861.
+    </p>
+  </div>
+
+  <div class="contact-column">
+    <h3>Link Rapidi</h3>
+    <ul>
+      <li><a href="#">Home</a></li>
+      <li><a href="#chi-siamo">Chi siamo</a></li>
+      <li><a href="#gallery">Galleria</a></li>
+
+    </ul>
+  </div>
+
+  <div class="contact-column">
+    <h3>Contatti</h3>
+    <ul>
+      <li><i class="fa-solid fa-location-dot"></i> Via Borsa 10 - 20900 Monza (MB)</li>
+      <li><i class="fa-solid fa-envelope"></i> info@scuola-borsa.it</li>
+      <li><i class="fa-solid fa-phone"></i> +039/6369230</li>
+    </ul>
+  </div>
+
+  <div class="contact-column newsletter">
+    <h3>Newsletter</h3>
+    <input type="email" placeholder="La tua email">
+    <button>Invia</button>
+  </div>
+
+</section>
+
+<!-- LOGIN MODAL -->
+<!-- LOGIN & REGISTER MODAL -->
+<div id="login-modal">
+  <div style="position:relative;">
+    <span id="close-login" style="position:absolute; top:-20px; right:-20px; cursor:pointer; font-size:30px; color:white;">&times;</span>
+
+    <div class="form-container">
+      
+      <!-- LOGIN FORM -->
+      <p class="title">Login</p>
+      <form class="form" id="login-form">
+        <div class="input-group">
+          <label for="username" style="color: white;">Username</label>
+          <input type="text" name="username" id="username" placeholder="">
+        </div>
+        <div class="input-group">
+          <label for="password" style="color: white;">Password</label>
+          <input type="password" name="password" id="password" placeholder="">
+          <div class="forgot">
+            <a href="#">Forgot Password ?</a>
+          </div>
+        </div>
+        <button class="sign" style="color: white;">Sign in</button>
+      </form>
+
+      <!-- SOCIAL LOGIN MESSAGE -->
+      <div class="social-message">
+        <div class="line"></div>
+        <p class="message" style="color: rgba(245, 245, 245, 0.742);">Login with social accounts</p>
+        <div class="line"></div>
+      </div>
+
+      <!-- LINK TO REGISTER -->
+      <p class="signup" style="color:rgba(245, 245, 245, 0.742);">
+        Don't have an account? <a id="to-register" style="cursor:pointer;">Sign up</a>
+      </p>
+
+      <!-- REGISTER FORM -->
+      <div id="register-form" style="display:none;">
+        <p class="title"></p>
+        <form class="form" id="register-form-inner">
+          <div class="input-group">
+            <label for="reg-first" style="color: white;">First Name</label>
+            <input type="text" id="reg-first" placeholder="">
+          </div>
+          <div class="input-group">
+            <label for="reg-last" style="color: white;" >Last Name</label>
+            <input type="text" id="reg-last" placeholder="">
+          </div>
+          <div class="input-group">
+            <label for="reg-email" style="color: white;" >Email</label>
+            <input type="email" id="reg-email" placeholder="">
+          </div>
+          <div class="input-group">
+            <label for="reg-pass" style="color: white;" >Password</label>
+            <input type="password" id="reg-pass" placeholder="">
+          </div>
+          <div class="input-group">
+            <label for="reg-pass2" style="color: white;" >Confirm Password</label>
+            <input type="password" id="reg-pass2" placeholder="">
+          </div>
+          <button class="sign" style="color:white; margin-top:6px;">Create Account</button>
+        </form>
+        <p class="signup" style="color:rgba(245, 245, 245, 0.742);">
+          Already have an account? <a id="to-login" style="cursor:pointer;">Sign in</a>
+        </p>
+      </div>
+
+    </div>
+  </div>
+</div>
+<!-- POPUP ORARIO CHIUSO (OVERLAY + CENTRATO) -->
+<div id="closed-overlay">
+    <div id="closed-popup" class="cookie-card">
+        <span class="title">⚠️ Servizio non disponibile</span>
+        <p class="description">
+            Il bar è attualmente <strong>CHIUSO</strong>.<br>
+            I servizi non sono più disponibili.
+        </p>
+        <div class="actions" style="justify-content: center;">
+            <button class="accept" id="close-popup-btn" style="font-weight:800;">OK</button>
+        </div>
+    </div>
+</div>
+
+<script>
+  const navbar = document.getElementById("navbar"); 
+  const hero = document.getElementById("hero");
+
+  window.addEventListener("scroll", () => {
+    const heroBottom = hero.offsetTop + hero.offsetHeight;
+    navbar.classList.toggle("hidden", window.scrollY > heroBottom - 150);
+  });
+
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener("click", function(e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute("href"));
+      if (target) target.scrollIntoView({ behavior: "smooth" });
+    });
+  });
+
+ // APRE IL MODAL
+const loginBtn = document.getElementById('login-btn');
+const loginModal = document.getElementById('login-modal');
+const closeLogin = document.getElementById('close-login');
+
+loginBtn.addEventListener('click', () => {
+  loginModal.style.display = 'flex';
+});
+
+closeLogin.addEventListener('click', () => {
+  loginModal.style.display = 'none';
+});
+
+window.addEventListener('click', (e) => {
+  if (e.target === loginModal) {
+    loginModal.style.display = 'none';
+  }
+});
+
+// SWITCH LOGIN ↔ REGISTER
+const loginForm = document.getElementById("login-form");
+const registerForm = document.getElementById("register-form");
+const toRegister = document.getElementById("to-register");
+const toLogin = document.getElementById("to-login");
+const formContainer = document.querySelector(".form-container");
+const socialMessage = document.querySelector(".social-message");
+const titleText = formContainer.querySelector(".title");
+
+// Mostra register
+toRegister.addEventListener("click", () => {
+  loginForm.style.display = "none";
+  registerForm.style.display = "block";
+  socialMessage.style.display = "none";
+  titleText.innerText = "Register";
+});
+
+// Torna a login
+toLogin.addEventListener("click", () => {
+  loginForm.style.display = "block";
+  registerForm.style.display = "none";
+  socialMessage.style.display = "flex";
+  titleText.innerText = "Login";
+});
+// --- BOTTONE ORARIO E STATO ---
+function getRomeTimeParts() {
+    const now = new Date();
+    const formatter = new Intl.DateTimeFormat('it-IT', {
+        timeZone: 'Europe/Rome',
+        hour: 'numeric',
+        minute: 'numeric',
+        day: 'numeric',
+        month: 'numeric',
+        year: 'numeric',
+        hour12: false
+    });
+    const parts = formatter.formatToParts(now);
+    const map = {};
+    parts.forEach(p => map[p.type] = p.value);
+    
+    return {
+        hours: parseInt(map.hour),
+        minutes: parseInt(map.minute),
+        day: parseInt(map.day),
+        month: parseInt(map.month) - 1 // mesi in JS sono 0-11
+    };
+}
+
+function updateStatusButton() {
+    const romeTime = getRomeTimeParts();
+
+    // ORARIO ATTUALE
+    let hours = romeTime.hours;
+    let minutes = romeTime.minutes.toString().padStart(2, "0");
+    document.getElementById("time").innerText = `${hours.toString().padStart(2,"0")}:${minutes}`;
+
+    // DATA ATTUALE
+    let day = romeTime.day;
+    let monthNames = ["Gen", "Feb", "Mar", "Apr", "Mag", "Giu",
+                      "Lug", "Ago", "Set", "Ott", "Nov", "Dic"];
+    let month = monthNames[romeTime.month];
+    document.getElementById("date").innerText = `${day} ${month}`;
+
+    // OPEN/CLOSED
+    let openHour = 8;
+    let closeHour = 18;
+    let statusElement = document.getElementById("status");
+
+    if (hours >= openHour && hours < closeHour) {
+        statusElement.innerText = "OPEN";
+        statusElement.className = "right open";
+    } else {
+        statusElement.innerText = "CLOSED";
+        statusElement.className = "right closed";
+    }
+}
+
+// aggiorna ogni secondo
+setInterval(updateStatusButton, 1000);
+updateStatusButton();
+// --- POPUP CENTRALE SE FUORI ORARIO ---
+function checkClosedPopup() {
+    const romeTime = getRomeTimeParts();
+    let hours = romeTime.hours;
+
+    let openHour = 8;
+    let closeHour = 18;
+
+    if (hours < openHour || hours >= closeHour) {
+        // mostra overlay + popup
+        document.getElementById("closed-overlay").style.display = "flex";
+
+        // blocca scroll
+        document.body.style.overflow = "hidden";
+    }
+}
+
+// pulsante OK chiude il popup
+document.getElementById("close-popup-btn").addEventListener("click", () => {
+    // Reindirizza l’utente fuori dal sito
+    window.location.href = "https://www.google.com";  
+});
+
+// mostra popup appena caricata pagina
+checkClosedPopup();
+
+
+
+</script>
+
+</body>
+</html>

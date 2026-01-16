@@ -1,0 +1,12 @@
+[project]
+name = "ordiniBarScuolaBorsa"
+version = "1.0.0"
+description = "ordini del bar della scuola borsa"
+dependencies = [
+    "flask",
+    "flask-sqlalchemy"
+]
+
+[build-system]
+requires = ["flit_core<5"]
+build-backend = "flit_core.buildapi"
