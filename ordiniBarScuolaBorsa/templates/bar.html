@@ -482,6 +482,17 @@ function renderMenu(category){
   });
 }
 
+// Funzione per aggiornare lo stato del bottone PRONTO
+function updateProntoBtn() {
+  if (Object.keys(selectedItems).length > 0) {
+    prontoBtn.style.opacity = "1";
+    prontoBtn.style.pointerEvents = "auto";
+  } else {
+    prontoBtn.style.opacity = "0.5";
+    prontoBtn.style.pointerEvents = "auto";
+  }
+}
+
 // Codice errore visuale
 const errorBox = document.getElementById("error-box");
 const errorCloseBtn = errorBox.querySelector(".close-btn");
