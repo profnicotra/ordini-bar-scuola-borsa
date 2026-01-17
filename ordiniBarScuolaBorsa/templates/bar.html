@@ -147,9 +147,9 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
     border:none;
     border-radius:30px;
     cursor:pointer;
-    opacity:0;
-    transform:translateY(15px);
-    animation:fadeUp 0.7s ease forwards;
+    opacity:1;
+    transform:translateY(0);
+    transition: all 0.3s ease;
 }
 #pronto-btn:hover{ background:white; color:black; }
 
@@ -195,12 +195,15 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
   display: block;
   width: 330px;
   transition: top 0.5s ease;
-  z-index: 9999; 
+  z-index: 99999; 
   border: 1px solid whitesmoke;
+  visibility: visible;
 }
 
 #error-box.show {
-  top: 40px;
+  top: 40px !important;
+  display: block !important;
+  visibility: visible !important;
 }
 
 #error-box p {
