@@ -486,7 +486,7 @@ function renderMenu(category){
 const errorBox = document.getElementById("error-box");
 const errorCloseBtn = errorBox.querySelector(".close-btn");
 errorCloseBtn.addEventListener("click", () => {
-  errorBox.style.display = "none";
+  errorBox.classList.remove("show");
 });
 
 menuLinks.forEach(link=>{
