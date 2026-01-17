@@ -509,6 +509,10 @@ menuLinks.forEach(link => {
 });
 
 prontoBtn.addEventListener("click", () => {
+  console.log("Bottone PRONTO cliccato!");
+  console.log("selectedItems:", selectedItems);
+  console.log("Lunghezza:", Object.keys(selectedItems).length);
+  
   if (Object.keys(selectedItems).length === 0) {
     // Aggiorna il messaggio in base alla categoria
     let tipo = "";
@@ -526,12 +530,13 @@ prontoBtn.addEventListener("click", () => {
         tipo = "prodotto";
     }
 
+    console.log("Mostro error-box con messaggio:", tipo);
     errorBox.querySelector("p").innerHTML = `Oh no!<br>Devi selezionare almeno un ${tipo}`;
     errorBox.classList.add("show");
 
     setTimeout(() => {
       errorBox.classList.remove("show");
-    }, 3000);
+    }, 5000);
 
     return;
   }
