@@ -112,10 +112,11 @@
       border-top: 1px solid #333;
       padding-top: 6px;
       margin-top: 6px;
-      width: 400px;
+      width: 100%;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      flex-wrap: wrap;
     }
     .order-actions {
       display: flex;
@@ -148,6 +149,129 @@
       background-color: #555;
       cursor: not-allowed;
       opacity: 0.5;
+    }
+
+    /* RESPONSIVE DESIGN */
+    @media (max-width: 1024px) {
+      header {
+        padding: 15px 30px;
+      }
+      header h1 {
+        font-size: 24px;
+        margin-left: 300px;
+      }
+      main {
+        padding: 30px;
+        gap: 25px;
+      }
+      .order-card {
+        width: 380px;
+        padding: 18px 22px;
+      }
+      .order-total {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        padding: 12px 20px;
+        text-align: center;
+      }
+      header h1 {
+        font-size: 20px;
+        margin-left: 0;
+        margin-bottom: 10px;
+      }
+      main {
+        padding: 20px;
+        gap: 20px;
+        justify-content: center;
+      }
+      .order-card {
+        width: 100%;
+        max-width: 450px;
+        padding: 16px 20px;
+      }
+      .order-header {
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .order-title {
+        font-size: 18px;
+      }
+      .order-status {
+        font-size: 10px;
+        padding: 3px 10px;
+      }
+      .item {
+        font-size: 14px;
+      }
+      .order-total {
+        flex-direction: column;
+        gap: 10px;
+      }
+      .order-actions {
+        width: 100%;
+        gap: 8px;
+      }
+      .btn-delete, .btn-pronto {
+        flex: 1;
+        padding: 8px 12px;
+        font-size: 12px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      header h1 {
+        font-size: 16px;
+        font-family: verdana;
+      }
+      main {
+        padding: 15px;
+        gap: 15px;
+      }
+      .order-card {
+        width: 100%;
+        padding: 14px 16px;
+      }
+      .order-header {
+        gap: 8px;
+      }
+      .order-title {
+        font-size: 16px;
+      }
+      .order-status {
+        font-size: 9px;
+        padding: 2px 8px;
+      }
+      .customer-info {
+        font-size: 12px;
+      }
+      .item {
+        font-size: 13px;
+      }
+      .item-name {
+        padding-top: 5px;
+      }
+      .order-notes {
+        font-size: 12px;
+      }
+      .order-total {
+        font-size: 14px;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .order-actions {
+        width: 100%;
+        gap: 6px;
+      }
+      .btn-delete, .btn-pronto {
+        flex: 1;
+        padding: 7px 10px;
+        font-size: 11px;
+      }
     }
   </style>
 </head>
