@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request, redirect
+from ordiniBarScuolaBorsa.models import is_bar_open
 
 
 bp = Blueprint("admin", __name__, url_prefix="/admin")
@@ -6,7 +7,7 @@ bp = Blueprint("admin", __name__, url_prefix="/admin")
 @bp.get("/")
 def admin():
     data = {"title" : "Amministrazione Bar Scuola Borsa",
-        "open": True,   
+        "open": is_bar_open(),   
         "items" : []}
     return render_template("admin.html", data=data)
 

@@ -1,12 +1,13 @@
 
 from flask import Blueprint, render_template
+from ordiniBarScuolaBorsa.models import is_bar_open
 
 bp = Blueprint("index", __name__)
 
 @bp.get("/")
 def index():
     data = {"title" : "Bar Scuola Borsa",
-        "open": True,   
+        "open": is_bar_open(),   
         "items" : []}
     
     return render_template('index.html', data=data)

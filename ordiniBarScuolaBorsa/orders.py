@@ -1,13 +1,13 @@
 from flask import Blueprint, render_template, request, redirect
-from ordiniBarScuolaBorsa import models
+from ordiniBarScuolaBorsa.models import get_products, is_bar_open
 
 bp = Blueprint("orders", __name__, url_prefix="/orders")
 
 @bp.get("/")
 def orders():
     data = {"title" : "Menu Bar Scuola Borsa",
-        "open": True,   
-        "items" : [models.get_products()]}
+        "open": is_bar_open(),   
+        "items" : [get_products()]}
     return render_template('orders.html', data = data)
 
 @bp.route("/new_order", methods=["POST"])
