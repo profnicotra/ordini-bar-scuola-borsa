@@ -334,7 +334,8 @@
       justify-content: center;
       gap: 80px;
       flex-wrap: nowrap;
-      overflow-x: auto;
+      width: 100%;
+      overflow: visible;
     }
 
     .gallery-row img {
@@ -352,27 +353,27 @@
     }
 
     @media (max-width: 1024px) {
-      .gallery-section { padding: 120px 8%; }
+      .gallery-section { padding: 120px 5%; }
       .gallery-main-title { font-size: 35px; }
       .gallery-text { font-size: 15px; }
-      .gallery-row { gap: 40px; }
-      .gallery-row img { width: 260px; }
+      .gallery-row { gap: 30px; }
+      .gallery-row img { width: 240px; }
     }
 
     @media (max-width: 768px) {
-      .gallery-section { padding: 120px 8%; }
+      .gallery-section { padding: 120px 3%; }
       .gallery-main-title { font-size: 33px; }
       .gallery-text { font-size: 14px; }
-      .gallery-row { gap: 30px; }
-      .gallery-row img { width: 195px; }
+      .gallery-row { gap: 20px; }
+      .gallery-row img { width: 160px; }
     }
 
     @media (max-width: 480px) {
-      .gallery-section { padding: 120px 8%; }
+      .gallery-section { padding: 120px 2%; }
       .gallery-main-title { font-size: 30px; }
       .gallery-text { font-size: 13px; }
-      .gallery-row { gap: 20px; }
-      .gallery-row img { width: 121px; }
+      .gallery-row { gap: 12px; }
+      .gallery-row img { width: 115px; }
     }
 
     /* CONTATTI */
