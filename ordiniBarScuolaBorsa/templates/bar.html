@@ -78,45 +78,47 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
       cursor: pointer;
       z-index: 11;
     }
+@media (max-width: 1024px) {
+  .navbar { gap: 30px; padding: 15px 30px; height: 120px; }
+  .logo-left { left: 30px; }
+  .logo-left img { width: 100px; }
+  .nav-center ul { gap: 25px; }
+  .nav-center a { font-size: 16px; }
+  .social-icons { right: 30px; gap: 20px; }
+}
+@media (max-width: 768px) {
+  .navbar { justify-content:flex-start; padding:12px 15px; height:80px; gap:0; }
+  .logo-left { position:relative; left:0; margin-right:auto; }
+  .logo-left img { width:80px; }
+  .nav-center { display:none; }
+  .nav-center.active { display:block; position:absolute; top:80px; left:0; width:100%; background:rgba(22,22,22,0.95); }
+  .nav-center.active ul { flex-direction:column; }
+  .nav-center.active a { padding:15px 20px; border-bottom:1px solid rgba(255,255,255,0.1); }
+  .social-icons { display:none; }
+  .menu-toggle { display:block; }
+  .menu-hero { padding-top:80px; }
+}
+@media (max-width: 480px) {
+  .navbar { height:70px; }
+  .logo-left img { width:70px; }
+  .menu-hero { padding-top:70px; }
+}
 
-    /* RESPONSIVE NAVBAR */
-    @media (max-width: 1024px) {
-      .navbar {
-        gap: 30px;
-        padding: 15px 30px;
-        height: 120px;
-      }
-      .logo-left { left: 30px; }
-      .logo-left img { width: 100px; }
-      .nav-center ul { gap: 25px; }
-      .nav-center a { font-size: 16px; }
-      .social-icons { right: 30px; gap: 20px; }
-    }
+.menu-hero::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,0.55);
+  backdrop-filter:blur(3px);
+  z-index:1;
+}
 
-    @media (max-width: 768px) {
-      .navbar {
-        justify-content: flex-start;
-        padding: 12px 15px;
-        height: 80px;
-        gap: 0;
-      }
-      .logo-left { position: relative; left: 0; margin-right: auto; }
-      .logo-left img { width: 80px; }
-      .nav-center { display: none; }
-      .nav-center.active { display: block; position: absolute; top: 80px; left: 0; width: 100%; background: rgba(22, 22, 22, 0.95); flex-direction: column; }
-      .nav-center.active ul { flex-direction: column; gap: 0; }
-      .nav-center.active a { padding: 15px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 16px; }
-      .social-icons { display: none; }
-      .social-icons.active { display: flex; position: absolute; top: 80px; right: 15px; gap: 10px; }
-      .menu-toggle { display: block; }
-      .menu-hero { padding-top: 80px; }
-    }
+.menu-content{ position:relative; z-index:3; width:700px; }
+.menu-title-wrapper{ display:flex; justify-content:center; gap:12px; margin-bottom:15px; }
+.menu-subtitle{ font-size:45px; font-weight:300; }
+.yellow-line{ width:60px; height:4px; background:#e63946; }
+.menu-title{ font-size:75px; font-style:italic; font-weight:800; }
 
-    @media (max-width: 480px) {
-      .navbar { height: 70px; }
-      .logo-left img { width: 70px; }
-      .menu-hero { padding-top: 70px; }
-    }
 .menu-hero::before{content:"";position:absolute;inset:0;background:rgba(0,0,0,0.55);backdrop-filter:blur(3px);z-index:1;}
 .menu-content{position:relative;z-index:3;width:700px;text-align:center;}
 .menu-title-wrapper{ display:flex; align-items:flex-start; justify-content:center; gap:12px; margin-bottom:15px; }
@@ -152,6 +154,31 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
     transition: all 0.3s ease;
 }
 #pronto-btn:hover{ background:white; color:black; }
+@media (max-width:480px){
+    #pronto-btn{
+        padding: 0.8rem 1.5rem;   /* padding più piccolo su schermi piccoli */
+        font-size: 16px;           /* font leggibile su smartphone */
+        max-width: 95%;            /* quasi tutta la larghezza */
+    }
+}
+
+/* TABLET E DEVICE MEDI */
+@media (max-width:768px){
+    #pronto-btn{
+        padding: 0.9rem 2rem;
+        font-size: 18px;
+        max-width: 220px;
+    }
+}
+
+/* DESKTOP GRANDE */
+@media (min-width:1024px){
+    #pronto-btn{
+        padding: 1rem 2.5rem;
+        font-size: 20px;
+        max-width: 260px;
+    }
+}
 
 /* BACK BUTTON STYLE */
 .back-btn {
@@ -224,44 +251,43 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
   background: none;
 }
 
-@media (max-width: 1024px) {
-  .menu-content { width: 700px; }
-  .menu-subtitle { font-size: 44px; }
-  .menu-title { font-size: 73px; }
-  .menu-list { width: 890px; margin-left: -120px; }
-  .menu-list a { font-size: 17px; letter-spacing: 9px; }
-  #menu-lists { width: 540px; margin-left: -120px; }
+html, body {
+  width:100%;
+  overflow-x:hidden;
 }
 
-@media (max-width: 768px) {
-  .menu-content { width: 680px; }
-  .menu-subtitle { font-size: 42px; }
-  .menu-title { font-size: 70px; }
-  .menu-list { width: 870px; margin-left: -120px; }
-  .menu-list a { font-size: 16px; letter-spacing: 8px; }
-  #menu-lists { width: 530px; margin-left: -120px; }
-  .menu-item { font-size: 17px; margin-bottom: 17px; }
-  .price { font-size: 15px; }
-  .euro { font-size: 15px; }
-  .back-btn { top: 165px; left: 45px; }
-}
-
-@media (max-width: 480px) {
-  .menu-content { width: 660px; }
-  .menu-subtitle { font-size: 40px; }
-  .menu-title { font-size: 68px; }
-  .menu-list { width: 850px; margin-left: -120px; }
-  .menu-list a { 
-    font-size: 15px; 
-    letter-spacing: 7px; 
+@media (max-width:1024px){
+  .menu-list,
+  #menu-lists{
+    width:100%;
+    margin-left:0;
   }
-  #menu-lists { width: 520px; margin-left: -120px; }
-  .menu-item { font-size: 16px; margin-bottom: 16px; }
-  .select-square { width: 24px; height: 24px; margin-right: 15px; }
-  .price { font-size: 15px; }
-  .dots { margin: 0 10px; }
-  #pronto-btn { width: 195px; padding: 13px 31px; font-size: 19px; }
-  .back-btn { padding: 10px 19px; font-size: 15px; top: 160px; left: 40px; }
+}
+
+@media (max-width:768px){
+  .menu-content{
+    width:100%;
+    padding:0 20px;
+  }
+  .menu-list{
+    flex-direction:column;
+    height:auto;
+  }
+  .menu-list a{
+    border-right:none;
+    border-bottom:1px solid white;
+    letter-spacing:4px;
+    padding:12px 0;
+  }
+  .menu-title{ font-size:52px; }
+  .menu-subtitle{ font-size:32px; }
+}
+
+@media (max-width:480px){
+  .menu-title{ font-size:40px; }
+  .menu-subtitle{ font-size:26px; }
+  .menu-item{ font-size:15px; flex-wrap:wrap; }
+  #pronto-btn{ width:100%; }
 }
 /* LOGIN & REGISTER (COPIATO DAL PRIMO FILE) */
 #login-modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 1000; }
