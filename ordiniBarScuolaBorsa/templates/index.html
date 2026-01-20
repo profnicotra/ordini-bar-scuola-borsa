@@ -653,6 +653,7 @@
             <div class="left">
                 <div id="time"></div>
                 <div id="date"></div>
+                <h1 id="isBarOpen" hidden>{{data["open"]}}</h1>
             </div>
             <div class="right" id="status"></div>
         </div>
@@ -966,11 +967,10 @@ function updateStatusButton() {
     document.getElementById("date").innerText = `${day} ${month}`;
 
     // OPEN/CLOSED
-    let openHour = 8;
-    let closeHour = 19;
+    let status = document.getElementById("isBarOpen").innerText
     let statusElement = document.getElementById("status");
 
-    if (hours >= openHour && hours < closeHour) {
+    if (status == "true") {
         statusElement.innerText = "OPEN";
         statusElement.className = "right open";
     } else {
@@ -984,13 +984,9 @@ setInterval(updateStatusButton, 1000);
 updateStatusButton();
 // --- POPUP CENTRALE SE FUORI ORARIO ---
 function checkClosedPopup() {
-    const romeTime = getRomeTimeParts();
-    let hours = romeTime.hours;
-
-    let openHour = 8;
-    let closeHour = 18;
-
-    if (hours < openHour || hours >= closeHour) {
+    let barStatus = document.getElementById("status").innerText
+    
+    if (barStatus == "CLOSED") {
         // mostra overlay + popup
         document.getElementById("closed-overlay").style.display = "flex";
 
