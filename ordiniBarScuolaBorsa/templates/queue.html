@@ -417,121 +417,273 @@
   <header>
     <h1 style="margin-left:470px;font-family: verdana;font-weight:800;">CODA DA ORDINI SALA BAR</h1>
   </header>
-  <main>
-    <!-- Ordine 1 -->
-    <div class="order-card">
-      <div class="order-header">
-        <div class="order-title">Ordine #101</div>
-        <div class="order-status status-in-preparazione">In preparazione</div>
-      </div>
-      <div class="customer-info">Mario Rossi – Aula 1</div>
-      <div class="customer-info">12/12/2025 09:15</div>
-      <div class="order-items">
-        <div class="item">
-          <div class="item-name">Caffè <span class="item-note">Senza zucchero</span></div>
-          <div>x2</div>
-        </div>
-        <div class="item">
-          <div class="item-name">Cornetto</div>
-          <div>x1</div>
-        </div>
-      </div>
-      <div class="order-footer">
-        <div>
-          <span>Totale</span>
-          <span style="margin-left: 40px;">€4,50</span>
-        </div>
-        <div class="order-actions">
-          <button class="btn-pronto" onclick="markReady(this)">Pronto</button>
-          <button class="btn-delete" onclick="removeOrder(this)">Elimina</button>
-        </div>
-      </div>
-    </div>
-    <!-- Ordine 2 -->
-    <div class="order-card">
-      <div class="order-header">
-        <div class="order-title">Ordine #102</div>
-        <div class="order-status status-pronto">Pronto</div>
-      </div>
-      <div class="customer-info">Sara Bianchi – Aula 3</div>
-      <div class="customer-info">12/12/2025 09:20</div>
-      <div class="order-items">
-        <div class="item">
-          <div class="item-name">Cappuccino <span class="item-note">Latte di soia</span></div>
-          <div>x1</div>
-        </div>
-      </div>
-      <div class="order-footer">
-        <div>
-          <span>Totale</span>
-          <span style="margin-left: 40px;">€2,50</span>
-        </div>
-        <div class="order-actions">
-          <button class="btn-pronto" onclick="markReady(this)" disabled>Pronto</button>
-          <button class="btn-delete" onclick="removeOrder(this)">Elimina</button>
-        </div>
-      </div>
-    </div>
-    <!-- Ordine 3 -->
-    <div class="order-card">
-      <div class="order-header">
-        <div class="order-title">Ordine #103</div>
-        <div class="order-status status-nuovo">Nuovo</div>
-      </div>
-      <div class="customer-info">Luigi Verdi – Aula 2</div>
-      <div class="customer-info">12/12/2025 09:25</div>
-      <div class="order-items">
-        <div class="item">
-          <div class="item-name">Panino</div>
-          <div>x3</div>
-        </div>
-      </div>
-      <div class="order-footer">
-        <div>
-          <span>Totale</span>
-          <span style="margin-left: 40px;">€9,00</span>
-        </div>
-        <div class="order-actions">
-          <button class="btn-pronto" onclick="markReady(this)">Pronto</button>
-          <button class="btn-delete" onclick="removeOrder(this)">Elimina</button>
-        </div>
+  <main id="orders-container">
+    <div style="display: flex; align-items: center; justify-content: center; height: 300px; color: #888;">
+      <div style="text-align: center;">
+        <div style="font-size: 32px; margin-bottom: 10px;">⏳</div>
+        <p>Caricamento ordini...</p>
       </div>
     </div>
   </main>
 
   <script>
-    function removeOrder(button) {
-      const orderCard = button.closest('.order-card');
-      if (orderCard) {
-        orderCard.style.transition = 'all 0.3s ease';
-        orderCard.style.opacity = '0';
-        orderCard.style.transform = 'translateX(100%)';
+    // ==================== CONFIGURAZIONE ====================
+    const statusMap = {
+      'NUOVO': { display: 'Nuovo', class: 'status-nuovo', icon: '🔴' },
+      'IN_PREPARAZIONE': { display: 'In preparazione', class: 'status-in-preparazione', icon: '🟡' },
+      'PRONTO': { display: 'Pronto', class: 'status-pronto', icon: '🟢' },
+      'CONSEGNATO': { display: 'Consegnato', class: 'status-consegnato', icon: '✅' },
+      'ANNULLATO': { display: 'Annullato', class: 'status-annullato', icon: '❌' }
+    };
+
+    // ==================== CARICAMENTO ORDINI ====================
+    async function loadOrders() {
+      try {
+        console.log("📥 Caricamento ordini da Flask...");
+        const response = await fetch('/queue/api/ordini');
         
-        setTimeout(() => {
-          orderCard.remove();
-        }, 300);
+        if (!response.ok) {
+          const text = await response.text();
+          console.error("❌ Errore HTTP:", response.status, text);
+          throw new Error(`HTTP ${response.status}: ${text}`);
+        }
+        
+        const orders = await response.json();
+        console.log("✅ Ordini caricati:", orders.length, "totali");
+        renderOrders(orders);
+      } catch (error) {
+        console.error('❌ Errore nel caricamento:', error);
+        showError(`Errore: ${error.message}`);
       }
     }
 
-    function markReady(button) {
-      const orderCard = button.closest('.order-card');
-      if (orderCard) {
-        const statusBadge = orderCard.querySelector('.order-status');
-        const currentStatus = statusBadge.textContent.trim();
-        
-        // Cambia solo se non è già "Pronto"
-        if (currentStatus !== 'Pronto') {
-          // Rimuove le classi di stato precedenti
-          statusBadge.classList.remove('status-nuovo', 'status-in-preparazione', 'status-consegnato', 'status-annullato');
-          // Aggiunge la classe pronto
-          statusBadge.classList.add('status-pronto');
-          // Cambia il testo
-          statusBadge.textContent = 'Pronto';
-          // Disabilita il pulsante dopo aver fatto il cambio
-          button.disabled = true;
+    // ==================== RENDERING ORDINI ====================
+    function renderOrders(orders) {
+      const container = document.getElementById('orders-container');
+      
+      if (!Array.isArray(orders)) {
+        showError('Formato dati non valido dal server');
+        return;
+      }
+
+      if (orders.length === 0) {
+        container.innerHTML = `
+          <div style="display: flex; align-items: center; justify-content: center; height: 300px; color: #888;">
+            <div style="text-align: center;">
+              <div style="font-size: 48px; margin-bottom: 10px;">📋</div>
+              <p style="font-size: 18px;">Nessun ordine in coda</p>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      // Raggruppa ordini per ID
+      const uniqueOrders = {};
+      orders.forEach(order => {
+        if (!uniqueOrders[order.id]) {
+          uniqueOrders[order.id] = { ...order, items: [] };
         }
+        const itemKey = `${order.prodotto}-${order.nota || ''}`;
+        if (!uniqueOrders[order.id].items.some(i => `${i.prodotto}-${i.nota || ''}` === itemKey)) {
+          uniqueOrders[order.id].items.push({
+            prodotto: order.prodotto,
+            quantita: order.quantita,
+            nota: order.nota
+          });
+        }
+      });
+
+      container.innerHTML = '';
+
+      Object.values(uniqueOrders).forEach((order, index) => {
+        const statusInfo = statusMap[order.stato] || { display: order.stato, class: 'status-nuovo', icon: '❓' };
+        const card = createOrderCard(order, statusInfo);
+        container.appendChild(card);
+      });
+
+      console.log(`✅ ${Object.keys(uniqueOrders).length} ordini renderizzati`);
+    }
+
+    // ==================== CREAZIONE SCHEDA ORDINE ====================
+    function createOrderCard(order, statusInfo) {
+      const card = document.createElement('div');
+      card.className = 'order-card';
+      card.id = `order-${order.id}`;
+      
+      let itemsHTML = '';
+      order.items.forEach(item => {
+        const noteHTML = item.nota ? `<span class="item-note">${item.nota}</span>` : '';
+        itemsHTML += `
+          <div class="item">
+            <div class="item-name">${item.prodotto} ${noteHTML}</div>
+            <div>x${item.quantita}</div>
+          </div>
+        `;
+      });
+
+      const isProto = order.stato === 'PRONTO';
+      const totalEuro = parseFloat(order.totale_euro || 0).toFixed(2);
+      
+      card.innerHTML = `
+        <div class="order-header">
+          <div class="order-title">Ordine #${order.id}</div>
+          <div class="order-status ${statusInfo.class}">${statusInfo.icon} ${statusInfo.display}</div>
+        </div>
+        <div class="customer-info">${order.posizione}</div>
+        <div class="customer-info" style="font-size: 12px; color: #999;">${order.creato_il}</div>
+        <div class="order-items">
+          ${itemsHTML}
+        </div>
+        <div class="order-footer">
+          <div>
+            <span>Totale</span>
+            <span style="margin-left: 40px;">€${totalEuro}</span>
+          </div>
+          <div class="order-actions">
+            <button class="btn-pronto" ${isProto ? 'disabled' : ''} onclick="markReady(${order.id}, this)" style="position: relative;">
+              <span class="btn-text">✓ Pronto</span>
+            </button>
+            <button class="btn-delete" onclick="removeOrder(${order.id}, this)" style="position: relative;">
+              <span class="btn-text">🗑 Elimina</span>
+            </button>
+          </div>
+        </div>
+      `;
+      
+      return card;
+    }
+
+    // ==================== MARCARE COME PRONTO ====================
+    async function markReady(orderId, button) {
+      button.disabled = true;
+      const originalText = button.innerHTML;
+      button.innerHTML = '<span class="btn-text">⏳ Aggiornamento...</span>';
+
+      try {
+        console.log(`⏳ Marcando ordine ${orderId} come PRONTO...`);
+        const response = await fetch(`/queue/api/ordini/stato`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: orderId, stato: 'PRONTO' })
+        });
+
+        if (!response.ok) {
+          const text = await response.text();
+          throw new Error(`HTTP ${response.status}: ${text}`);
+        }
+
+        const result = await response.json();
+        console.log(`✅ Ordine ${orderId} marcato come PRONTO`, result);
+
+        // Anima l'aggiornamento
+        const orderCard = document.getElementById(`order-${orderId}`);
+        if (orderCard) {
+          const statusBadge = orderCard.querySelector('.order-status');
+          const statusInfo = statusMap['PRONTO'];
+          
+          orderCard.style.animation = 'slideIn 0.3s ease-out';
+          statusBadge.classList.remove('status-nuovo', 'status-in-preparazione', 'status-consegnato', 'status-annullato');
+          statusBadge.classList.add('status-pronto');
+          statusBadge.innerHTML = `${statusInfo.icon} ${statusInfo.display}`;
+          button.innerHTML = '<span class="btn-text">✓ Pronto</span>';
+        }
+      } catch (error) {
+        console.error('❌ Errore:', error);
+        button.innerHTML = originalText;
+        button.disabled = false;
+        alert('⚠ Errore: ' + error.message);
       }
     }
+
+    // ==================== ELIMINARE ORDINE ====================
+    async function removeOrder(orderId, button) {
+      if (!confirm('🗑 Sei sicuro di voler eliminare questo ordine?')) {
+        return;
+      }
+
+      button.disabled = true;
+      const originalText = button.innerHTML;
+      button.innerHTML = '<span class="btn-text">⏳ Eliminazione...</span>';
+
+      try {
+        console.log(`⏳ Eliminando ordine ${orderId}...`);
+        const response = await fetch(`/queue/api/ordini`, {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: orderId })
+        });
+
+        if (!response.ok) {
+          const text = await response.text();
+          throw new Error(`HTTP ${response.status}: ${text}`);
+        }
+
+        const result = await response.json();
+        console.log(`✅ Ordine ${orderId} eliminato`, result);
+
+        // Anima l'eliminazione
+        const orderCard = document.getElementById(`order-${orderId}`);
+        if (orderCard) {
+          orderCard.style.animation = 'slideOut 0.3s ease-out forwards';
+          
+          setTimeout(() => {
+            orderCard.remove();
+            
+            // Se non ci sono più ordini, mostra messaggio vuoto
+            if (document.querySelectorAll('.order-card').length === 0) {
+              loadOrders();
+            }
+          }, 300);
+        }
+      } catch (error) {
+        console.error('❌ Errore:', error);
+        button.innerHTML = originalText;
+        button.disabled = false;
+        alert('⚠ Errore: ' + error.message);
+      }
+    }
+
+    // ==================== MOSTRA ERRORE ====================
+    function showError(message) {
+      const container = document.getElementById('orders-container');
+      container.innerHTML = `
+        <div style="display: flex; align-items: center; justify-content: center; height: 300px;">
+          <div style="text-align: center; color: #ff6b6b;">
+            <div style="font-size: 48px; margin-bottom: 10px;">⚠️</div>
+            <p>${message}</p>
+            <button onclick="loadOrders()" style="margin-top: 10px; padding: 10px 20px; background: #e63946; color: white; border: none; border-radius: 6px; cursor: pointer;">
+              🔄 Riprova
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    // ==================== ANIMAZIONI ====================
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes slideOut {
+        from {
+          opacity: 1;
+          transform: translateX(0);
+        }
+        to {
+          opacity: 0;
+          transform: translateX(100%);
+        }
+      }
+    `;
+    document.head.appendChild(style);
+
+    // ==================== INIZIALIZZAZIONE ====================
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log("🚀 Pagina caricata - Caricamento ordini...");
+      loadOrders();
+      // Ricarica ogni 3 secondi
+      setInterval(loadOrders, 3000);
+      console.log("🔄 Refresh automatico ogni 3 secondi");
+    });
   </script>
 </body>
 </html>
