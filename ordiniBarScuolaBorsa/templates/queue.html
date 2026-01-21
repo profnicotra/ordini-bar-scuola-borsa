@@ -115,9 +115,173 @@
       justify-content: space-between;
       font-weight: 600;
     }
+    .order-notes {
+      font-size: 13px;
+      color: white;
+      font-size: 15px;
+      margin-bottom: 6px;
+      width: 100%;
+    }
+    .order-total {
+      border-top: 1px solid #333;
+      padding-top: 6px;
+      margin-top: 6px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+    .order-actions {
+      display: flex;
+      gap: 10px;
+      margin-left: auto;
+    }
+    .btn-delete {
+      background-color: #e63946;
+      color: white;
+      border:1px solid white;
+      padding: 8px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 13px;
+      transition: all 0.3s ease;
+    }
+    .btn-pronto {
+      background-color: rgba(2, 87, 2, 0.988);
+      color: white;
+      border:1px solid white;
+      padding: 8px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 13px;
+      transition: all 0.3s ease;
+    }
+    .btn-pronto:disabled {
+      background-color: #555;
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+
+    /* RESPONSIVE DESIGN - Solo riduzione dimensioni, layout identico */
+    @media (max-width: 1024px) {
+      header {
+        padding: 18px 40px;
+      }
+      header h1 {
+        font-size: 26px;
+        margin-left: 500px;
+      }
+      main {
+        padding: 35px;
+        gap: 28px;
+      }
+      .order-card {
+        width: 390px;
+        padding: 19px 23px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      header {
+        padding: 19px 40px;
+      }
+      header h1 {
+        font-size: 24px;
+        margin-left: 500px;
+      }
+      main {
+        padding: 38px;
+        gap: 29px;
+      }
+      .order-card {
+        width: 395px;
+        padding: 19px 23px;
+      }
+      .order-title {
+        font-size: 19px;
+      }
+      .order-status {
+        font-size: 10px;
+        padding: 4px 12px;
+      }
+      .item {
+        font-size: 14px;
+      }
+      .order-notes {
+        font-size: 14px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      header {
+        padding: 17px 38px;
+      }
+      header h1 {
+        font-size: 22px;
+        margin-left: 500px;
+      }
+      main {
+        padding: 35px;
+        gap: 27px;
+      }
+      .order-card {
+        width: 385px;
+        padding: 18px 22px;
+      }
+      .order-title {
+        font-size: 18px;
+      }
+      .order-status {
+        font-size: 10px;
+        padding: 4px 12px;
+      }
+      .customer-info {
+        font-size: 13px;
+      }
+      .item {
+        font-size: 14px;
+      }
+      .order-notes {
+        font-size: 14px;
+      }
+    }
   </style>
 </head>
 <body>
+<header>
+  <h1 style="margin-left:500px;font-family: verdana;font-weight:800;">CODA DA ORDINI SALA BAR</h1>
+</header>
+
+<main>
+  <!-- Ordine 01 -->
+  <div class="order-card">
+    <div class="order-header">
+      <div class="order-title" style="font-size:18px;font-weight:900;">Ordine #01</div>
+      <div class="order-status status-in-preparazione">In preparazione</div>
+    </div>
+    <div class="customer-info">Mario Rossi – Aula 1</div>
+    <div class="customer-info">12/12/2025 09:15</div>
+    <div class="order-items">
+      <div class="item">
+        <div class="item-name">Caffè <span class="item-note"> <!-- qua possiamo scrivere le note delle prodotti -->  </span></div>
+        <div>x2</div>
+      </div>
+      <div class="item">
+        <div class="item-name">Cornetto</div>
+        <div>x1</div>
+      </div>
+    </div>
+    <div class="order-footer">
+      <div class="order-notes" style="color: white;">Note Generali</div>
+      <div class="order-total">
+        <span>Totale €4,50</span>
+        <div class="order-actions">
+          <button class="btn-pronto" onclick="markReady(this)">Pronto</button>
+          <button class="btn-delete" onclick="removeOrder(this)">Elimina</button>
+        </div>
   <header>
     <h1 style="margin-left:470px;font-family: verdana;font-weight:800;">CODA DA ORDINI SALA BAR</h1>
   </header>
@@ -145,6 +309,30 @@
         <span>€4,50</span>
       </div>
     </div>
+  </div>
+
+  <!-- Ordine 02 -->
+  <div class="order-card">
+    <div class="order-header">
+      <div class="order-title" style="font-size:18px;font-weight:900;">Ordine #02</div>
+      <div class="order-status status-pronto">Pronto</div>
+    </div>
+    <div class="customer-info">Sara Bianchi – Aula 3</div>
+    <div class="customer-info">12/12/2025 09:20</div>
+    <div class="order-items">
+      <div class="item">
+        <div class="item-name">Cappuccino <span class="item-note"><!-- qua possiamo scrivere le note delle prodotti --> </span></div>
+        <div>x1</div>
+      </div>
+    </div>
+    <div class="order-footer">
+      <div class="order-notes">Note Generali</div>
+      <div class="order-total">
+        <span>Totale €2,50</span>
+        <div class="order-actions">
+          <button class="btn-pronto" disabled>Pronto</button>
+          <button class="btn-delete" onclick="removeOrder(this)">Elimina</button>
+        </div>
     <!-- Ordine 2 -->
     <div class="order-card">
       <div class="order-header">
