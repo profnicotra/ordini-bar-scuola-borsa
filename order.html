@@ -21,22 +21,22 @@
     <div class="divider"></div>
     <h2 style="margin-top:60px;">Feedback</h2>
     <div class="divider"></div>
-    <input type="text" class="note-input" placeholder="Note"/>
+    <input type="text" id="note-ordine" class="note-input" placeholder="Note"/>
     <h3 style="margin-top:40px;text-align: center;font-size: 23px;">INFO</h3>
     <div class="divider"></div>
-    <div class="input"><input type="text"  class="info-input" placeholder="Nome"/></div>
-    <div class="input"><input type="text" class="info-input" placeholder="Cognome"/></div>
-    <div class="input"><input type="text" class="info-input" placeholder="Classe"/></div>
+    <div class="input"><input type="text" id="nome" class="info-input" placeholder="Nome"/></div>
+    <div class="input"><input type="text" id="cognome" class="info-input" placeholder="Cognome"/></div>
+    <div class="input"><input type="text" id="classe" class="info-input" placeholder="Classe"/></div>
   </div>
 
   <div class="total-card">
     <div class="total-price" id="total">€0,00</div>
-    <button class="checkout-btn">INVIA</button>
+    <button class="checkout-btn" id="invia-ordine">INVIA</button>
   </div>
 
   <div class="overlay" id="overlay"></div>
 
-  <div id="ingredient-card">
+  <div id="ingredient-card" style="display:none;">
     <h1 class="title">INGREDIENTI</h1>
     <div class="controls">
       <button class="btn" id="aggiungi">Aggiungi</button>
@@ -45,7 +45,7 @@
   </div>
 
   <div id="popup-ingredienti">
-    <h2 style="color:white;font-weight:800;font-family:verdana;font-size:20px;text-align:center;">LISTA INGREDIENTI</h2>
+    <h2 id="popup-title" style="color:white;font-weight:800;font-family:verdana;font-size:20px;text-align:center;">LISTA INGREDIENTI</h2>
     <div class="divider"></div>
     <div id="ingredient-container"></div>
     <div class="nav-buttons">
@@ -59,6 +59,11 @@ let products = JSON.parse(localStorage.getItem("orderedItems")) || [];
 products = products.filter(p => p.name && !isNaN(p.price));
 let productContainer = document.getElementById("product-container");
 let totalPriceEl = document.getElementById("total");
+let overlay = document.getElementById("overlay");
+let ingredientCard = document.getElementById("ingredient-card");
+let popupIngredienti = document.getElementById("popup-ingredienti");
+let ingredientContainer = document.getElementById("ingredient-container");
+let popupTitle = document.getElementById("popup-title");
 
 const ingredientiProdotto = {
   "Focaccia": ["Pane", "Pomodoro", "Mozzarella"],
@@ -74,16 +79,16 @@ products.forEach(prod => {
   if (!prod.ingredients || prod.ingredients.length === 0) {
     if (ingredientiProdotto[prod.name]) prod.ingredients = [...ingredientiProdotto[prod.name]];
     else prod.ingredients = generaIngredientiDefault(prod.name);
-    prod.extra = [];
-    prod.removed = [];
   }
   if (!prod.extra) prod.extra = [];
   if (!prod.removed) prod.removed = [];
+  if (!prod.qty) prod.qty = 1;
 });
 
 localStorage.setItem("orderedItems", JSON.stringify(products));
 
 let currentProductIndex = null;
+let currentMode = null; // 'extra' o 'remove'
 
 function renderProducts() {
   productContainer.innerHTML = "";
@@ -113,17 +118,17 @@ function renderProducts() {
       </div>
       <div class="qty-box">
         <button class="qty-btn" data-index="${i}" data-action="minus">-</button>
-        <span class="qty">${p.qty||1}</span>
+        <span class="qty">${p.qty}</span>
         <button class="qty-btn" data-index="${i}" data-action="plus">+</button>
       </div>
-      <div class="price">€${p.price*(p.qty||1)}</div>
+      <div class="price">€${(p.price * p.qty).toFixed(2)}</div>
     `;
 
     productContainer.appendChild(row);
-    total += p.price*(p.qty||1);
+    total += p.price * p.qty;
   });
 
-  totalPriceEl.textContent = `€${total},00`;
+  totalPriceEl.textContent = `€${total.toFixed(2)}`;
 
   document.querySelectorAll(".qty-btn").forEach(btn => {
     btn.addEventListener("click", () => {
@@ -136,6 +141,103 @@ function renderProducts() {
   });
 
   enableMatite();
-  <title>Ordina + Ingredienti</title>
-e
-  <link rel="stylesheet" href="static/styles.css">
+}
+
+function enableMatite() {
+  document.querySelectorAll(".note-btn").forEach(btn => {
+    btn.onclick = () => {
+      currentProductIndex = btn.dataset.index;
+      overlay.classList.add("active");
+      ingredientCard.style.display = "block";
+    };
+  });
+}
+
+document.getElementById("aggiungi").onclick = () => {
+  currentMode = "extra";
+  popupTitle.innerText = "AGGIUNGI EXTRA";
+  showPopup();
+};
+
+document.getElementById("rimuovi").onclick = () => {
+  currentMode = "remove";
+  popupTitle.innerText = "RIMUOVI INGREDIENTI";
+  showPopup();
+};
+
+function showPopup() {
+  ingredientCard.style.display = "none";
+  popupIngredienti.classList.add("active");
+  ingredientContainer.innerHTML = "";
+  
+  let prod = products[currentProductIndex];
+  prod.ingredients.forEach(ing => {
+    let div = document.createElement("div");
+    div.className = "ingredient-row";
+    let checked = currentMode === "extra" ? prod.extra.includes(ing) : prod.removed.includes(ing);
+    div.innerHTML = `
+      <label style="display:flex; justify-content:space-between; width:100%; cursor:pointer;">
+        <span>${ing}</span>
+        <input type="checkbox" value="${ing}" ${checked ? "checked" : ""}>
+      </label>
+    `;
+    ingredientContainer.appendChild(div);
+  });
+}
+
+document.getElementById("next").onclick = () => {
+  let selected = Array.from(ingredientContainer.querySelectorAll("input:checked")).map(i => i.value);
+  if (currentMode === "extra") products[currentProductIndex].extra = selected;
+  else products[currentProductIndex].removed = selected;
+  
+  localStorage.setItem("orderedItems", JSON.stringify(products));
+  closeAll();
+  renderProducts();
+};
+
+document.getElementById("back").onclick = () => {
+  popupIngredienti.classList.remove("active");
+  ingredientCard.style.display = "block";
+};
+
+overlay.onclick = closeAll;
+
+function closeAll() {
+  overlay.classList.remove("active");
+  ingredientCard.style.display = "none";
+  popupIngredienti.classList.remove("active");
+}
+
+document.getElementById("invia-ordine").onclick = () => {
+  const nome = document.getElementById("nome").value.trim();
+  const cognome = document.getElementById("cognome").value.trim();
+  const classe = document.getElementById("classe").value.trim();
+  const note = document.getElementById("note-ordine").value.trim();
+
+  if (!nome || !cognome || !classe) {
+    alert("Per favore compila Nome, Cognome e Classe.");
+    return;
+  }
+
+  if (products.length === 0) {
+    alert("Il carrello è vuoto!");
+    return;
+  }
+
+  const ordine = {
+    cliente: { nome, cognome, classe, note },
+    prodotti: products,
+    totale: totalPriceEl.textContent,
+    data: new Date().toISOString()
+  };
+
+  console.log("Ordine inviato:", ordine);
+  alert("Ordine inviato con successo!");
+  localStorage.removeItem("orderedItems");
+  location.href = "index.html"; // O dove vuoi reindirizzare
+};
+
+renderProducts();
+</script>
+</body>
+</html>
