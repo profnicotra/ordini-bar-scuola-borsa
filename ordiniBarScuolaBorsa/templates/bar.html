@@ -121,7 +121,11 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
 
 .menu-hero::before{content:"";position:absolute;inset:0;background:rgba(0,0,0,0.55);backdrop-filter:blur(3px);z-index:1;}
 .menu-content{position:relative;z-index:3;width:700px;text-align:center;}
-.menu-title-wrapper{ display:flex; align-items:flex-start; justify-content:center; gap:12px; margin-bottom:15px; }
+.menu-title-wrapper { display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;}
+  
 .menu-subtitle{font-size:45px;font-weight:300;margin:0;}
 .yellow-line{width:60px;height:4px;background-color:#e63946;}
 .menu-title{font-size:75px;font-style:italic;font-weight:800;margin:0;}
@@ -183,8 +187,8 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
 /* BACK BUTTON STYLE */
 .back-btn {
     position: fixed;
-    top: 170px;
-    left: 50px;
+    top: 120px;
+    left: 20px;
     background-color: #e63946;
     color: white;
     border: none;
@@ -305,6 +309,35 @@ html, body {
 .line { height: 1px; flex: 1 1 0%; background-color: rgba(55, 65, 81, 1); }
 .social-message .message { padding: 0 0.75rem; font-size: 0.875rem; color: rgba(156, 163, 175, 1); }
 #register-form { margin-top: 1rem; display:none; }
+@media (max-width: 768px) {
+  .menu-list {
+    margin-top: 60px;   /* sposta il box CIBI più in basso */
+  }
+
+  #menu-lists {
+    margin-top: 40px;   /* sposta anche la lista piatti */
+  }
+}
+@media (max-width: 480px) {
+  .menu-list {
+    margin-top: 100px;
+  }
+
+  #menu-lists {
+    margin-top: 50px;
+  }
+}
+@media (max-width: 768px) {
+  .menu-title-wrapper {
+    margin-top: 30px;   /* sposta The Menu più in basso */
+  }
+}
+@media (max-width: 480px) {
+  .menu-title-wrapper {
+    margin-top: 40px;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -333,9 +366,10 @@ html, body {
   </div>
 </header>
 
-<button class="back-btn" onclick="window.history.back()">
-  <i></i> Indietro
+<button class="back-btn" aria-label="Indietro">
+  ←
 </button>
+
 
 <section class="menu-hero" id="the-menu">
   <div class="menu-content">
