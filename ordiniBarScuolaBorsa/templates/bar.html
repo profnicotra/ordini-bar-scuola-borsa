@@ -63,9 +63,69 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
       text-decoration: none;
     }
     .social-icons a:hover { background-color: white; color: black; }
+
+    /* MOBILE MENU TOGGLE */
+    .menu-toggle {
+      display: none;
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 28px;
+      cursor: pointer;
+      z-index: 11;
+    }
+@media (max-width: 1024px) {
+  .navbar { gap: 30px; padding: 15px 30px; height: 120px; }
+  .logo-left { left: 30px; }
+  .logo-left img { width: 100px; }
+  .nav-center ul { gap: 25px; }
+  .nav-center a { font-size: 16px; }
+  .social-icons { right: 30px; gap: 20px; }
+}
+@media (max-width: 768px) {
+  .navbar { justify-content:flex-start; padding:12px 15px; height:80px; gap:0; }
+  .logo-left { position:relative; left:0; margin-right:auto; }
+  .logo-left img { width:80px; }
+  .nav-center { display:none; }
+  .nav-center.active { display:block; position:absolute; top:80px; left:0; width:100%; background:rgba(22,22,22,0.95); }
+  .nav-center.active ul { flex-direction:column; }
+  .nav-center.active a { padding:15px 20px; border-bottom:1px solid rgba(255,255,255,0.1); }
+  .social-icons { display:none; }
+  .menu-toggle { display:block; }
+  .menu-hero { padding-top:80px; }
+}
+@media (max-width: 480px) {
+  .navbar { height:70px; }
+  .logo-left img { width:70px; }
+  .menu-hero { padding-top:70px; }
+}
+
+.menu-hero::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,0.55);
+  backdrop-filter:blur(3px);
+  z-index:1;
+}
+
+.menu-content{ position:relative; z-index:3; width:700px; }
+.menu-title-wrapper{ display:flex; justify-content:center; gap:12px; margin-bottom:15px; }
+.menu-subtitle{ font-size:45px; font-weight:300; }
+.yellow-line{ width:60px; height:4px; background:#e63946; }
+.menu-title{ font-size:75px; font-style:italic; font-weight:800; }
+
 .menu-hero::before{content:"";position:absolute;inset:0;background:rgba(0,0,0,0.55);backdrop-filter:blur(3px);z-index:1;}
 .menu-content{position:relative;z-index:3;width:700px;text-align:center;}
-.menu-title-wrapper{ display:flex; align-items:flex-start; justify-content:center; gap:12px; margin-bottom:15px; }
+.menu-title-wrapper { display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;}
+  
 .menu-subtitle{font-size:45px;font-weight:300;margin:0;}
 .yellow-line{width:60px;height:4px;background-color:#e63946;}
 .menu-title{font-size:75px;font-style:italic;font-weight:800;margin:0;}
@@ -81,12 +141,81 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
 .euro{font-size:16px;position:relative;top:-2px;margin-right:3px;opacity:0.8;}
 .select-square{ width:25px;height:25px;border:2px dashed white;border-radius:5px;margin-right:15px;cursor:pointer;transition:0.3s ease; }
 .select-square.selected{background-color:#e63946;border-color:#e63946;}
+
+#pronto-btn{
+    margin-top:10px;
+    padding:14px 32px;
+    width:200px;
+    font-size:20px;
+    font-weight:800;
+    background-color:#e63946;
+    color:white;
+    border:none;
+    border-radius:30px;
+    cursor:pointer;
+    opacity:1;
+    transform:translateY(0);
+    transition: all 0.3s ease;
+}
+#pronto-btn:hover{ background:white; color:black; }
+@media (max-width:480px){
+    #pronto-btn{
+        padding: 0.8rem 1.5rem;   /* padding più piccolo su schermi piccoli */
+        font-size: 16px;           /* font leggibile su smartphone */
+        max-width: 95%;            /* quasi tutta la larghezza */
+    }
+}
+
+/* TABLET E DEVICE MEDI */
+@media (max-width:768px){
+    #pronto-btn{
+        padding: 0.9rem 2rem;
+        font-size: 18px;
+        max-width: 220px;
+    }
+}
+
+/* DESKTOP GRANDE */
+@media (min-width:1024px){
+    #pronto-btn{
+        padding: 1rem 2.5rem;
+        font-size: 20px;
+        max-width: 260px;
+    }
+}
+
+/* BACK BUTTON STYLE */
+.back-btn {
+    position: fixed;
+    top: 120px;
+    left: 20px;
+    background-color: #e63946;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 16px;
+    transition: 0.3s ease;
+    z-index: 11;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.back-btn:hover {
+    background-color: white;
+    color: black;
+}
+
+/* ERROR BOX STYLE */
 #error-box {
   position: fixed;
-  top: -200px; /* era bottom:20px -> ORA è nascosto sopra */
+  top: -200px;
   left: 50%;
   transform: translateX(-50%);
-  background: rgb(26, 26, 26);;
+  background: rgb(26, 26, 26);
   padding: 15px 20px;
   border-radius: 10px;
   box-shadow: 0 2px 10px rgb(0 0 0 / 0.2);
@@ -97,12 +226,15 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
   display: block;
   width: 330px;
   transition: top 0.5s ease;
-  z-index: 9999; 
+  z-index: 99999; 
   border: 1px solid whitesmoke;
+  visibility: visible;
 }
 
 #error-box.show {
-  top: 40px;   /* posizione quando scende */
+  top: 40px !important;
+  display: block !important;
+  visibility: visible !important;
 }
 
 #error-box p {
@@ -123,44 +255,43 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
   background: none;
 }
 
-#pronto-btn{
-    margin-top:10px;
-    padding:14px 32px;
-    width:200px;
-    font-size:20px;
-    font-weight:800;
-    background-color:#e63946;
-    color:white;
-    border:none;
-    border-radius:30px;
-    cursor:pointer;
-    opacity:0;
-    transform:translateY(15px);
-    animation:fadeUp 0.7s ease forwards;
+html, body {
+  width:100%;
+  overflow-x:hidden;
 }
-#pronto-btn:hover{ background:white; color:black; }
-.back-btn {
-    position: absolute;
-    top: 170px;
-    left: 50px;
-    background-color: #e63946;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 25px;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 16px;
-    transition: 0.3s ease;
-    z-index: 11;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-top:525px;
+
+@media (max-width:1024px){
+  .menu-list,
+  #menu-lists{
+    width:100%;
+    margin-left:0;
+  }
 }
-.back-btn:hover {
-    background-color: white;
-    color: black;
+
+@media (max-width:768px){
+  .menu-content{
+    width:100%;
+    padding:0 20px;
+  }
+  .menu-list{
+    flex-direction:column;
+    height:auto;
+  }
+  .menu-list a{
+    border-right:none;
+    border-bottom:1px solid white;
+    letter-spacing:4px;
+    padding:12px 0;
+  }
+  .menu-title{ font-size:52px; }
+  .menu-subtitle{ font-size:32px; }
+}
+
+@media (max-width:480px){
+  .menu-title{ font-size:40px; }
+  .menu-subtitle{ font-size:26px; }
+  .menu-item{ font-size:15px; flex-wrap:wrap; }
+  #pronto-btn{ width:100%; }
 }
 /* LOGIN & REGISTER (COPIATO DAL PRIMO FILE) */
 #login-modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 1000; }
@@ -178,6 +309,35 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
 .line { height: 1px; flex: 1 1 0%; background-color: rgba(55, 65, 81, 1); }
 .social-message .message { padding: 0 0.75rem; font-size: 0.875rem; color: rgba(156, 163, 175, 1); }
 #register-form { margin-top: 1rem; display:none; }
+@media (max-width: 768px) {
+  .menu-list {
+    margin-top: 60px;   /* sposta il box CIBI più in basso */
+  }
+
+  #menu-lists {
+    margin-top: 40px;   /* sposta anche la lista piatti */
+  }
+}
+@media (max-width: 480px) {
+  .menu-list {
+    margin-top: 100px;
+  }
+
+  #menu-lists {
+    margin-top: 50px;
+  }
+}
+@media (max-width: 768px) {
+  .menu-title-wrapper {
+    margin-top: 30px;   /* sposta The Menu più in basso */
+  }
+}
+@media (max-width: 480px) {
+  .menu-title-wrapper {
+    margin-top: 40px;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -188,26 +348,28 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
   <div class="logo-left">
     <img src="https://raw.githubusercontent.com/Rashmika274/ordini-bar-scuola-borsa/main/static/logo.png" alt="Logo">
   </div>
-  <nav class="nav-center">
+  <button class="menu-toggle" id="menu-toggle">☰</button>
+  <nav class="nav-center" id="nav-center">
     <ul>
       <li><a href="/">Home</a></li>
-      <li><a href="/chi siamo">Chi siamo</a></li>
-      <li><a href="/gallery">Galleria</a></li>
-      <li><a href="/contatti">Contatti</a></li>
+      <li><a href="/#chi-siamo">Chi siamo</a></li>
+      <li><a href="/#gallery">Galleria</a></li>
+      <li><a href="/#contatti">Contatti</a></li>
       <li><a id="login-btn">Login</a></li>
     </ul>
   </nav>
 
-  <div class="social-icons">
+  <div class="social-icons" id="social-icons">
     <a href="https://www.facebook.com/aziendaspecialediformazionescuolapaoloborsa/"><i class="fab fa-facebook-f"></i></a>
     <a href="https://www.instagram.com/scuola_borsa/"><i class="fab fa-instagram"></i></a>
     <a href="https://www.youtube.com/@ScuolaPaoloBorsaMonza"><i class="fab fa-youtube"></i></a>
   </div>
 </header>
 
-<button class="back-btn" onclick="window.history.back()">
-  <i></i> Indietro
+<button class="back-btn" aria-label="Indietro">
+  ←
 </button>
+
 
 <section class="menu-hero" id="the-menu">
   <div class="menu-content">
@@ -308,6 +470,27 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
 <script>
 const datiDB = document.getElementById("contenitore").getAttribute("data");
 console.log(datiDB);
+
+// MOBILE MENU TOGGLE
+const menuToggle = document.getElementById('menu-toggle');
+const navCenter = document.getElementById('nav-center');
+const socialIcons = document.getElementById('social-icons');
+
+if (menuToggle) {
+  menuToggle.addEventListener('click', () => {
+    navCenter.classList.toggle('active');
+    socialIcons.classList.toggle('active');
+  });
+
+  // Chiudi menu quando clicki su un link
+  document.querySelectorAll('.nav-center a').forEach(link => {
+    link.addEventListener('click', () => {
+      navCenter.classList.remove('active');
+      socialIcons.classList.remove('active');
+    });
+  });
+}
+
 const menuLinks=document.querySelectorAll(".menu-list a");
 const listContainer=document.getElementById("menu-lists");
 const prontoBtn=document.getElementById("pronto-btn");
@@ -354,11 +537,22 @@ function renderMenu(category){
   });
 }
 
+// Funzione per aggiornare lo stato del bottone PRONTO
+function updateProntoBtn() {
+  if (Object.keys(selectedItems).length > 0) {
+    prontoBtn.style.opacity = "1";
+    prontoBtn.style.pointerEvents = "auto";
+  } else {
+    prontoBtn.style.opacity = "0.5";
+    prontoBtn.style.pointerEvents = "auto";
+  }
+}
+
 // Codice errore visuale
 const errorBox = document.getElementById("error-box");
 const errorCloseBtn = errorBox.querySelector(".close-btn");
 errorCloseBtn.addEventListener("click", () => {
-  errorBox.style.display = "none";
+  errorBox.classList.remove("show");
 });
 
 menuLinks.forEach(link=>{
@@ -381,6 +575,10 @@ menuLinks.forEach(link => {
 });
 
 prontoBtn.addEventListener("click", () => {
+  console.log("Bottone PRONTO cliccato!");
+  console.log("selectedItems:", selectedItems);
+  console.log("Lunghezza:", Object.keys(selectedItems).length);
+  
   if (Object.keys(selectedItems).length === 0) {
     // Aggiorna il messaggio in base alla categoria
     let tipo = "";
@@ -398,12 +596,13 @@ prontoBtn.addEventListener("click", () => {
         tipo = "prodotto";
     }
 
+    console.log("Mostro error-box con messaggio:", tipo);
     errorBox.querySelector("p").innerHTML = `Oh no!<br>Devi selezionare almeno un ${tipo}`;
     errorBox.classList.add("show");
 
     setTimeout(() => {
       errorBox.classList.remove("show");
-    }, 3000);
+    }, 5000);
 
     return;
   }

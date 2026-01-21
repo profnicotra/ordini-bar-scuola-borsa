@@ -4,7 +4,16 @@
     </head>
     <body>
         <h1>Pagina admin</h1>
-        <input type="text"><html></html>+
-        <button type="submit">Aggiungi prodotto</button>
+        
+        
+        <form action="{{ url_for('admin.add_product') }}" method="POST">
+            <input type="number" method="POST" name="id" placeholder="ID"><br>
+            <input type="text" method="POST" name="nome_prodotto" placeholder="Nome prodotto"><br>
+            <input type="number" method="POST" name="prezzo" placeholder="Prezzo"><br>
+            <input type="number" method="POST" name="margine" placeholder="Margine"><br>
+            <input type="number" method="POST" name="prezzo_interno" placeholder="Prezzo interno"><br>
+            <button type="submit">Aggiungi prodotto</button>
+        </form>
+        
     </body>
 </html>

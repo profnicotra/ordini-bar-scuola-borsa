@@ -2,6 +2,7 @@
 <html lang="it">
 <head>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Stato bar</title>
 
 <style>
@@ -34,6 +35,7 @@ body::after {
   height: 100%;
   backdrop-filter: blur(4px);
   background: rgba(30, 30, 30, 0.488);
+  padding: 20px;
 }
 
 /* bottone */
@@ -50,18 +52,41 @@ body::after {
   border-radius: 20px;
   border: 2px solid white;
   cursor: pointer;
+  transition: 0.3s ease;
 }
 
 .big-button:hover {
   background-color: white;
   color: black;
 }
+
+/* RESPONSIVE DESIGN */
+@media (max-width: 768px) {
+  .big-button {
+    width: 220px;
+    height: 60px;
+    font-size: 16px;
+    letter-spacing: 1px;
+    padding: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .big-button {
+    width: 85%;
+    max-width: 250px;
+    height: 55px;
+    font-size: 14px;
+    letter-spacing: 1px;
+    padding: 0.7rem;
+  }
+}
 </style>
 </head>
 
 <body>
 <div class="content">
-  <form method="post" action="/toggle">
+  <form method="post" action="{{ url_for('toggle.changeBarStatus') }}">
     <button type="submit" class="big-button">
       APERTO / CHIUSO
     </button>
