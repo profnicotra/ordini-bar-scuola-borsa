@@ -10,8 +10,8 @@ def queue():
         "queue" : [get_queue()]},        
     return render_template('queue.html', data=data)
 
-@bp.get("/update", methods=["POST"])
-def update_queue():
-    dati = request.get_json
+# @bp.get("/update", methods=["POST"])
+# def update_queue():
+#     dati = request.get_json
     
-    return jsonify({"status": "success"})
+#     return jsonify({"status": "success"})
