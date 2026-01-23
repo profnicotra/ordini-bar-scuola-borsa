@@ -248,7 +248,6 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
   top: 10px;
   right: 15px;
   cursor: pointer;
-<<<<<<< HEAD
 }
 .nav-buttons .nav-btn:hover {
     background:white;
@@ -441,15 +440,6 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
     font-size: 16px;
     color:white;
 }
-=======
-  font-weight: 900;
-  font-size: 20px;
-  color: #cc4b4b;
-  border: none;
-  background: none;
-}
-
->>>>>>> 82e588be32ba8e5f2c7c9f1614c23551997b4fe9
 html, body {
   width:100%;
   overflow-x:hidden;
@@ -558,12 +548,7 @@ html, body {
     <a href="https://www.instagram.com/scuola_borsa/"><i class="fab fa-instagram"></i></a>
     <a href="https://www.youtube.com/@ScuolaPaoloBorsaMonza"><i class="fab fa-youtube"></i></a>
   </div>
-</header>
-
-<button class="back-btn" aria-label="Indietro">
-  ←
-</button>
-
+r>
 
 <section class="menu-hero" id="the-menu">
   <div class="menu-content">
@@ -663,7 +648,30 @@ html, body {
 </div>
 <script>
 const datiDB = document.getElementById("contenitore").getAttribute("data");
-console.log(datiDB);
+console.log("datiDB raw:", datiDB);
+
+// Elaborare i dati JSON ricevuti dal server Flask
+let menuData = {
+  share: [["Pizzette", 2], ["Ravioli", 30], ["Risotto", 15], ["Panino", 8], ["Focaccia", 2], ["Patatine", 4]],
+  sustain: [["Capuccino", 2.5], ["Caffè", 2], ["Tè", 1.5], ["Iced Coffee", 5]],
+  indulge: [["Biscotti", 3], ["Torta", 5], ["Tiramisù", 5], ["Gelato", 5], ["Pancake", 3]]
+};
+
+// Se i dati dal server sono disponibili, usali
+if (datiDB && datiDB.trim() !== "" && datiDB !== "None") {
+  try {
+    let parsedData = JSON.parse(datiDB);
+    console.log("Dati parsed:", parsedData);
+    if (parsedData && typeof parsedData === 'object') {
+      menuData = parsedData;
+    }
+  } catch(e) {
+    console.warn("Errore nel parsing dei dati JSON:", e);
+    console.log("Uso dati di default");
+  }
+}
+
+console.log("menuData finale:", menuData);
 
 // MOBILE MENU TOGGLE
 const menuToggle = document.getElementById('menu-toggle');
@@ -688,11 +696,6 @@ if (menuToggle) {
 const menuLinks=document.querySelectorAll(".menu-list a");
 const listContainer=document.getElementById("menu-lists");
 const prontoBtn=document.getElementById("pronto-btn");
-const menuData={
-  share:[["Pizzette",2],["Ravioli",30],["Risotto",15],["Panino",8],["Focaccia",2],["Patatine",4]],
-  sustain:[["Capuccino",2.5],["caffe",2],["Tè",1.5],["Iced Coffee",5]],
-  indulge:[["Biscotti",3],["Torta",5],["Tiramisù",5],["Gelato",5],["Pancake",3]]
-};
 
 // Carichiamo selectedItems da localStorage
 let selectedItems=JSON.parse(localStorage.getItem("selectedItems"))||{};
@@ -768,6 +771,11 @@ menuLinks.forEach(link => {
   });
 });
 
+// Attiva il primo menu al caricamento
+if (menuLinks.length > 0) {
+  menuLinks[0].click();
+}
+
 prontoBtn.addEventListener("click", () => {
   console.log("Bottone PRONTO cliccato!");
   console.log("selectedItems:", selectedItems);
@@ -810,10 +818,6 @@ prontoBtn.addEventListener("click", () => {
   window.location.href = "/orders";
 });
 
-
-<<<<<<< HEAD
-</html>
-=======
 menuLinks[0].click();
 
 
@@ -863,4 +867,3 @@ toLogin.addEventListener("click", () => {
 </script>
 </body>
 </html>
->>>>>>> 82e588be32ba8e5f2c7c9f1614c23551997b4fe9
