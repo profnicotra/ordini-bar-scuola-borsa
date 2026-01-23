@@ -41,7 +41,8 @@
       display: flex;
       flex-direction: column;
       box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-      width: 400px;
+      width: 100%;
+      max-width: 400px;
     }
     .order-header {
       display: flex;
@@ -73,7 +74,7 @@
     .order-items {
       border-top: 1px solid #333;
       margin-top: 10px;
-      padding-top: 10px1;
+      padding-top: 10px;
     }
     .item {
       display: flex;
@@ -154,91 +155,55 @@
     /* RESPONSIVE DESIGN - Solo riduzione dimensioni, layout identico */
     @media (max-width: 1024px) {
       header {
-        padding: 18px 40px;
+        padding: 18px 20px;
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
       }
       header h1 {
         font-size: 26px;
-        margin-left: 500px;
+        margin-left: 0 !important;
       }
       main {
-        padding: 35px;
-        gap: 28px;
+        padding: 20px;
+        gap: 20px;
+        justify-content: center;
       }
       .order-card {
-        width: 390px;
+        width: 100%;
+        max-width: 400px;
         padding: 19px 23px;
       }
     }
 
     @media (max-width: 768px) {
-      header {
-        padding: 19px 40px;
-      }
       header h1 {
         font-size: 24px;
-        margin-left: 500px;
+        margin-left: 0 !important;
       }
       main {
-        padding: 38px;
-        gap: 29px;
+        padding: 15px;
+        gap: 15px;
       }
       .order-card {
-        width: 395px;
-        padding: 19px 23px;
-      }
-      .order-title {
-        font-size: 19px;
-      }
-      .order-status {
-        font-size: 10px;
-        padding: 4px 12px;
-      }
-      .item {
-        font-size: 14px;
-      }
-      .order-notes {
-        font-size: 14px;
+        width: 100%;
+        max-width: 100%;
       }
     }
 
     @media (max-width: 480px) {
-      header {
-        padding: 17px 38px;
-      }
       header h1 {
-        font-size: 22px;
-        margin-left: 500px;
-      }
-      main {
-        padding: 35px;
-        gap: 27px;
+        font-size: 20px;
       }
       .order-card {
-        width: 385px;
-        padding: 18px 22px;
-      }
-      .order-title {
-        font-size: 18px;
-      }
-      .order-status {
-        font-size: 10px;
-        padding: 4px 12px;
-      }
-      .customer-info {
-        font-size: 13px;
-      }
-      .item {
-        font-size: 14px;
-      }
-      .order-notes {
-        font-size: 14px;
+        padding: 15px;
       }
     }
   </style>
 </head>
 <body>
 <header>
-  <h1 style="margin-left:500px;font-family: verdana;font-weight:800;">CODA DA ORDINI SALA BAR</h1>
+  <h1 style="font-family: verdana; font-weight: 800; text-align: center; width: 100%;">CODA DA ORDINI SALA BAR</h1>
 </header>
 
 <main>

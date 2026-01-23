@@ -266,9 +266,10 @@ h2 {
 }
 .header-row, .product-row {
     display: grid;
-    grid-template-columns: 140px 140px 80px;
+    grid-template-columns: 1.5fr 1fr 0.8fr;
     text-align: center;
     align-items: center;
+    gap: 10px;
 }
 .header-row {
     margin-bottom:12px;
@@ -422,8 +423,8 @@ h2 {
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 15;
-    font-family: 'Franklin Gothic Medium';
-    font-size: 5px;
+    font-family: 'Franklin Gothic Medium', sans-serif;
+    font-size: 16px;
 }
 #ingredient-card .title {
     color:white;
@@ -447,7 +448,6 @@ h2 {
     cursor:pointer;
 }
 
-/* popup ingredienti */
 #popup-ingredienti {
     width: 300px;
     background: rgba(0, 0, 0, 0.934);
@@ -463,10 +463,12 @@ h2 {
     transform: translate(-50%, -50%) scale(.6);
     transition: .25s ease;
     z-index:20;
+    opacity: 0;
 }
 #popup-ingredienti.active {
     display:flex;
     transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
 }
 
 .ingredient-row {
@@ -738,11 +740,13 @@ h2 {
     transition: .25s ease;
     z-index: 30;
     font-size:15px;
+    opacity: 0;
 }
 
 #popup-allergeni-ingrediente.active {
     display: flex;
     transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
 }
 
 /* RESPONSIVE DESIGN - Solo riduzione dimensioni, layout identico */
@@ -939,18 +943,22 @@ h2 {
     position: fixed;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%) scale(0.6);
     background: rgba(0,0,0,0.92);
     padding: 20px;
     border-radius: 15px;
     z-index: 1001;
     width: 300px;
     color: white;
+    opacity: 0;
+    transition: .25s ease;
 }
 
 #popup-extra-ingredienti.active {
     display: flex;
     flex-direction: column;
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
 }
 
 #extra-ingredienti-container label {
@@ -1528,6 +1536,7 @@ document.addEventListener("DOMContentLoaded", function () {
         renderProducts();
 
         popupExtra.classList.remove("active");
+        overlay.classList.remove("active");
     });
 
     document.getElementById("open-allergeni-top").addEventListener("click", () => {
@@ -1538,6 +1547,8 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("back").addEventListener("click", () => {
         popupIngredienti.classList.remove("active");
         overlay.classList.remove("active");
+        popupExtra.classList.remove("active");
+        popupAllergeni.classList.remove("active");
     });
 
     /* ================================
