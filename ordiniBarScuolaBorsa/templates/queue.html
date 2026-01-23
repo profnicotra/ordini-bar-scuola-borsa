@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Coda Ordini Sala Bar</title>
-  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
   <style>
     body {
@@ -30,8 +29,9 @@
     main {
       padding: 40px;
       display: flex;
-      flex-direction: column;
-      gap: 25px;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 30px;
     }
     .order-card {
       background-color: rgba(0, 0, 0, 0.823);
@@ -41,6 +41,7 @@
       display: flex;
       flex-direction: column;
       box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      width: 400px;
     }
     .order-header {
       display: flex;
@@ -57,29 +58,13 @@
       text-transform: uppercase;
       padding: 4px 12px;
       border-radius: 12px;
-      font-size: 12px;
+      font-size: 11px;
     }
-    /* Status colors */
-    .status-nuovo {
-      background-color:#e63946;
-      color: #0d0d0d;
-    }
-    .status-in-preparazione {
-      background-color: #e9c46a;
-      color: #0d0d0d;
-    }
-    .status-pronto {
-      background-color:rgba(2, 87, 2, 0.988);
-      color: #000000;
-    }
-    .status-consegnato {
-      background-color: #2a9d8f;
-      color: #0d0d0d;
-    }
-    .status-annullato {
-      background-color: #e63946;
-      color: #ffffff;
-    }
+    .status-nuovo { background-color:#e63946; color:#0d0d0d; }
+    .status-in-preparazione { background-color:#e9c46a; color:#0d0d0d; }
+    .status-pronto { background-color:rgba(2, 87, 2, 0.988); color:#000; }
+    .status-consegnato { background-color:#2a9d8f; color:#0d0d0d; }
+    .status-annullato { background-color:#e63946; color:#fff; }
     .customer-info {
       margin-bottom: 8px;
       font-size: 14px;
@@ -88,7 +73,7 @@
     .order-items {
       border-top: 1px solid #333;
       margin-top: 10px;
-      padding-top: 10px;
+      padding-top: 10px1;
     }
     .item {
       display: flex;
@@ -112,7 +97,8 @@
       margin-top: 14px;
       padding-top: 8px;
       display: flex;
-      justify-content: space-between;
+      flex-direction: column;
+      align-items: flex-start;
       font-weight: 600;
     }
     .order-notes {
@@ -282,31 +268,6 @@
           <button class="btn-pronto" onclick="markReady(this)">Pronto</button>
           <button class="btn-delete" onclick="removeOrder(this)">Elimina</button>
         </div>
-  <header>
-    <h1 style="margin-left:470px;font-family: verdana;font-weight:800;">CODA DA ORDINI SALA BAR</h1>
-  </header>
-  <main>
-    <!-- Ordine 1 -->
-    <div class="order-card">
-      <div class="order-header">
-        <div class="order-title">Ordine #101</div>
-        <div class="order-status status-in-preparazione">In preparazione</div>
-      </div>
-      <div class="customer-info">Mario Rossi – Aula 1</div>
-      <div class="customer-info">12/12/2025 09:15</div>
-      <div class="order-items">
-        <div class="item">
-          <div class="item-name">Caffè <span class="item-note">Senza zucchero</span></div>
-          <div>x2</div>
-        </div>
-        <div class="item">
-          <div class="item-name">Cornetto</div>
-          <div>x1</div>
-        </div>
-      </div>
-      <div class="order-footer">
-        <span>Totale</span>
-        <span>€4,50</span>
       </div>
     </div>
   </div>
@@ -333,44 +294,48 @@
           <button class="btn-pronto" disabled>Pronto</button>
           <button class="btn-delete" onclick="removeOrder(this)">Elimina</button>
         </div>
-    <!-- Ordine 2 -->
-    <div class="order-card">
-      <div class="order-header">
-        <div class="order-title">Ordine #102</div>
-        <div class="order-status status-pronto">Pronto</div>
-      </div>
-      <div class="customer-info">Sara Bianchi – Aula 3</div>
-      <div class="customer-info">12/12/2025 09:20</div>
-      <div class="order-items">
-        <div class="item">
-          <div class="item-name">Cappuccino <span class="item-note">Latte di soia</span></div>
-          <div>x1</div>
-        </div>
-      </div>
-      <div class="order-footer">
-        <span>Totale</span>
-        <span>€2,50</span>
       </div>
     </div>
-    <!-- Ordine 3 -->
-    <div class="order-card">
-      <div class="order-header">
-        <div class="order-title">Ordine #103</div>
-        <div class="order-status status-nuovo">Nuovo</div>
-      </div>
-      <div class="customer-info">Luigi Verdi – Aula 2</div>
-      <div class="customer-info">12/12/2025 09:25</div>
-      <div class="order-items">
-        <div class="item">
-          <div class="item-name">Panino</div>
-          <div>x3</div>
-        </div>
-      </div>
-      <div class="order-footer">
-        <span>Totale</span>
-        <span>€9,00</span>
+  </div>
+
+  <!-- Ordine 03 -->
+  <div class="order-card">
+    <div class="order-header">
+      <div class="order-title" style="font-size:18px;font-weight:900;">Ordine #03</div>
+      <div class="order-status status-nuovo">Consegnato</div>
+    </div>
+    <div class="customer-info">Luigi Verdi – Aula 2</div>
+    <div class="customer-info">12/12/2025 09:25</div>
+    <div class="order-items">
+      <div class="item">
+        <div class="item-name">Panino</div>
+        <div>x3</div>
       </div>
     </div>
-  </main>
+    <div class="order-footer">
+      <div class="order-notes">Note Generali</div>
+      <div class="order-total">
+        <span>Totale €9,00</span>
+        <div class="order-actions">
+          <button class="btn-pronto" onclick="markReady(this)">Pronto</button>
+          <button class="btn-delete" onclick="removeOrder(this)">Elimina</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+function removeOrder(button) {
+  button.closest('.order-card').remove();
+}
+function markReady(button) {
+  const card = button.closest('.order-card');
+  const status = card.querySelector('.order-status');
+  status.textContent = 'Pronto';
+  status.className = 'order-status status-pronto';
+  button.disabled = true;
+}
+</script>
 </body>
 </html>
