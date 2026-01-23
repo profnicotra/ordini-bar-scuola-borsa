@@ -9,7 +9,7 @@
 <style>
 * { margin:0;padding:0;box-sizing:border-box; }
 body { font-family:"Montserrat",sans-serif; background-color:black; color:white; }
-.menu-hero{ min-height:100vh; background-image:url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrvMAfCqsehmJvRUBbDTG0xeR6rlCMzEccNg&s"); background-size:cover; background-position:center; position:relative; display:flex; justify-content:center; align-items:flex-start; text-align:center; padding-top:180px; }
+.menu-hero{ min-height:100vh; background-image:url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrvMAfCqsehmJvRUBbDTG0xeR6rlCMzEccNg&s"); background-size:cover; background-position:center; position:relative; display:flex; justify-content:center; align-items:center; text-align:center; padding-top:180px; flex-direction: column; }
 .menu-hero::after { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(31, 30, 30, 0.505); z-index: 1; }
 .navbar {
       display: flex;
@@ -113,7 +113,7 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
   z-index:1;
 }
 
-.menu-content{ position:relative; z-index:3; width:700px; }
+.menu-content{ position:relative; z-index:3; width:100%; max-width: 900px; padding: 0 20px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; }
 .menu-title-wrapper{ display:flex; justify-content:center; gap:12px; margin-bottom:15px; }
 .menu-subtitle{ font-size:45px; font-weight:300; }
 .yellow-line{ width:60px; height:4px; background:#e63946; }
@@ -548,7 +548,7 @@ html, body {
     <a href="https://www.instagram.com/scuola_borsa/"><i class="fab fa-instagram"></i></a>
     <a href="https://www.youtube.com/@ScuolaPaoloBorsaMonza"><i class="fab fa-youtube"></i></a>
   </div>
-r>
+</header>
 
 <section class="menu-hero" id="the-menu">
   <div class="menu-content">
