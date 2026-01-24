@@ -13,6 +13,9 @@ class Prodotto(db.Model):
     prezzo_interni = db.Column(db.Numeric(10, 2))
     attivo = db.Column(db.Boolean, default=True, nullable=False)
     
+    # Nuova colonna aggiunta
+    categoria = db.Column(db.String(100), nullable=True) 
+    
     note_gruppi = db.relationship('NoteGruppo', back_populates='prodotto')
 
 class Posizione(db.Model):
@@ -112,9 +115,10 @@ def get_products():
         Prodotto.nome.label('prodotto'),
         Prodotto.prezzo_euro,
         Prodotto.prezzo_interni,
+        Prodotto.categoria,  # <-- 1. Aggiunto alla query
         NoteGruppo.esclusivo,
         NoteGruppo.obbligatorio_default,
-        Note.nome.label('nota')
+        Note.nome.label('nota')    
     ).join(NoteGruppo, Prodotto.id == NoteGruppo.id_prodotto, isouter=True) \
      .join(Note, NoteGruppo.id == Note.id_gruppo, isouter=True) \
      .filter(Prodotto.attivo == True).all()
@@ -124,6 +128,7 @@ def get_products():
             'prodotto': item.prodotto,
             'prezzo_euro': item.prezzo_euro,
             'prezzo_interni': item.prezzo_interni,
+            'categoria': item.categoria, # <-- 2. Aggiunto al dizionario
             'esclusivo': item.esclusivo,
             'obbligatorio_default': item.obbligatorio_default,
             'nota': item.nota
