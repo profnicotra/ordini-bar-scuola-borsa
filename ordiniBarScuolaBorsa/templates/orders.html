@@ -781,7 +781,7 @@ h2 {
     #popup-allergeni-ingrediente { width: 300px; }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 480px) 
     body { padding: 18px; }
     .card {
         width: 390px;
@@ -1058,7 +1058,6 @@ body {
     margin-left: auto;
     margin-right: auto;
 }
-}
 
 /* DESKTOP */
 body {
@@ -1178,7 +1177,7 @@ body {
     <div class="total-card">
 
         <!-- 🔥 BOTTONE CESTINO -->
-        <button id="clearCartBtn" class="clear-btn">
+        <button id="clearCartBtn" type="button" class="clear-btn">
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none"
                 stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="3 6 5 6 21 6"></polyline>
@@ -1190,7 +1189,7 @@ body {
         </button>
 
         <div class="total-price" id="total">€0,00</div>
-        <button class="checkout-btn" id="invia" style="border: 1px solid white;">INVIA</button>
+        <button class="checkout-btn" id="invia" type="button" style="border: 1px solid white;">INVIA</button>
 
     </div>
 
@@ -1202,7 +1201,7 @@ body {
         <h1 class="title">AGGIUNGI NOTE</h1>
         <div class="divider1" style="width:100px;margin-left:100px;margin-bottom:20px;"></div>
         <div class="controls" style="justify-content:center;">
-            <button class="btn" id="apriIngredienti">NOTE</button>
+            <button class="btn" id="apriIngredienti" type="button">NOTE</button>
         </div>
     </div>
 
@@ -1213,8 +1212,8 @@ body {
         </h2>
 
         <div class="note-top-buttons">
-            <button class="note-action-btn" id="aggiungi-ingrediente">Aggiungi</button>
-            <button class="note-action-btn" id="open-allergeni-top">Allergeni</button>
+            <button class="note-action-btn" id="aggiungi-ingrediente" type="button">Aggiungi</button>
+            <button class="note-action-btn" id="open-allergeni-top" type="button">Allergeni</button>
         </div>
 
         <div class="divider"></div>
@@ -1223,7 +1222,7 @@ body {
         <div id="ingredient-container"></div>
 
         <div class="nav-buttons">
-            <button class="nav-btn" id="back" style="margin-left: 113px;">Chiudi</button>
+            <button class="nav-btn" id="back" type="button" style="margin-left: 113px;">Chiudi</button>
         </div>
     </div>
 
@@ -1232,7 +1231,7 @@ body {
         <h2 style="text-align:center; color:white; font-family:verdana; font-weight:800;">Aggiungi Extra</h2>
         <div class="divider"></div>
         <div id="extra-ingredienti-container" style="display:flex; flex-direction:column; gap:10px; padding: 10px;"></div>
-        <button id="popup-extra-save" style="
+        <button id="popup-extra-save" type="button" style="
             background:#e63946;  
             border:none; 
             padding:12px; 
@@ -1248,7 +1247,7 @@ body {
         <h2 style="text-align:center; color:white; font-family:verdana; font-weight:800; margin-bottom:1px;">Seleziona Allergeni</h2>
         <div class="divider"></div>
         <div id="allergeni-container" style="display:flex; flex-direction:column; gap:10px;"></div>
-        <button id="popup-allergeni-save" style="
+        <button id="popup-allergeni-save" type="button" style="
             background:#e63946; 
             border:none; 
             padding:12px; 
@@ -1261,7 +1260,7 @@ body {
 
     <!-- POPUP SUCCESSO ORDINE -->
     <div id="success-popup">
-        <button id="success-close">✕</button>
+        <button id="success-close" type="button">✕</button>
 
         <div class="icon-circle">
             <svg fill="none" stroke-width="2" stroke="green" stroke-linecap="round"
@@ -1277,11 +1276,11 @@ body {
     <strong style="font-family: verdana;font-weight:800;font-size: 17px;">Attenzione!</strong><br>
     <p style="font-weight: 600;font-size: 15px;">Vuoi cancellare tutti gli ordini?</p>
 
-    <button class="confirm-btn">SÌ</button>
+    <button class="confirm-btn" type="button">SÌ</button>
 
-    <button class="close-btn" aria-label="Close Error">&times;</button>
+    <button class="close-btn" type="button" aria-label="Close Error">&times;</button>
     </div>
-    <button class="back-btn" onclick="window.history.back()">
+    <button class="back-btn" type="button" onclick="window.history.back()">
     <i></i>Indietro
     </button>
 </form>
