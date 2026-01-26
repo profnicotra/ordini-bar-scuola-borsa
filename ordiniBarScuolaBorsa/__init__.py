@@ -1,5 +1,9 @@
 from flask import Flask
 from ordiniBarScuolaBorsa.models import db
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 def create_app():
     app = Flask(__name__)
@@ -28,6 +32,8 @@ def create_app():
 
     with app.app_context():
         db.create_all()
+    
+    logger.info("App Flask creata e DB inizializzato")
 
     return app
 

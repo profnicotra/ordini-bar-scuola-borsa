@@ -6,38 +6,56 @@
   <title>Coda Ordini Sala Bar</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       padding: 0;
       font-family: 'Montserrat', sans-serif;
-      background-color: #111111;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
       color: #f5f5f5;
+      min-height: 100vh;
     }
+
     header {
-      background-color: #161616;
-      padding: 20px 40px;
+      background: linear-gradient(90deg, #161616 0%, #1f1f1f 100%);
+      padding: 25px 40px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 3px solid #e63946;
+      border-bottom: 4px solid #e63946;
+      box-shadow: 0 8px 32px rgba(230, 57, 70, 0.2);
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
+
     header h1 {
-      font-size: 28px;
+      font-size: 32px;
       font-weight: 800;
       margin: 0;
+      background: linear-gradient(90deg, #e63946, #ff6b6b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 1px;
+      text-shadow: 0 0 30px rgba(230, 57, 70, 0.3);
     }
+
     main {
       padding: 40px;
       display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;
-      gap: 30px;
+      flex-direction: column;
+      gap: 25px;
     }
+
     .order-card {
-      background-color: rgba(0, 0, 0, 0.823);
-      border-left: 7px solid #e63946;
-      border-radius: 8px;
-      padding: 20px 24px;
+      background: linear-gradient(135deg, rgba(15, 15, 15, 0.9) 0%, rgba(25, 25, 25, 0.9) 100%);
+      border-left: 6px solid #e63946;
+      border-radius: 12px;
+      padding: 24px 28px;
       display: flex;
       flex-direction: column;
       box-shadow: 0 4px 10px rgba(0,0,0,0.5);
@@ -48,108 +66,287 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 12px;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.08);
     }
+
     .order-title {
-      font-size: 20px;
-      font-weight: 700;
+      font-size: 22px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: 0.5px;
     }
+
     .order-status {
       font-weight: 700;
       text-transform: uppercase;
       padding: 4px 12px;
       border-radius: 12px;
-      font-size: 11px;
+      font-size: 12px;
     }
-    .status-nuovo { background-color:#e63946; color:#0d0d0d; }
-    .status-in-preparazione { background-color:#e9c46a; color:#0d0d0d; }
-    .status-pronto { background-color:rgba(2, 87, 2, 0.988); color:#000; }
-    .status-consegnato { background-color:#2a9d8f; color:#0d0d0d; }
-    .status-annullato { background-color:#e63946; color:#fff; }
+    /* Status colors */
+    .status-nuovo {
+      background-color:#e63946;
+      color: #0d0d0d;
+    }
+    .status-in-preparazione {
+      background-color: #e9c46a;
+      color: #0d0d0d;
+    }
+    .status-pronto {
+      background-color:rgba(2, 87, 2, 0.988);
+      color: #000000;
+    }
+    .status-consegnato {
+      background-color: #2a9d8f;
+      color: #0d0d0d;
+    }
+    .status-annullato {
+      background-color: #e63946;
+      color: #ffffff;
+    }
     .customer-info {
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       font-size: 14px;
-      opacity: 0.85;
+      opacity: 0.9;
+      color: #e0e0e0;
+      font-weight: 500;
     }
+
+    .customer-info:first-of-type::before {
+      content: "👤 ";
+      margin-right: 6px;
+    }
+
+    .customer-info:nth-of-type(2)::before {
+      content: "🕐 ";
+      margin-right: 6px;
+      opacity: 0.7;
+    }
+
     .order-items {
-      border-top: 1px solid #333;
-      margin-top: 10px;
-      padding-top: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      margin-top: 14px;
+      padding-top: 14px;
+      background: rgba(255, 255, 255, 0.02);
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 14px;
     }
+
     .item {
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
       font-size: 15px;
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
+
+    .item:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+    }
+
     .item-name {
       display: flex;
       flex-direction: column;
-      padding-top: 7px;
+      padding-top: 4px;
+      flex: 1;
     }
+
+    .item-name::before {
+      content: "🛒 ";
+      margin-right: 6px;
+    }
+
     .item-note {
       font-size: 12px;
-      color: #e63946;
-      margin-top: 2px;
+      color: #ff9999;
+      margin-top: 3px;
+      font-style: italic;
+      opacity: 0.85;
     }
+
+    .item-note::before {
+      content: "📝 ";
+      margin-right: 4px;
+    }
+
     .order-footer {
-      border-top: 1px solid #333;
-      margin-top: 14px;
-      padding-top: 8px;
+      border-top: 2px solid rgba(255, 255, 255, 0.08);
+      margin-top: 16px;
+      padding-top: 12px;
       display: flex;
       flex-direction: column;
       align-items: flex-start;
       font-weight: 600;
     }
-    .order-notes {
-      font-size: 13px;
-      color: white;
-      font-size: 15px;
-      margin-bottom: 6px;
-      width: 100%;
-    }
-    .order-total {
-      border-top: 1px solid #333;
-      padding-top: 6px;
-      margin-top: 6px;
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-    }
     .order-actions {
       display: flex;
-      gap: 10px;
+      gap: 12px;
       margin-left: auto;
     }
+
     .btn-delete {
-      background-color: #e63946;
+      background: linear-gradient(135deg, #e63946 0%, #c71c23 100%);
       color: white;
-      border:1px solid white;
+      border: none;
       padding: 8px 16px;
-      border-radius: 10px;
+      border-radius: 6px;
       cursor: pointer;
       font-weight: 700;
       font-size: 13px;
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 15px rgba(230, 57, 70, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-delete::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.2);
+      transition: left 0.3s ease;
+    }
+    .btn-delete:hover {
+      background-color: #c71c23;
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(230, 57, 70, 0.4);
+    }
+    .btn-delete:active {
+      transform: scale(0.98);
     }
     .btn-pronto {
-      background-color: rgba(2, 87, 2, 0.988);
+      background-color: #02a502;
       color: white;
-      border:1px solid white;
+      border: none;
       padding: 8px 16px;
-      border-radius: 10px;
+      border-radius: 6px;
       cursor: pointer;
       font-weight: 700;
       font-size: 13px;
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 15px rgba(2, 165, 2, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-pronto::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.2);
+      transition: left 0.3s ease;
+    }
+    .btn-pronto:hover {
+      background-color: #028902;
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(2, 169, 2, 0.4);
+    }
+    .btn-pronto:active {
+      transform: scale(0.98);
     }
     .btn-pronto:disabled {
-      background-color: #555;
+      background: linear-gradient(135deg, #444444 0%, #333333 100%);
       cursor: not-allowed;
       opacity: 0.5;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      transform: none;
+    }
+
+    .btn-pronto:disabled:hover {
+      transform: none;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Empty state */
+    #orders-container:empty::after {
+      content: "📋 Nessun ordine in coda";
+      display: block;
+      padding: 60px 20px;
+      text-align: center;
+      opacity: 0.7;
+      font-size: 18px;
+    }
+
+    /* Scrollbar styling */
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(135deg, #e63946 0%, #ff6b6b 100%);
+      border-radius: 5px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(135deg, #ff6b6b 0%, #e63946 100%);
+    }
+
+    /* Loading animation */
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.5;
+      }
+    }
+
+    .loading {
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    /* Responsivo */
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: 24px;
+      }
+
+      main {
+        padding: 20px;
+        gap: 15px;
+      }
+
+      .order-card {
+        padding: 16px 20px;
+      }
+
+      .order-header {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+      }
+
+      .order-actions {
+        width: 100%;
+        justify-content: flex-end;
+      }
+
+      .order-footer {
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-start;
+      }
+
+      .btn-delete, .btn-pronto {
+        padding: 8px 14px;
+        font-size: 12px;
+      }
     }
 
     /* RESPONSIVE DESIGN - Solo riduzione dimensioni, layout identico */
@@ -202,6 +399,33 @@
   </style>
 </head>
 <body>
+  <header>
+    <h1 style="margin-left:470px;font-family: verdana;font-weight:800;">CODA DA ORDINI SALA BAR</h1>
+  </header>
+  <main>
+    <!-- Ordine 1 -->
+    <div class="order-card">
+      <div class="order-header">
+        <div class="order-title">Ordine #101</div>
+        <div class="order-status status-in-preparazione">In preparazione</div>
+      </div>
+      <div class="customer-info">Mario Rossi – Aula 1</div>
+      <div class="customer-info">12/12/2025 09:15</div>
+      <div class="order-items">
+        <div class="item">
+          <div class="item-name">Caffè <span class="item-note">Senza zucchero</span></div>
+          <div>x2</div>
+        </div>
+        <div class="item">
+          <div class="item-name">Cornetto</div>
+          <div>x1</div>
+        </div>
+      </div>
+      <div class="order-footer">
+        <div>
+          <span>Totale</span>
+          <span style="margin-left: 40px;">€4,50</span>
+        </div>
 <header>
   <h1 style="font-family: verdana; font-weight: 800; text-align: center; width: 100%;">CODA DA ORDINI SALA BAR</h1>
 </header>
@@ -235,72 +459,91 @@
         </div>
       </div>
     </div>
-  </div>
-
-  <!-- Ordine 02 -->
-  <div class="order-card">
-    <div class="order-header">
-      <div class="order-title" style="font-size:18px;font-weight:900;">Ordine #02</div>
-      <div class="order-status status-pronto">Pronto</div>
-    </div>
-    <div class="customer-info">Sara Bianchi – Aula 3</div>
-    <div class="customer-info">12/12/2025 09:20</div>
-    <div class="order-items">
-      <div class="item">
-        <div class="item-name">Cappuccino <span class="item-note"><!-- qua possiamo scrivere le note delle prodotti --> </span></div>
-        <div>x1</div>
+    <!-- Ordine 2 -->
+    <div class="order-card">
+      <div class="order-header">
+        <div class="order-title">Ordine #102</div>
+        <div class="order-status status-pronto">Pronto</div>
       </div>
-    </div>
-    <div class="order-footer">
-      <div class="order-notes">Note Generali</div>
-      <div class="order-total">
-        <span>Totale €2,50</span>
+      <div class="customer-info">Sara Bianchi – Aula 3</div>
+      <div class="customer-info">12/12/2025 09:20</div>
+      <div class="order-items">
+        <div class="item">
+          <div class="item-name">Cappuccino <span class="item-note">Latte di soia</span></div>
+          <div>x1</div>
+        </div>
+      </div>
+      <div class="order-footer">
+        <div>
+          <span>Totale</span>
+          <span style="margin-left: 40px;">€2,50</span>
+        </div>
         <div class="order-actions">
-          <button class="btn-pronto" disabled>Pronto</button>
+          <button class="btn-pronto" onclick="markReady(this)" disabled>Pronto</button>
           <button class="btn-delete" onclick="removeOrder(this)">Elimina</button>
         </div>
       </div>
     </div>
-  </div>
-
-  <!-- Ordine 03 -->
-  <div class="order-card">
-    <div class="order-header">
-      <div class="order-title" style="font-size:18px;font-weight:900;">Ordine #03</div>
-      <div class="order-status status-nuovo">Consegnato</div>
-    </div>
-    <div class="customer-info">Luigi Verdi – Aula 2</div>
-    <div class="customer-info">12/12/2025 09:25</div>
-    <div class="order-items">
-      <div class="item">
-        <div class="item-name">Panino</div>
-        <div>x3</div>
+    <!-- Ordine 3 -->
+    <div class="order-card">
+      <div class="order-header">
+        <div class="order-title">Ordine #103</div>
+        <div class="order-status status-nuovo">Nuovo</div>
       </div>
-    </div>
-    <div class="order-footer">
-      <div class="order-notes">Note Generali</div>
-      <div class="order-total">
-        <span>Totale €9,00</span>
+      <div class="customer-info">Luigi Verdi – Aula 2</div>
+      <div class="customer-info">12/12/2025 09:25</div>
+      <div class="order-items">
+        <div class="item">
+          <div class="item-name">Panino</div>
+          <div>x3</div>
+        </div>
+      </div>
+      <div class="order-footer">
+        <div>
+          <span>Totale</span>
+          <span style="margin-left: 40px;">€9,00</span>
+        </div>
         <div class="order-actions">
           <button class="btn-pronto" onclick="markReady(this)">Pronto</button>
           <button class="btn-delete" onclick="removeOrder(this)">Elimina</button>
         </div>
       </div>
     </div>
-  </div>
-</main>
+  </main>
 
-<script>
-function removeOrder(button) {
-  button.closest('.order-card').remove();
-}
-function markReady(button) {
-  const card = button.closest('.order-card');
-  const status = card.querySelector('.order-status');
-  status.textContent = 'Pronto';
-  status.className = 'order-status status-pronto';
-  button.disabled = true;
-}
-</script>
+  <script>
+    function removeOrder(button) {
+      const orderCard = button.closest('.order-card');
+      if (orderCard) {
+        orderCard.style.transition = 'all 0.3s ease';
+        orderCard.style.opacity = '0';
+        orderCard.style.transform = 'translateX(100%)';
+        
+        setTimeout(() => {
+          orderCard.remove();
+        }, 300);
+      }
+    }
+
+    function markReady(button) {
+      const orderCard = button.closest('.order-card');
+      if (orderCard) {
+        const statusBadge = orderCard.querySelector('.order-status');
+        const currentStatus = statusBadge.textContent.trim();
+        
+        // Cambia solo se non è già "Pronto"
+        if (currentStatus !== 'Pronto') {
+          // Rimuove le classi di stato precedenti
+          statusBadge.classList.remove('status-nuovo', 'status-in-preparazione', 'status-consegnato', 'status-annullato');
+          // Aggiunge la classe pronto
+          statusBadge.classList.add('status-pronto');
+          // Cambia il testo
+          statusBadge.textContent = 'Pronto';
+          // Disabilita il pulsante dopo aver fatto il cambio
+          button.disabled = true;
+        }
+      }
+    }
+  </script>
 </body>
 </html>
