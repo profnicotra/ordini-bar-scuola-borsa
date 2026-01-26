@@ -1106,6 +1106,27 @@ body {
     padding-right: 18px;   /* 🔥 regola qui la distanza */
     text-align: right;
 }
+/* Desktop */
+@media (min-width: 1025px) {
+    #popup-allergeni-ingrediente {
+        top: calc(50% + 75px); /* navbar desktop ~150px */
+    }
+}
+
+/* Tablet */
+@media (max-width: 1024px) and (min-width: 769px) {
+    #popup-allergeni-ingrediente {
+        top: calc(50% + 60px); /* navbar tablet ~120px */
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    #popup-allergeni-ingrediente {
+        top: calc(50% + 40px); /* navbar mobile ~80px */
+    }
+}
+
 
 </style>
 </head>
@@ -1135,7 +1156,6 @@ body {
   </div>
 </header>
 
-    <form action="{{url_for('orders.new_order')}}" method="POST">
     <div class="card">
         <h2 style="font-size:30px;font-weight:800;font-family:verdana;">ORDINA</h2>
         <div class="divider"></div>
@@ -1199,7 +1219,7 @@ body {
     <!-- popup selezione ingredienti -->
     <div id="ingredient-card">
         <h1 class="title">AGGIUNGI NOTE</h1>
-        <div class="divider1" style="width:100px;margin-left:100px;margin-bottom:20px;"></div>
+        <div class="divider1" style="width:100px;margin-left:75px;margin-bottom:20px;"></div>
         <div class="controls" style="justify-content:center;">
             <button class="btn" id="apriIngredienti" type="button">NOTE</button>
         </div>
@@ -1667,7 +1687,6 @@ if (menuToggle) {
     });
   });
 }
-
 </script>
 </body>
 </html>
