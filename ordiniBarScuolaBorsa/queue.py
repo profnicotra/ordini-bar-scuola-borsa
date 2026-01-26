@@ -21,7 +21,7 @@ def get_ordini():
         logger.info("GET /queue/api/ordini - Caricamento ordini")
         ordini = models.get_queue()
         logger.info(f"GET /queue/api/ordini - Caricati {len(ordini)} ordini")
-        return jsonify(ordini), 200
+        return jsonify(ordini), 200 
     except Exception as e:
         logger.error(f"Errore in get_ordini: {str(e)}", exc_info=True)
         return jsonify({"error": str(e)}), 500
@@ -64,6 +64,8 @@ def delete_ordine(ordine_id):
 @bp.get("/update", methods=["POST"])
 def update_queue():
     dati = request.get_json
+    
+    return jsonify({"status": "success"})
 # @bp.get("/update", methods=["POST"])
 # def update_queue():
 #     dati = request.get_json
