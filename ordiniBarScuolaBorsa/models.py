@@ -7,14 +7,14 @@ class Prodotto(db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String, nullable=False)
-    costo = db.column(db.Numeric(10, 2))
+    costo = db.Column(db.Numeric(10, 2))
     prezzo_euro = db.Column(db.Numeric(10, 2))
     margine = db.Column(db.Numeric(10, 2))
     prezzo_interni = db.Column(db.Numeric(10, 2))
     attivo = db.Column(db.Boolean, default=True, nullable=False)
-
-    categoria_id = db.Column(db.Integer, db.ForeignKey('categorie.id'), nullable=True)
-    categoria = db.relationship('Categoria', back_populates='prodotti')
+    
+    # Nuova colonna aggiunta
+    categoria = db.Column(db.String(100), nullable=True) 
     
     note_gruppi = db.relationship('NoteGruppo', back_populates='prodotto')
 
@@ -89,17 +89,6 @@ class Impostazione(db.Model):
     def __repr__(self):
         return f"<Impostazione {self.chiave}>"
     
-class Categoria(db.Model):
-    __tablename__ = 'categorie'
-    
-    id = db.Column(db.Integer, primary_key=True)
-    nome = db.Column(db.Text)
-
-    prodotti = db.relationship('Prodotto', back_populates='categoria', lazy='select')
-
-    def __repr__(self):
-        return f"<Categoria {self.nome}>"  
-    
 def is_bar_open():
     bar_aperto = Impostazione.query.filter_by(chiave="bar_aperto").first()
     if bar_aperto:
@@ -126,13 +115,12 @@ def get_products():
         Prodotto.nome.label('prodotto'),
         Prodotto.prezzo_euro,
         Prodotto.prezzo_interni,
+        Prodotto.categoria,  # <-- 1. Aggiunto alla query
         NoteGruppo.esclusivo,
         NoteGruppo.obbligatorio_default,
-        Note.nome.label('nota'),
-        Categoria.nome.label('categoria')
+        Note.nome.label('nota')    
     ).join(NoteGruppo, Prodotto.id == NoteGruppo.id_prodotto, isouter=True) \
      .join(Note, NoteGruppo.id == Note.id_gruppo, isouter=True) \
-     .join(Categoria, Prodotto.categoria_id == Categoria.id, isouter=True) \
      .filter(Prodotto.attivo == True).all()
     
     for item in query:
@@ -140,60 +128,52 @@ def get_products():
             'prodotto': item.prodotto,
             'prezzo_euro': item.prezzo_euro,
             'prezzo_interni': item.prezzo_interni,
+            'categoria': item.categoria, # <-- 2. Aggiunto al dizionario
             'esclusivo': item.esclusivo,
             'obbligatorio_default': item.obbligatorio_default,
-            'nota': item.nota,
-            'categoria': item.categoria
+            'nota': item.nota
         })
     
     return results
-
-def add_product(nome, prezzo_euro=None, prezzo_interni=None,
-                       costo=None, margine=None, categoria_id=None, attivo=True):
-    p = Prodotto(
-        nome=nome,
-        prezzo_euro=prezzo_euro,
-        prezzo_interni=prezzo_interni,
-        costo=costo,
-        margine=margine,
-        categoria_id=categoria_id,
-        attivo=bool(attivo)
-    )
-
-    try:
-        db.session.add(p)
-        db.session.commit()
-        return p
-    except Exception:
-        db.session.rollback()
-        raise
 
 def get_queue():
-    results = []
-    
-    query = db.session.query(
-        Ordine.id,
-        Prodotto.nome.label('prodotto'),
-        OrdineRiga.quantita,
-        Note.nome.label('nota'),
-        Posizione.nome.label('posizione'),
-        Ordine.stato,
-        Ordine.totale_euro
-    ).join(OrdineRiga, Ordine.id == OrdineRiga.ordine_id) \
-     .join(OrdineRigaNota, OrdineRigaNota.ordine_riga_id == OrdineRiga.id) \
-     .join(Note, Note.id == OrdineRigaNota.nota_id) \
-     .join(Posizione, Posizione.id == Ordine.posizione_id) \
-     .join(Prodotto, Prodotto.id == OrdineRiga.prodotto_id).all()
-    
-    for item in query:
-        results.append({
-            'id': item.id,
-            'prodotto': item.prodotto,
-            'quantita': item.quantita,
-            'nota': item.nota,
-            'posizione': item.posizione,
-            'stato': item.stato,
-            'totale_euro': item.totale_euro
-        })
-    
-    return results
+    """Recupera tutti gli ordini dalla coda con i loro dettagli"""
+    try:
+        # Primo: prendi tutti gli ordini
+        ordini = db.session.query(Ordine).order_by(Ordine.creato_il.desc()).all()
+        
+        results = []
+        
+        for ordine in ordini:
+            # Per ogni ordine, prendi le righe
+            righe = db.session.query(OrdineRiga).filter(OrdineRiga.ordine_id == ordine.id).all()
+            
+            for riga in righe:
+                # Per ogni riga, prendi il prodotto
+                prodotto = db.session.query(Prodotto).filter(Prodotto.id == riga.prodotto_id).first()
+                
+                # Per ogni riga, prendi le note
+                note_query = db.session.query(Note).join(
+                    OrdineRigaNota, Note.id == OrdineRigaNota.nota_id
+                ).filter(OrdineRigaNota.ordine_riga_id == riga.id).all()
+                
+                # Se non ci sono note, crea un record comunque
+                if not note_query:
+                    note_query = [None]
+                
+                for nota in note_query:
+                    results.append({
+                        'id': ordine.id,
+                        'prodotto': prodotto.nome if prodotto else 'Prodotto sconosciuto',
+                        'quantita': riga.quantita,
+                        'nota': nota.nome if nota else None,
+                        'posizione': ordine.posizione.nome if ordine.posizione else 'N/A',
+                        'stato': ordine.stato,
+                        'totale_euro': float(ordine.totale_euro) if ordine.totale_euro else 0,
+                        'creato_il': ordine.creato_il.strftime('%d/%m/%Y %H:%M') if ordine.creato_il else ''
+                    })
+        
+        return results    except Exception as e:
+        import logging
+        logging.error(f"Errore in get_queue: {str(e)}", exc_info=True)
+        raise
