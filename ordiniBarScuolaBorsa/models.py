@@ -176,6 +176,6 @@ def get_queue():
         
         return results
 
-        except Exception as e:
-            logging.error(f"Errore in get_queue: {str(e)}", exc_info=True)
-            raise
+    except Exception as e:
+        logging.error(f"Errore in get_queue: {str(e)}", exc_info=True)
+        raise
