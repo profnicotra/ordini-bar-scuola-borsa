@@ -188,7 +188,7 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
 .back-btn {
     position: fixed;
     top: 120px;
-    left: 10px;
+    left: 20px;
     background-color: #e63946;
     color: white;
     border: none;
@@ -248,198 +248,13 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
   top: 10px;
   right: 15px;
   cursor: pointer;
-}
-.nav-buttons .nav-btn:hover {
-    background:white;
-    color:black;
-}
-#popup-allergeni-ingrediente {
-    width: 250px;
-    background: rgba(0,0,0,0.92);
-    padding: 24px;
-    border-radius: 22px;
-    display: none;
-    flex-direction: column;
-    gap: 15px;
-    font-weight:400;
-    font-size:14px;
-    font-family: 'Montserrat', sans-serif;
-    color: white;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(.7);
-    transition: .25s ease;
-    z-index: 30;
-    font-size:15px;
+  font-weight: 900;
+  font-size: 20px;
+  color: #cc4b4b;
+  border: none;
+  background: none;
 }
 
-#popup-allergeni-ingrediente.active {
-    display: flex;
-    transform: translate(-50%, -50%) scale(1);
-}
-/* ============================= */
-/* ALLERGENI – CERCHIO TIPO RADIO */
-/* ============================= */
-
-/* ============================= */
-/* ALLERGENI – STILE OPTION CARD */
-/* ============================= */
-
-.allergene-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    cursor: pointer;
-}
-
-/* checkbox mascherato come radio */
-.allergene-radio {
-    appearance: none;
-    -webkit-appearance: none;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    border: 2px solid white;
-    background: transparent;
-    position: relative;
-    cursor: pointer;
-    background-color: rgb(236, 236, 236);
-}
-
-/* pallino interno (IDENTICO al radio) */
-.allergene-radio::after {
-    content: "";
-    width: 12px;
-    height: 12px;
-    background: #e63946;
-    border-radius: 50%;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(0);
-    transition: 0.15s ease;
-    border-color: #e63946;
-   
-}
-
-/* selezionato */
-.allergene-radio:checked::after {
-    transform: translate(-50%, -50%) scale(1);
-}
-.note-top-buttons {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 12px;
-}
-
-.note-action-btn {
-    background: #e63946;
-    border: 2px solid white;
-    color: white;
-    padding: 8px 18px;
-    border-radius: 20px;
-    font-weight: 800;
-    cursor: pointer;
-    transition: 0.2s;
-    font-size: 14px;
-}
-
-.note-action-btn:hover {
-    background: white;
-    color: black;
-}
-#popup-ingredienti .divider {
-    margin-top: 0px;     /* avvicina al blocco bottoni */
-    margin-bottom: -4px;  /* niente spazio sotto */
-}
-#popup-extra-ingredienti {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(0,0,0,0.92);
-    padding: 20px;
-    border-radius: 15px;
-    z-index: 1001;
-    width: 300px;
-    color: white;
-}
-
-#popup-extra-ingredienti.active {
-    display: flex;
-    flex-direction: column;
-}
-
-#extra-ingredienti-container label {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-.ingredient-row {
-    margin-top: 10px; /* distanza sopra ogni ingrediente */
-}
-#popup-allergeni-ingrediente input[type="checkbox"] {
-    appearance: none;
-    -webkit-appearance: none;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    border: 2px solid white;
-    background-color: transparent;
-    cursor: pointer;
-    position: relative;
-}
-
-#popup-allergeni-ingrediente input[type="checkbox"]:checked::after {
-    content: "";
-    width: 16px;
-    height: 16px;
-    background: #e63946;
-    border-radius: 50%;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-/* ==========================
-   Checkbox extra stile card
-========================== */
-
-.extra-card-label input[type="checkbox"] {
-    appearance: none;
-    -webkit-appearance: none;
-    width: 20px;
-    height: 20px;
-    border: 2px solid #d9d4cc;
-    border-radius: 50%;
-    display: inline-block;
-    position: relative;
-    cursor: pointer;
-    transition: background 0.2s, border 0.2s;
-}
-
-.extra-card-label input[type="checkbox"]:checked {
-    background-color: #e63946; /* colore rosso come allergeni */
-   
-}
-
-.extra-card-label input[type="checkbox"]:checked::after {
-    content: '';
-    position: absolute;
-    top: 4px;
-    left: 4px;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background:transparent;
-}
-
-.extra-card-label span {
-    font-size: 16px;
-    color:white;
-}
 html, body {
   width:100%;
   overflow-x:hidden;
@@ -522,6 +337,7 @@ html, body {
     margin-top: 40px;
   }
 }
+
 </style>
 </head>
 <body>
@@ -647,31 +463,9 @@ html, body {
   </div>
 </div>
 <script>
-const datiDB = document.getElementById("contenitore").getAttribute("data");
-console.log("datiDB raw:", datiDB);
-
-// Elaborare i dati JSON ricevuti dal server Flask
-let menuData = {
-  share: [["Pizzette", 2], ["Ravioli", 30], ["Risotto", 15], ["Panino", 8], ["Focaccia", 2], ["Patatine", 4]],
-  sustain: [["Capuccino", 2.5], ["Caffè", 2], ["Tè", 1.5], ["Iced Coffee", 5]],
-  indulge: [["Biscotti", 3], ["Torta", 5], ["Tiramisù", 5], ["Gelato", 5], ["Pancake", 3]]
-};
-
-// Se i dati dal server sono disponibili, usali
-if (datiDB && datiDB.trim() !== "" && datiDB !== "None") {
-  try {
-    let parsedData = JSON.parse(datiDB);
-    console.log("Dati parsed:", parsedData);
-    if (parsedData && typeof parsedData === 'object') {
-      menuData = parsedData;
-    }
-  } catch(e) {
-    console.warn("Errore nel parsing dei dati JSON:", e);
-    console.log("Uso dati di default");
-  }
-}
-
-console.log("menuData finale:", menuData);
+// 1. RECUPERO DATI GREZZI (Dichiarata una sola volta)
+const datiRaw = document.getElementById("contenitore").getAttribute("data");
+console.log("Dati dal server:", datiRaw);
 
 // MOBILE MENU TOGGLE
 const menuToggle = document.getElementById('menu-toggle');
@@ -684,7 +478,6 @@ if (menuToggle) {
     socialIcons.classList.toggle('active');
   });
 
-  // Chiudi menu quando clicki su un link
   document.querySelectorAll('.nav-center a').forEach(link => {
     link.addEventListener('click', () => {
       navCenter.classList.remove('active');
@@ -693,177 +486,190 @@ if (menuToggle) {
   });
 }
 
-const menuLinks=document.querySelectorAll(".menu-list a");
-const listContainer=document.getElementById("menu-lists");
-const prontoBtn=document.getElementById("pronto-btn");
+const menuLinks = document.querySelectorAll(".menu-list a");
+const listContainer = document.getElementById("menu-lists");
+const prontoBtn = document.getElementById("pronto-btn");
 
-// Carichiamo selectedItems da localStorage
-let selectedItems=JSON.parse(localStorage.getItem("selectedItems"))||{};
-// Rimuoviamo subito selectedItems per partire puliti (reset)
+// ==========================================
+// INIZIO GESTIONE DATI REALI (CORRETTO PER DECIMAL)
+// ==========================================
+
+let datiDB = { items: [] };
+
+try {
+    if (datiRaw && datiRaw !== "{{data}}") {
+        // Trasforma il formato Python in JSON standard
+        let stringaPulita = datiRaw
+            .replace(/Decimal\(['"]?([^'"]*)['"]?\)/g, '$1')
+            .replace(/None/g, 'null')
+            .replace(/True/g, 'true')
+            .replace(/False/g, 'false')
+            .replace(/'/g, '"');
+
+        datiDB = JSON.parse(stringaPulita);
+    }
+} catch (e) {
+    console.error("Errore parsing dati dopo pulizia:", e);
+    console.log("Stringa che ha fallito:", datiRaw);
+}
+
+const cibo = [];
+const bevande = [];
+const dolci = [];
+
+const listaItems = Array.isArray(datiDB) ? datiDB : (datiDB.items || []);
+
+listaItems.forEach(item => {
+    const nome = item.prodotto || "Prodotto senza nome";
+    const prezzo = item.prezzo_euro || "0.00";
+    const cat = (item.categoria || "").toLowerCase();
+    
+    const prodottoFormattato = [nome, prezzo];
+
+    // Smistamento basato sulla categoria del DB
+    if (cat === 'bevande') {
+        bevande.push(prodottoFormattato);
+    } else if (cat === 'dolci') {
+        dolci.push(prodottoFormattato);
+    } else {
+        cibo.push(prodottoFormattato);
+    }
+});
+
+const menuData = {
+    share: cibo,
+    sustain: bevande,
+    indulge: dolci
+};
+
+// ==========================================
+// FINE GESTIONE DATI REALI
+// ==========================================
+
+let selectedItems = JSON.parse(localStorage.getItem("selectedItems")) || {};
 localStorage.removeItem("selectedItems");
 selectedItems = {};
 
+function renderMenu(category) {
+  const items = menuData[category] || [];
+  listContainer.style.display = "block";
+  
+  if (items.length === 0) {
+    listContainer.innerHTML = `<p style="text-align:center; padding:20px;">Nessun prodotto disponibile.</p>`;
+    return;
+  }
 
-function renderMenu(category){
-  const items=menuData[category];
-  listContainer.style.display="block";
-  listContainer.innerHTML=items.map(item=>`
-    <div class="menu-item" style="animation-delay:${0.1*items.indexOf(item)}s">
+  listContainer.innerHTML = items.map((item, index) => `
+    <div class="menu-item" style="animation-delay:${0.1 * index}s">
       <div style="display:flex;align-items:center;">
-        <div class="select-square ${selectedItems[item[0]]?"selected":""}"></div>
+        <div class="select-square ${selectedItems[item[0]] ? "selected" : ""}" data-name="${item[0]}" data-price="${item[1]}"></div>
         <span>${item[0]}</span>
       </div>
       <div class="dots"></div>
-      <span class="price"><span class="euro">€</span>${item[1]}</span>
+      <span class="price"><span class="euro">€</span>${parseFloat(item[1]).toFixed(2)}</span>
     </div>
   `).join("");
-  const squares=document.querySelectorAll(".select-square");
-  squares.forEach((sq,index)=>{
-    sq.addEventListener("click",()=>{
-      const name=items[index][0];
-      if(selectedItems[name]){
+
+  const squares = listContainer.querySelectorAll(".select-square");
+  squares.forEach((sq) => {
+    sq.addEventListener("click", () => {
+      const name = sq.dataset.name;
+      const price = sq.dataset.price;
+      if (selectedItems[name]) {
         delete selectedItems[name];
         sq.classList.remove("selected");
       } else {
-        selectedItems[name]=items[index][1];
+        selectedItems[name] = price;
         sq.classList.add("selected");
       }
-      localStorage.setItem("selectedItems",JSON.stringify(selectedItems));
+      localStorage.setItem("selectedItems", JSON.stringify(selectedItems));
       updateProntoBtn();
     });
   });
 }
 
-// Funzione per aggiornare lo stato del bottone PRONTO
 function updateProntoBtn() {
-  if (Object.keys(selectedItems).length > 0) {
-    prontoBtn.style.opacity = "1";
-    prontoBtn.style.pointerEvents = "auto";
-  } else {
-    prontoBtn.style.opacity = "0.5";
-    prontoBtn.style.pointerEvents = "auto";
-  }
+  prontoBtn.style.opacity = Object.keys(selectedItems).length > 0 ? "1" : "0.5";
 }
 
-// Codice errore visuale
 const errorBox = document.getElementById("error-box");
 const errorCloseBtn = errorBox.querySelector(".close-btn");
 errorCloseBtn.addEventListener("click", () => {
   errorBox.classList.remove("show");
 });
 
-menuLinks.forEach(link=>{
-  link.addEventListener("click",()=>{
-    menuLinks.forEach(btn=>btn.classList.remove("active"));
-    link.classList.add("active");
-    renderMenu(link.dataset.menu);
-  });
-});
-
-let currentCategory = "share"; // default CIBI
+let currentCategory = "share";
 
 menuLinks.forEach(link => {
   link.addEventListener("click", () => {
     menuLinks.forEach(btn => btn.classList.remove("active"));
     link.classList.add("active");
-    currentCategory = link.dataset.menu; // aggiorna categoria attiva
+    currentCategory = link.dataset.menu;
     renderMenu(currentCategory);
   });
 });
 
-// Attiva il primo menu al caricamento
-if (menuLinks.length > 0) {
-  menuLinks[0].click();
-}
-
 prontoBtn.addEventListener("click", () => {
-  console.log("Bottone PRONTO cliccato!");
-  console.log("selectedItems:", selectedItems);
-  console.log("Lunghezza:", Object.keys(selectedItems).length);
-  
   if (Object.keys(selectedItems).length === 0) {
-    // Aggiorna il messaggio in base alla categoria
     let tipo = "";
     switch (currentCategory) {
-      case "share":
-        tipo = "piatto di cibo";
-        break;
-      case "sustain":
-        tipo = "bevanda";
-        break;
-      case "indulge":
-        tipo = "dolce";
-        break;
-      default:
-        tipo = "prodotto";
+      case "share": tipo = "piatto di cibo"; break;
+      case "sustain": tipo = "bevanda"; break;
+      case "indulge": tipo = "dolce"; break;
+      default: tipo = "prodotto";
     }
-
-    console.log("Mostro error-box con messaggio:", tipo);
     errorBox.querySelector("p").innerHTML = `Oh no!<br>Devi selezionare almeno un ${tipo}`;
     errorBox.classList.add("show");
-
-    setTimeout(() => {
-      errorBox.classList.remove("show");
-    }, 5000);
-
+    setTimeout(() => { errorBox.classList.remove("show"); }, 5000);
     return;
   }
 
-  // Se ci sono selezioni, salva ordine e vai alla pagina menu
-  const ordered = [];
-  for (const [name, price] of Object.entries(selectedItems)) {
-    ordered.push({ name, price });
-  }
+  const ordered = Object.entries(selectedItems).map(([name, price]) => ({ name, price }));
   localStorage.setItem("orderedItems", JSON.stringify(ordered));
   window.location.href = "/orders";
 });
 
-menuLinks[0].click();
-
+if(menuLinks[0]) menuLinks[0].click();
 
 /* LOGIN MODAL JS */
 const loginBtn = document.getElementById('login-btn');
 const loginModal = document.getElementById('login-modal');
 const closeLogin = document.getElementById('close-login');
 
-loginBtn.addEventListener('click', () => {
-  loginModal.style.display = 'flex';
-});
-
-closeLogin.addEventListener('click', () => {
-  loginModal.style.display = 'none';
-});
-
+if(loginBtn) {
+  loginBtn.addEventListener('click', () => { loginModal.style.display = 'flex'; });
+}
+if(closeLogin) {
+  closeLogin.addEventListener('click', () => { loginModal.style.display = 'none'; });
+}
 window.addEventListener('click', (e) => {
-  if (e.target === loginModal) {
-    loginModal.style.display = 'none';
-  }
+  if (e.target === loginModal) { loginModal.style.display = 'none'; }
 });
 
-// SWITCH LOGIN ↔ REGISTER
 const loginForm = document.getElementById("login-form");
 const registerForm = document.getElementById("register-form");
 const toRegister = document.getElementById("to-register");
 const toLogin = document.getElementById("to-login");
 const formContainer = document.querySelector(".form-container");
 const socialMessage = document.querySelector(".social-message");
-const titleText = formContainer.querySelector(".title");
+const titleText = formContainer ? formContainer.querySelector(".title") : null;
 
-// Mostra register
-toRegister.addEventListener("click", () => {
-  loginForm.style.display = "none";
-  registerForm.style.display = "block";
-  socialMessage.style.display = "none";
-  titleText.innerText = "Register";
-});
-
-// Torna a login
-toLogin.addEventListener("click", () => {
-  loginForm.style.display = "block";
-  registerForm.style.display = "none";
-  socialMessage.style.display = "flex";
-  titleText.innerText = "Login";
-});
+if(toRegister) {
+  toRegister.addEventListener("click", () => {
+    loginForm.style.display = "none";
+    registerForm.style.display = "block";
+    if(socialMessage) socialMessage.style.display = "none";
+    if(titleText) titleText.innerText = "Register";
+  });
+}
+if(toLogin) {
+  toLogin.addEventListener("click", () => {
+    loginForm.style.display = "block";
+    registerForm.style.display = "none";
+    if(socialMessage) socialMessage.style.display = "flex";
+    if(titleText) titleText.innerText = "Login";
+  });
+}
 </script>
 </body>
 </html>
