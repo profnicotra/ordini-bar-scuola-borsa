@@ -72,6 +72,60 @@
     }
     .social-icons a:hover { background-color: white; color: black; }
 
+    /* MOBILE MENU TOGGLE */
+    .menu-toggle {
+      display: none;
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 28px;
+      cursor: pointer;
+      z-index: 11;
+    }
+
+    /* RESPONSIVE NAVBAR */
+    @media (max-width: 1024px) {
+      .navbar {
+        gap: 30px;
+        padding: 15px 30px;
+        height: 120px;
+      }
+      .logo-left { left: 30px; }
+      .logo-left img { width: 100px; }
+      .nav-center ul { gap: 25px; }
+      .nav-center a { font-size: 16px; }
+      .social-icons { right: 30px; gap: 20px; }
+    }
+
+    @media (max-width: 768px) {
+      .navbar {
+        justify-content: flex-start;
+        padding: 12px 15px;
+        height: 80px;
+        gap: 0;
+      }
+      .logo-left { position: relative; left: 0; margin-right: auto; }
+      .logo-left img { width: 80px; }
+      .nav-center { display: none; }
+      .nav-center.active { display: block; position: absolute; top: 80px; left: 0; width: 100%; background: rgba(22, 22, 22, 0.95); flex-direction: column; }
+      .nav-center.active ul { flex-direction: column; gap: 0; }
+      .nav-center.active a { padding: 15px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 16px; }
+      .social-icons { display: none; }
+      .social-icons.active { display: flex; position: absolute; top: 80px; right: 15px; gap: 10px; }
+      .menu-toggle { display: block; }
+    }
+
+    @media (max-width: 480px) {
+      .navbar { height: 70px; }
+      .logo-left img { width: 70px; }
+      #status-button-container { left: 100px !important; }
+      #status-button { padding: 8px; font-size: 12px; width: auto; }
+    }
+
     /* HERO */
     .hero {
       height: 100vh;
@@ -98,7 +152,7 @@
     .hero-content { position: relative; z-index: 2; }
     .hero h2 { font-size: 30px; font-weight: 400; }
     .hero h1 { font-size: 60px; margin: 20px 0; font-weight: 800; }
-    .buttons { margin-top: 30px; display: flex; gap: 20px; justify-content: center; }
+    .buttons { margin-top: 30px; display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
 
     .btn {
       padding: 12px 25px;
@@ -115,6 +169,21 @@
 
     .btn.red { background: #e63946 }
     .btn.red:hover { background: white; color: black; }
+
+    @media (max-width: 768px) {
+      .hero { margin-top: 80px; height: auto; min-height: 100vh; padding: 40px 20px; }
+      .hero h2 { font-size: 24px; }
+      .hero h1 { font-size: 48px; margin: 15px 0; }
+      .buttons { flex-direction: column; gap: 15px; }
+      .btn { width: 100%; font-size: 18px; padding: 15px 20px; }
+    }
+
+    @media (max-width: 480px) {
+      .hero { min-height: 80vh; padding: 20px 15px; }
+      .hero h2 { font-size: 20px; }
+      .hero h1 { font-size: 36px; margin: 10px 0; }
+      .btn { font-size: 16px; padding: 12px 18px; width: 100%; }
+    }
 
     /* STORIA */
     .experience-section {
@@ -167,6 +236,42 @@
     }
 
     .yellow-btn:hover { background:white; color:black; }
+
+    @media (max-width: 1024px) {
+      .experience-section {
+        flex-direction: row;
+        padding: 120px 8%;
+        gap: 60px;
+      }
+      .cocktail-box { width: 70%; }
+      .cocktail-box h2 { font-size: 44px; }
+      .cocktail-box p { font-size: 16px; }
+      .experience-section img { width: 90% !important; }
+    }
+
+    @media (max-width: 768px) {
+      .experience-section { 
+        flex-direction: row;
+        padding: 120px 8%; 
+        gap: 50px; 
+      }
+      .cocktail-box { width: 65%; }
+      .cocktail-box h4 { font-size: 18px; }
+      .cocktail-box h2 { font-size: 40px; }
+      .cocktail-box p { font-size: 15px; }
+      .experience-section img { width: 85% !important; margin-left: 20px !important; }
+    }
+
+    @media (max-width: 480px) {
+      .experience-section { 
+        flex-direction: row;
+        padding: 120px 6%; 
+      }
+      .cocktail-box { width: 60%; }
+      .cocktail-box h2 { font-size: 35px; }
+      .cocktail-box p { font-size: 14px; }
+      .experience-section img { width: 80% !important; margin-left: 15px !important; }
+    }
 
     /* GALLERIA */
     .gallery-section {
@@ -227,6 +332,7 @@
       display: flex;
       justify-content: center;
       gap: 80px;
+      flex-wrap: wrap;
     }
 
     .gallery-row img {
@@ -243,6 +349,30 @@
       z-index: 2;
     }
 
+    @media (max-width: 1024px) {
+      .gallery-section { padding: 120px 8%; }
+      .gallery-main-title { font-size: 35px; }
+      .gallery-text { font-size: 15px; }
+      .gallery-row { gap: 80px; }
+      .gallery-row img { width: 340px; }
+    }
+
+    @media (max-width: 768px) {
+      .gallery-section { padding: 120px 8%; }
+      .gallery-main-title { font-size: 33px; }
+      .gallery-text { font-size: 14px; }
+      .gallery-row { gap: 75px; }
+      .gallery-row img { width: 330px; }
+    }
+
+    @media (max-width: 480px) {
+      .gallery-section { padding: 120px 8%; }
+      .gallery-main-title { font-size: 30px; }
+      .gallery-text { font-size: 13px; }
+      .gallery-row { gap: 70px; }
+      .gallery-row img { width: 320px; }
+    }
+
     /* CONTATTI */
     .contacts-section {
       background-color: #151515;
@@ -250,7 +380,7 @@
       display: flex;
       justify-content: space-between;
       gap: 60px;
-      
+      flex-wrap: wrap;
     }
 
     .contact-column h3 {
@@ -301,6 +431,26 @@
       font-size:13px;
     }
 
+    @media (max-width: 1024px) {
+      .contacts-section { padding: 80px 5%; gap: 40px; }
+      .contact-column h3 { font-size: 22px; }
+      .contact-column { flex: 1 1 calc(50% - 20px); }
+    }
+
+    @media (max-width: 768px) {
+      .contacts-section { padding: 60px 20px; flex-direction: column; }
+      .contact-column { flex: 1 1 100%; }
+      .contact-column h3 { font-size: 18px; }
+      .newsletter input { width: 100%; margin-bottom: 10px; margin-right: 0; }
+      .newsletter button { width: 100%; }
+    }
+
+    @media (max-width: 480px) {
+      .contacts-section { padding: 40px 15px; }
+      .contact-column h3 { font-size: 16px; }
+      .contact-column ul { line-height: 1.8; font-size: 13px; }
+    }
+
     /* LOGIN MODAL */
   /* LOGIN & REGISTER MODAL */
 #login-modal {
@@ -314,6 +464,7 @@
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  padding: 20px;
 }
 
 .form-container {
@@ -322,6 +473,8 @@
   background-color: rgba(22, 22, 22, 0.784);
   padding: 2rem;
   color: white;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 .title {
@@ -383,6 +536,19 @@
 #status-button .closed {
     color:  #e63946;
 }
+
+@media (max-width: 768px) {
+  .form-container { width: 90%; max-width: 320px; }
+  #status-button { width: auto; font-size: 14px; margin-left: 10px; padding: 8px 12px; }
+  #status-button .right { font-size: 18px; }
+}
+
+@media (max-width: 480px) {
+  .form-container { width: 95%; padding: 1.5rem; }
+  .input-group input { font-size: 16px; }
+  #status-button { width: auto; font-size: 12px; padding: 6px 10px; }
+  #status-button .content { flex-direction: column; align-items: flex-start; }
+}
 /* OVERLAY SCURO */
 #closed-overlay {
   display: none; /* nascosto finché non serve */
@@ -443,6 +609,18 @@
   color: black;
 }
 
+@media (max-width: 768px) {
+  #closed-popup { width: 85%; max-width: 360px; padding: 1.2rem; }
+  #closed-popup .title { font-size: 18px; }
+  #closed-popup .description { font-size: 0.9rem; }
+}
+
+@media (max-width: 480px) {
+  #closed-popup { width: 90%; padding: 1rem; }
+  #closed-popup .title { font-size: 16px; }
+  #closed-popup .description { font-size: 0.85rem; }
+}
+
 
 .input-group input:focus { border-color: white; }
 
@@ -475,13 +653,16 @@
             <div class="left">
                 <div id="time"></div>
                 <div id="date"></div>
+                <h1 id="isBarOpen" hidden>{{data["open"]}}</h1>
             </div>
             <div class="right" id="status"></div>
         </div>
     </button>
   </div>
 
-  <nav class="nav-center">
+  <button class="menu-toggle" id="menu-toggle">☰</button>
+
+  <nav class="nav-center" id="nav-center">
     <ul>
       <li><a href="/">Home</a></li>
       <li><a href="#chi-siamo">Chi siamo</a></li>
@@ -491,7 +672,7 @@
     </ul>
   </nav>
 
-  <div class="social-icons">
+  <div class="social-icons" id="social-icons">
     <a href="https://www.facebook.com/aziendaspecialediformazionescuolapaoloborsa/"><i class="fab fa-facebook-f"></i></a>
     <a href="https://www.instagram.com/scuola_borsa/"><i class="fab fa-instagram"></i></a>
     <a href="https://www.youtube.com/@ScuolaPaoloBorsaMonza"><i class="fab fa-youtube"></i></a>
@@ -504,7 +685,7 @@
     <h2>SCUOLA BORSA</h2>
     <h1>SALA BAR</h1>
     <div class="buttons">
-      <a href="/orders" class="btn red">Ordina Ora</a>
+      <a href="/menu" class="btn red">Ordina Ora</a>
     </div>
   </div>
 </section>
@@ -669,6 +850,24 @@
 </div>
 
 <script>
+  // MOBILE MENU TOGGLE
+  const menuToggle = document.getElementById('menu-toggle');
+  const navCenter = document.getElementById('nav-center');
+  const socialIcons = document.getElementById('social-icons');
+
+  menuToggle.addEventListener('click', () => {
+    navCenter.classList.toggle('active');
+    socialIcons.classList.toggle('active');
+  });
+
+  // Chiudi menu quando clicki su un link
+  document.querySelectorAll('.nav-center a').forEach(link => {
+    link.addEventListener('click', () => {
+      navCenter.classList.remove('active');
+      socialIcons.classList.remove('active');
+    });
+  });
+
   const navbar = document.getElementById("navbar"); 
   const hero = document.getElementById("hero");
 
@@ -768,11 +967,10 @@ function updateStatusButton() {
     document.getElementById("date").innerText = `${day} ${month}`;
 
     // OPEN/CLOSED
-    let openHour = 8;
-    let closeHour = 18;
+    let status = document.getElementById("isBarOpen").innerText
     let statusElement = document.getElementById("status");
 
-    if (hours >= openHour && hours < closeHour) {
+    if (status == "true") {
         statusElement.innerText = "OPEN";
         statusElement.className = "right open";
     } else {
@@ -786,13 +984,9 @@ setInterval(updateStatusButton, 1000);
 updateStatusButton();
 // --- POPUP CENTRALE SE FUORI ORARIO ---
 function checkClosedPopup() {
-    const romeTime = getRomeTimeParts();
-    let hours = romeTime.hours;
-
-    let openHour = 8;
-    let closeHour = 18;
-
-    if (hours < openHour || hours >= closeHour) {
+    let barStatus = document.getElementById("status").innerText
+    
+    if (barStatus == "CLOSED") {
         // mostra overlay + popup
         document.getElementById("closed-overlay").style.display = "flex";
 

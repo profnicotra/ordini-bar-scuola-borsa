@@ -1,34 +1,28 @@
 
-from flask import Blueprint, render_template, send_file
-from .excel_generator import create_excel_cf_generator
-import os
-import tempfile
+from flask import Blueprint, render_template
+from ordiniBarScuolaBorsa.models import is_bar_open
 
 bp = Blueprint("index", __name__)
 
 @bp.get("/")
 def index():
     data = {"title" : "Bar Scuola Borsa",
-        "open": True,   
+        "open": is_bar_open(),   
         "items" : []}
     
     return render_template('index.html', data=data)
 
-@bp.get("/download-excel")
-def download_excel():
-    """Genera e scarica il file Excel per il Codice Fiscale"""
-    try:
-        # Crea il file in una cartella temporanea
-        temp_dir = tempfile.gettempdir()
-        file_path = create_excel_cf_generator(
-            os.path.join(temp_dir, "GeneratoreCF.xlsx")
-        )
-        
-        return send_file(
-            file_path,
-            as_attachment=True,
-            download_name="GeneratoreCF_Excel2016.xlsx",
-            mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        )
-    except Exception as e:
-        return {"error": str(e)}, 500
+@bp.get("/chi-siamo")
+def chi_siamo():
+    data = {"title" : "Chi siamo"}
+    return render_template('index.html', data=data)
+
+@bp.get("/gallery")
+def gallery():
+    data = {"title" : "Galleria"}
+    return render_template('index.html', data=data)
+
+@bp.get("/contatti")
+def contatti():
+    data = {"title" : "Contatti"}
+    return render_template('index.html', data=data)

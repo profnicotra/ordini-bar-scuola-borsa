@@ -1,4 +1,5 @@
-from flask import Blueprint, render_template, jsonify, request
+from flask import Blueprint, render_template, jsonify,request
+from ordiniBarScuolaBorsa.models import get_queue, jsonify, request
 from ordiniBarScuolaBorsa import models
 from ordiniBarScuolaBorsa.models import db, Ordine
 import logging
@@ -10,7 +11,7 @@ bp = Blueprint("queue", __name__, url_prefix="/queue")
 def queue():
     data = {"title" : "Coda Bar Scuola Borsa",
         "open": True,   
-        "items" : []}
+        "queue" : [get_queue()]},        
     return render_template('queue.html', data=data)
 
 @bp.get("/api/ordini")
@@ -59,3 +60,9 @@ def delete_ordine(ordine_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
+
+@bp.get("/update", methods=["POST"])
+def update_queue():
+    dati = request.get_json
+    
+    return jsonify({"status": "success"})
