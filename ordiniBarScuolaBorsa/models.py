@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+import logging
 
 db = SQLAlchemy()
 
@@ -173,7 +174,8 @@ def get_queue():
                         'creato_il': ordine.creato_il.strftime('%d/%m/%Y %H:%M') if ordine.creato_il else ''
                     })
         
-        return results    except Exception as e:
-        import logging
+        return results
+
+    except Exception as e:
         logging.error(f"Errore in get_queue: {str(e)}", exc_info=True)
         raise

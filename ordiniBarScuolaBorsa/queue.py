@@ -1,5 +1,5 @@
-from flask import Blueprint, render_template, jsonify,request
-from ordiniBarScuolaBorsa.models import get_queue, jsonify, request
+from flask import Blueprint, render_template, jsonify, request
+from ordiniBarScuolaBorsa.models import get_queue
 from ordiniBarScuolaBorsa import models
 from ordiniBarScuolaBorsa.models import db, Ordine
 import logging
@@ -61,7 +61,7 @@ def delete_ordine(ordine_id):
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
 
-@bp.get("/update", methods=["POST"])
+@bp.route("/update", methods=["POST"])
 def update_queue():
     dati = request.get_json
     
