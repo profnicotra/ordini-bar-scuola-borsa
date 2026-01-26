@@ -64,5 +64,8 @@ def delete_ordine(ordine_id):
 @bp.get("/update", methods=["POST"])
 def update_queue():
     dati = request.get_json
+# @bp.get("/update", methods=["POST"])
+# def update_queue():
+#     dati = request.get_json
     
-    return jsonify({"status": "success"})
+#     return jsonify({"status": "success"})

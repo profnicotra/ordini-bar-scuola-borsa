@@ -63,9 +63,9 @@
   const prontoBtn=document.getElementById("pronto-btn");
 
   const menuData={
-    share:[["Pizzette",2],["Ravioli",30],["Risotto",15],["Panino",8],["Focaccia",2],["Patatine",4]],
-    sustain:[["Capuccino",2,50],["caffe",2],["Tè",1,50],["Iced Coffee",5]],
-    indulge:[["Biscotti",3],["Torta",5],["Tiramisù",5],["Gelato",5],["Pancake",3]]
+    share:[["Pizzette",2.00],["Ravioli",30.00],["Risotto",15.00],["Panino",8.00],["Focaccia",2.00],["Patatine",4.00]],
+    sustain:[["Cappuccino",2.50],["Caffè",2.00],["Tè",1.50],["Iced Coffee",5.00]],
+    indulge:[["Biscotti",3.00],["Torta",5.00],["Tiramisù",5.00],["Gelato",5.00],["Pancake",3.00]]
   };
 
   let selectedItems=JSON.parse(localStorage.getItem("selectedItems"))||{};
@@ -86,22 +86,23 @@
     listContainer.innerHTML=items.map(item=>`
       <div class="menu-item">
         <div style="display:flex;align-items:center;">
-          <div class="select-square ${selectedItems[item[0]]?"selected":""}"></div>
+          <div class="select-square ${selectedItems[item[0]]?"selected":""}" data-name="${item[0]}" data-price="${item[1]}"></div>
           <span>${item[0]}</span>
         </div>
         <div class="dots"></div>
-        <span class="price"><span class="euro">€</span>${item[1]}</span>
+        <span class="price"><span class="euro">€</span>${item[1].toFixed(2).replace('.', ',')}</span>
       </div>`).join("");
 
     const squares=document.querySelectorAll(".select-square");
-    squares.forEach((sq,index)=>{
+    squares.forEach((sq)=>{
       sq.addEventListener("click",()=>{
-        const name=items[index][0];
+        const name=sq.dataset.name;
+        const price=parseFloat(sq.dataset.price);
         if(selectedItems[name]){
           delete selectedItems[name];
           sq.classList.remove("selected");
         } else {
-          selectedItems[name]=items[index][1];
+          selectedItems[name]=price;
           sq.classList.add("selected");
         }
         localStorage.setItem("selectedItems",JSON.stringify(selectedItems));
@@ -121,10 +122,11 @@
   prontoBtn.addEventListener("click",()=>{
     const ordered=[];
     for(const[name,price]of Object.entries(selectedItems)){
-      ordered.push({name,price});
+      ordered.push({name,price,qty:1});
     }
     localStorage.setItem("orderedItems",JSON.stringify(ordered));
-    window.location.href="bar5.html"; 
+    localStorage.removeItem("selectedItems");
+    window.location.href="order.html"; 
   });
 
   menuLinks[0].click();

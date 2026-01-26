@@ -3,25 +3,214 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <title>Ordina + Ingredienti</title>
 
 <style>
 /* --- STILI ORIGINALI (immutati) --- */
 /* --- STILI ORIGINALI (immutati) --- */
 body {
-    margin: 0;
+      margin: 0;
     padding: 0;
     font-family: "SF Pro Display", Arial, sans-serif;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
     min-height: 100vh;
     background-image: url("https://static.wixstatic.com/media/a24994_e95a621e8db84322a7402a21df89543b~mv2.jpg");
     background-size: cover;
     position: relative;
-    overflow: hidden;
+   overflow-x: hidden;
+   justify-content: center;
+
 }
+/* =======================
+   NAVBAR
+======================= */
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 50px;
+  padding: 20px 50px;
+  background-color: rgba(22, 22, 22, 0.784);
+  position: fixed;
+  width: 100%;
+  top: 0;
+  height: 150px;
+  z-index: 1000;
+  transition: top 0.6s ease;
+}
+
+.navbar.hidden {
+  top: -100px;
+}
+
+/* LOGO */
+.logo-left {
+  position: absolute;
+  left: 50px;
+}
+
+.logo-left img {
+  width: 120px;
+}
+
+/* MENU CENTRALE */
+.nav-center ul {
+  display: flex;
+  gap: 40px;
+  list-style: none;
+}
+
+.nav-center a {
+  color: white;
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 18px;
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+.nav-center a:hover {
+  color: rgb(79, 79, 79);
+}
+
+/* SOCIAL */
+.social-icons {
+  position: absolute;
+  right: 50px;
+  display: flex;
+  gap: 30px;
+}
+
+.social-icons a {
+  width: 35px;
+  height: 35px;
+  border: 3px solid white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  color: white;
+  font-size: 18px;
+  transition: 0.3s ease;
+  text-decoration: none;
+}
+
+.social-icons a:hover {
+  background-color: white;
+  color: black;
+}
+
+/* HAMBURGER */
+.menu-toggle {
+  display: none;
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 28px;
+  cursor: pointer;
+  z-index: 1100;
+}
+
+/* =======================
+   RESPONSIVE
+======================= */
+
+@media (max-width: 1024px) {
+  .navbar {
+    gap: 30px;
+    padding: 15px 30px;
+    height: 120px;
+  }
+
+  .logo-left {
+    left: 30px;
+  }
+
+  .logo-left img {
+    width: 100px;
+  }
+
+  .nav-center ul {
+    gap: 25px;
+  }
+
+  .nav-center a {
+    font-size: 16px;
+  }
+
+  .social-icons {
+    right: 30px;
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    justify-content: flex-start;
+    padding: 12px 15px;
+    height: 80px;
+    gap: 0;
+  }
+
+  .logo-left {
+    position: relative;
+    left: 0;
+    margin-right: auto;
+  }
+
+  .logo-left img {
+    width: 80px;
+  }
+
+  .nav-center {
+    display: none;
+  }
+
+  .nav-center.active {
+    display: block;
+    position: absolute;
+    top: 80px;
+    left: 0;
+    width: 100%;
+    background: rgba(22, 22, 22, 0.95);
+  }
+
+  .nav-center.active ul {
+    flex-direction: column;
+  }
+
+  .nav-center.active a {
+    padding: 15px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .social-icons {
+    display: none;
+  }
+
+  .menu-toggle {
+    display: block;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar {
+    height: 70px;
+  }
+
+  .logo-left img {
+    width: 70px;
+  }
+}
+
 body::after {
     content: "";
     position: absolute;
@@ -39,7 +228,8 @@ body::after {
     background-color: rgba(0, 0, 0, 0.841);
 }
 .card {
-    width: 400px;
+   width: 100%;
+    max-width: 400px;
     border-radius: 18px;
     padding: 22px;
     color: white;
@@ -48,7 +238,14 @@ body::after {
     margin-bottom: 18px;
     max-height: 350px;
     overflow-y: auto;
+     box-sizing: border-box;
 }
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
 h2 {
     text-align: center;
     margin-top: 0;
@@ -69,9 +266,10 @@ h2 {
 }
 .header-row, .product-row {
     display: grid;
-    grid-template-columns: 140px 140px 80px;
+    grid-template-columns: 1.5fr 1fr 0.8fr;
     text-align: center;
     align-items: center;
+    gap: 10px;
 }
 .header-row {
     margin-bottom:12px;
@@ -95,7 +293,7 @@ h2 {
     justify-content:center;
     align-items:center;
     gap:8px;
-    margin-right:24px;   /* 🔥 sposta tutto il blocco a destra */
+   margin-right: clamp(8px, 4vw, 24px); /* 🔥 sposta tutto il blocco a destra */
 }
 
 .qty-btn {
@@ -120,7 +318,8 @@ h2 {
     font-weight:600;
 }
 .total-card {
-    width:410px;
+  width: 100%;
+    max-width: 410px;
     padding:16px;
     border-radius:0 0 16px 16px;
     margin-top:-15px;
@@ -174,7 +373,9 @@ h2 {
     border:2px solid white;
     background-color:transparent;
     border-radius:20px;
-    width:365px;
+    width: 100%;
+     width: 100%;
+    max-width: 100%;
     color:white;
     margin-top:8px;
 }
@@ -222,8 +423,8 @@ h2 {
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 15;
-    font-family: 'Franklin Gothic Medium';
-    font-size: 5px;
+    font-family: 'Franklin Gothic Medium', sans-serif;
+    font-size: 16px;
 }
 #ingredient-card .title {
     color:white;
@@ -247,7 +448,6 @@ h2 {
     cursor:pointer;
 }
 
-/* popup ingredienti */
 #popup-ingredienti {
     width: 300px;
     background: rgba(0, 0, 0, 0.934);
@@ -263,10 +463,12 @@ h2 {
     transform: translate(-50%, -50%) scale(.6);
     transition: .25s ease;
     z-index:20;
+    opacity: 0;
 }
 #popup-ingredienti.active {
     display:flex;
     transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
 }
 
 .ingredient-row {
@@ -538,11 +740,13 @@ h2 {
     transition: .25s ease;
     z-index: 30;
     font-size:15px;
+    opacity: 0;
 }
 
 #popup-allergeni-ingrediente.active {
     display: flex;
     transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
 }
 
 /* RESPONSIVE DESIGN - Solo riduzione dimensioni, layout identico */
@@ -624,6 +828,31 @@ h2 {
     #ingredient-card .btn { width: 115px; font-size: 16px; padding: 14px; }
     #error-box { width: 330px; font-size: 18px; }
     .back-btn { padding: 10px 20px; font-size: 16px; top: 170px; left: 50px; }
+    .card,
+.total-card {
+    width: 100%;
+}
+
+.note-input,
+.info-input {
+    width: 100%;
+}
+
+.header-row,
+.product-row {
+    grid-template-columns: 1.2fr 1fr 0.8fr;
+    column-gap: 8px;
+}
+.price {
+    text-align: right;
+    padding-right: 4px;
+}
+ .qty-box {
+        gap: 6px;
+        margin-right: 0;
+    }
+    .header-row > div:nth-child(2) {
+    padding-left: 27px;
 }
 /* ============================= */
 /* ALLERGENI – CERCHIO TIPO RADIO */
@@ -714,18 +943,22 @@ h2 {
     position: fixed;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%) scale(0.6);
     background: rgba(0,0,0,0.92);
     padding: 20px;
     border-radius: 15px;
     z-index: 1001;
     width: 300px;
     color: white;
+    opacity: 0;
+    transition: .25s ease;
 }
 
 #popup-extra-ingredienti.active {
     display: flex;
     flex-direction: column;
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
 }
 
 #extra-ingredienti-container label {
@@ -819,11 +1052,82 @@ h2 {
     background-color: white;
     color: black;
 }
+html, body {
+    width: 100%;
+    overflow-x: hidden;
+}
+body {
+    padding: 10px;
+}
+
+.card,
+.total-card {
+    margin-left: auto;
+    margin-right: auto;
+}
+}
+
+/* DESKTOP */
+body {
+    padding-top: 200px;
+}
+
+/* TABLET */
+@media (max-width: 1024px) {
+    body {
+        padding-top: 140px;
+    }
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+    body {
+        padding-top: 90px;
+    }
+}
+
+/* MOBILE PICCOLO */
+@media (max-width: 480px) {
+    body {
+        padding-top: 80px;
+    }
+}
+
+@media (max-width: 768px) {
+    .card {
+        min-height: 80vh;   /* 🔥 più lunga solo su schermi piccoli */
+        padding-bottom: 100px; /* spazio per footer fisso */
+    }
+}
 
 </style>
 </head>
 
 <body>
+    <header class="navbar" id="navbar">
+  <div class="logo-left">
+    <img src="https://raw.githubusercontent.com/Rashmika274/ordini-bar-scuola-borsa/main/static/logo.png" alt="Logo">
+  </div>
+
+  <button class="menu-toggle" id="menu-toggle">☰</button>
+
+  <nav class="nav-center" id="nav-center">
+    <ul>
+      <li><a href="/">Home</a></li>
+      <li><a href="/#chi-siamo">Chi siamo</a></li>
+      <li><a href="/#gallery">Galleria</a></li>
+      <li><a href="/#contatti">Contatti</a></li>
+      <li><a id="login-btn">Login</a></li>
+    </ul>
+  </nav>
+
+  <div class="social-icons" id="social-icons">
+    <a href="#"><i class="fab fa-facebook-f"></i></a>
+    <a href="#"><i class="fab fa-instagram"></i></a>
+    <a href="#"><i class="fab fa-youtube"></i></a>
+  </div>
+</header>
+
     <form action="{{url_for('orders.new_order')}}" method="POST">
     <div class="card">
         <h2 style="font-size:30px;font-weight:800;font-family:verdana;">ORDINA</h2>
@@ -973,11 +1277,8 @@ h2 {
     <i></i>Indietro
     </button>
 </form>
-</body>
-
-</body>
 <script>
-
+    
 document.addEventListener("DOMContentLoaded", function () {
 
     let products = JSON.parse(localStorage.getItem("orderedItems")) || [];
@@ -1235,6 +1536,7 @@ document.addEventListener("DOMContentLoaded", function () {
         renderProducts();
 
         popupExtra.classList.remove("active");
+        overlay.classList.remove("active");
     });
 
     document.getElementById("open-allergeni-top").addEventListener("click", () => {
@@ -1245,6 +1547,8 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("back").addEventListener("click", () => {
         popupIngredienti.classList.remove("active");
         overlay.classList.remove("active");
+        popupExtra.classList.remove("active");
+        popupAllergeni.classList.remove("active");
     });
 
     /* ================================
@@ -1341,7 +1645,25 @@ document.addEventListener("DOMContentLoaded", function () {
     renderProducts();
 
 });
+const menuToggle = document.getElementById('menu-toggle');
+const navCenter = document.getElementById('nav-center');
+const socialIcons = document.getElementById('social-icons');
+
+if (menuToggle) {
+  menuToggle.addEventListener('click', () => {
+    navCenter.classList.toggle('active');
+    if (socialIcons) socialIcons.classList.toggle('active');
+  });
+
+  // Chiudi menu quando clicchi un link
+  document.querySelectorAll('.nav-center a').forEach(link => {
+    link.addEventListener('click', () => {
+      navCenter.classList.remove('active');
+      if (socialIcons) socialIcons.classList.remove('active');
+    });
+  });
+}
 
 </script>
-
+</body>
 </html>
