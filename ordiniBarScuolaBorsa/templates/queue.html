@@ -31,6 +31,20 @@
       top: 0;
       z-index: 100;
     }
+.order-notes {
+   display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+  padding-bottom: 18px;
+  margin-bottom: 16px;
+  font-weight: 600;
+  color: #ffffff;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.08);
+  width: 100%;
+
+}
+
 
     header h1 {
       font-size: 32px;
@@ -44,12 +58,13 @@
       text-shadow: 0 0 30px rgba(230, 57, 70, 0.3);
     }
 
-    main {
-      padding: 40px;
-      display: flex;
-      flex-direction: column;
-      gap: 25px;
-    }
+   main {
+  padding: 40px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  justify-items: center;
+}
 
     .order-card {
       background: linear-gradient(135deg, rgba(15, 15, 15, 0.9) 0%, rgba(25, 25, 25, 0.9) 100%);
@@ -60,7 +75,7 @@
       flex-direction: column;
       box-shadow: 0 4px 10px rgba(0,0,0,0.5);
       width: 100%;
-      max-width: 400px;
+      max-width: 420px;
     }
     .order-header {
       display: flex;
@@ -188,6 +203,7 @@
       display: flex;
       gap: 12px;
       margin-left: auto;
+      margin-top: 12px;
     }
 
     .btn-delete {
@@ -396,21 +412,41 @@
         padding: 15px;
       }
     }
+
+    @media (max-width: 1200px) {
+  main {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  main {
+    grid-template-columns: 1fr;
+  }
+}
+
   </style>
 </head>
 <body>
+
   <header>
-    <h1 style="margin-left:470px;font-family: verdana;font-weight:800;">CODA DA ORDINI SALA BAR</h1>
+    <h1 style="font-family: verdana; font-weight:800; text-align:center;">
+      CODA DA ORDINI SALA BAR
+    </h1>
   </header>
-  <main>
-    <!-- Ordine 1 -->
+
+  <main id="orders-container">
+
+    <!-- Ordine 01 -->
     <div class="order-card">
       <div class="order-header">
-        <div class="order-title">Ordine #101</div>
+        <div class="order-title">Ordine #01</div>
         <div class="order-status status-in-preparazione">In preparazione</div>
       </div>
+
       <div class="customer-info">Mario Rossi – Aula 1</div>
       <div class="customer-info">12/12/2025 09:15</div>
+
       <div class="order-items">
         <div class="item">
           <div class="item-name">Caffè <span class="item-note">Senza zucchero</span></div>
@@ -421,97 +457,80 @@
           <div>x1</div>
         </div>
       </div>
-      <div class="order-footer">
-        <div>
-          <span>Totale</span>
-          <span style="margin-left: 40px;">€4,50</span>
-        </div>
-<header>
-  <h1 style="font-family: verdana; font-weight: 800; text-align: center; width: 100%;">CODA DA ORDINI SALA BAR</h1>
-</header>
 
-<main>
-  <!-- Ordine 01 -->
-  <div class="order-card">
-    <div class="order-header">
-      <div class="order-title" style="font-size:18px;font-weight:900;">Ordine #01</div>
-      <div class="order-status status-in-preparazione">In preparazione</div>
-    </div>
-    <div class="customer-info">Mario Rossi – Aula 1</div>
-    <div class="customer-info">12/12/2025 09:15</div>
-    <div class="order-items">
-      <div class="item">
-        <div class="item-name">Caffè <span class="item-note"> <!-- qua possiamo scrivere le note delle prodotti -->  </span></div>
-        <div>x2</div>
-      </div>
-      <div class="item">
-        <div class="item-name">Cornetto</div>
-        <div>x1</div>
-      </div>
-    </div>
-    <div class="order-footer">
-      <div class="order-notes" style="color: white;">Note Generali</div>
-      <div class="order-total">
-        <span>Totale €4,50</span>
-        <div class="order-actions">
-          <button class="btn-pronto" onclick="markReady(this)">Pronto</button>
-          <button class="btn-delete" onclick="removeOrder(this)">Elimina</button>
+      <div class="order-footer">
+        <div class="order-notes">Note Generali</div>
+        <div class="order-total">
+          <span>Totale €4,50</span>
+          <div class="order-actions">
+            <button class="btn-pronto" onclick="markReady(this)">Pronto</button>
+            <button class="btn-delete" onclick="removeOrder(this)">Elimina</button>
+          </div>
         </div>
       </div>
     </div>
-    <!-- Ordine 2 -->
+
+    <!-- Ordine 02 -->
     <div class="order-card">
       <div class="order-header">
         <div class="order-title">Ordine #102</div>
         <div class="order-status status-pronto">Pronto</div>
       </div>
+
       <div class="customer-info">Sara Bianchi – Aula 3</div>
       <div class="customer-info">12/12/2025 09:20</div>
+
       <div class="order-items">
         <div class="item">
           <div class="item-name">Cappuccino <span class="item-note">Latte di soia</span></div>
           <div>x1</div>
         </div>
       </div>
+
       <div class="order-footer">
-        <div>
-          <span>Totale</span>
-          <span style="margin-left: 40px;">€2,50</span>
-        </div>
-        <div class="order-actions">
-          <button class="btn-pronto" onclick="markReady(this)" disabled>Pronto</button>
-          <button class="btn-delete" onclick="removeOrder(this)">Elimina</button>
+        <div class="order-notes">Note Generali</div>
+        <div class="order-total">
+          <span>Totale €2,50</span>
+          <div class="order-actions">
+            <button class="btn-pronto" disabled>Pronto</button>
+            <button class="btn-delete" onclick="removeOrder(this)">Elimina</button>
+          </div>
         </div>
       </div>
     </div>
-    <!-- Ordine 3 -->
+
+    <!-- Ordine 03 -->
     <div class="order-card">
       <div class="order-header">
         <div class="order-title">Ordine #103</div>
         <div class="order-status status-nuovo">Nuovo</div>
       </div>
+
       <div class="customer-info">Luigi Verdi – Aula 2</div>
       <div class="customer-info">12/12/2025 09:25</div>
+
       <div class="order-items">
         <div class="item">
           <div class="item-name">Panino</div>
           <div>x3</div>
         </div>
       </div>
+
       <div class="order-footer">
-        <div>
-          <span>Totale</span>
-          <span style="margin-left: 40px;">€9,00</span>
-        </div>
-        <div class="order-actions">
-          <button class="btn-pronto" onclick="markReady(this)">Pronto</button>
-          <button class="btn-delete" onclick="removeOrder(this)">Elimina</button>
+        <div class="order-notes">Note Generali</div>
+        <div class="order-total">
+          <span>Totale €9,00</span>
+          <div class="order-actions">
+            <button class="btn-pronto" onclick="markReady(this)">Pronto</button>
+            <button class="btn-delete" onclick="removeOrder(this)">Elimina</button>
+          </div>
         </div>
       </div>
     </div>
+
   </main>
 
-  <script>
+<script>
     function removeOrder(button) {
       const orderCard = button.closest('.order-card');
       if (orderCard) {
