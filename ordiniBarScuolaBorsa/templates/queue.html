@@ -286,6 +286,51 @@
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
     }
 
+    .btn-preparazione{
+      background-color: #a07602;;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 13px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 15px #7d5900e1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-preparazione::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.2);
+      transition: left 0.3s ease;
+    }
+    .btn-preparazione:hover {
+      background-color: #a07602;;
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px #6c4e01bc;
+    }
+    .btn-preparazione:active {
+      transform: scale(0.98);
+    }
+    .btn-preparazione:disabled {
+      background: linear-gradient(135deg, #444444 0%, #333333 100%);
+      cursor: not-allowed;
+      opacity: 0.5;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      transform: none;
+    }
+
+    .btn-preparazione:disabled:hover {
+      transform: none;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
     /* Empty state */
     #orders-container:empty::after {
       content: "📋 Nessun ordine in coda";
@@ -464,8 +509,10 @@
         <div class="order-total">
           <span>Totale €4,50</span>
           <div class="order-actions">
-            <button class="btn-pronto" onclick="markReady(this)">Pronto</button>
-            <button class="btn-delete" onclick="removeOrder(this)">Elimina</button>
+           <button class="btn-preparazione" onclick="markPreparazione(this)">Preparazione</button>
+<button class="btn-pronto" onclick="markPronto(this)">Pronto</button>
+<button class="btn-delete" onclick="removeOrder(this)">Elimina</button>
+
           </div>
         </div>
       </div>
@@ -493,8 +540,10 @@
         <div class="order-total">
           <span>Totale €2,50</span>
           <div class="order-actions">
-            <button class="btn-pronto" disabled>Pronto</button>
-            <button class="btn-delete" onclick="removeOrder(this)">Elimina</button>
+           <button class="btn-preparazione" onclick="markPreparazione(this)">Preparazione</button>
+<button class="btn-pronto" onclick="markPronto(this)">Pronto</button>
+<button class="btn-delete" onclick="removeOrder(this)">Elimina</button>
+
           </div>
         </div>
       </div>
@@ -522,8 +571,10 @@
         <div class="order-total">
           <span>Totale €9,00</span>
           <div class="order-actions">
-            <button class="btn-pronto" onclick="markReady(this)">Pronto</button>
-            <button class="btn-delete" onclick="removeOrder(this)">Elimina</button>
+            <button class="btn-preparazione" onclick="markPreparazione(this)">Preparazione</button>
+<button class="btn-pronto" onclick="markPronto(this)">Pronto</button>
+<button class="btn-delete" onclick="removeOrder(this)">Elimina</button>
+
           </div>
         </div>
       </div>
@@ -532,38 +583,58 @@
   </main>
 
 <script>
-    function removeOrder(button) {
-      const orderCard = button.closest('.order-card');
-      if (orderCard) {
-        orderCard.style.transition = 'all 0.3s ease';
-        orderCard.style.opacity = '0';
-        orderCard.style.transform = 'translateX(100%)';
-        
-        setTimeout(() => {
-          orderCard.remove();
-        }, 300);
-      }
-    }
+function removeOrder(button) {
+  const orderCard = button.closest('.order-card');
+  if (!orderCard) return;
 
-    function markReady(button) {
-      const orderCard = button.closest('.order-card');
-      if (orderCard) {
-        const statusBadge = orderCard.querySelector('.order-status');
-        const currentStatus = statusBadge.textContent.trim();
-        
-        // Cambia solo se non è già "Pronto"
-        if (currentStatus !== 'Pronto') {
-          // Rimuove le classi di stato precedenti
-          statusBadge.classList.remove('status-nuovo', 'status-in-preparazione', 'status-consegnato', 'status-annullato');
-          // Aggiunge la classe pronto
-          statusBadge.classList.add('status-pronto');
-          // Cambia il testo
-          statusBadge.textContent = 'Pronto';
-          // Disabilita il pulsante dopo aver fatto il cambio
-          button.disabled = true;
-        }
-      }
-    }
-  </script>
+  orderCard.style.transition = 'all 0.3s ease';
+  orderCard.style.opacity = '0';
+  orderCard.style.transform = 'translateX(100%)';
+  setTimeout(() => orderCard.remove(), 300);
+}
+
+function markPreparazione(button) {
+  const orderCard = button.closest('.order-card');
+  const statusBadge = orderCard.querySelector('.order-status');
+
+  // Rimuove tutte le classi di stato
+  statusBadge.classList.remove(
+    'status-nuovo',
+    'status-in-preparazione',
+    'status-pronto',
+    'status-consegnato',
+    'status-annullato'
+  );
+
+  // Imposta stato "In preparazione"
+  statusBadge.classList.add('status-in-preparazione');
+  statusBadge.textContent = 'In preparazione';
+
+  // 🔒 Disabilita il bottone Preparazione
+  button.disabled = true;
+}
+
+function markPronto(button) {
+  const orderCard = button.closest('.order-card');
+  const statusBadge = orderCard.querySelector('.order-status');
+
+  // Rimuove tutte le classi di stato precedenti
+  statusBadge.classList.remove(
+    'status-nuovo',
+    'status-in-preparazione',
+    'status-pronto',
+    'status-consegnato',
+    'status-annullato'
+  );
+
+  // Aggiunge la classe "pronto"
+  statusBadge.classList.add('status-pronto');
+  statusBadge.textContent = 'Pronto';
+
+  // Disabilita il bottone pronto
+  button.disabled = true;
+}
+</script>
+
 </body>
 </html>
