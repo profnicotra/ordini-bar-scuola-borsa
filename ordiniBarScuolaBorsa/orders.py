@@ -21,7 +21,10 @@ def new_order():
     customer_name = request.form.get("nome")
     custumer_surname = request.form.get("cognome")
     position = request.form.get("classe")
-    
+
+    position_id = [pos['id'] for pos in get_all_positions() if pos['nome'] == position][0]
+    print(position_id)
+
     print (f"Lista prodotti {selectedProducts}\nNote generale: {generalNote}\nNome cliente: {customer_name}\nCognome cliente: {custumer_surname}\nPosizione {position}")
 
     return redirect("/orders")
