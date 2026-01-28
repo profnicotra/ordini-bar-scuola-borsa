@@ -179,3 +179,41 @@ def get_queue():
     except Exception as e:
         logging.error(f"Errore in get_queue: {str(e)}", exc_info=True)
         raise
+
+def add_queue(posizione_id, righe):
+    try:
+        new_order = Ordine(posizione_id=posizione_id, stato='NUOVO', creato_da='system')
+
+        for riga in righe:
+            ordine_riga = OrdineRiga(
+                prodotto_id=riga['prodotto_id'], 
+                quantita=riga['quantita'], 
+                ordine=new_order,
+                prezzo_euro_unit=0
+            )
+            db.session.add(ordine_riga)
+
+        db.session.add(new_order)
+        db.session.commit()
+        
+        return True
+    except Exception as e:
+        logging.error(f"Errore in add_queue: {str(e)}", exc_info=True)
+        db.session.rollback()
+        return False
+    
+def get_all_positions():
+    try:
+        positions = db.session.query(Posizione).all()
+        
+        results = []
+        for position in positions:
+            results.append({
+                'id': position.id,
+                'nome': position.nome
+            })
+        
+        return results
+    except Exception as e:
+        logging.error(f"Errore in get_all_positions: {str(e)}", exc_info=True)
+        return []

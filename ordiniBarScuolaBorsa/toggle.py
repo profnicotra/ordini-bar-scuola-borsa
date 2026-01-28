@@ -5,10 +5,11 @@ bp = Blueprint("toggle", __name__, url_prefix="/toggle")
 
 @bp.get("/")
 def toggle():
-    
-    data = {"title" : "Apri e Chiudi Bar Scuola Borsa",
-        "open": is_bar_open(),   
-        "items" : []}
+    data = {
+        "title" : "Apri e Chiudi Bar Scuola Borsa",
+        "open": is_bar_open()
+    }
+
     return render_template('toggle.html', data=data)
 
 @bp.route("/changeBarStatus", methods=["POST"])
