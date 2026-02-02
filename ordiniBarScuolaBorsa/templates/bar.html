@@ -140,7 +140,6 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
   width: 900px;
   margin-left: -120px;
   min-height: 250px;
-  grid-template-columns: repeat(2, 1fr);
   gap: 15px 40px;
 }
 .menu-item{
@@ -644,6 +643,20 @@ function renderMenu(category) {
   const items = menuData[category] || [];
   listContainer.style.display = "grid";
   
+  // Gestione dinamica colonne basata sul numero di prodotti
+  const count = items.length;
+  if (window.innerWidth > 768) {
+      if (count < 5) {
+          listContainer.style.gridTemplateColumns = "1fr";
+      } else if (count < 20) {
+          listContainer.style.gridTemplateColumns = "repeat(2, 1fr)";
+      } else {
+          listContainer.style.gridTemplateColumns = "repeat(3, 1fr)";
+      }
+  } else {
+      listContainer.style.gridTemplateColumns = "1fr";
+  }
+  
   if (items.length === 0) {
     listContainer.innerHTML = `<p style="text-align:center; padding:20px;">Nessun prodotto disponibile.</p>`;
     return;
@@ -697,6 +710,10 @@ menuLinks.forEach(link => {
     currentCategory = link.dataset.menu;
     renderMenu(currentCategory);
   });
+});
+
+window.addEventListener("resize", () => {
+    renderMenu(currentCategory);
 });
 
 prontoBtn.addEventListener("click", () => {
