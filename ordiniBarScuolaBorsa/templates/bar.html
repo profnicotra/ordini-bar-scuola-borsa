@@ -133,7 +133,15 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
 .menu-list a{ flex:1; display:flex; justify-content:center; align-items:center; color:white; border-radius:5px; text-decoration:none; font-weight:600; font-size:18px; background:transparent; border-right:1px solid white; cursor:pointer; transition:0.3s; letter-spacing:10px; font-family:Verdana; }
 .menu-list a:last-child{border-right:none;}
 .menu-list a.active{background:white;color:black;font-weight:700;}
-#menu-lists{ margin-top:20px; text-align:left; display:none; width:550px; margin-left:-120px; min-height:250px; }
+#menu-lists{
+  margin-top: 20px;
+  text-align: left;
+  display: none;
+  width: 900px;
+  margin-left: -120px;
+  min-height: 250px;
+  gap: 15px 40px;
+}
 .menu-item{
   display:grid;
   grid-template-columns: auto minmax(30px, 1fr) auto;
@@ -306,6 +314,9 @@ html, body {
   .menu-content{
     width:100%;
     padding:0 20px;
+  }
+  #menu-lists {
+    grid-template-columns: 1fr;
   }
   .menu-list{
     flex-direction:column;
@@ -630,7 +641,21 @@ selectedItems = {};
 
 function renderMenu(category) {
   const items = menuData[category] || [];
-  listContainer.style.display = "block";
+  listContainer.style.display = "grid";
+  
+  // Gestione dinamica colonne basata sul numero di prodotti
+  const count = items.length;
+  if (window.innerWidth > 768) {
+      if (count < 5) {
+          listContainer.style.gridTemplateColumns = "1fr";
+      } else if (count < 20) {
+          listContainer.style.gridTemplateColumns = "repeat(2, 1fr)";
+      } else {
+          listContainer.style.gridTemplateColumns = "repeat(3, 1fr)";
+      }
+  } else {
+      listContainer.style.gridTemplateColumns = "1fr";
+  }
   
   if (items.length === 0) {
     listContainer.innerHTML = `<p style="text-align:center; padding:20px;">Nessun prodotto disponibile.</p>`;
@@ -685,6 +710,10 @@ menuLinks.forEach(link => {
     currentCategory = link.dataset.menu;
     renderMenu(currentCategory);
   });
+});
+
+window.addEventListener("resize", () => {
+    renderMenu(currentCategory);
 });
 
 prontoBtn.addEventListener("click", () => {
