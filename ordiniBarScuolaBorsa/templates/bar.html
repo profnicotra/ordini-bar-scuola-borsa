@@ -732,16 +732,13 @@ function renderMenu(category) {
     const price = sq.dataset.price;
     const menuItem = sq.closest(".menu-item"); // <-- genitore
 
-    if (selectedItems[name]) {
-      delete selectedItems[name];
-      sq.classList.remove("selected");
-      menuItem.classList.remove("selected"); // <-- evidenzia tutto il quadrato
-    } else {
-      selectedItems[name] = price;
-      sq.classList.add("selected");
-      menuItem.classList.add("selected"); // <-- evidenzia tutto il quadrato
-    }
-
+if (selectedItems[name]) {
+  delete selectedItems[name];
+  sq.classList.remove("selected");  // solo il quadrato
+} else {
+  selectedItems[name] = price;
+  sq.classList.add("selected");     // solo il quadrato
+}
     localStorage.setItem("selectedItems", JSON.stringify(selectedItems));
     updateProntoBtn();
   });
