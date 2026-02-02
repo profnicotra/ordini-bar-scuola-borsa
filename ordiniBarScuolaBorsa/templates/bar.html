@@ -219,19 +219,14 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
   border-color:#e63946;
   transform:scale(1.05);
 }
-
-.select-square.selected{
-  background:#e63946;
-  border-color:#e63946;
-  box-shadow:0 0 0 4px rgba(230,57,70,0.25);
+.select-square.selected {
+  background: #8B0000; /* rosso scuro */
+  border-color: #8B0000;
+  box-shadow: 0 0 6px rgba(139,0,0,0.6); /* effetto glow leggero */
 }
 
-.select-square.selected::after{
-  content:"";
-  position:absolute;
-  inset:6px;
-  background:#e63946;
-  border-radius:3px;
+.select-square.selected::after {
+  content: none; /* rimuove il quadratino bianco interno */
 }
 #pronto-btn{
     margin-top:10px;
