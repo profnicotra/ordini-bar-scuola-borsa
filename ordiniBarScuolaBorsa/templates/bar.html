@@ -228,29 +228,29 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
 .select-square.selected::after {
   content: none; /* rimuove il quadratino bianco interno */
 }
-#pronto-btn{
+#pronto-btn {
     margin-top:10px;
-    padding:14px 32px;
-    width:200px;
+    padding:16px 36px;
+    width:90%;
+    max-width:220px;
     font-size:20px;
     font-weight:800;
-    background-color:#e63946;
+    background: linear-gradient(145deg, #B22222, #FF4B5C);
     color:white;
     border:none;
-    border-radius:30px;
+    border-radius:50px;
     cursor:pointer;
-    opacity:1;
-    transform:translateY(0);
-    transition: all 0.3s ease;
+    box-shadow: 0 8px 20px rgba(230, 57, 70, 0.6);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s ease;
 }
-#pronto-btn:hover{ background:white; color:black; }
-@media (max-width:480px){
-    #pronto-btn{
-        padding: 0.8rem 1.5rem;   /* padding più piccolo su schermi piccoli */
-        font-size: 16px;           /* font leggibile su smartphone */
-        max-width: 95%;            /* quasi tutta la larghezza */
-    }
+
+#pronto-btn:hover {
+    background: linear-gradient(145deg, #FF4B5C, #B22222);
+    color:white;
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(230, 57, 70, 0.7);
 }
+
 
 /* TABLET E DEVICE MEDI */
 @media (max-width:768px){
