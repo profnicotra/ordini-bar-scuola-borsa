@@ -779,9 +779,9 @@ prontoBtn.addEventListener("click", () => {
   if (Object.keys(selectedItems).length === 0) {
     let tipo = "";
     switch (currentCategory) {
-      case "share": tipo = "piatto di cibo"; break;
-      case "sustain": tipo = "bevanda"; break;
-      case "indulge": tipo = "dolce"; break;
+      case "share": tipo = "selezione almeno un prodotto nella sezione cibo"; break;
+      case "sustain": tipo = "bevande"; break;
+      case "indulge": tipo = "dolci"; break;
       default: tipo = "prodotto";
     }
     errorBox.querySelector("p").innerHTML = `Seleziona almeno un ${tipo} prima di procedere!`;
