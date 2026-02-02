@@ -226,8 +226,9 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
 }
 
 .select-square.selected::after {
-  content: none; /* rimuove il quadratino bianco interno */
+  content: ""; /* rimuove il contenuto interno */
 }
+
 #pronto-btn {
     margin-top:10px;
     padding:16px 36px;
@@ -680,7 +681,6 @@ const menuData = {
 // ==========================================
 
 let selectedItems = JSON.parse(localStorage.getItem("selectedItems")) || {};
-localStorage.removeItem("selectedItems");
 selectedItems = {};
 
 function renderMenu(category) {
@@ -833,11 +833,6 @@ if(toLogin) {
 </body>
 </html>
 <style>
-
-/* Cambia anche il colore del testo interno */
-.menu-item.selected span {
-  color: white;
-}
 
 @media (min-width: 769px) {
   #menu-lists {
