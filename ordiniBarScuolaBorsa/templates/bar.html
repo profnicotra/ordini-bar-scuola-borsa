@@ -777,14 +777,15 @@ window.addEventListener("resize", () => {
 
 prontoBtn.addEventListener("click", () => {
   if (Object.keys(selectedItems).length === 0) {
-    let tipo = "";
-    switch (currentCategory) {
-      case "share": tipo = "selezione almeno un prodotto nella sezione cibo"; break;
-      case "sustain": tipo = "bevande"; break;
-      case "indulge": tipo = "dolci"; break;
-      default: tipo = "prodotto";
-    }
-    errorBox.querySelector("p").innerHTML = `Seleziona almeno un ${tipo} prima di procedere!`;
+    let tipoSezione = "";
+switch (currentCategory) {
+  case "share": tipoSezione = "CIBI"; break;
+  case "sustain": tipoSezione = "BEVANDE"; break;
+  case "indulge": tipoSezione = "DOLCI"; break;
+  default: tipoSezione = "prodotto";
+}
+errorBox.querySelector("p").innerHTML = `Oh no!<br>Devi selezionare almeno un prodotto nella sezione ${tipoSezione}`;
+
     errorBox.classList.add("show");
     setTimeout(() => { errorBox.classList.remove("show"); }, 4000);
     return;
