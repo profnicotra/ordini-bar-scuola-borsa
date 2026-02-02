@@ -220,18 +220,18 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
   transform:scale(1.05);
 }
 
-.select-square.selected{
-  background:#e63946;
-  border-color:#e63946;
-  box-shadow:0 0 0 4px rgba(230,57,70,0.25);
+.select-square.selected {
+  background: #8B0000; /* rosso scuro */
+  border-color: #8B0000;
+  box-shadow: 0 0 0 4px rgba(230,57,70,0.25); /* opzionale se vuoi un effetto glow */
 }
 
-.select-square.selected::after{
-  content:"";
-  position:absolute;
-  inset:6px;
-  background:white;
-  border-radius:3px;
+.select-square.selected::after {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  background: white; /* il segno di spunta interno, se vuoi mantenerlo */
+  border-radius: 3px;
 }
 #pronto-btn{
     margin-top:10px;
@@ -838,13 +838,6 @@ if(toLogin) {
 </body>
 </html>
 <style>
-/* Evidenzia l'intero quadrato quando selezionato */
-.menu-item.selected {
-  background-color: #8B0000; /* rosso scuro */
-  border-radius: 10px;
-  color: white;
-  transition: background 0.3s, color 0.3s;
-}
 
 /* Cambia anche il colore del testo interno */
 .menu-item.selected span {
