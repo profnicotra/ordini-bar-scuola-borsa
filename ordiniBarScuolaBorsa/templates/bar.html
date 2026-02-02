@@ -664,10 +664,7 @@ const menuData = {
 // FINE GESTIONE DATI REALI
 // ==========================================
 
-let selectedItems = JSON.parse(localStorage.getItem("selectedItems")) || {};
 localStorage.removeItem("selectedItems");
-selectedItems = {};
-
 function renderMenu(category) {
   const items = menuData[category] || [];
   listContainer.style.display = "grid";
