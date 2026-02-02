@@ -168,7 +168,7 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
   left:0;
   right:0;
   top:50%;
-  border-bottom:2px dashed rgba(255,255,255,0.5);
+  border-bottom:2px solid rgba(255,255,255,0.6);
 }
 
 
@@ -181,7 +181,17 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
 }
 
 .euro{font-size:16px;position:relative;top:-2px;margin-right:3px;opacity:0.8;}
-.select-square{ width:25px;height:25px;border:2px dashed white;border-radius:5px;margin-right:15px;cursor:pointer;transition:0.3s ease; }
+.select-square{
+  width:28px;
+  height:28px;
+  min-width:28px;
+  min-height:28px;
+  border:2px solid white;
+  border-radius:6px;
+  margin-right:18px;
+  cursor:pointer;
+  transition:0.3s ease;
+}
 .select-square.selected{background-color:#e63946;border-color:#e63946;}
 
 #pronto-btn{
@@ -783,3 +793,21 @@ if(toLogin) {
 </script>
 </body>
 </html>
+@media (min-width:1024px){
+  .menu-item{
+    font-size:17px;
+    padding:6px 0;
+    letter-spacing:0.5px;
+  }
+
+  .price{
+    min-width:75px;
+  }
+}
+@media (min-width:1024px){
+  #menu-lists{
+    grid-template-columns:repeat(3, 1fr);
+    column-gap:120px;   /* distanza orizzontale maggiore */
+    row-gap:15px;       /* verticale invariata */
+  }
+}
