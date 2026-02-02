@@ -220,18 +220,18 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
   transform:scale(1.05);
 }
 
-.select-square.selected {
-  background: #8B0000; /* rosso scuro */
-  border-color: #8B0000;
-  box-shadow: 0 0 0 4px rgba(230,57,70,0.25); /* opzionale se vuoi un effetto glow */
+.select-square.selected{
+  background:#e63946;
+  border-color:#e63946;
+  box-shadow:0 0 0 4px rgba(230,57,70,0.25);
 }
 
-.select-square.selected::after {
-  content: "";
-  position: absolute;
-  inset: 6px;
-  background: white; /* il segno di spunta interno, se vuoi mantenerlo */
-  border-radius: 3px;
+.select-square.selected::after{
+  content:"";
+  position:absolute;
+  inset:6px;
+  background:white;
+  border-radius:3px;
 }
 #pronto-btn{
     margin-top:10px;
@@ -239,8 +239,8 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
     width:200px;
     font-size:20px;
     font-weight:800;
-    background-color:#591e1e;
-    color:#591e1e;
+    background-color:#e63946;
+    color:white;
     border:none;
     border-radius:30px;
     cursor:pointer;
@@ -732,13 +732,16 @@ function renderMenu(category) {
     const price = sq.dataset.price;
     const menuItem = sq.closest(".menu-item"); // <-- genitore
 
-if (selectedItems[name]) {
-  delete selectedItems[name];
-  sq.classList.remove("selected");  // solo il quadrato
-} else {
-  selectedItems[name] = price;
-  sq.classList.add("selected");     // solo il quadrato
-}
+    if (selectedItems[name]) {
+      delete selectedItems[name];
+      sq.classList.remove("selected");
+      menuItem.classList.remove("selected"); // <-- evidenzia tutto il quadrato
+    } else {
+      selectedItems[name] = price;
+      sq.classList.add("selected");
+      menuItem.classList.add("selected"); // <-- evidenzia tutto il quadrato
+    }
+
     localStorage.setItem("selectedItems", JSON.stringify(selectedItems));
     updateProntoBtn();
   });
