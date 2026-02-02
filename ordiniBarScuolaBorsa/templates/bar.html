@@ -7,6 +7,26 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 <style>
+/* Evidenzia l'intero quadrato quando selezionato */
+.menu-item.selected {
+  background-color: #8B0000; /* rosso scuro */
+  border-radius: 10px;
+  color: white;
+  transition: background 0.3s, color 0.3s;
+}
+
+/* Cambia anche il colore del testo interno */
+.menu-item.selected span {
+  color: white;
+}
+
+@media (min-width: 769px) {
+  #menu-lists {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+<style>
 * { margin:0;padding:0;box-sizing:border-box; }
 body { font-family:"Montserrat",sans-serif; background-color:black; color:white; }
 .menu-hero{ min-height:100vh; background-image:url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrvMAfCqsehmJvRUBbDTG0xeR6rlCMzEccNg&s"); background-size:cover; background-position:center; position:relative; display:flex; justify-content:center; align-items:center; text-align:center; padding-top:180px; flex-direction: column; }
@@ -817,6 +837,7 @@ if(toLogin) {
 </script>
 </body>
 </html>
+<style>
 /* Evidenzia l'intero quadrato quando selezionato */
 .menu-item.selected {
   background-color: #8B0000; /* rosso scuro */
@@ -829,9 +850,11 @@ if(toLogin) {
 .menu-item.selected span {
   color: white;
 }
+
 @media (min-width: 769px) {
   #menu-lists {
-    grid-template-columns: repeat(2, 1fr); /* due colonne sul desktop */
-    gap: 20px; /* distanza tra i quadrati */
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
   }
 }
+</style>
