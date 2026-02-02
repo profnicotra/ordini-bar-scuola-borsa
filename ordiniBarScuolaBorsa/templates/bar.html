@@ -223,8 +223,13 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
   border-color: #5b0000;
 }
 
-.select-square.selected::after {
-  content: none; /* rimuove qualunque cosa all’interno */
+.select-square.selected::after,
+.select-square.selected::before {
+  content: "" !important;
+  display: block !important;
+  width: 100%;
+  height: 100%;
+  background: transparent !important;
 }
 
 #pronto-btn {
