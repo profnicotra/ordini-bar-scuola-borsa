@@ -249,29 +249,143 @@
       .experience-section img { width: 90% !important; }
     }
 
-    @media (max-width: 768px) {
-      .experience-section { 
-        flex-direction: row;
-        padding: 120px 8%; 
-        gap: 50px; 
-      }
-      .cocktail-box { width: 65%; }
-      .cocktail-box h4 { font-size: 18px; }
-      .cocktail-box h2 { font-size: 40px; }
-      .cocktail-box p { font-size: 15px; }
-      .experience-section img { width: 85% !important; margin-left: 20px !important; }
-    }
+   /* Layout verticale SOLO per tablet e smartphone piccoli */
+@media (max-width: 768px) {
+  .experience-section { 
+    flex-direction: column; /* testo sopra immagine */
+    align-items: center;
+    text-align: center;
+    gap: 40px;
+  }
 
-    @media (max-width: 480px) {
-      .experience-section { 
-        flex-direction: row;
-        padding: 120px 6%; 
-      }
-      .cocktail-box { width: 60%; }
-      .cocktail-box h2 { font-size: 35px; }
-      .cocktail-box p { font-size: 14px; }
-      .experience-section img { width: 80% !important; margin-left: 15px !important; }
-    }
+  .cocktail-box { 
+    width: 90%;
+  }
+
+  .cocktail-box h4,
+  .cocktail-box h2,
+  .cocktail-box p {
+    text-align: center;
+  }
+
+  .experience-section img { 
+    width: 100%;
+    max-width: 350px; /* come nella gallery */
+    margin-left: 0 !important;
+    border-radius: 20px;
+    object-fit: cover;
+  }
+}
+
+/* LARGHI schermi sopra 768px: layout a riga normale */
+@media (min-width: 769px) {
+  .experience-section {
+    flex-direction: row;
+    align-items: center;
+    gap: 60px;
+    text-align: left;
+  }
+
+  .cocktail-box {
+    width: 70%;
+  }
+
+  .experience-section img {
+    width: auto;
+    max-width: 600px; /* dimensione dell'immagine più grande per desktop */
+    margin-left: 0;
+  }
+}
+/* LARGHI schermi: layout a riga (testo a sinistra, immagine a destra) */
+@media (min-width: 1200px) {
+  .experience-section {
+    flex-direction: row;
+    align-items: center;
+    gap: 60px;
+    text-align: left;
+  }
+
+  .cocktail-box {
+    width: 70%;
+  }
+
+  .experience-section img {
+    width: auto;
+    max-width: 600px; /* immagine grande per desktop */
+    margin-left: 0;
+  }
+}
+
+/* Tablet grandi: ancora layout a riga ma immagine un po’ più piccola */
+@media (min-width: 769px) and (max-width: 1199px) {
+  .experience-section {
+    flex-direction: row;
+    align-items: center;
+    gap: 50px;
+    text-align: left;
+  }
+
+  .cocktail-box {
+    width: 65%;
+  }
+
+  .experience-section img {
+    width: 100%;
+    max-width: 450px; /* dimensione armoniosa per tablet grandi */
+    margin-left: 0;
+  }
+}
+
+/* Tablet piccoli e smartphone: layout verticale testo sopra immagine */
+@media (max-width: 768px) {
+  .experience-section {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 40px;
+  }
+
+  .cocktail-box { width: 90%; }
+
+  .experience-section img {
+    width: 100%;
+    max-width: 350px; /* come gallery */
+    margin-left: 0 !important;
+    border-radius: 20px;
+    object-fit: cover;
+  }
+}
+
+
+   @media (max-width: 480px) {
+  .experience-section { 
+    flex-direction: column; /* mette immagine sotto testo */
+    padding: 60px 6%; 
+    align-items: center; /* centra tutto */
+    text-align: center; /* centra il testo */
+    gap: 30px; /* distanza tra testo e immagine */
+  }
+
+  .cocktail-box { 
+    width: 100%;
+    margin-top: 20px; /* testo prende tutta la larghezza */
+  }
+
+  .cocktail-box h4,
+  .cocktail-box h2,
+  .cocktail-box p {
+    text-align: center; /* centra tutti i testi */
+  }
+
+  .experience-section img { 
+    width: 100%; /* immagine più grande come galleria */
+    max-width: 450px; /* limita la larghezza massima */
+    margin-left: 0 !important; /* rimuove margini precedenti */
+    border-radius: 20px; /* simile alla galleria */
+    object-fit: cover; /* mantiene proporzioni */
+  }
+}
+
 
     /* GALLERIA */
     .gallery-section {
@@ -699,7 +813,7 @@
     la Scuola Paolo Borsa è un punto di riferimento<br>
     a Monza per la formazione professionale<br>
     e la crescita culturale.</p>
-    <a href="https://www.scuola-borsa.it/corsi-tempo-libero" class="yellow-btn">SCOPRI DI PIÙ</a>
+    <a href="https://www.scuola-borsa.it/corsi-tempo-libero" class="yellow-btn" style="text-align: center;">SCOPRI DI PIÙ</a>
   </div>
 
   <div style="width:50%; display:flex; justify-content:flex-end;">

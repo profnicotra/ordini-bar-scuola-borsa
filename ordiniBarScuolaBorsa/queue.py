@@ -61,11 +61,7 @@ def delete_ordine(ordine_id):
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
 
-@bp.route("/update", methods=["POST"])
-def update_queue():
-    dati = request.get_json
-    
-    return jsonify({"status": "success"})
+
 # @bp.get("/update", methods=["POST"])
 # def update_queue():
 #     dati = request.get_json

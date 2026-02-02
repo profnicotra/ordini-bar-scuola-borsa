@@ -572,25 +572,143 @@ h2 {
 /* POPUP SUCCESSO ORDINE (NUOVO) */
 /* ============================= */
 
+/* ==========================
+   POPUP SUCCESSO ORDINE RESPONSIVE
+========================== */
 #success-popup {
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) scale(.7);
-    width: 330px;
+    width: 90%;         /* occupa 90% viewport su schermi piccoli */
+    max-width: 330px;   /* max su desktop */
     background: rgb(0, 0, 0);
     border: 1px solid wheat;
     border-radius: 20px;
-    padding: 30px;
+    padding: 25px 20px;
     text-align: center;
     display: none;
     flex-direction: column;
     gap: 18px;
     z-index: 200;
     box-shadow: 0 2px 10px rgb(0 0 0 / 0.2);
-    transition: .25s ease;
+    transition: .25s ease, transform .25s ease;
     font-family: Arial, sans-serif;
 }
+
+/* Mostra popup */
+#success-popup.active {
+    display: flex;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* Icona centrale */
+#success-popup .icon-circle {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: #e63947c3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+}
+
+#success-popup .icon-circle svg {
+    width: 36px;
+    height: 36px;
+    stroke: white;
+}
+
+/* Titolo e testo */
+#success-popup h2 {
+    color: white;
+    font-size: 22px;
+    margin: 0;
+}
+
+#success-popup p {
+    font-size: 16px;
+    margin: 0;
+    line-height: 20px;
+    color: white;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 500;
+}
+
+/* Bottone chiusura */
+#success-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: transparent;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    color: #e63946;
+}
+
+/* ======================
+   Media Queries per Responsive
+====================== */
+
+/* Desktop grande (>1024px) */
+@media (min-width: 1025px) {
+    #success-popup {
+        width: 330px;
+        padding: 25px 20px;
+        font-size: 18px;
+    }
+}
+
+/* Tablet (769px - 1024px) */
+@media (max-width: 1024px) and (min-width: 769px) {
+    #success-popup {
+        width: 80%;
+        max-width: 300px;
+        padding: 22px 18px;
+        font-size: 16px;
+    }
+}
+
+/* Smartphone medio (481px - 768px) */
+@media (max-width: 768px) and (min-width: 481px) {
+    #success-popup {
+        width: 90%;
+        max-width: 280px;
+        padding: 20px 16px;
+        font-size: 15px;
+    }
+}
+
+/* Smartphone piccolo (<480px) */
+@media (max-width: 480px) {
+    #success-popup {
+        width: 95%;
+        max-width: 260px;
+        padding: 18px 14px;
+        font-size: 14px;
+    }
+
+    #success-popup h2 {
+        font-size: 18px;
+    }
+
+    #success-popup p {
+        font-size: 14px;
+    }
+
+    #success-popup .icon-circle {
+        width: 60px;
+        height: 60px;
+    }
+
+    #success-popup .icon-circle svg {
+        width: 28px;
+        height: 28px;
+    }
+}
+
 .clear-btn {
     width: 90px;
     height: 55px;
@@ -667,22 +785,65 @@ h2 {
 .option-radio:checked {
     accent-color: #e63946;
 }
+/* POPUP CESTINO RESPONSIVE */
 #error-box {
-    font-family: "Montserrat",sans-serif; 
-  position: fixed;
-  top: -200px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgb(26, 26, 26);
-  padding: 15px 20px;
-  border-radius: 10px;
-  color: whitesmoke;
-  font-weight: 700;
-  width: 330px;
-  transition: top 0.5s ease;
-  z-index: 9999;
-  border: 1px solid whitesmoke;
+    font-family: "Montserrat", sans-serif;
+    position: fixed;
+    top: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgb(26, 26, 26);
+    padding: 15px 20px;
+    border-radius: 10px;
+    color: whitesmoke;
+    font-weight: 700;
+    width: 90%;        /* prende il 90% della larghezza viewport */
+    max-width: 330px;  /* massimo su desktop */
+    font-size: 16px;   /* base font-size */
+    transition: top 0.5s ease;
+    z-index: 9999;
+    border: 1px solid whitesmoke;
 }
+
+/* Desktop grande (schermo >1024px) */
+@media (min-width: 1025px) {
+    #error-box {
+        width: 330px;   /* fissa per desktop */
+        font-size: 18px;
+        padding: 15px 20px;
+    }
+}
+
+/* Tablet (768px - 1024px) */
+@media (max-width: 1024px) and (min-width: 769px) {
+    #error-box {
+        width: 80%;     /* un po' più piccolo del viewport */
+        max-width: 300px;
+        font-size: 16px;
+        padding: 14px 18px;
+    }
+}
+
+/* Smartphone medio (481px - 768px) */
+@media (max-width: 768px) and (min-width: 481px) {
+    #error-box {
+        width: 90%;
+        max-width: 280px;
+        font-size: 15px;
+        padding: 12px 16px;
+    }
+}
+
+/* Smartphone piccolo (<480px) */
+@media (max-width: 480px) {
+    #error-box {
+        width: 95%;
+        max-width: 260px;
+        font-size: 14px;
+        padding: 10px 14px;
+    }
+}
+
 
 #error-box.show {
   top: 40px;
@@ -1106,6 +1267,28 @@ body {
     padding-right: 18px;   /* 🔥 regola qui la distanza */
     text-align: right;
 }
+/* Desktop */
+@media (min-width: 1025px) {
+    #popup-allergeni-ingrediente {
+        top: calc(50% + 75px); /* navbar desktop ~150px */
+    }
+}
+
+/* Tablet */
+@media (max-width: 1024px) and (min-width: 769px) {
+    #popup-allergeni-ingrediente {
+        top: calc(50% + 60px); /* navbar tablet ~120px */
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    #popup-allergeni-ingrediente {
+        top: calc(50% + 40px); /* navbar mobile ~80px */
+    }
+}
+
+
 
 </style>
 </head>
@@ -1135,7 +1318,6 @@ body {
   </div>
 </header>
 
-    <form action="{{url_for('orders.new_order')}}" method="POST">
     <div class="card">
         <h2 style="font-size:30px;font-weight:800;font-family:verdana;">ORDINA</h2>
         <div class="divider"></div>
@@ -1162,15 +1344,9 @@ body {
         <input id="cognome" type="text" class="note-input" placeholder="Cognome" name="cognome"/>
         <input id="classe" type="text" class="note-input" placeholder="Classe" list="lista-classi" name="classe"/>
         <datalist id="lista-classi">
-            <option value="1D Operatore Informatica">
-            <option value="2D Operatore Informatica">
-            <option value="3D Operatore Informatica">
-            <option value="1D Bar&Cucina">
-            <option value="2D Bar&Cucina">
-            <option value="3D Bar&Cucina">
-            <option value="1D Agricoltura">
-            <option value="2D Agricoltura">
-            <option value="3D Agricoltura">
+            {% for pos in data["positions"] %}
+            <option value="{{ pos.nome }}">
+            {% endfor %}
         </datalist>
     </div>
 
@@ -1199,7 +1375,7 @@ body {
     <!-- popup selezione ingredienti -->
     <div id="ingredient-card">
         <h1 class="title">AGGIUNGI NOTE</h1>
-        <div class="divider1" style="width:100px;margin-left:100px;margin-bottom:20px;"></div>
+        <div class="divider1" style="width:100px;margin-left:75px;margin-bottom:20px;"></div>
         <div class="controls" style="justify-content:center;">
             <button class="btn" id="apriIngredienti" type="button">NOTE</button>
         </div>
@@ -1667,7 +1843,6 @@ if (menuToggle) {
     });
   });
 }
-
 </script>
 </body>
 </html>
