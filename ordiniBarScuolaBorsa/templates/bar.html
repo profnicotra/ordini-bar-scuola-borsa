@@ -707,20 +707,25 @@ function renderMenu(category) {
 
   const squares = listContainer.querySelectorAll(".select-square");
   squares.forEach((sq) => {
-    sq.addEventListener("click", () => {
-      const name = sq.dataset.name;
-      const price = sq.dataset.price;
-      if (selectedItems[name]) {
-        delete selectedItems[name];
-        sq.classList.remove("selected");
-      } else {
-        selectedItems[name] = price;
-        sq.classList.add("selected");
-      }
-      localStorage.setItem("selectedItems", JSON.stringify(selectedItems));
-      updateProntoBtn();
-    });
+  sq.addEventListener("click", () => {
+    const name = sq.dataset.name;
+    const price = sq.dataset.price;
+    const menuItem = sq.closest(".menu-item"); // <-- genitore
+
+    if (selectedItems[name]) {
+      delete selectedItems[name];
+      sq.classList.remove("selected");
+      menuItem.classList.remove("selected"); // <-- evidenzia tutto il quadrato
+    } else {
+      selectedItems[name] = price;
+      sq.classList.add("selected");
+      menuItem.classList.add("selected"); // <-- evidenzia tutto il quadrato
+    }
+
+    localStorage.setItem("selectedItems", JSON.stringify(selectedItems));
+    updateProntoBtn();
   });
+});
 }
 
 function updateProntoBtn() {
@@ -812,3 +817,21 @@ if(toLogin) {
 </script>
 </body>
 </html>
+/* Evidenzia l'intero quadrato quando selezionato */
+.menu-item.selected {
+  background-color: #8B0000; /* rosso scuro */
+  border-radius: 10px;
+  color: white;
+  transition: background 0.3s, color 0.3s;
+}
+
+/* Cambia anche il colore del testo interno */
+.menu-item.selected span {
+  color: white;
+}
+@media (min-width: 769px) {
+  #menu-lists {
+    grid-template-columns: repeat(2, 1fr); /* due colonne sul desktop */
+    gap: 20px; /* distanza tra i quadrati */
+  }
+}
