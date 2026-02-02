@@ -648,10 +648,13 @@ function renderMenu(category) {
   if (window.innerWidth > 768) {
       if (count < 5) {
           listContainer.style.gridTemplateColumns = "1fr";
+          listContainer.style.gap = "15px 40px";
       } else if (count < 20) {
           listContainer.style.gridTemplateColumns = "repeat(2, 1fr)";
+          listContainer.style.gap = "15px 60px";
       } else {
           listContainer.style.gridTemplateColumns = "repeat(3, 1fr)";
+          listContainer.style.gap = "15px 80px";
       }
   } else {
       listContainer.style.gridTemplateColumns = "1fr";
