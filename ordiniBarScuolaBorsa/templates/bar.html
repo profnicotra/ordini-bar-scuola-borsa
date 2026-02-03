@@ -7,17 +7,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 <style>
-/* Evidenzia l'intero quadrato quando selezionato */
-.menu-item.selected {
-  background-color: #5b0000; /* rosso scuro */
-  border-radius: 10px;
-  transition: background 0.3s, color 0.3s;
-}
-
-/* Cambia anche il colore del testo interno */
-.menu-item.selected span {
-  color: oklab(100% 0 -0.00011);
-}
 
 @media (min-width: 769px) {
   #menu-lists {
@@ -792,7 +781,7 @@ prontoBtn.addEventListener("click", () => {
     setTimeout(() => { errorBox.classList.remove("show"); }, 4000);
     return;
   }
-  console.log("Ordine inviato:", selectedItems);
+  alert("Ordine inviato con successo!");
   localStorage.removeItem("selectedItems");
   selectedItems = {};
   updateProntoBtn();
