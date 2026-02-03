@@ -201,6 +201,12 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
   position:relative;
   background:rgba(255,255,255,0.05);
   transition:all 0.25s ease;
+
+  /* FIX */
+  display:inline-flex;
+  justify-content:center;
+  align-items:center;
+  box-sizing:border-box;
 }
 
 .select-square:hover{
@@ -748,7 +754,11 @@ sq.addEventListener("click", () => {
 }
 
 function updateProntoBtn() {
-  prontoBtn.style.opacity = Object.keys(selectedItems).length > 0 ? "1" : "0.5";
+  const hasItems = Object.keys(selectedItems).length > 0;
+
+  prontoBtn.disabled = !hasItems;
+  prontoBtn.style.opacity = hasItems ? "1" : "0.5";
+  prontoBtn.style.cursor = hasItems ? "pointer" : "not-allowed";
 }
 
 const errorBox = document.getElementById("error-box");
