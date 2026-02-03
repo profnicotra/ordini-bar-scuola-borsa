@@ -16,7 +16,7 @@
 
 /* Cambia anche il colore del testo interno */
 .menu-item.selected span {
-  color: #5b0000;
+  color: oklab(100% 0 -0.00011);
 }
 
 @media (min-width: 769px) {
@@ -223,13 +223,8 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
   border-color: #5b0000;
 }
 
-.select-square.selected::after,
-.select-square.selected::before {
-  content: "" !important;
-  display: block !important;
-  width: 100%;
-  height: 100%;
-  background: transparent !important;
+.select-square.selected::after {
+  content: none; /* rimuove qualunque cosa all’interno */
 }
 
 #pronto-btn {
@@ -651,6 +646,8 @@ try {
             .replace(/'/g, '"');
 
         datiDB = JSON.parse(stringaPulita);
+    } else {
+        console.log("No dati, uso default");
     }
 } catch (e) {
     console.error("Errore parsing dati dopo pulizia:", e);
@@ -691,8 +688,6 @@ const menuData = {
 // ==========================================
 
 let selectedItems = JSON.parse(localStorage.getItem("selectedItems")) || {};
-selectedItems = {};
-
 function renderMenu(category) {
   const items = menuData[category] || [];
   listContainer.style.display = "grid";
@@ -714,10 +709,17 @@ function renderMenu(category) {
       listContainer.style.gridTemplateColumns = "1fr";
   }
   
-  if (items.length === 0) {
-    listContainer.innerHTML = `<p style="text-align:center; padding:20px;">Nessun prodotto disponibile.</p>`;
-    return;
+if (items.length === 0) {
+  let tipoSezione = "";
+  switch (currentCategory) {
+    case "share": tipoSezione = "cibo"; break;
+    case "sustain": tipoSezione = "bevanda"; break;
+    case "indulge": tipoSezione = "dolce"; break;
+    default: tipoSezione = "prodotto";
   }
+  listContainer.innerHTML = `<p style="text-align:center; padding:20px;">Nessun ${tipoSezione} disponibile.</p>`;
+  return;
+}
 
   listContainer.innerHTML = items.map((item, index) => `
     <div class="menu-item" style="animation-delay:${0.1 * index}s">
@@ -732,24 +734,21 @@ function renderMenu(category) {
 
   const squares = listContainer.querySelectorAll(".select-square");
   squares.forEach((sq) => {
-  sq.addEventListener("click", () => {
-    const name = sq.dataset.name;
-    const price = sq.dataset.price;
-    const menuItem = sq.closest(".menu-item"); // <-- genitore
+sq.addEventListener("click", () => {
+  const name = sq.dataset.name;
+  const price = sq.dataset.price;
 
-    if (selectedItems[name]) {
-      delete selectedItems[name];
-      sq.classList.remove("selected");
-      menuItem.classList.remove("selected"); // <-- evidenzia tutto il quadrato
-    } else {
-      selectedItems[name] = price;
-      sq.classList.add("selected");
-      menuItem.classList.add("selected"); // <-- evidenzia tutto il quadrato
-    }
+  if (selectedItems[name]) {
+    delete selectedItems[name];
+    sq.classList.remove("selected");
+  } else {
+    selectedItems[name] = price;
+    sq.classList.add("selected");
+  }
 
-    localStorage.setItem("selectedItems", JSON.stringify(selectedItems));
-    updateProntoBtn();
-  });
+  localStorage.setItem("selectedItems", JSON.stringify(selectedItems));
+  updateProntoBtn();
+});
 });
 }
 
@@ -781,18 +780,23 @@ window.addEventListener("resize", () => {
 prontoBtn.addEventListener("click", () => {
   if (Object.keys(selectedItems).length === 0) {
     let tipoSezione = "";
-switch (currentCategory) {
-  case "share": tipoSezione = "CIBI"; break;
-  case "sustain": tipoSezione = "BEVANDE"; break;
-  case "indulge": tipoSezione = "DOLCI"; break;
-  default: tipoSezione = "prodotto";
-}
-errorBox.querySelector("p").innerHTML = `Oh no!<br>Devi selezionare almeno un prodotto nella sezione ${tipoSezione}`;
+    switch (currentCategory) {
+      case "share": tipoSezione = "CIBI"; break;
+      case "sustain": tipoSezione = "BEVANDE"; break;
+      case "indulge": tipoSezione = "DOLCI"; break;
+      default: tipoSezione = "prodotto";
+    }
+    errorBox.querySelector("p").innerHTML = `Oh no!<br>Devi selezionare almeno un prodotto nella sezione ${tipoSezione}`;
 
     errorBox.classList.add("show");
     setTimeout(() => { errorBox.classList.remove("show"); }, 4000);
     return;
   }
+  console.log("Ordine inviato:", selectedItems);
+  localStorage.removeItem("selectedItems");
+  selectedItems = {};
+  updateProntoBtn();
+  renderMenu(currentCategory);
 });
 
 if(menuLinks[0]) menuLinks[0].click();
@@ -848,3 +852,34 @@ if(toLogin) {
   }
 }
 </style>
+ <style>
+  .menu-item {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeUp 0.5s forwards;
+}
+@media (max-width: 768px) {
+  .social-icons.active {
+    display: flex;
+    position: absolute;
+    top: 80px;
+    right: 0;
+    background: rgba(22,22,22,0.95);
+    padding: 15px;
+    width: 100%;
+    justify-content: center;
+  }
+}
+ </style>
+ <script>
+  loginForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  console.log("Login:", username.value, password.value);
+});
+
+const registerFormInner = document.getElementById("register-form-inner");
+registerFormInner.addEventListener("submit", (e) => {
+  e.preventDefault();
+  console.log("Register:", reg-first.value, reg-last.value, reg-email.value, reg-pass.value);
+});
+ </script>
