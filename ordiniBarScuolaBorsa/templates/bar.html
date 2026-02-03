@@ -7,6 +7,14 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 <style>
+
+@media (min-width: 769px) {
+  #menu-lists {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+<style>
 * { margin:0;padding:0;box-sizing:border-box; }
 body { font-family:"Montserrat",sans-serif; background-color:black; color:white; }
 .menu-hero{ min-height:100vh; background-image:url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrvMAfCqsehmJvRUBbDTG0xeR6rlCMzEccNg&s"); background-size:cover; background-position:center; position:relative; display:flex; justify-content:center; align-items:center; text-align:center; padding-top:180px; flex-direction: column; }
@@ -140,7 +148,6 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
   width: 900px;
   margin-left: -120px;
   min-height: 250px;
-  grid-template-columns: repeat(2, 1fr);
   gap: 15px 40px;
 }
 .menu-item{
@@ -169,7 +176,7 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
   left:0;
   right:0;
   top:50%;
-  border-bottom:2px dashed rgba(255,255,255,0.5);
+  border-bottom:1.5px solid rgba(255,255,255,0.35);
 }
 
 
@@ -182,32 +189,67 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
 }
 
 .euro{font-size:16px;position:relative;top:-2px;margin-right:3px;opacity:0.8;}
-.select-square{ width:25px;height:25px;border:2px dashed white;border-radius:5px;margin-right:15px;cursor:pointer;transition:0.3s ease; }
-.select-square.selected{background-color:#e63946;border-color:#e63946;}
+.select-square{
+  width:28px;
+  height:28px;
+  min-width:28px;
+  min-height:28px;
+  border:2px solid rgba(255,255,255,0.7);
+  border-radius:7px;
+  margin-right:18px;
+  cursor:pointer;
+  position:relative;
+  background:rgba(255,255,255,0.05);
+  transition:all 0.25s ease;
 
-#pronto-btn{
+  /* FIX */
+  display:inline-flex;
+  justify-content:center;
+  align-items:center;
+  box-sizing:border-box;
+}
+
+.select-square:hover{
+  border-color:#5b0000;
+  transform:scale(1.05);
+}
+.select-square.selected {
+  border-color: #5b0000;
+}
+
+.select-square.selected::after {
+  content: '\\2713';
+  color: white;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 18px;
+}
+
+#pronto-btn {
     margin-top:10px;
-    padding:14px 32px;
-    width:200px;
+    padding:16px 36px;
+    width:90%;
+    max-width:220px;
     font-size:20px;
     font-weight:800;
-    background-color:#e63946;
-    color:white;
+    background: linear-gradient(145deg, #B22222, #FF4B5C);
+    color:#ffffff;
     border:none;
-    border-radius:30px;
+    border-radius:50px;
     cursor:pointer;
-    opacity:1;
-    transform:translateY(0);
-    transition: all 0.3s ease;
+    box-shadow: 0 8px 20px rgba(230, 57, 70, 0.6);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s ease;
 }
-#pronto-btn:hover{ background:white; color:black; }
-@media (max-width:480px){
-    #pronto-btn{
-        padding: 0.8rem 1.5rem;   /* padding più piccolo su schermi piccoli */
-        font-size: 16px;           /* font leggibile su smartphone */
-        max-width: 95%;            /* quasi tutta la larghezza */
-    }
+
+#pronto-btn:hover {
+    background: linear-gradient(145deg, #FF4B5C, #B22222);
+    color:white;
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(230, 57, 70, 0.7);
 }
+
 
 /* TABLET E DEVICE MEDI */
 @media (max-width:768px){
@@ -258,46 +300,53 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
   top: -200px;
   left: 50%;
   transform: translateX(-50%);
-  background: rgb(26, 26, 26);
-  padding: 15px 20px;
-  border-radius: 10px;
-  box-shadow: 0 2px 10px rgb(0 0 0 / 0.2);
-  color: whitesmoke;
-  font-weight: 700;
+  background: linear-gradient(145deg, #B22222, #FF4B5C);
+  padding: 15px 20px 15px 20px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(230, 57, 70, 0.6);
+  color: white;
+  font-weight: 600;
   font-family: "Montserrat", sans-serif;
-  font-size: 18px;
-  display: block;
-  width: 330px;
-  transition: top 0.5s ease;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 350px;
+  transition: top 0.5s ease, opacity 0.5s ease;
   z-index: 99999; 
-  border: 1px solid whitesmoke;
-  visibility: visible;
+  border: none;
+  opacity: 0;
 }
 
 #error-box.show {
   top: 40px !important;
-  display: block !important;
-  visibility: visible !important;
+  opacity: 1;
 }
 
 #error-box p {
   margin: 0;
-  opacity: 0.6;
-  color: whitesmoke;
+  padding-right: 10px;
+  line-height: 1.3;
 }
 
 #error-box .close-btn {
-  position: absolute;
-  top: 10px;
-  right: 15px;
   cursor: pointer;
   font-weight: 900;
   font-size: 20px;
-  color: #cc4b4b;
+  color: white;
+  background: rgba(0,0,0,0.2);
   border: none;
-  background: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.3s;
 }
-
+#error-box .close-btn:hover {
+  background: rgba(255,255,255,0.3);
+}
 html, body {
   width:100%;
   overflow-x:hidden;
@@ -597,6 +646,8 @@ try {
             .replace(/'/g, '"');
 
         datiDB = JSON.parse(stringaPulita);
+    } else {
+        console.log("No dati, uso default");
     }
 } catch (e) {
     console.error("Errore parsing dati dopo pulizia:", e);
@@ -637,17 +688,38 @@ const menuData = {
 // ==========================================
 
 let selectedItems = JSON.parse(localStorage.getItem("selectedItems")) || {};
-localStorage.removeItem("selectedItems");
-selectedItems = {};
-
 function renderMenu(category) {
   const items = menuData[category] || [];
   listContainer.style.display = "grid";
   
-  if (items.length === 0) {
-    listContainer.innerHTML = `<p style="text-align:center; padding:20px;">Nessun prodotto disponibile.</p>`;
-    return;
+  // Gestione dinamica colonne basata sul numero di prodotti
+  const count = items.length;
+  if (window.innerWidth > 768) {
+      if (count < 5) {
+          listContainer.style.gridTemplateColumns = "1fr";
+          listContainer.style.gap = "15px 40px";
+      } else if (count < 20) {
+          listContainer.style.gridTemplateColumns = "repeat(2, 1fr)";
+          listContainer.style.gap = "15px 60px";
+      } else {
+          listContainer.style.gridTemplateColumns = "repeat(3, 1fr)";
+          listContainer.style.gap = "15px 80px";
+      }
+  } else {
+      listContainer.style.gridTemplateColumns = "1fr";
   }
+  
+if (items.length === 0) {
+  let tipoSezione = "";
+  switch (currentCategory) {
+    case "share": tipoSezione = "cibo"; break;
+    case "sustain": tipoSezione = "bevanda"; break;
+    case "indulge": tipoSezione = "dolce"; break;
+    default: tipoSezione = "prodotto";
+  }
+  listContainer.innerHTML = `<p style="text-align:center; padding:20px;">Nessun ${tipoSezione} disponibile.</p>`;
+  return;
+}
 
   listContainer.innerHTML = items.map((item, index) => `
     <div class="menu-item" style="animation-delay:${0.1 * index}s">
@@ -662,24 +734,30 @@ function renderMenu(category) {
 
   const squares = listContainer.querySelectorAll(".select-square");
   squares.forEach((sq) => {
-    sq.addEventListener("click", () => {
-      const name = sq.dataset.name;
-      const price = sq.dataset.price;
-      if (selectedItems[name]) {
-        delete selectedItems[name];
-        sq.classList.remove("selected");
-      } else {
-        selectedItems[name] = price;
-        sq.classList.add("selected");
-      }
-      localStorage.setItem("selectedItems", JSON.stringify(selectedItems));
-      updateProntoBtn();
-    });
-  });
+sq.addEventListener("click", () => {
+  const name = sq.dataset.name;
+  const price = sq.dataset.price;
+
+  if (selectedItems[name]) {
+    delete selectedItems[name];
+    sq.classList.remove("selected");
+  } else {
+    selectedItems[name] = price;
+    sq.classList.add("selected");
+  }
+
+  localStorage.setItem("selectedItems", JSON.stringify(selectedItems));
+  updateProntoBtn();
+});
+});
 }
 
 function updateProntoBtn() {
-  prontoBtn.style.opacity = Object.keys(selectedItems).length > 0 ? "1" : "0.5";
+  const hasItems = Object.keys(selectedItems).length > 0;
+
+  prontoBtn.disabled = !hasItems;
+  prontoBtn.style.opacity = hasItems ? "1" : "0.5";
+  prontoBtn.style.cursor = hasItems ? "pointer" : "not-allowed";
 }
 
 const errorBox = document.getElementById("error-box");
@@ -699,24 +777,30 @@ menuLinks.forEach(link => {
   });
 });
 
+window.addEventListener("resize", () => {
+    renderMenu(currentCategory);
+});
+
 prontoBtn.addEventListener("click", () => {
   if (Object.keys(selectedItems).length === 0) {
-    let tipo = "";
+    let tipoSezione = "";
     switch (currentCategory) {
-      case "share": tipo = "piatto di cibo"; break;
-      case "sustain": tipo = "bevanda"; break;
-      case "indulge": tipo = "dolce"; break;
-      default: tipo = "prodotto";
+      case "share": tipoSezione = "CIBI"; break;
+      case "sustain": tipoSezione = "BEVANDE"; break;
+      case "indulge": tipoSezione = "DOLCI"; break;
+      default: tipoSezione = "prodotto";
     }
-    errorBox.querySelector("p").innerHTML = `Oh no!<br>Devi selezionare almeno un ${tipo}`;
+    errorBox.querySelector("p").innerHTML = `Oh no!<br>Devi selezionare almeno un prodotto nella sezione ${tipoSezione}`;
+
     errorBox.classList.add("show");
-    setTimeout(() => { errorBox.classList.remove("show"); }, 5000);
+    setTimeout(() => { errorBox.classList.remove("show"); }, 4000);
     return;
   }
-
-  const ordered = Object.entries(selectedItems).map(([name, price]) => ({ name, price }));
-  localStorage.setItem("orderedItems", JSON.stringify(ordered));
-  window.location.href = "/orders";
+  alert("Ordine inviato con successo!");
+  localStorage.removeItem("selectedItems");
+  selectedItems = {};
+  updateProntoBtn();
+  renderMenu(currentCategory);
 });
 
 if(menuLinks[0]) menuLinks[0].click();
@@ -763,3 +847,43 @@ if(toLogin) {
 </script>
 </body>
 </html>
+<style>
+
+@media (min-width: 769px) {
+  #menu-lists {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+</style>
+ <style>
+  .menu-item {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeUp 0.5s forwards;
+}
+@media (max-width: 768px) {
+  .social-icons.active {
+    display: flex;
+    position: absolute;
+    top: 80px;
+    right: 0;
+    background: rgba(22,22,22,0.95);
+    padding: 15px;
+    width: 100%;
+    justify-content: center;
+  }
+}
+ </style>
+ <script>
+  loginForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  console.log("Login:", username.value, password.value);
+});
+
+const registerFormInner = document.getElementById("register-form-inner");
+registerFormInner.addEventListener("submit", (e) => {
+  e.preventDefault();
+  console.log("Register:", reg-first.value, reg-last.value, reg-email.value, reg-pass.value);
+});
+ </script>
