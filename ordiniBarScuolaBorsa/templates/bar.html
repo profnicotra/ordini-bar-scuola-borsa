@@ -213,7 +213,13 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
 }
 
 .select-square.selected::after {
-  content: none; /* rimuove qualunque cosa all’interno */
+  content: '\\2713';
+  color: white;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 18px;
 }
 
 #pronto-btn {
