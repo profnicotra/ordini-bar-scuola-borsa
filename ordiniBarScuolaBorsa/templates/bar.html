@@ -20,6 +20,7 @@
 }
 /* ===== MENU SELEZIONE DEFINITIVA ===== */
 
+
 /* riga menu */
 .menu-item{
   display:grid;
@@ -31,10 +32,12 @@
   transition: background 0.3s ease;
 }
 
+
 /* riga selezionata */
 .menu-item.selected{
   background: rgba(255,255,255,0.08);
 }
+
 
 /* quadratino NON selezionato */
 /* quadratino NON selezionato: bordo tratteggiato */
@@ -50,11 +53,13 @@
   transition: all 0.25s ease;
 }
 
+
 /* quadratino selezionato: pieno rosso */
 .select-square.selected {
   background: #e63946;
   border: 2px solid #e63946; /* bordo pieno quando selezionato */
 }
+
 
 /* linea tratteggiata */
 .dots{
@@ -62,6 +67,7 @@
   height:1px;
   position:relative;
 }
+
 
 .dots::before {
   content: "";
@@ -73,6 +79,8 @@
 }
 
 
+
+
 /* prezzo */
 .price{
   white-space:nowrap;
@@ -81,6 +89,7 @@
   font-weight:600;
 }
 
+
 /* linea tratteggiata */
 .dots{
   flex-grow:1;
@@ -88,12 +97,14 @@
   margin:0 12px;
 }
 
+
 /* prezzo */
 .price{
   white-space:nowrap;
   font-weight:600;
 }
  
+
 
 @media (min-width: 769px) {
   #menu-lists {
@@ -120,10 +131,13 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
       transition: top 0.6s ease;
     }
 
+
     .navbar.hidden { top: -100px; }
+
 
     .logo-left { position: absolute; left: 50px; }
     .logo-left img { width: 120px; }
+
 
     .nav-center ul { display: flex; gap: 40px; list-style: none; }
     .nav-center a {
@@ -136,12 +150,14 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
     }
     .nav-center a:hover { color:rgb(79, 79, 79); }
 
+
     .social-icons {
       position: absolute;
       right: 50px;
       display: flex;
       gap: 30px;
     }
+
 
     .social-icons a {
       width: 35px;
@@ -157,6 +173,7 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
       text-decoration: none;
     }
     .social-icons a:hover { background-color: white; color: black; }
+
 
     /* MOBILE MENU TOGGLE */
     .menu-toggle {
@@ -198,6 +215,7 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
   .menu-hero { padding-top:70px; }
 }
 
+
 .menu-hero::before{
   content:"";
   position:absolute;
@@ -207,11 +225,13 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
   z-index:1;
 }
 
+
 .menu-content{ position:relative; z-index:3; width:100%; max-width: 900px; padding: 0 20px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; }
 .menu-title-wrapper{ display:flex; justify-content:center; gap:12px; margin-bottom:15px; }
 .menu-subtitle{ font-size:45px; font-weight:300; }
 .yellow-line{ width:60px; height:4px; background:#e63946; }
 .menu-title{ font-size:75px; font-style:italic; font-weight:800; }
+
 
 .menu-hero::before{content:"";position:absolute;inset:0;background:rgba(0,0,0,0.55);backdrop-filter:blur(3px);z-index:1;}
 .menu-content{position:relative;z-index:3;width:700px;text-align:center;}
@@ -219,7 +239,7 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
   align-items: center;
   justify-content: center;
   gap: 14px;}
-  
+ 
 .menu-subtitle{font-size:45px;font-weight:300;margin:0;}
 .yellow-line{width:60px;height:4px;background-color:#e63946;}
 .menu-title{font-size:75px;font-style:italic;font-weight:800;margin:0;}
@@ -248,6 +268,8 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
 }
 
 
+
+
 @keyframes fadeUp{to{opacity:1;transform:translateY(0);}}
 .dots{
   width:100%;
@@ -255,6 +277,7 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
   position:relative;
   pointer-events:none;
 }
+
 
 .dots::before {
   content: "";
@@ -265,10 +288,12 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
   border-bottom: 2px dashed rgba(255, 255, 255, 0.6);
 }
 
+
 /* quadratino selezionato */
 .select-square.selected{
   background:#e63946;
 }
+
 
 .price{
   white-space:nowrap;
@@ -277,6 +302,7 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
   justify-self:end;
   font-weight:600;
 }
+
 
 .euro{font-size:16px;position:relative;top:-2px;margin-right:3px;opacity:0.8;}
 #pronto-btn {
@@ -295,12 +321,15 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s ease;
 }
 
+
 #pronto-btn:hover {
     background: linear-gradient(145deg, #FF4B5C, #B22222);
     color:white;
     transform: translateY(-5px);
     box-shadow: 0 10px 25px rgba(230, 57, 70, 0.7);
 }
+
+
 
 
 /* TABLET E DEVICE MEDI */
@@ -312,6 +341,7 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
     }
 }
 
+
 /* DESKTOP GRANDE */
 @media (min-width:1024px){
     #pronto-btn{
@@ -320,6 +350,7 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
         max-width: 260px;
     }
 }
+
 
 /* BACK BUTTON STYLE */
 .back-btn {
@@ -341,10 +372,12 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
     gap: 8px;
 }
 
+
 .back-btn:hover {
     background-color: white;
     color: black;
 }
+
 
 /* ERROR BOX STYLE */
 #error-box {
@@ -362,7 +395,7 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
   font-size: 16px;
   width: 350px;
   transition: top 0.5s ease, opacity 0.5s ease;
-  z-index: 99999; 
+  z-index: 99999;
   border: none;
   opacity: 0;
    display: flex;
@@ -376,16 +409,19 @@ body { font-family:"Montserrat",sans-serif; background-color:black; color:white;
   font-weight: 800;
 }
 
+
 #error-box.show {
   top: 40px !important;
   opacity: 1;
 }
+
 
 #error-box p {
   margin: 0;
   padding-right: 10px;
   line-height: 1.3;
 }
+
 
 #error-box .close-btn {
   cursor: pointer;
@@ -413,6 +449,7 @@ html, body {
   overflow-x:hidden;
 }
 
+
 @media (max-width:1024px){
   .menu-list,
   #menu-lists{
@@ -420,6 +457,7 @@ html, body {
     margin-left:0;
   }
 }
+
 
 @media (max-width:768px){
   .menu-content{
@@ -442,6 +480,7 @@ html, body {
   .menu-title{ font-size:52px; }
   .menu-subtitle{ font-size:32px; }
 }
+
 
 @media (max-width:480px){
   .menu-title{ font-size:40px; }
@@ -469,6 +508,7 @@ html, body {
     margin-top: 60px;   /* sposta il box CIBI più in basso */
   }
 
+
   #menu-lists {
     margin-top: 40px;   /* sposta anche la lista piatti */
   }
@@ -477,6 +517,7 @@ html, body {
   .menu-list {
     margin-top: 100px;
   }
+
 
   #menu-lists {
     margin-top: 50px;
@@ -504,6 +545,7 @@ html, body {
     font-size:14px;
   }
 
+
   .price{
     font-size:14px;
   }
@@ -525,6 +567,7 @@ html, body {
     column-gap:6px;
   }
 
+
   .dots::before{
     border-bottom-width:1px;
     opacity:0.6;
@@ -542,6 +585,7 @@ html, body {
 <div id="contenitore"
   data="{{data}}"></div>
 
+
 <header class="navbar" id="navbar">
   <div class="logo-left">
     <img src="https://raw.githubusercontent.com/Rashmika274/ordini-bar-scuola-borsa/main/static/logo.png" alt="Logo">
@@ -557,12 +601,14 @@ html, body {
     </ul>
   </nav>
 
+
   <div class="social-icons" id="social-icons">
     <a href="https://www.facebook.com/aziendaspecialediformazionescuolapaoloborsa/"><i class="fab fa-facebook-f"></i></a>
     <a href="https://www.instagram.com/scuola_borsa/"><i class="fab fa-instagram"></i></a>
     <a href="https://www.youtube.com/@ScuolaPaoloBorsaMonza"><i class="fab fa-youtube"></i></a>
   </div>
 </header>
+
 
 <section class="menu-hero" id="the-menu">
   <div class="menu-content">
@@ -583,6 +629,7 @@ html, body {
   </div>
 </section>
 
+
 <!-- ERROR BOX -->
 <div id="error-box">
   <strong>Errore !</strong><br>
@@ -590,13 +637,15 @@ html, body {
   <button class="close-btn" aria-label="Close Error">&times;</button>
 </div>
 
+
 <!-- LOGIN MODAL -->
 <div id="login-modal">
   <div style="position:relative;">
     <span id="close-login" style="position:absolute; top:-20px; right:-20px; cursor:pointer; font-size:30px; color:white;">&times;</span>
 
+
     <div class="form-container">
-      
+     
       <!-- LOGIN FORM -->
       <p class="title">Login</p>
       <form class="form" id="login-form">
@@ -614,6 +663,7 @@ html, body {
         <button class="sign" style="color: white;">Sign in</button>
       </form>
 
+
       <!-- SOCIAL LOGIN MESSAGE -->
       <div class="social-message">
         <div class="line"></div>
@@ -621,10 +671,12 @@ html, body {
         <div class="line"></div>
       </div>
 
+
       <!-- LINK TO REGISTER -->
       <p class="signup" style="color:rgba(245, 245, 245, 0.742);">
         Don't have an account? <a id="to-register" style="cursor:pointer;">Sign up</a>
       </p>
+
 
       <!-- REGISTER FORM -->
       <div id="register-form" style="display:none;">
@@ -657,6 +709,7 @@ html, body {
         </p>
       </div>
 
+
     </div>
   </div>
 </div>
@@ -665,16 +718,19 @@ html, body {
 const datiRaw = document.getElementById("contenitore").getAttribute("data");
 console.log("Dati dal server:", datiRaw);
 
+
 // MOBILE MENU TOGGLE
 const menuToggle = document.getElementById('menu-toggle');
 const navCenter = document.getElementById('nav-center');
 const socialIcons = document.getElementById('social-icons');
+
 
 if (menuToggle) {
   menuToggle.addEventListener('click', () => {
     navCenter.classList.toggle('active');
     socialIcons.classList.toggle('active');
   });
+
 
   document.querySelectorAll('.nav-center a').forEach(link => {
     link.addEventListener('click', () => {
@@ -684,15 +740,19 @@ if (menuToggle) {
   });
 }
 
+
 const menuLinks = document.querySelectorAll(".menu-list a");
 const listContainer = document.getElementById("menu-lists");
 const prontoBtn = document.getElementById("pronto-btn");
+
 
 // ==========================================
 // INIZIO GESTIONE DATI REALI (CORRETTO PER DECIMAL)
 // ==========================================
 
+
 let datiDB = { items: [] };
+
 
 try {
     if (datiRaw && datiRaw !== "{{data}}") {
@@ -704,27 +764,30 @@ try {
             .replace(/False/g, 'false')
             .replace(/'/g, '"');
 
+
         datiDB = JSON.parse(stringaPulita);
-    } else {
-        console.log("No dati, uso default");
     }
 } catch (e) {
     console.error("Errore parsing dati dopo pulizia:", e);
     console.log("Stringa che ha fallito:", datiRaw);
 }
 
+
 const cibo = [];
 const bevande = [];
 const dolci = [];
 
+
 const listaItems = Array.isArray(datiDB) ? datiDB : (datiDB.items || []);
+
 
 listaItems.forEach(item => {
     const nome = item.prodotto || "Prodotto senza nome";
     const prezzo = item.prezzo_euro || "0.00";
     const cat = (item.categoria || "").toLowerCase();
-    
+   
     const prodottoFormattato = [nome, prezzo];
+
 
     // Smistamento basato sulla categoria del DB
     if (cat === 'bevande') {
@@ -736,21 +799,27 @@ listaItems.forEach(item => {
     }
 });
 
+
 const menuData = {
     share: cibo,
     sustain: bevande,
     indulge: dolci
 };
 
+
 // ==========================================
 // FINE GESTIONE DATI REALI
 // ==========================================
 
+
 let selectedItems = JSON.parse(localStorage.getItem("selectedItems")) || {};
+selectedItems = {};
+
+
 function renderMenu(category) {
   const items = menuData[category] || [];
   listContainer.style.display = "grid";
-  
+ 
   // Gestione dinamica colonne basata sul numero di prodotti
   const count = items.length;
   if (window.innerWidth > 768) {
@@ -767,18 +836,12 @@ function renderMenu(category) {
   } else {
       listContainer.style.gridTemplateColumns = "1fr";
   }
-  
-if (items.length === 0) {
-  let tipoSezione = "";
-  switch (currentCategory) {
-    case "share": tipoSezione = "cibo"; break;
-    case "sustain": tipoSezione = "bevanda"; break;
-    case "indulge": tipoSezione = "dolce"; break;
-    default: tipoSezione = "prodotto";
+ 
+  if (items.length === 0) {
+    listContainer.innerHTML = `<p style="text-align:center; padding:20px;">Nessun prodotto disponibile.</p>`;
+    return;
   }
-  listContainer.innerHTML = `<p style="text-align:center; padding:20px;">Nessun ${tipoSezione} disponibile.</p>`;
-  return;
-}
+
 
   listContainer.innerHTML = items.map((item, index) => `
     <div class="menu-item" style="animation-delay:${0.1 * index}s">
@@ -791,33 +854,37 @@ if (items.length === 0) {
     </div>
   `).join("");
 
+
   const squares = listContainer.querySelectorAll(".select-square");
   squares.forEach((sq) => {
-sq.addEventListener("click", () => {
-  const name = sq.dataset.name;
-  const price = sq.dataset.price;
+  sq.addEventListener("click", () => {
+    const name = sq.dataset.name;
+    const price = sq.dataset.price;
+    const menuItem = sq.closest(".menu-item"); // <-- genitore
 
-  if (selectedItems[name]) {
-    delete selectedItems[name];
-    sq.classList.remove("selected");
-  } else {
-    selectedItems[name] = price;
-    sq.classList.add("selected");
-  }
 
-  localStorage.setItem("selectedItems", JSON.stringify(selectedItems));
-  updateProntoBtn();
-});
+    if (selectedItems[name]) {
+      delete selectedItems[name];
+      sq.classList.remove("selected");
+      menuItem.classList.remove("selected"); // <-- evidenzia tutto il quadrato
+    } else {
+      selectedItems[name] = price;
+      sq.classList.add("selected");
+      menuItem.classList.add("selected"); // <-- evidenzia tutto il quadrato
+    }
+
+
+    localStorage.setItem("selectedItems", JSON.stringify(selectedItems));
+    updateProntoBtn();
+  });
 });
 }
+
 
 function updateProntoBtn() {
-  const hasItems = Object.keys(selectedItems).length > 0;
-
-  prontoBtn.disabled = !hasItems;
-  prontoBtn.style.opacity = hasItems ? "1" : "0.5";
-  prontoBtn.style.cursor = hasItems ? "pointer" : "not-allowed";
+  prontoBtn.style.opacity = Object.keys(selectedItems).length > 0 ? "1" : "0.5";
 }
+
 
 const errorBox = document.getElementById("error-box");
 const errorCloseBtn = errorBox.querySelector(".close-btn");
@@ -825,7 +892,9 @@ errorCloseBtn.addEventListener("click", () => {
   errorBox.classList.remove("show");
 });
 
+
 let currentCategory = "share";
+
 
 menuLinks.forEach(link => {
   link.addEventListener("click", () => {
@@ -836,9 +905,11 @@ menuLinks.forEach(link => {
   });
 });
 
+
 window.addEventListener("resize", () => {
     renderMenu(currentCategory);
 });
+
 
 prontoBtn.addEventListener("click", () => {
   if (Object.keys(selectedItems).length === 0) {
@@ -851,9 +922,10 @@ prontoBtn.addEventListener("click", () => {
     }
     errorBox.querySelector("p").innerHTML = `Oh no!<br>Devi selezionare almeno un prodotto nella sezione ${tipoSezione}`;
     errorBox.classList.add("show");
-    setTimeout(() => { errorBox.classList.remove("show"); }, 5000);
+    setTimeout(() => { errorBox.classList.remove("show"); }, 4000);
     return;
   }
+
 
 // ✅ TRASFORMA I PRODOTTI PER LA CARD ORDINA
 const orderedItems = [];
@@ -870,16 +942,19 @@ for (const nome in selectedItems) {
 localStorage.setItem("orderedItems", JSON.stringify(orderedItems));
 
 // ✅ VAI ALLA PAGINA ORDINA
-window.location.href = "/orders";
+window.location.href = "/orders"
 });
 
 
+
 if(menuLinks[0]) menuLinks[0].click();
+
 
 /* LOGIN MODAL JS */
 const loginBtn = document.getElementById('login-btn');
 const loginModal = document.getElementById('login-modal');
 const closeLogin = document.getElementById('close-login');
+
 
 if(loginBtn) {
   loginBtn.addEventListener('click', () => { loginModal.style.display = 'flex'; });
@@ -891,6 +966,7 @@ window.addEventListener('click', (e) => {
   if (e.target === loginModal) { loginModal.style.display = 'none'; }
 });
 
+
 const loginForm = document.getElementById("login-form");
 const registerForm = document.getElementById("register-form");
 const toRegister = document.getElementById("to-register");
@@ -898,6 +974,7 @@ const toLogin = document.getElementById("to-login");
 const formContainer = document.querySelector(".form-container");
 const socialMessage = document.querySelector(".social-message");
 const titleText = formContainer ? formContainer.querySelector(".title") : null;
+
 
 if(toRegister) {
   toRegister.addEventListener("click", () => {
