@@ -705,6 +705,8 @@ try {
             .replace(/'/g, '"');
 
         datiDB = JSON.parse(stringaPulita);
+    } else {
+        console.log("No dati, uso default");
     }
 } catch (e) {
     console.error("Errore parsing dati dopo pulizia:", e);
@@ -745,8 +747,6 @@ const menuData = {
 // ==========================================
 
 let selectedItems = JSON.parse(localStorage.getItem("selectedItems")) || {};
-selectedItems = {};
-
 function renderMenu(category) {
   const items = menuData[category] || [];
   listContainer.style.display = "grid";
@@ -768,10 +768,17 @@ function renderMenu(category) {
       listContainer.style.gridTemplateColumns = "1fr";
   }
   
-  if (items.length === 0) {
-    listContainer.innerHTML = `<p style="text-align:center; padding:20px;">Nessun prodotto disponibile.</p>`;
-    return;
+if (items.length === 0) {
+  let tipoSezione = "";
+  switch (currentCategory) {
+    case "share": tipoSezione = "cibo"; break;
+    case "sustain": tipoSezione = "bevanda"; break;
+    case "indulge": tipoSezione = "dolce"; break;
+    default: tipoSezione = "prodotto";
   }
+  listContainer.innerHTML = `<p style="text-align:center; padding:20px;">Nessun ${tipoSezione} disponibile.</p>`;
+  return;
+}
 
   listContainer.innerHTML = items.map((item, index) => `
     <div class="menu-item" style="animation-delay:${0.1 * index}s">
@@ -786,29 +793,30 @@ function renderMenu(category) {
 
   const squares = listContainer.querySelectorAll(".select-square");
   squares.forEach((sq) => {
-  sq.addEventListener("click", () => {
-    const name = sq.dataset.name;
-    const price = sq.dataset.price;
-    const menuItem = sq.closest(".menu-item"); // <-- genitore
+sq.addEventListener("click", () => {
+  const name = sq.dataset.name;
+  const price = sq.dataset.price;
 
-    if (selectedItems[name]) {
-      delete selectedItems[name];
-      sq.classList.remove("selected");
-      menuItem.classList.remove("selected"); // <-- evidenzia tutto il quadrato
-    } else {
-      selectedItems[name] = price;
-      sq.classList.add("selected");
-      menuItem.classList.add("selected"); // <-- evidenzia tutto il quadrato
-    }
+  if (selectedItems[name]) {
+    delete selectedItems[name];
+    sq.classList.remove("selected");
+  } else {
+    selectedItems[name] = price;
+    sq.classList.add("selected");
+  }
 
-    localStorage.setItem("selectedItems", JSON.stringify(selectedItems));
-    updateProntoBtn();
-  });
+  localStorage.setItem("selectedItems", JSON.stringify(selectedItems));
+  updateProntoBtn();
+});
 });
 }
 
 function updateProntoBtn() {
-  prontoBtn.style.opacity = Object.keys(selectedItems).length > 0 ? "1" : "0.5";
+  const hasItems = Object.keys(selectedItems).length > 0;
+
+  prontoBtn.disabled = !hasItems;
+  prontoBtn.style.opacity = hasItems ? "1" : "0.5";
+  prontoBtn.style.cursor = hasItems ? "pointer" : "not-allowed";
 }
 
 const errorBox = document.getElementById("error-box");
