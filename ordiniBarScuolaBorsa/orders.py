@@ -16,7 +16,9 @@ def orders():
         "classi": posizioni  # Questa variabile contiene ora tutti i tuoi tavoli/uffici/classi
     }
     positions = get_all_positions()
-    return render_template('orders.html', data=data, positions=positions)
+    listClass = get_all_positions()
+    
+    return render_template('orders.html', data=data, positions=positions, listClass=listClass)
 
 @bp.route("/new_order", methods=["POST"])
 def new_order():
@@ -41,5 +43,5 @@ def new_order():
     print(f"ID Posizione/Tavolo: {position_id}") 
     print(f"Cliente: {customer_name} {customer_surname}")
     print(f"Prodotti: {selectedProducts}")
-    
+
     return redirect("/orders")

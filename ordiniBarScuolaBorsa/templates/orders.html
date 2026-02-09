@@ -955,15 +955,9 @@ h2 {
         <input id="cognome" type="text" class="note-input" placeholder="Cognome" name="cognome"/>
         <input id="classe" type="text" class="note-input" placeholder="Classe" list="lista-classi" name="classe"/>
         <datalist id="lista-classi">
-            <option value="1D Operatore Informatica">
-            <option value="2D Operatore Informatica">
-            <option value="3D Operatore Informatica">
-            <option value="1D Bar&Cucina">
-            <option value="2D Bar&Cucina">
-            <option value="3D Bar&Cucina">
-            <option value="1D Agricoltura">
-            <option value="2D Agricoltura">
-            <option value="3D Agricoltura">
+            {% for c in listClass %}
+                <option value="{{ c.nome }}">
+            {% endfor %}
         </datalist>
     </div>
 
