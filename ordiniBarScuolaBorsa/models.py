@@ -217,3 +217,37 @@ def get_all_positions():
     except Exception as e:
         logging.error(f"Errore in get_all_positions: {str(e)}", exc_info=True)
         return []
+
+def get_general_notes():
+    try:
+        note_gruppi = db.session.query(NoteGruppo).filter(
+            NoteGruppo.id_prodotto == None
+        ).all()
+        
+        results = []
+        
+        for gruppo in note_gruppi:
+            note = db.session.query(Note).filter(
+                Note.id_gruppo == gruppo.id
+            ).all()
+            
+            results.append({
+                'id_gruppo': gruppo.id,
+                'nome_gruppo': gruppo.nome,
+                'esclusivo': gruppo.esclusivo,
+                'obbligatorio_default': gruppo.obbligatorio_default,
+                'note': [
+                    {
+                        'id': n.id,
+                        'nome': n.nome,
+                        'price_delta_euro': float(n.price_delta_euro) if n.price_delta_euro else 0
+                    }
+                    for n in note
+                ]
+            })
+        
+        return results
+    
+    except Exception as e:
+        logging.error(f"Errore in get_general_notes: {str(e)}", exc_info=True)
+        return []
