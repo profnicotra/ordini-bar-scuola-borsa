@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect
-from ordiniBarScuolaBorsa.models import get_products, is_bar_open, get_all_positions
+from ordiniBarScuolaBorsa.models import get_products, is_bar_open, get_all_positions, add_queue
 import json
 
 bp = Blueprint("orders", __name__, url_prefix="/orders")
@@ -35,6 +35,9 @@ def new_order():
     generalNote = request.form.get("noteGenerali")
     customer_name = request.form.get("nome")
     customer_surname = request.form.get("cognome")
+    price_raw = request.form.get("total")
+    price = price_raw.replace('€', '').replace(',', '.').strip()
+
     
     # Questo cattura l'ID (es: "35" per 1D, "1" per banco bar)
     # Il form può inviare l'`id` oppure il `nome` della classe/tavolo.
@@ -65,5 +68,9 @@ def new_order():
     print(f"ID Posizione/Tavolo: {position}") 
     print(f"Cliente: {customer_name} {customer_surname}")
     print(f"Prodotti: {selectedProducts}")
+    customer_full_name = f"{customer_name} {customer_surname}"
+    print(price)
+
+    add_queue(position, righe="", creato_da=customer_full_name, totale_euro= price)
 
     return redirect("/orders")

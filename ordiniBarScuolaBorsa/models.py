@@ -180,9 +180,14 @@ def get_queue():
         logging.error(f"Errore in get_queue: {str(e)}", exc_info=True)
         raise
 
-def add_queue(posizione_id, righe):
+def add_queue(posizione_id, righe, creato_da, totale_euro, stato='NUOVO'  ):
     try:
-        new_order = Ordine(posizione_id=posizione_id, stato='NUOVO', creato_da='system')
+        new_order = Ordine(
+            posizione_id=posizione_id, 
+            stato=stato, 
+            creato_da=creato_da,
+            totale_euro=totale_euro
+        )
 
         for riga in righe:
             ordine_riga = OrdineRiga(
