@@ -147,7 +147,7 @@ h2 {
     padding:10px 26px;
     font-size:16px;
     font-weight:800;
-    border-radius:12px;
+    border-radius:13px;
     cursor:pointer;
     transition:0.2s;
 }
@@ -431,6 +431,87 @@ h2 {
     stroke: black;
 }
 
+#error-box {
+  position: fixed;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(145deg, #B22222, #FF4B5C);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(230, 57, 70, 0.6);
+  color: white;
+  font-weight: 600;
+  font-family: "Montserrat", sans-serif;
+  font-size: 16px;
+  width: 350px;
+  transition: top 0.5s ease, opacity 0.5s ease;
+  z-index: 99999;
+  border: none;
+  opacity: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 8px;
+}
+
+#error-box.show {
+  top: 40px !important;
+  opacity: 1;
+}
+
+#error-box strong {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+#error-box p {
+  margin: 0;
+  line-height: 1.3;
+}
+
+#error-box .confirm-btn {
+  margin-top: 10px;
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  background: white;
+  color: #B22222;
+  border: none;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+#error-box .confirm-btn:hover {
+  background: black;
+  color: white;
+}
+
+#error-box .close-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  cursor: pointer;
+  font-weight: 900;
+  font-size: 20px;
+  color: white;
+  background: rgba(0,0,0,0.2);
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.3s;
+}
+
+#error-box .close-btn:hover {
+  background: rgba(255,255,255,0.3);
+}
 
 #success-popup.active {
     display: flex;
@@ -492,58 +573,7 @@ h2 {
 .option-radio:checked {
     accent-color: #e63946;
 }
-#error-box {
-    font-family: "Montserrat",sans-serif;
-  position: fixed;
-  top: -200px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgb(26, 26, 26);
-  padding: 15px 20px;
-  border-radius: 10px;
-  color: whitesmoke;
-  font-weight: 700;
-  width: 330px;
-  transition: top 0.5s ease;
-  z-index: 9999;
-  border: 1px solid whitesmoke;
-}
 
-
-#error-box.show {
-  top: 40px;
-}
-
-
-#error-box .confirm-btn {
-  margin-top: 12px;
-  width: 100%;
-  padding: 10px;
-  border-radius: 10px;
-  background: #e63946;
-  color: white;
-  border: none;
-  font-weight: 800;
-  cursor: pointer;
-  font-family: verdana;
-  font-weight: 800;
-}
-#error-box .confirm-btn:hover {
-  background:white;
-  color: black;
-}
-
-
-#error-box .close-btn {
-  position: absolute;
-  top: 10px;
-  right: 15px;
-  font-size: 20px;
-  color: #e63946;
-  background: none;
-  border: none;
-  cursor: pointer;
-}
 .nav-buttons .nav-btn:hover {
     background:white;
     color:black;
@@ -915,7 +945,9 @@ h2 {
     overflow: hidden;
     text-overflow: ellipsis;
 }
-
+.back-btn{
+    display: none;
+}
 
 </style>
 </head>
@@ -944,7 +976,23 @@ h2 {
 
         <h2 style="margin-top:60px;">NOTE GENERALI</h2>
         <div class="divider"></div>
-        <input type="text" class="note-input" placeholder="Note Generali" name="noteGenerali"/>
+        <input
+  id="noteGenerali"
+  type="text"
+  class="note-input"
+  placeholder="Note Generali"
+  list="lista-note-generali"
+  name="noteGenerali"
+/>
+
+<datalist id="lista-note-generali">
+  {% for gruppo in general_notes %}
+    {% for nota in gruppo.note %}
+      <option value="{{ nota.nome }}">
+    {% endfor %}
+  {% endfor %}
+</datalist>
+
 
 
         <h3 style="margin-top:40px;text-align: center;font-size: 23px;margin-right: 19px;">INFO</h3>
@@ -1034,7 +1082,7 @@ h2 {
     <button class="confirm-btn">SÌ</button>
 
 
-    <button class="close-btn" aria-label="Close Error">&times;</button>
+    <button type="button" class="close-btn" aria-label="Close Error">&times;</button>
     </div>
     <button class="back-btn" type="button" onclick="window.history.back()">
     <i></i>Indietro
