@@ -541,20 +541,25 @@ h2 {
 }
 
 
+#success-popup {
+    background: linear-gradient(145deg, #B22222, #FF4B5C);
+    border: none;
+    box-shadow: 0 8px 20px rgba(230, 57, 70, 0.6);
+    font-family: "Montserrat", sans-serif;
+    color: white;
+}
+
 #success-popup h2 {
-    color:white;
     font-size: 22px;
+    font-weight: 800;
     margin: 0;
 }
 
-
 #success-popup p {
     font-size: 16px;
+    font-weight: 600;
     margin: 0;
-    line-height: 20px;
-    color:white;
-    font-family:"Montserrat",sans-serif;
-    font-weight: 500;
+    line-height: 1.4;
 }
 
 
@@ -562,14 +567,27 @@ h2 {
 
 #success-close {
     position: absolute;
-    top: 12px;
-    right: 12px;
-    background: transparent;
-    border: none;
-    font-size: 22px;
+    top: 8px;
+    right: 8px;
     cursor: pointer;
-    color:  #e63946;
+    font-weight: 900;
+    font-size: 14px;
+    color: white;
+    background: rgba(0,0,0,0.2);
+    border: none;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s;
 }
+
+#success-close:hover {
+    background: rgba(255,255,255,0.3);
+}
+
 .option-radio:checked {
     accent-color: #e63946;
 }
@@ -1393,22 +1411,39 @@ overlayGlobal.classList.add("active");
 let price = document.getElementById("total").textContent;
 document.getElementById("totalInput").value = price;
 
-setTimeout(() => {
-    document.querySelector("form").submit();
-}, 3000);
-
-
     });
 
 
     /* ================================
        CHIUSURA SUCCESS + RESET ORDINE
     ================================= */
-   document.getElementById("success-close").addEventListener("click", () => {
-    localStorage.removeItem("orderedItems");
+  document.getElementById("success-close").addEventListener("click", () => {
+
+    // 1️⃣ Chiudi popup e overlay
     successPopup.classList.remove("active");
     overlayGlobal.classList.remove("active");
+
+    // 2️⃣ Svuota localStorage (prodotti ordinati)
+    localStorage.removeItem("orderedItems");
+
+    // 3️⃣ Svuota array prodotti
+    products = [];
+
+    // 4️⃣ Aggiorna lista prodotti a schermo
+    renderProducts();
+
+    // 5️⃣ Svuota campi input
+    document.getElementById("nome").value = "";
+    document.getElementById("cognome").value = "";
+    document.getElementById("classe").value = "";
+    document.getElementById("noteGenerali").value = "";
+
+    // 6️⃣ Reset totale
+    document.getElementById("total").textContent = "€0,00";
+    document.getElementById("totalInput").value = "0";
+
 });
+
 
 
 
