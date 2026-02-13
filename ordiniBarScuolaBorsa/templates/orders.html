@@ -1007,6 +1007,7 @@ h2 {
                 <option value="{{ c.nome }}">
             {% endfor %}
         </datalist>
+        <input type="hidden" id="totalInput" name="total" value="0">
     </div>
 
 
@@ -1388,6 +1389,9 @@ ordineInviato = true;
 successPopup.classList.add("active");
 overlayGlobal.classList.add("active");
 
+// Estrai il valore totale dal DIV e mettilo nell'input hidden
+let price = document.getElementById("total").textContent;
+document.getElementById("totalInput").value = price;
 
 setTimeout(() => {
     document.querySelector("form").submit();
