@@ -1,8 +1,33 @@
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import UserMixin
 import logging
 
 db = SQLAlchemy()
 
+# ===== MODELLO UTENTE (NUOVO) =====
+class User(UserMixin, db.Model):
+    __tablename__ = 'users'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    google_id = db.Column(db.String(255), unique=True, nullable=False)
+    email = db.Column(db.String(255), unique=True, nullable=False)
+    nome = db.Column(db.String(100))
+    cognome = db.Column(db.String(100))
+    picture = db.Column(db.String(500))
+    is_professor = db.Column(db.Boolean, default=False, nullable=False)
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+    last_login = db.Column(db.DateTime)
+    
+    ordini = db.relationship('Ordine', back_populates='user', foreign_keys='Ordine.user_id')
+    
+    def __repr__(self):
+        return f"<User {self.email}>"
+    
+    def get_price_type(self):
+        """Ritorna il tipo di prezzo da usare"""
+        return 'interni' if self.is_professor else 'pubblico'
+
+# ===== MODELLI ESISTENTI =====
 class Prodotto(db.Model):
     __tablename__ = 'prodotti'
     
@@ -13,11 +38,15 @@ class Prodotto(db.Model):
     margine = db.Column(db.Numeric(10, 2))
     prezzo_interni = db.Column(db.Numeric(10, 2))
     attivo = db.Column(db.Boolean, default=True, nullable=False)
-    
-    # Nuova colonna aggiunta
     categoria = db.Column(db.String(100), nullable=True) 
     
     note_gruppi = db.relationship('NoteGruppo', back_populates='prodotto')
+    
+    def get_price(self, user=None):
+        """Ritorna il prezzo corretto in base all'utente"""
+        if user and user.is_professor:
+            return float(self.prezzo_interni) if self.prezzo_interni else float(self.prezzo_euro)
+        return float(self.prezzo_euro)
 
 class Posizione(db.Model):
     __tablename__ = 'posizioni'
@@ -54,13 +83,16 @@ class Ordine(db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
     posizione_id = db.Column(db.Integer, db.ForeignKey('posizioni.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)  # NUOVO
     stato = db.Column(db.String, default='NUOVO', nullable=False)
     creato_il = db.Column(db.DateTime, server_default=db.func.now(), nullable=False)
     creato_da = db.Column(db.String)
     totale_euro = db.Column(db.Numeric(10, 2), default=0)
+    tipo_prezzo = db.Column(db.String(20), default='pubblico')  # NUOVO
 
     posizione = db.relationship('Posizione', back_populates='ordini')
     righe = db.relationship('OrdineRiga', back_populates='ordine')
+    user = db.relationship('User', back_populates='ordini', foreign_keys=[user_id])  # NUOVO
 
 class OrdineRiga(db.Model):
     __tablename__ = 'ordine_righe'
@@ -89,7 +121,8 @@ class Impostazione(db.Model):
 
     def __repr__(self):
         return f"<Impostazione {self.chiave}>"
-    
+
+# ===== FUNZIONI DI UTILITÀ =====
 def is_bar_open():
     bar_aperto = Impostazione.query.filter_by(chiave="bar_aperto").first()
     if bar_aperto:
@@ -108,15 +141,20 @@ def toggle_bar_open():
         db.session.add(new_setting)
         db.session.commit()
         return 'true'
-    
-def get_products():
+
+def get_products(user=None):
+    """
+    Recupera i prodotti con i prezzi corretti in base all'utente
+    COMPATIBILE con codice esistente (user è opzionale)
+    """
     results = []
 
     query = db.session.query(
+        Prodotto.id,  # Aggiunto per riferimento
         Prodotto.nome.label('prodotto'),
         Prodotto.prezzo_euro,
         Prodotto.prezzo_interni,
-        Prodotto.categoria,  # <-- 1. Aggiunto alla query
+        Prodotto.categoria,
         NoteGruppo.esclusivo,
         NoteGruppo.obbligatorio_default,
         Note.nome.label('nota')    
@@ -125,11 +163,19 @@ def get_products():
      .filter(Prodotto.attivo == True).all()
     
     for item in query:
+        # Determina quale prezzo mostrare
+        if user and user.is_professor:
+            prezzo_da_mostrare = item.prezzo_interni if item.prezzo_interni else item.prezzo_euro
+        else:
+            prezzo_da_mostrare = item.prezzo_euro
+            
         results.append({
+            'id': item.id,
             'prodotto': item.prodotto,
             'prezzo_euro': item.prezzo_euro,
             'prezzo_interni': item.prezzo_interni,
-            'categoria': item.categoria, # <-- 2. Aggiunto al dizionario
+            'prezzo_mostrato': prezzo_da_mostrare,  # NUOVO: per template
+            'categoria': item.categoria,
             'esclusivo': item.esclusivo,
             'obbligatorio_default': item.obbligatorio_default,
             'nota': item.nota
@@ -140,29 +186,29 @@ def get_products():
 def get_queue():
     """Recupera tutti gli ordini dalla coda con i loro dettagli"""
     try:
-        # Primo: prendi tutti gli ordini
         ordini = db.session.query(Ordine).order_by(Ordine.creato_il.desc()).all()
-        
         results = []
         
         for ordine in ordini:
-            # Per ogni ordine, prendi le righe
             righe = db.session.query(OrdineRiga).filter(OrdineRiga.ordine_id == ordine.id).all()
             
             for riga in righe:
-                # Per ogni riga, prendi il prodotto
                 prodotto = db.session.query(Prodotto).filter(Prodotto.id == riga.prodotto_id).first()
-                
-                # Per ogni riga, prendi le note
                 note_query = db.session.query(Note).join(
                     OrdineRigaNota, Note.id == OrdineRigaNota.nota_id
                 ).filter(OrdineRigaNota.ordine_riga_id == riga.id).all()
                 
-                # Se non ci sono note, crea un record comunque
                 if not note_query:
                     note_query = [None]
                 
                 for nota in note_query:
+                    # Informazioni utente
+                    user_info = ""
+                    if ordine.user:
+                        user_info = f"{ordine.user.nome} {ordine.user.cognome}"
+                        if ordine.user.is_professor:
+                            user_info += " 👨‍🏫"
+                    
                     results.append({
                         'id': ordine.id,
                         'prodotto': prodotto.nome if prodotto else 'Prodotto sconosciuto',
@@ -171,7 +217,9 @@ def get_queue():
                         'posizione': ordine.posizione.nome if ordine.posizione else 'N/A',
                         'stato': ordine.stato,
                         'totale_euro': float(ordine.totale_euro) if ordine.totale_euro else 0,
-                        'creato_il': ordine.creato_il.strftime('%d/%m/%Y %H:%M') if ordine.creato_il else ''
+                        'creato_il': ordine.creato_il.strftime('%d/%m/%Y %H:%M') if ordine.creato_il else '',
+                        'tipo_prezzo': ordine.tipo_prezzo if hasattr(ordine, 'tipo_prezzo') else 'pubblico',
+                        'utente': user_info or ordine.creato_da or 'Anonimo'
                     })
         
         return results
@@ -180,23 +228,53 @@ def get_queue():
         logging.error(f"Errore in get_queue: {str(e)}", exc_info=True)
         raise
 
-def add_queue(posizione_id, righe, creato_da, totale_euro, stato='NUOVO'  ):
+def add_queue(posizione_id, righe, creato_da=None, totale_euro=None, stato='NUOVO', user=None):
+    """
+    Aggiunge un ordine alla coda
+    COMPATIBILE con codice esistente + supporto autenticazione
+    
+    Parametri:
+    - posizione_id: ID posizione
+    - righe: lista righe ordine (può essere stringa vuota "" per compatibilità)
+    - creato_da: nome cliente (opzionale se user è fornito)
+    - totale_euro: totale ordine (opzionale, verrà calcolato se non fornito)
+    - stato: stato ordine (default 'NUOVO')
+    - user: oggetto User se autenticato (opzionale, NUOVO)
+    """
     try:
+        # Determina il tipo di prezzo
+        tipo_prezzo = 'interni' if (user and user.is_professor) else 'pubblico'
+        
+        # Se user è fornito e creato_da è None, usa i dati dell'utente
+        if user and not creato_da:
+            creato_da = f"{user.nome} {user.cognome}"
+        
         new_order = Ordine(
             posizione_id=posizione_id, 
-            stato=stato, 
-            creato_da=creato_da,
-            totale_euro=totale_euro
+            stato=stato,
+            user_id=user.id if user else None,
+            creato_da=creato_da or 'system',
+            tipo_prezzo=tipo_prezzo,
+            totale_euro=totale_euro or 0  # Usa il totale fornito o 0
         )
 
-        for riga in righe:
-            ordine_riga = OrdineRiga(
-                prodotto_id=riga['prodotto_id'], 
-                quantita=riga['quantita'], 
-                ordine=new_order,
-                prezzo_euro_unit=0
-            )
-            db.session.add(ordine_riga)
+        # Se righe è una lista, processala (nuovo comportamento)
+        if isinstance(righe, list) and len(righe) > 0:
+            for riga in righe:
+                # Recupera il prodotto per ottenere il prezzo corretto
+                prodotto = db.session.query(Prodotto).filter(Prodotto.id == riga['prodotto_id']).first()
+                if prodotto:
+                    prezzo_unit = prodotto.get_price(user)
+                    
+                    ordine_riga = OrdineRiga(
+                        prodotto_id=riga['prodotto_id'], 
+                        quantita=riga['quantita'], 
+                        ordine=new_order,
+                        prezzo_euro_unit=prezzo_unit
+                    )
+                    db.session.add(ordine_riga)
+        # Altrimenti mantieni compatibilità con chiamate che passano ""
+        # (non crea righe, solo l'ordine)
 
         db.session.add(new_order)
         db.session.commit()
@@ -206,18 +284,16 @@ def add_queue(posizione_id, righe, creato_da, totale_euro, stato='NUOVO'  ):
         logging.error(f"Errore in add_queue: {str(e)}", exc_info=True)
         db.session.rollback()
         return False
-    
+
 def get_all_positions():
     try:
         positions = db.session.query(Posizione).all()
-        
         results = []
         for position in positions:
             results.append({
                 'id': position.id,
                 'nome': position.nome
             })
-        
         return results
     except Exception as e:
         logging.error(f"Errore in get_all_positions: {str(e)}", exc_info=True)
@@ -230,7 +306,6 @@ def get_general_notes():
         ).all()
         
         results = []
-        
         for gruppo in note_gruppi:
             note = db.session.query(Note).filter(
                 Note.id_gruppo == gruppo.id
@@ -256,3 +331,33 @@ def get_general_notes():
     except Exception as e:
         logging.error(f"Errore in get_general_notes: {str(e)}", exc_info=True)
         return []
+
+# ===== FUNZIONI PER GESTIRE GLI UTENTI (NUOVO) =====
+def get_or_create_user(google_id, email, nome, cognome, picture):
+    """
+    Trova un utente esistente o ne crea uno nuovo
+    Determina automaticamente se è un professore dal dominio email
+    """
+    user = User.query.filter_by(google_id=google_id).first()
+    
+    if not user:
+        # Verifica se l'email appartiene al dominio della scuola
+        is_professor = email.endswith('@scuola-borsa.it')
+        
+        user = User(
+            google_id=google_id,
+            email=email,
+            nome=nome,
+            cognome=cognome,
+            picture=picture,
+            is_professor=is_professor
+        )
+        db.session.add(user)
+        db.session.commit()
+        logging.info(f"Nuovo utente creato: {email} (Professore: {is_professor})")
+    else:
+        # Aggiorna ultimo accesso
+        user.last_login = db.func.now()
+        db.session.commit()
+    
+    return user

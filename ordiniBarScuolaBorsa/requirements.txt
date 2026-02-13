@@ -1,0 +1,57 @@
+# ============================================
+# BAR SCUOLA BORSA - DIPENDENZE PYTHON
+# ============================================
+
+# Framework principale
+Flask==3.0.0
+Werkzeug==3.0.1
+
+# Database ORM
+Flask-SQLAlchemy==3.1.1
+SQLAlchemy==2.0.23
+
+# Autenticazione
+Flask-Login==0.6.3
+Authlib==1.3.0
+
+# Gestione variabili d'ambiente
+python-dotenv==1.0.0
+
+# Utilities
+cryptography==41.0.7  # Richiesto da Authlib per JWT
+requests==2.31.0      # Richiesto da Authlib per OAuth
+
+# ============================================
+# INSTALLAZIONE:
+# ============================================
+# 
+# Metodo 1 - Installazione base:
+#   pip install -r requirements.txt
+#
+# Metodo 2 - Con virtual environment (RACCOMANDATO):
+#   python -m venv venv
+#   # Windows:
+#   venv\Scripts\activate
+#   # Linux/Mac:
+#   source venv/bin/activate
+#   pip install -r requirements.txt
+#
+# ============================================
+# VERIFICA INSTALLAZIONE:
+# ============================================
+# 
+# Dopo l'installazione, verifica con:
+#   pip list
+#
+# Dovresti vedere tutte le librerie sopra elencate
+#
+# ============================================
+# NOTE SULLA VERSIONE PYTHON:
+# ============================================
+#
+# Richiede Python 3.8 o superiore
+# Testato con Python 3.10 e 3.11
+#
+# Per verificare la tua versione:
+#   python --version
+#
