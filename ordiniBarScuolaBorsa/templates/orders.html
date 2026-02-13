@@ -1393,9 +1393,38 @@ overlayGlobal.classList.add("active");
 let price = document.getElementById("total").textContent;
 document.getElementById("totalInput").value = price;
 
-setTimeout(() => {
-    document.querySelector("form").submit();
-}, 3000);
+const formEl = document.querySelector("form");
+const fd = new FormData(formEl);
+
+fetch(formEl.action, { method: 'POST', body: fd, credentials: 'same-origin' })
+    .then(response => {
+        console.log('Order POST response', response.status, response.redirected, response.url);
+        // se il server ha fatto redirect, segui l'URL di risposta
+        if (response.redirected) {
+            localStorage.removeItem("orderedItems");
+            window.location.href = response.url;
+            return;
+        }
+        if (response.ok) {
+            localStorage.removeItem("orderedItems");
+            window.location.href = '{{ url_for("menu.menu") }}';
+        } else {
+            response.text().then(text => {
+                console.error('Server error:', response.status, text);
+                ordineInviato = false;
+                successPopup.classList.remove('active');
+                overlayGlobal.classList.remove('active');
+                alert('Errore server: ' + response.status + '\n' + (text || ''));
+            });
+        }
+    })
+    .catch(err => {
+        console.error('Errore invio ordine:', err);
+        ordineInviato = false;
+        successPopup.classList.remove('active');
+        overlayGlobal.classList.remove('active');
+        alert('Si è verificato un errore durante l\'invio dell\'ordine. Riprova.');
+    });
 
 
     });
@@ -1449,5 +1478,3 @@ setTimeout(() => {
 
 </script>
 
-
-</html>

@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect
+from flask import Blueprint, render_template, request, redirect, url_for
 from ordiniBarScuolaBorsa.models import get_products, is_bar_open, get_all_positions, add_queue
 import json
 
@@ -73,4 +73,4 @@ def new_order():
 
     add_queue(position, righe="", creato_da=customer_full_name, totale_euro= price)
 
-    return redirect("/orders")
+    return redirect(url_for('menu.menu'))
