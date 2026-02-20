@@ -1411,6 +1411,11 @@ overlayGlobal.classList.add("active");
 let price = document.getElementById("total").textContent;
 document.getElementById("totalInput").value = price;
 
+setTimeout(() => {
+    document.querySelector("form").submit();
+}, 3000);
+
+
     });
 
 
@@ -1484,5 +1489,3 @@ document.getElementById("totalInput").value = price;
 
 </script>
 
-
-</html>
