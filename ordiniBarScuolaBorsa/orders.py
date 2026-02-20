@@ -130,6 +130,8 @@ def new_order():
             stato='NUOVO',
             user=user  # NUOVO: passa utente se autenticato
         )
+
+        print(position_id, customer_full_name, totale_euro, user)
         
         if success:
             # Messaggio di conferma personalizzato
