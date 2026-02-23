@@ -1,9 +1,6 @@
-<<<<<<< HEAD
 from flask import Blueprint, render_template, request, redirect, url_for
-=======
 from flask import Blueprint, render_template, request, redirect, flash
 from flask_login import current_user
->>>>>>> bea788e191f816616f53a5b9769625bea6d0796c
 from ordiniBarScuolaBorsa.models import get_products, is_bar_open, get_all_positions, add_queue
 import json
 import logging
@@ -153,7 +150,6 @@ def new_order():
         logger.error(f"Errore in new_order: {str(e)}", exc_info=True)
         flash("Errore nella creazione dell'ordine. Riprova.", "error")
     
-<<<<<<< HEAD
     # Questo cattura l'ID (es: "35" per 1D, "1" per banco bar)
     # Il form può inviare l'`id` oppure il `nome` della classe/tavolo.
     position = request.form.get("classe")
@@ -189,6 +185,4 @@ def new_order():
     add_queue(position, righe="", creato_da=customer_full_name, totale_euro= price)
 
     return redirect(url_for('menu.menu'))
-=======
     return redirect("/orders")
->>>>>>> bea788e191f816616f53a5b9769625bea6d0796c
