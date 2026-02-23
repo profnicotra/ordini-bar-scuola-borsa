@@ -1,5 +1,9 @@
+<<<<<<< HEAD
+from flask import Blueprint, render_template, request, redirect, url_for
+=======
 from flask import Blueprint, render_template, request, redirect, flash
 from flask_login import current_user
+>>>>>>> bea788e191f816616f53a5b9769625bea6d0796c
 from ordiniBarScuolaBorsa.models import get_products, is_bar_open, get_all_positions, add_queue
 import json
 import logging
@@ -130,6 +134,8 @@ def new_order():
             stato='NUOVO',
             user=user  # NUOVO: passa utente se autenticato
         )
+
+        print(position_id, customer_full_name, totale_euro, user)
         
         if success:
             # Messaggio di conferma personalizzato
@@ -147,4 +153,42 @@ def new_order():
         logger.error(f"Errore in new_order: {str(e)}", exc_info=True)
         flash("Errore nella creazione dell'ordine. Riprova.", "error")
     
+<<<<<<< HEAD
+    # Questo cattura l'ID (es: "35" per 1D, "1" per banco bar)
+    # Il form può inviare l'`id` oppure il `nome` della classe/tavolo.
+    position = request.form.get("classe")
+
+    # Se è arrivato il nome, convertirlo nell'id corrispondente
+    positions = get_all_positions()
+    position_id = None
+    if position is not None:
+        # prova a interpretarlo come intero (id già passato)
+        try:
+            position_id = int(position)
+        except Exception:
+            # cerca per nome (case-insensitive, strip)
+            pname = position.strip().lower()
+            for p in positions:
+                try:
+                    if p.get('nome', '').strip().lower() == pname:
+                        position_id = p.get('id')
+                        break
+                except Exception:
+                    continue
+    # usa `position_id` (può essere None se non trovata)
+    position = position_id
+    
+    # Log di verifica
+    print(f"--- DETTAGLI ORDINE ---")
+    print(f"ID Posizione/Tavolo: {position}") 
+    print(f"Cliente: {customer_name} {customer_surname}")
+    print(f"Prodotti: {selectedProducts}")
+    customer_full_name = f"{customer_name} {customer_surname}"
+    print(price)
+
+    add_queue(position, righe="", creato_da=customer_full_name, totale_euro= price)
+
+    return redirect(url_for('menu.menu'))
+=======
     return redirect("/orders")
+>>>>>>> bea788e191f816616f53a5b9769625bea6d0796c
