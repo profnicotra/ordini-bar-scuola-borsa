@@ -4,26 +4,30 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Menu - Scuola Borsa</title>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700;1,900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 <style>
-* { 
-  margin: 0; 
-  padding: 0; 
-  box-sizing: border-box; 
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --red: #e63946;
+  --red-light: #ff6b6b;
+  --red-dim: rgba(230,57,70,0.15);
+  --gold: #c9a84c;
+  --gold-dim: rgba(201,168,76,0.2);
+  --bg: #080808;
+  --card-bg: rgba(18,10,10,0.7);
+  --border: rgba(255,255,255,0.08);
 }
 
-body { 
-  font-family: "Montserrat", sans-serif; 
-  background-color: black; 
+body {
+  font-family: "DM Sans", sans-serif;
+  background-color: var(--bg);
   color: white;
   overflow-x: hidden;
 }
 
-html, body {
-  width: 100%;
-  overflow-x: hidden;
-}
+html, body { width: 100%; overflow-x: hidden; }
 
 /* ============================================
    NAVBAR
@@ -38,7 +42,7 @@ html, body {
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border-bottom: 1px solid rgba(230, 57, 70, 0.15);
-  box-shadow: 0 8px 40px rgba(0,0,0,0.7), inset 0 -1px 0 rgba(255,255,255,0.04);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.7);
   position: fixed;
   width: 100%;
   top: 0;
@@ -47,7 +51,6 @@ html, body {
   transition: top 0.6s ease;
 }
 
-/* Sottile linea rossa in cima */
 .navbar::before {
   content: "";
   position: absolute;
@@ -57,38 +60,33 @@ html, body {
   opacity: 0.7;
 }
 
-.navbar.hidden { 
-  top: -100px; 
-}
+.navbar.hidden { top: -100px; }
 
-/* LOGO */
-.logo-left { 
-  position: absolute; 
+.logo-left {
+  position: absolute;
   left: 50px;
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.logo-left img { 
+.logo-left img {
   width: 62px;
   height: 62px;
   object-fit: contain;
   filter: drop-shadow(0 0 8px rgba(230,57,70,0.3));
 }
 
-/* Testo brand accanto al logo */
 .logo-left::after {
   content: "SCUOLA BORSA";
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: 3px;
   text-transform: uppercase;
   color: white;
   opacity: 0.92;
 }
 
-/* Separatore verticale tra logo e brand */
 .logo-left-divider {
   width: 1px;
   height: 30px;
@@ -96,16 +94,11 @@ html, body {
   margin: 0 2px;
 }
 
-/* LINK NAV */
-.nav-center ul { 
-  display: flex; 
-  gap: 2px; 
-  list-style: none; 
-}
+.nav-center ul { display: flex; gap: 2px; list-style: none; }
 
 .nav-center a {
   color: rgba(255,255,255,0.55);
-  font-weight: 600;
+  font-weight: 500;
   text-decoration: none;
   font-size: 12px;
   letter-spacing: 2px;
@@ -114,23 +107,17 @@ html, body {
   cursor: pointer;
   padding: 9px 16px;
   border-radius: 7px;
-  position: relative;
   display: block;
 }
 
-.nav-center a:hover { 
-  color: white;
-  background: rgba(255,255,255,0.07);
-}
+.nav-center a:hover { color: white; background: rgba(255,255,255,0.07); }
 
-/* Pill rossa per Login */
 .nav-center li:last-child a {
   color: #ff6b6b;
   border: 1px solid rgba(230,57,70,0.35);
   background: rgba(230,57,70,0.08);
   padding: 8px 18px;
   border-radius: 20px;
-  letter-spacing: 1.5px;
 }
 
 .nav-center li:last-child a:hover {
@@ -139,7 +126,6 @@ html, body {
   color: white;
 }
 
-/* SOCIAL ICONS */
 .social-icons {
   position: absolute;
   right: 50px;
@@ -162,12 +148,11 @@ html, body {
   text-decoration: none;
 }
 
-.social-icons a:hover { 
+.social-icons a:hover {
   background: rgba(230,57,70,0.15);
   border-color: rgba(230,57,70,0.45);
   color: #ff8080;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(230,57,70,0.2);
 }
 
 .menu-toggle {
@@ -187,29 +172,29 @@ html, body {
 /* ============================================
    HERO SECTION
    ============================================ */
-.menu-hero { 
-  min-height: 100vh; 
-  background: 
-    radial-gradient(ellipse at 20% 50%, rgba(120, 40, 40, 0.45) 0%, transparent 60%),
-    radial-gradient(ellipse at 80% 20%, rgba(80, 20, 20, 0.35) 0%, transparent 55%),
-    radial-gradient(ellipse at 60% 80%, rgba(60, 10, 10, 0.3) 0%, transparent 50%),
-    linear-gradient(135deg, #0a0a0a 0%, #1a0a0a 40%, #120505 70%, #0d0d0d 100%);
-  position: relative; 
-  display: flex; 
-  justify-content: center; 
-  align-items: center; 
-  text-align: center; 
-  padding-top: 120px; 
-  flex-direction: column; 
+.menu-hero {
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(120,40,40,0.35) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 20%, rgba(80,20,20,0.25) 0%, transparent 55%),
+    linear-gradient(135deg, #080808 0%, #120505 50%, #0d0808 100%);
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding-top: 120px;
+  flex-direction: column;
 }
 
+/* Noise texture overlay */
 .menu-hero::before {
   content: "";
   position: absolute;
   inset: 0;
-  background-image: 
-    radial-gradient(circle at 1px 1px, rgba(255,255,255,0.03) 1px, transparent 0);
-  background-size: 32px 32px;
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(255,255,255,0.02) 1px, transparent 0);
+  background-size: 28px 28px;
   z-index: 1;
   pointer-events: none;
 }
@@ -218,179 +203,273 @@ html, body {
   content: "";
   position: absolute;
   inset: 0;
-  background: 
-    radial-gradient(ellipse at 50% 0%, rgba(230, 57, 70, 0.08) 0%, transparent 60%),
-    radial-gradient(ellipse at 50% 100%, rgba(0,0,0,0.6) 0%, transparent 50%);
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(230,57,70,0.06) 0%, transparent 55%),
+    radial-gradient(ellipse at 50% 100%, rgba(0,0,0,0.5) 0%, transparent 50%);
   z-index: 1;
   pointer-events: none;
 }
 
-.menu-content { 
-  position: relative; 
-  z-index: 3; 
-  width: 100%; 
-  max-width: 1200px; 
-  padding: 0 20px; 
-  margin: 0 auto; 
-  display: flex; 
-  flex-direction: column; 
-  align-items: center; 
-}
-
-.menu-title-wrapper { 
+.menu-content {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  max-width: 1200px;
+  padding: 0 20px;
+  margin: 0 auto;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 14px;
-  margin-bottom: 15px;
-}
-
-.menu-subtitle { 
-  font-size: 45px; 
-  font-weight: 300; 
-  margin: 0;
-}
-
-.yellow-line { 
-  width: 60px; 
-  height: 4px; 
-  background-color: #e63946; 
-}
-
-.menu-title { 
-  font-size: 75px; 
-  font-style: italic; 
-  font-weight: 800; 
-  margin: 0;
 }
 
 /* ============================================
-   MENU TABS
+   HERO TITLE — nuovo stile
    ============================================ */
-.menu-list { 
-  display: flex; 
-  border-radius: 5px; 
-  justify-content: center; 
-  width: 100%; 
-  max-width: 900px;
-  margin-top: 20px; 
-  border: 2px solid white; 
-  height: 45px; 
+.hero-title-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  margin-bottom: 10px;
+  animation: fadeUp 0.9s cubic-bezier(0.16,1,0.3,1) both;
 }
 
-.menu-list a { 
-  flex: 1; 
-  display: flex; 
-  justify-content: center; 
-  align-items: center; 
-  color: white; 
-  border-radius: 5px; 
-  text-decoration: none; 
-  font-weight: 600; 
-  font-size: 18px; 
-  background: transparent; 
-  border-right: 1px solid white; 
-  cursor: pointer; 
-  transition: 0.3s; 
-  letter-spacing: 10px; 
-  font-family: Verdana; 
+.hero-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 6px;
 }
 
-.menu-list a:last-child {
-  border-right: none;
+.eyebrow-line {
+  width: 50px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--red));
 }
 
-.menu-list a.active {
-  background: white;
-  color: black;
+.eyebrow-line.right {
+  background: linear-gradient(90deg, var(--red), transparent);
+}
+
+.eyebrow-text {
+  font-family: "DM Sans", sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: var(--red-light);
+  opacity: 0.9;
+}
+
+.hero-main-title {
+  font-family: "Playfair Display", serif;
+  font-style: italic;
+  font-weight: 900;
+  font-size: 110px;
+  line-height: 0.9;
+  letter-spacing: -2px;
+  background: linear-gradient(160deg, #ffffff 0%, rgba(255,255,255,0.75) 60%, rgba(230,57,70,0.6) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: none;
+  position: relative;
+}
+
+/* sottile decorazione a destra del titolo */
+.hero-main-title::after {
+  content: "✦";
+  position: absolute;
+  right: -30px;
+  top: 10px;
+  font-size: 22px;
+  -webkit-text-fill-color: var(--red);
+  opacity: 0.6;
+  animation: spin 8s linear infinite;
+}
+
+.hero-tagline {
+  font-size: 13px;
+  font-weight: 300;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  margin-top: 14px;
+}
+
+/* ============================================
+   MENU TABS — completamente riprogettate
+   ============================================ */
+.menu-tabs {
+  display: flex;
+  gap: 8px;
+  margin-top: 40px;
+  padding: 6px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  backdrop-filter: blur(10px);
+  animation: fadeUp 0.9s 0.15s cubic-bezier(0.16,1,0.3,1) both;
+}
+
+.tab-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 26px;
+  border-radius: 40px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
+  position: relative;
+  white-space: nowrap;
+}
+
+.tab-btn .tab-icon {
+  font-size: 15px;
+  transition: transform 0.35s ease;
+}
+
+.tab-btn:hover {
+  color: rgba(255,255,255,0.75);
+  background: rgba(255,255,255,0.06);
+}
+
+.tab-btn.active {
+  background: linear-gradient(135deg, var(--red) 0%, #c0243030 80%);
+  background: var(--red);
+  color: white;
+  box-shadow: 0 4px 20px rgba(230,57,70,0.4), inset 0 1px 0 rgba(255,255,255,0.15);
+}
+
+.tab-btn.active .tab-icon {
+  transform: scale(1.15);
+}
+
+/* Badge contatore */
+.tab-count {
+  font-size: 10px;
+  background: rgba(255,255,255,0.15);
+  padding: 2px 7px;
+  border-radius: 20px;
   font-weight: 700;
+  letter-spacing: 0;
+  display: none;
+}
+
+.tab-btn.active .tab-count {
+  display: inline-block;
+  background: rgba(255,255,255,0.25);
 }
 
 /* ============================================
    MENU ITEMS CONTAINER
    ============================================ */
 #menu-lists {
-  margin-top: 30px;
+  margin-top: 28px;
   text-align: left;
   display: none;
   width: 100%;
-  /* max-width gestita da JS in base alle colonne */
-  gap: 10px 40px;
+  gap: 10px 18px;
   padding-bottom: 20px;
+  animation: fadeUp 0.5s cubic-bezier(0.16,1,0.3,1) both;
 }
 
-/* Layout classi dinamiche via JS */
-#menu-lists.cols-1 { max-width: 600px; grid-template-columns: 1fr; }
-#menu-lists.cols-2 { max-width: 900px; grid-template-columns: repeat(2, 1fr); }
-#menu-lists.cols-3 { max-width: 1100px; grid-template-columns: repeat(3, 1fr); }
+#menu-lists.cols-1 { max-width: 560px; grid-template-columns: 1fr; }
+#menu-lists.cols-2 { max-width: 940px; grid-template-columns: repeat(2, 1fr); }
+#menu-lists.cols-3 { max-width: 1140px; grid-template-columns: repeat(3, 1fr); }
 #menu-lists.cols-4 { max-width: 1200px; grid-template-columns: repeat(4, 1fr); }
 
 /* ============================================
-   MENU ITEM
+   MENU ITEM CARD — completamente riprogettata
    ============================================ */
 .menu-item {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto fit-content(45%) 1fr auto;
   align-items: center;
-  column-gap: 10px;
-  padding: 0 14px;
-  border-radius: 12px;
-  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-  height: 64px;
-  border: 1px solid rgba(255,255,255,0.09);
-  background: rgba(255,255,255,0.05);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  box-shadow: 0 2px 12px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.07);
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: linear-gradient(135deg, rgba(20,10,10,0.85) 0%, rgba(15,8,8,0.6) 100%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 2px 16px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+  position: relative;
+  overflow: hidden;
+  min-height: 72px;
+}
+
+/* Glow strip a sinistra */
+.menu-item::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 10%; bottom: 10%;
+  width: 2px;
+  background: var(--red);
+  border-radius: 2px;
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  transform: scaleY(0.3);
 }
 
 .menu-item:hover {
-  background: rgba(255, 255, 255, 0.09);
-  border-color: rgba(255,255,255,0.18);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.14);
+  background: linear-gradient(135deg, rgba(35,15,15,0.9) 0%, rgba(25,10,10,0.7) 100%);
+  box-shadow: 0 4px 28px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.08);
+  transform: translateY(-2px);
+}
+
+.menu-item:hover::before {
+  opacity: 0.5;
+  transform: scaleY(1);
 }
 
 .menu-item.selected {
-  background: rgba(230, 57, 70, 0.12);
-  border-color: rgba(230, 57, 70, 0.35);
-  box-shadow: 0 4px 20px rgba(230,57,70,0.15), inset 0 1px 0 rgba(255,255,255,0.07);
+  border-color: rgba(230,57,70,0.4);
+  background: linear-gradient(135deg, rgba(50,15,15,0.9) 0%, rgba(30,10,10,0.75) 100%);
+  box-shadow: 0 0 0 1px rgba(230,57,70,0.15), 0 4px 24px rgba(230,57,70,0.12), inset 0 1px 0 rgba(255,255,255,0.07);
 }
 
-/* Colonna nome */
-.menu-item > div:first-child {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-width: 0;
+.menu-item.selected::before {
+  opacity: 1;
+  transform: scaleY(1);
 }
 
-/* Checkbox */
+/* CHECKBOX riprogettata */
 .select-square {
-  width: 24px;
-  height: 24px;
-  min-width: 24px;
+  width: 26px;
+  height: 26px;
+  min-width: 26px;
   flex-shrink: 0;
-  border: 2px dashed #838282;
-  background: transparent;
-  border-radius: 4px;
+  border: 1.5px solid rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.04);
+  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-}
-
-.select-square::after {
-  content: "";
-  width: 0;
-  height: 0;
-  transition: all 0.2s ease;
+  font-size: 13px;
+  font-weight: 700;
+  color: transparent;
 }
 
 .select-square.selected {
-  background: #e63946;
-  border: 2px solid #e63946;
+  background: var(--red);
+  border-color: var(--red);
+  color: white;
+  box-shadow: 0 2px 12px rgba(230,57,70,0.45);
 }
 
 .select-square.selected::after {
@@ -398,96 +477,121 @@ html, body {
   color: white;
   font-size: 13px;
   font-weight: 800;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
 }
 
-/* Nome prodotto */
-.menu-item > div:first-child > span {
+/* Testo prodotto */
+.item-name {
+  min-width: 0;
+  max-width: fit-content;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.item-name span {
+  font-size: 14.5px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.9);
   white-space: normal;
-  overflow: hidden;
+  word-break: break-word;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
-  word-break: break-word;
-  font-weight: 600;
-  font-size: 15px;
-  color: white;
-  flex: 1;
-  min-width: 0;
-  line-height: 1.35;
+  overflow: hidden;
+  line-height: 1.4;
+  letter-spacing: 0.1px;
 }
 
-/* Separatore puntini */
+/* Badge categoria piccola */
+.item-tag {
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(230,57,70,0.65);
+  font-weight: 600;
+}
+
+/* Separatore */
 .dots {
   width: 100%;
   height: 1px;
+  min-width: 12px;
   position: relative;
   pointer-events: none;
-  margin: 0 4px;
-  min-width: 10px;
 }
 
 .dots::before {
   content: "";
   position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  border-bottom: 2px dashed rgba(255, 255, 255, 0.25);
+  left: 0; right: 0; top: 50%;
+  border-bottom: 1.5px dotted rgba(255,255,255,0.13);
 }
 
-/* Prezzo */
+/* Prezzo riprogettato */
+.price-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+  flex-shrink: 0;
+}
+
 .price {
-  white-space: nowrap;
-  min-width: 58px;
-  text-align: right;
+  font-family: "Playfair Display", serif;
+  font-size: 17px;
   font-weight: 700;
-  font-size: 15px;
-  color: rgba(255, 255, 255, 0.75);
+  color: white;
+  letter-spacing: -0.5px;
+  white-space: nowrap;
 }
 
-.euro {
-  font-size: 13px;
-  position: relative;
-  top: -1px;
+.price .euro {
+  font-size: 11px;
+  font-family: "DM Sans", sans-serif;
+  font-weight: 500;
+  opacity: 0.6;
   margin-right: 1px;
-  opacity: 0.8;
+  vertical-align: super;
 }
 
 /* ============================================
    PRONTO BUTTON
    ============================================ */
 #pronto-btn {
-  margin-top: 30px;
-  margin-bottom: 40px;
-  padding: 16px 36px;
-  width: 90%;
-  max-width: 260px;
-  font-size: 20px;
-  font-weight: 800;
-  background: linear-gradient(145deg, #B22222, #FF4B5C);
-  color: #ffffff;
+  margin-top: 32px;
+  margin-bottom: 50px;
+  padding: 17px 44px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  background: var(--red);
+  color: white;
   border: none;
   border-radius: 50px;
   cursor: pointer;
-  box-shadow: 0 8px 20px rgba(230, 57, 70, 0.6);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s ease;
+  box-shadow: 0 8px 30px rgba(230,57,70,0.45), inset 0 1px 0 rgba(255,255,255,0.2);
+  transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  opacity: 0.5;
+}
+
+#pronto-btn::after {
+  content: "→";
+  font-size: 18px;
+  transition: transform 0.3s ease;
 }
 
 #pronto-btn:hover {
-  background: linear-gradient(145deg, #FF4B5C, #B22222);
-  color: white;
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(230, 57, 70, 0.7);
+  background: #ff4b5c;
+  transform: translateY(-4px);
+  box-shadow: 0 14px 36px rgba(230,57,70,0.55);
 }
+
+#pronto-btn:hover::after { transform: translateX(4px); }
 
 /* ============================================
    ERROR BOX
@@ -497,15 +601,16 @@ html, body {
   top: -100px;
   left: 50%;
   transform: translateX(-50%);
-  background: linear-gradient(145deg, #B22222, #FF4B5C);
-  padding: 20px 40px 20px 20px;
-  border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(230, 57, 70, 0.6);
+  background: linear-gradient(145deg, #8B0000, #C0392B);
+  padding: 18px 40px 18px 20px;
+  border-radius: 14px;
+  border: 1px solid rgba(230,57,70,0.35);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.6);
   color: white;
   font-weight: 600;
-  font-family: "Montserrat", sans-serif;
-  font-size: 16px;
-  width: 350px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 15px;
+  width: 360px;
   max-width: 90%;
   transition: top 0.5s ease, opacity 0.5s ease;
   z-index: 99999;
@@ -513,73 +618,84 @@ html, body {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 8px;
+  gap: 6px;
 }
 
-#error-box.show {
-  top: 40px !important;
-  opacity: 1;
-}
-
-#error-box strong { font-size: 18px; font-weight: 800; }
-#error-box p { margin: 0; line-height: 1.3; }
+#error-box.show { top: 40px !important; opacity: 1; }
+#error-box strong { font-size: 17px; font-weight: 800; }
+#error-box p { margin: 0; line-height: 1.4; opacity: 0.85; }
 
 #error-box .close-btn {
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: 8px; right: 8px;
   cursor: pointer;
   font-weight: 900;
-  font-size: 20px;
+  font-size: 18px;
   color: white;
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0,0,0,0.2);
   border: none;
   border-radius: 50%;
-  width: 28px;
-  height: 28px;
+  width: 26px; height: 26px;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: 0.3s;
 }
 
-#error-box .close-btn:hover { background: rgba(255, 255, 255, 0.3); }
+#error-box .close-btn:hover { background: rgba(255,255,255,0.25); }
 
 /* ============================================
    LOGIN MODAL
    ============================================ */
-#login-modal { 
-  display: none; 
-  position: fixed; 
-  top: 0; left: 0; 
-  width: 100%; height: 100%; 
-  background: rgba(0, 0, 0, 0.8); 
-  justify-content: center; 
-  align-items: center; 
-  z-index: 1000; 
+#login-modal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.85);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
 }
 
-.form-container { 
-  width: 320px; 
-  border-radius: 0.75rem; 
-  background-color: rgba(22, 22, 22, 0.784); 
-  padding: 2rem; 
-  color: white; 
+.form-container {
+  width: 320px;
+  border-radius: 16px;
+  background: rgba(18,8,8,0.95);
+  border: 1px solid var(--border);
+  padding: 2rem;
+  color: white;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.7);
 }
 
-.title { text-align: center; font-size: 1.5rem; line-height: 2rem; font-weight: 700; margin-bottom: 1rem; }
+.title { text-align: center; font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem; }
 .form { margin-top: 1.5rem; }
-.input-group { margin-top: 0.25rem; font-size: 0.875rem; line-height: 1.25rem; }
-.input-group label { display: block; margin-bottom: 4px; color: white; }
-.input-group input { width: 100%; border-radius: 0.375rem; border: 1px solid white; outline: 0; background-color: rgba(22, 22, 22, 0.508); padding: 0.75rem 1rem; color: whitesmoke; }
-.input-group input:focus { border-color: white; }
-.forgot { display: flex; justify-content: flex-end; font-size: 0.75rem; color: rgba(156, 163, 175, 1); margin: 8px 0 14px 0; }
-.forgot a, .signup a { color: rgba(243, 244, 246, 1); text-decoration: none; font-size: 14px; }
-.sign { display: block; width: 100%; background-color: #e63946; padding: 0.75rem; text-align: center; color: white; border: none; border-radius: 0.375rem; font-weight: 600; cursor: pointer; }
+.input-group { margin-top: 0.25rem; font-size: 0.875rem; }
+.input-group label { display: block; margin-bottom: 4px; color: rgba(255,255,255,0.7); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; }
+.input-group input { width: 100%; border-radius: 8px; border: 1px solid rgba(255,255,255,0.12); outline: 0; background: rgba(255,255,255,0.05); padding: 0.75rem 1rem; color: white; transition: border-color 0.2s; }
+.input-group input:focus { border-color: var(--red); }
+.forgot { display: flex; justify-content: flex-end; font-size: 0.75rem; color: rgba(156,163,175,1); margin: 8px 0 14px 0; }
+.forgot a, .signup a { color: rgba(243,244,246,1); text-decoration: none; font-size: 14px; }
+.sign { display: block; width: 100%; background: var(--red); padding: 0.75rem; text-align: center; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; letter-spacing: 1px; transition: background 0.2s; }
+.sign:hover { background: #ff4b5c; }
 .social-message { display: flex; align-items: center; padding-top: 1rem; }
-.line { height: 1px; flex: 1 1 0%; background-color: rgba(55, 65, 81, 1); }
-.social-message .message { padding: 0 0.75rem; font-size: 0.875rem; color: rgba(156, 163, 175, 1); }
+.line { height: 1px; flex: 1 1 0%; background-color: rgba(55,65,81,1); }
+.social-message .message { padding: 0 0.75rem; font-size: 0.875rem; color: rgba(156,163,175,1); }
 #register-form { margin-top: 1rem; display: none; }
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
 
 /* ============================================
    RESPONSIVE
@@ -587,59 +703,41 @@ html, body {
 @media (max-width: 1024px) {
   .navbar { gap: 30px; padding: 15px 30px; height: 120px; }
   .logo-left { left: 30px; }
-  .logo-left img { width: 100px; }
-  .nav-center ul { gap: 25px; }
-  .nav-center a { font-size: 16px; }
-  .social-icons { right: 30px; gap: 20px; }
-  /* Max 2 colonne su tablet */
+  .social-icons { right: 30px; }
   #menu-lists.cols-3,
-  #menu-lists.cols-4 { 
-    max-width: 900px;
-    grid-template-columns: repeat(2, 1fr) !important; 
-  }
+  #menu-lists.cols-4 { max-width: 900px; grid-template-columns: repeat(2, 1fr) !important; }
 }
 
 @media (max-width: 768px) {
   .navbar { justify-content: flex-start; padding: 12px 15px; height: 80px; gap: 0; }
   .logo-left { position: relative; left: 0; margin-right: auto; }
-  .logo-left img { width: 80px; }
+  .logo-left img { width: 50px; }
   .nav-center { display: none; }
-  .nav-center.active { display: block; position: absolute; top: 80px; left: 0; width: 100%; background: rgba(22, 22, 22, 0.95); }
+  .nav-center.active { display: block; position: absolute; top: 80px; left: 0; width: 100%; background: rgba(12,5,5,0.97); }
   .nav-center.active ul { flex-direction: column; }
-  .nav-center.active a { padding: 15px 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+  .nav-center.active a { padding: 15px 20px; border-bottom: 1px solid rgba(255,255,255,0.07); }
   .social-icons { display: none; }
   .menu-toggle { display: block; }
   .menu-hero { padding-top: 100px; }
-  .menu-content { width: 100%; padding: 0 16px; }
-  .menu-title-wrapper { margin-top: 30px; }
-  .menu-list { margin-top: 60px; }
-  .menu-title { font-size: 52px; }
-  .menu-subtitle { font-size: 32px; }
-
-  /* Sempre 1 colonna su mobile piccolo */
+  .menu-content { width: 100%; padding: 0 14px; }
+  .hero-main-title { font-size: 72px; }
+  .hero-main-title::after { display: none; }
+  .menu-tabs { flex-wrap: wrap; border-radius: 16px; }
   #menu-lists.cols-1,
   #menu-lists.cols-2,
   #menu-lists.cols-3,
-  #menu-lists.cols-4 { 
-    max-width: 100%;
-    grid-template-columns: 1fr !important; 
-  }
-
-  #pronto-btn { padding: 0.9rem 2rem; font-size: 18px; max-width: 220px; }
+  #menu-lists.cols-4 { max-width: 100%; grid-template-columns: 1fr !important; }
 }
 
 @media (max-width: 480px) {
-  .navbar { height: 65px;
-}
-  .logo-left img { width: 70px; }
-  .menu-hero { padding-top: 90px; }
-  .menu-list { margin-top: 80px; flex-direction: column; height: auto; }
-  .menu-list a { border-right: none; border-bottom: 1px solid white; letter-spacing: 4px; padding: 12px 0; }
-  .menu-title { font-size: 40px; }
-  .menu-subtitle { font-size: 26px; }
-  .menu-item > div:first-child > span { font-size: 14px; }
-  .price { font-size: 14px; min-width: 52px; }
-  #pronto-btn { width: 100%; max-width: 100%; }
+  .navbar { height: 65px; }
+  .logo-left img { width: 42px; }
+  .logo-left::after { font-size: 10px; letter-spacing: 2px; }
+  .menu-hero { padding-top: 85px; }
+  .hero-main-title { font-size: 58px; }
+  .tab-btn { padding: 10px 16px; font-size: 10px; }
+  .price { font-size: 15px; }
+  #pronto-btn { width: 100%; max-width: 100%; justify-content: center; }
 }
 </style>
 </head>
@@ -673,37 +771,54 @@ html, body {
 <!-- HERO -->
 <section class="menu-hero" id="the-menu">
   <div class="menu-content">
-    <div class="menu-title-wrapper">
-      <div>
-        <h3 class="menu-subtitle">The</h3>
-        <div class="yellow-line"></div>
+
+    <!-- TITOLO RIPROGETTATO -->
+    <div class="hero-title-block">
+      <div class="hero-eyebrow">
+        <div class="eyebrow-line"></div>
+        <span class="eyebrow-text">Scuola Borsa</span>
+        <div class="eyebrow-line right"></div>
       </div>
-      <h1 class="menu-title">Menu</h1>
+      <h1 class="hero-main-title">Menu</h1>
+      <p class="hero-tagline">Scegli i tuoi piatti preferiti</p>
     </div>
-    
-    <div class="menu-list">
-      <a data-menu="share">CIBI</a>
-      <a data-menu="sustain">BEVANDE</a>
-      <a data-menu="indulge">DOLCI</a>
+
+    <!-- TABS RIPROGETTATE -->
+    <div class="menu-tabs">
+      <button class="tab-btn" data-menu="share">
+        <span class="tab-icon">🍽️</span>
+        Cibi
+        <span class="tab-count" id="count-share">0</span>
+      </button>
+      <button class="tab-btn" data-menu="sustain">
+        <span class="tab-icon">🥤</span>
+        Bevande
+        <span class="tab-count" id="count-sustain">0</span>
+      </button>
+      <button class="tab-btn" data-menu="indulge">
+        <span class="tab-icon">🍰</span>
+        Dolci
+        <span class="tab-count" id="count-indulge">0</span>
+      </button>
     </div>
-    
+
     <div id="menu-lists"></div>
-    
-    <button id="pronto-btn" class="show-btn">PRONTO</button>
+
+    <button id="pronto-btn">ORDINA</button>
   </div>
 </section>
 
 <!-- ERROR BOX -->
 <div id="error-box">
-  <strong>Errore!</strong>
-  <p>Oh no!<br>Devi selezionare almeno un prodotto</p>
-  <button class="close-btn" aria-label="Close Error">&times;</button>
+  <strong>⚠️ Attenzione</strong>
+  <p>Devi selezionare almeno un prodotto prima di continuare.</p>
+  <button class="close-btn" aria-label="Close">&times;</button>
 </div>
 
 <!-- LOGIN MODAL -->
 <div id="login-modal">
   <div style="position:relative;">
-    <span id="close-login" style="position:absolute; top:-20px; right:-20px; cursor:pointer; font-size:30px; color:white;">&times;</span>
+    <span id="close-login" style="position:absolute;top:-20px;right:-20px;cursor:pointer;font-size:30px;color:white;">&times;</span>
     <div class="form-container">
       <p class="title">Login</p>
       <form class="form" id="login-form">
@@ -714,30 +829,30 @@ html, body {
         <div class="input-group">
           <label for="password">Password</label>
           <input type="password" name="password" id="password" placeholder="">
-          <div class="forgot"><a href="#">Forgot Password?</a></div>
+          <div class="forgot"><a href="#">Password dimenticata?</a></div>
         </div>
-        <button class="sign">Sign in</button>
+        <button class="sign">Accedi</button>
       </form>
       <div class="social-message">
         <div class="line"></div>
-        <p class="message">Login with social accounts</p>
+        <p class="message">oppure</p>
         <div class="line"></div>
       </div>
       <p class="signup" style="color:rgba(245,245,245,0.742);">
-        Don't have an account? <a id="to-register" style="cursor:pointer;">Sign up</a>
+        Non hai un account? <a id="to-register" style="cursor:pointer;color:var(--red-light)">Registrati</a>
       </p>
       <div id="register-form" style="display:none;">
-        <p class="title">Register</p>
+        <p class="title">Registrati</p>
         <form class="form" id="register-form-inner">
-          <div class="input-group"><label for="reg-first">First Name</label><input type="text" id="reg-first" placeholder=""></div>
-          <div class="input-group"><label for="reg-last">Last Name</label><input type="text" id="reg-last" placeholder=""></div>
+          <div class="input-group"><label for="reg-first">Nome</label><input type="text" id="reg-first" placeholder=""></div>
+          <div class="input-group"><label for="reg-last">Cognome</label><input type="text" id="reg-last" placeholder=""></div>
           <div class="input-group"><label for="reg-email">Email</label><input type="email" id="reg-email" placeholder=""></div>
           <div class="input-group"><label for="reg-pass">Password</label><input type="password" id="reg-pass" placeholder=""></div>
-          <div class="input-group"><label for="reg-pass2">Confirm Password</label><input type="password" id="reg-pass2" placeholder=""></div>
-          <button class="sign" style="margin-top:6px;">Create Account</button>
+          <div class="input-group"><label for="reg-pass2">Conferma Password</label><input type="password" id="reg-pass2" placeholder=""></div>
+          <button class="sign" style="margin-top:10px;">Crea Account</button>
         </form>
-        <p class="signup" style="color:rgba(245,245,245,0.742);">
-          Already have an account? <a id="to-login" style="cursor:pointer;">Sign in</a>
+        <p class="signup" style="color:rgba(245,245,245,0.742);margin-top:10px;">
+          Hai già un account? <a id="to-login" style="cursor:pointer;color:var(--red-light)">Accedi</a>
         </p>
       </div>
     </div>
@@ -749,7 +864,6 @@ html, body {
    DATI DAL SERVER
    ============================================ */
 const datiRaw = document.getElementById("contenitore").getAttribute("data");
-console.log("📦 Dati dal server:", datiRaw);
 
 /* ============================================
    MOBILE MENU TOGGLE
@@ -786,7 +900,7 @@ try {
     datiDB = JSON.parse(stringaPulita);
   }
 } catch (e) {
-  console.error("❌ Errore parsing dati:", e);
+  console.error("Errore parsing:", e);
 }
 
 /* ============================================
@@ -805,20 +919,40 @@ listaItems.forEach(item => {
   else cibo.push(prodotto);
 });
 
+// Dati demo se nessun dato dal server
+if (listaItems.length === 0) {
+  cibo.push(
+    ["Panino al Prosciutto", "3.50"],
+    ["Tramezzino Tonno e Olive", "3.00"],
+    ["Toast Formaggio e Cotto", "2.80"],
+    ["Piadina Vegetariana", "4.00"],
+    ["Insalata Mista", "4.50"],
+    ["Focaccia Genovese", "2.50"]
+  );
+  bevande.push(
+    ["Caffè Espresso", "1.10"],
+    ["Cappuccino", "1.40"],
+    ["Succo di Frutta", "2.00"],
+    ["Acqua Naturale 0,5L", "0.80"],
+    ["Tè Freddo", "1.80"]
+  );
+  dolci.push(
+    ["Cornetto alla Crema", "1.30"],
+    ["Piccolo Nutella", "1.50"],
+    ["Torta della Nonna", "2.50"],
+    ["Muffin ai Mirtilli", "1.80"]
+  );
+}
+
 const menuData = { share: cibo, sustain: bevande, indulge: dolci };
-console.log("🍽️ Menu organizzato:", menuData);
+
+// Aggiorna badge contatori tab
+document.getElementById("count-share").textContent = cibo.length;
+document.getElementById("count-sustain").textContent = bevande.length;
+document.getElementById("count-indulge").textContent = dolci.length;
 
 /* ============================================
-   CALCOLO COLONNE SMART
-   
-   Regola:
-   - 1-4 prodotti   → 1 colonna
-   - 5-8 prodotti   → 2 colonne
-   - 9-15 prodotti  → 3 colonne
-   - 16+ prodotti   → 4 colonne
-   
-   Su tablet (≤1024px): max 2 colonne
-   Su mobile (≤768px): sempre 1 colonna
+   CALCOLO COLONNE
    ============================================ */
 function getColumnsCount(itemCount) {
   const w = window.innerWidth;
@@ -827,7 +961,6 @@ function getColumnsCount(itemCount) {
     if (itemCount <= 4) return 1;
     return 2;
   }
-  // Desktop
   if (itemCount <= 4)  return 1;
   if (itemCount <= 8)  return 2;
   if (itemCount <= 15) return 3;
@@ -837,7 +970,7 @@ function getColumnsCount(itemCount) {
 /* ============================================
    DOM & STATO
    ============================================ */
-const menuLinks = document.querySelectorAll(".menu-list a");
+const tabBtns = document.querySelectorAll(".tab-btn");
 const listContainer = document.getElementById("menu-lists");
 const prontoBtn = document.getElementById("pronto-btn");
 const errorBox = document.getElementById("error-box");
@@ -850,51 +983,54 @@ let selectedItems = {};
    ============================================ */
 function renderMenu(category) {
   const items = menuData[category] || [];
-  
-  // Mostra il container
   listContainer.style.display = "grid";
+  listContainer.classList.remove("cols-1","cols-2","cols-3","cols-4");
   
-  // Rimuovi classi colonne precedenti
-  listContainer.classList.remove("cols-1", "cols-2", "cols-3", "cols-4");
-  
-  // Applica classe colonne corretta
   const cols = getColumnsCount(items.length);
   listContainer.classList.add("cols-" + cols);
 
+  // Riapplica animazione
+  listContainer.style.animation = "none";
+  listContainer.offsetHeight;
+  listContainer.style.animation = "fadeUp 0.5s cubic-bezier(0.16,1,0.3,1) both";
+
   if (items.length === 0) {
-    listContainer.innerHTML = `<p style="text-align:center; padding:20px; grid-column:1/-1;">Nessun prodotto disponibile.</p>`;
+    listContainer.innerHTML = `<p style="text-align:center;padding:40px;grid-column:1/-1;opacity:0.4;letter-spacing:2px;font-size:13px;text-transform:uppercase;">Nessun prodotto disponibile</p>`;
     return;
   }
 
-  // HTML prodotti
-  listContainer.innerHTML = items.map(item => `
-    <div class="menu-item ${selectedItems[item[0]] ? 'selected' : ''}" data-name="${item[0]}">
-      <div>
-        <div class="select-square ${selectedItems[item[0]] ? 'selected' : ''}" 
-             data-name="${item[0]}" 
-             data-price="${item[1]}"></div>
+  listContainer.innerHTML = items.map(item => {
+    const isSelected = !!selectedItems[item[0]];
+    return `
+    <div class="menu-item ${isSelected ? 'selected' : ''}" data-name="${item[0]}">
+      <div class="select-square ${isSelected ? 'selected' : ''}" 
+           data-name="${item[0]}" 
+           data-price="${item[1]}"></div>
+      <div class="item-name">
         <span title="${item[0]}">${item[0]}</span>
       </div>
       <div class="dots"></div>
-      <span class="price"><span class="euro">€</span>${parseFloat(item[1]).toFixed(2)}</span>
+      <div class="price-block">
+        <span class="price"><span class="euro">€</span>${parseFloat(item[1]).toFixed(2)}</span>
+      </div>
     </div>
-  `).join("");
+  `}).join("");
 
-  // Click sui checkbox
-  listContainer.querySelectorAll(".select-square").forEach(sq => {
-    sq.addEventListener("click", () => {
+  // Click su ogni card o checkbox
+  listContainer.querySelectorAll(".menu-item").forEach(card => {
+    card.addEventListener("click", () => {
+      const sq = card.querySelector(".select-square");
       const name = sq.dataset.name;
       const price = sq.dataset.price;
-      const menuItem = sq.closest(".menu-item");
 
       if (selectedItems[name]) {
         delete selectedItems[name];
         sq.classList.remove("selected");
-        menuItem.classList.remove("selected");
+        card.classList.remove("selected");
       } else {
         selectedItems[name] = price;
         sq.classList.add("selected");
-        menuItem.classList.add("selected");
+        card.classList.add("selected");
       }
 
       localStorage.setItem("selectedItems", JSON.stringify(selectedItems));
@@ -904,7 +1040,9 @@ function renderMenu(category) {
 }
 
 function updateProntoBtn() {
-  prontoBtn.style.opacity = Object.keys(selectedItems).length > 0 ? "1" : "0.5";
+  const count = Object.keys(selectedItems).length;
+  prontoBtn.style.opacity = count > 0 ? "1" : "0.5";
+  prontoBtn.textContent = count > 0 ? `ORDINA (${count})` : "ORDINA";
 }
 
 /* ============================================
@@ -914,11 +1052,11 @@ errorCloseBtn.addEventListener("click", () => errorBox.classList.remove("show"))
 
 let currentCategory = "share";
 
-menuLinks.forEach(link => {
-  link.addEventListener("click", () => {
-    menuLinks.forEach(btn => btn.classList.remove("active"));
-    link.classList.add("active");
-    currentCategory = link.dataset.menu;
+tabBtns.forEach(btn => {
+  btn.addEventListener("click", () => {
+    tabBtns.forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    currentCategory = btn.dataset.menu;
     renderMenu(currentCategory);
   });
 });
@@ -927,23 +1065,19 @@ window.addEventListener("resize", () => renderMenu(currentCategory));
 
 prontoBtn.addEventListener("click", () => {
   if (Object.keys(selectedItems).length === 0) {
-    const nomi = { share: "CIBI", sustain: "BEVANDE", indulge: "DOLCI" };
-    errorBox.querySelector("p").innerHTML = `Oh no!<br>Devi selezionare almeno un prodotto nella sezione ${nomi[currentCategory] || "prodotto"}`;
     errorBox.classList.add("show");
     setTimeout(() => errorBox.classList.remove("show"), 4000);
     return;
   }
-
   const orderedItems = Object.entries(selectedItems).map(([name, price]) => ({
     name, price: parseFloat(price), qty: 1
   }));
-
   localStorage.setItem("orderedItems", JSON.stringify(orderedItems));
   window.location.href = "/orders";
 });
 
-// Avvio
-if (menuLinks[0]) menuLinks[0].click();
+// Avvio — prima tab attiva
+tabBtns[0].click();
 
 /* ============================================
    LOGIN MODAL
@@ -969,7 +1103,7 @@ if (toRegister) {
     loginForm.style.display = "none";
     registerForm.style.display = "block";
     if (socialMessage) socialMessage.style.display = "none";
-    if (titleText) titleText.innerText = "Register";
+    if (titleText) titleText.innerText = "Registrati";
   });
 }
 
@@ -981,8 +1115,6 @@ if (toLogin) {
     if (titleText) titleText.innerText = "Login";
   });
 }
-
-console.log("✅ Menu inizializzato correttamente!");
 </script>
 </body>
 </html>
