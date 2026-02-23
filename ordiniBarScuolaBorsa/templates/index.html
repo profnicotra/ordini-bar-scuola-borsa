@@ -3,779 +3,500 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bar Scuola Borsa</title>
-
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+  <title>Bar Scuola Borsa — Ordina Online</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,700;1,800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+:root { --red:#e63946; --dark:#080404; }
+body { font-family:'Montserrat',sans-serif; background:var(--dark); color:white; overflow-x:hidden; }
 
-    body {
-      font-family: 'Montserrat', sans-serif;
-      background-color: black;
-      color: white;
-    }
-
-    /* NAVBAR */
-    .navbar {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 50px;
-      padding: 20px 50px;
-      background-color: rgba(22, 22, 22, 0.784);
-      position: fixed;
-      width: 100%;
-      top: 0;
-      height: 150px;
-      z-index: 10;
-      transition: top 0.6s ease;
-    }
-
-    .navbar.hidden { top: -100px; }
-
-    .logo-left { position: absolute; left: 50px; }
-    .logo-left img { width: 120px; }
-
-    .nav-center ul { display: flex; gap: 40px; list-style: none; }
-    .nav-center a {
-      color: white;
-      font-weight: 600;
-      text-decoration: none;
-      font-size: 18px;
-      transition: 0.3s;
-      cursor: pointer;
-    }
-    .nav-center a:hover { color:rgb(79, 79, 79); }
-
-    .social-icons {
-      position: absolute;
-      right: 50px;
-      display: flex;
-      gap: 30px;
-    }
-
-    .social-icons a {
-      width: 35px;
-      height: 35px;
-      border: 3px solid white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      border-radius: 5px;
-      color: white;
-      font-size: 18px;
-      transition: 0.3s ease;
-      text-decoration: none;
-    }
-    .social-icons a:hover { background-color: white; color: black; }
-
-    /* MOBILE MENU TOGGLE */
-    .menu-toggle {
-      display: none;
-      position: absolute;
-      right: 20px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: transparent;
-      border: none;
-      color: white;
-      font-size: 28px;
-      cursor: pointer;
-      z-index: 11;
-    }
-
-    /* RESPONSIVE NAVBAR */
-    @media (max-width: 1024px) {
-      .navbar {
-        gap: 30px;
-        padding: 15px 30px;
-        height: 120px;
-      }
-      .logo-left { left: 30px; }
-      .logo-left img { width: 100px; }
-      .nav-center ul { gap: 25px; }
-      .nav-center a { font-size: 16px; }
-      .social-icons { right: 30px; gap: 20px; }
-    }
-
-    @media (max-width: 768px) {
-      .navbar {
-        justify-content: flex-start;
-        padding: 12px 15px;
-        height: 80px;
-        gap: 0;
-      }
-      .logo-left { position: relative; left: 0; margin-right: auto; }
-      .logo-left img { width: 80px; }
-      .nav-center { display: none; }
-      .nav-center.active { display: block; position: absolute; top: 80px; left: 0; width: 100%; background: rgba(22, 22, 22, 0.95); flex-direction: column; }
-      .nav-center.active ul { flex-direction: column; gap: 0; }
-      .nav-center.active a { padding: 15px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 16px; }
-      .social-icons { display: none; }
-      .social-icons.active { display: flex; position: absolute; top: 80px; right: 15px; gap: 10px; }
-      .menu-toggle { display: block; }
-    }
-
-    @media (max-width: 480px) {
-      .navbar { height: 70px; }
-      .logo-left img { width: 70px; }
-      #status-button-container { left: 100px !important; }
-      #status-button { padding: 8px; font-size: 12px; width: auto; }
-    }
-
-    /* HERO */
-    .hero {
-      height: 100vh;
-      background-image: url('https://static.wixstatic.com/media/a24994_e80e1267c121468ea62129502fda4b57~mv2.png/v1/fill/w_640,h_428,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/a24994_e80e1267c121468ea62129502fda4b57~mv2.png');
-      background-size: cover;
-      background-position: center;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      overflow: hidden;
-    }
-
-    .hero::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      backdrop-filter: blur(2px);
-      background: rgba(0,0,0,0.45);
-      z-index: 1;
-    }
-
-    .hero-content { position: relative; z-index: 2; }
-    .hero h2 { font-size: 30px; font-weight: 400; }
-    .hero h1 { font-size: 60px; margin: 20px 0; font-weight: 800; }
-    .buttons { margin-top: 30px; display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
-
-    .btn {
-      padding: 12px 25px;
-      font-weight: 600;
-      border-radius: 25px;
-      text-decoration: none;
-      background: transparent;
-      color: white;
-      transition: 0.3s ease;
-      width:200px;
-      font-size:20px;
-      font-weight: 800;
-    }
-
-    .btn.red { background: #e63946 }
-    .btn.red:hover { background: white; color: black; }
-
-    @media (max-width: 768px) {
-      .hero { margin-top: 80px; height: auto; min-height: 100vh; padding: 40px 20px; }
-      .hero h2 { font-size: 24px; }
-      .hero h1 { font-size: 48px; margin: 15px 0; }
-      .buttons { flex-direction: column; gap: 15px; }
-      .btn { width: 100%; font-size: 18px; padding: 15px 20px; }
-    }
-
-    @media (max-width: 480px) {
-      .hero { min-height: 80vh; padding: 20px 15px; }
-      .hero h2 { font-size: 20px; }
-      .hero h1 { font-size: 36px; margin: 10px 0; }
-      .btn { font-size: 16px; padding: 12px 18px; width: 100%; }
-    }
-
-    /* STORIA */
-    .experience-section {
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      padding:120px 8%;
-      gap:60px;
-      background-color: #151515e1;
-    }
-
-    .cocktail-box { 
-      width:70%;
-      margin-bottom: 50px;
-      margin-top: -40px;
-    }
-
-    .cocktail-box h4 {
-      color:#e63946;
-      font-size:19px;
-      letter-spacing:2px;
-      margin-bottom:10px;
-    }
-
-    .cocktail-box h2 {
-      font-size:48px;
-      font-weight:800;
-      margin-bottom:25px;
-    }
-
-    .cocktail-box p {
-      color:#cfcfcf;
-      font-size:17px;
-      line-height:1.7;
-      margin-bottom:20px;
-      font-weight: 500;
-    }
-
-    .yellow-btn {
-      background:#e63946;
-      padding: 14px 32px;
-      border-radius: 30px;
-      font-weight: 700;
-      color:white;
-      text-decoration: none;
-      font-size: 16px;
-      transition: 0.3s ease;
-      display: inline-block;
-      margin-top: 10px;
-    }
-
-    .yellow-btn:hover { background:white; color:black; }
-
-    @media (max-width: 1024px) {
-      .experience-section {
-        flex-direction: row;
-        padding: 120px 8%;
-        gap: 60px;
-      }
-      .cocktail-box { width: 70%; }
-      .cocktail-box h2 { font-size: 44px; }
-      .cocktail-box p { font-size: 16px; }
-      .experience-section img { width: 90% !important; }
-    }
-
-   /* Layout verticale SOLO per tablet e smartphone piccoli */
-@media (max-width: 768px) {
-  .experience-section { 
-    flex-direction: column; /* testo sopra immagine */
-    align-items: center;
-    text-align: center;
-    gap: 40px;
-  }
-
-  .cocktail-box { 
-    width: 90%;
-  }
-
-  .cocktail-box h4,
-  .cocktail-box h2,
-  .cocktail-box p {
-    text-align: center;
-  }
-
-  .experience-section img { 
-    width: 100%;
-    max-width: 350px; /* come nella gallery */
-    margin-left: 0 !important;
-    border-radius: 20px;
-    object-fit: cover;
-  }
+/* ===== NAVBAR ===== */
+.navbar {
+  display:flex; align-items:center; justify-content:center; gap:50px;
+  padding:0 50px;
+  background:linear-gradient(180deg,rgba(6,6,6,0.98),rgba(10,3,3,0.95));
+  backdrop-filter:blur(24px);
+  border-bottom:1px solid rgba(230,57,70,0.15);
+  box-shadow:0 8px 40px rgba(0,0,0,0.7);
+  position:fixed; width:100%; top:0; height:90px; z-index:100;
+  transition:top 0.5s ease;
 }
-
-/* LARGHI schermi sopra 768px: layout a riga normale */
-@media (min-width: 769px) {
-  .experience-section {
-    flex-direction: row;
-    align-items: center;
-    gap: 60px;
-    text-align: left;
-  }
-
-  .cocktail-box {
-    width: 70%;
-  }
-
-  .experience-section img {
-    width: auto;
-    max-width: 600px; /* dimensione dell'immagine più grande per desktop */
-    margin-left: 0;
-  }
+.navbar.hidden { top:-100px; }
+.navbar::before {
+  content:""; position:absolute; top:0; left:0; right:0; height:2px;
+  background:linear-gradient(90deg,transparent,#e63946 25%,#ff8080 50%,#e63946 75%,transparent);
+  opacity:0.7;
 }
-/* LARGHI schermi: layout a riga (testo a sinistra, immagine a destra) */
-@media (min-width: 1200px) {
-  .experience-section {
-    flex-direction: row;
-    align-items: center;
-    gap: 60px;
-    text-align: left;
-  }
+.logo-left { position:absolute; left:50px; display:flex; align-items:center; gap:12px; }
+.logo-left img { width:62px; height:62px; object-fit:contain; filter:drop-shadow(0 0 8px rgba(230,57,70,0.3)); }
+.logo-left-divider { width:1px; height:30px; background:rgba(255,255,255,0.15); }
+.logo-brand { display:flex; flex-direction:column; line-height:1.15; }
+.logo-brand .brand-sub { font-size:10px; font-weight:400; letter-spacing:3.5px; text-transform:uppercase; color:rgba(255,255,255,0.35); }
+.logo-brand .brand-main { font-size:14px; font-weight:800; letter-spacing:2.5px; text-transform:uppercase; color:white; }
 
-  .cocktail-box {
-    width: 70%;
-  }
-
-  .experience-section img {
-    width: auto;
-    max-width: 600px; /* immagine grande per desktop */
-    margin-left: 0;
-  }
-}
-
-/* Tablet grandi: ancora layout a riga ma immagine un po’ più piccola */
-@media (min-width: 769px) and (max-width: 1199px) {
-  .experience-section {
-    flex-direction: row;
-    align-items: center;
-    gap: 50px;
-    text-align: left;
-  }
-
-  .cocktail-box {
-    width: 65%;
-  }
-
-  .experience-section img {
-    width: 100%;
-    max-width: 450px; /* dimensione armoniosa per tablet grandi */
-    margin-left: 0;
-  }
-}
-
-/* Tablet piccoli e smartphone: layout verticale testo sopra immagine */
-@media (max-width: 768px) {
-  .experience-section {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 40px;
-  }
-
-  .cocktail-box { width: 90%; }
-
-  .experience-section img {
-    width: 100%;
-    max-width: 350px; /* come gallery */
-    margin-left: 0 !important;
-    border-radius: 20px;
-    object-fit: cover;
-  }
-}
-
-
-   @media (max-width: 480px) {
-  .experience-section { 
-    flex-direction: column; /* mette immagine sotto testo */
-    padding: 60px 6%; 
-    align-items: center; /* centra tutto */
-    text-align: center; /* centra il testo */
-    gap: 30px; /* distanza tra testo e immagine */
-  }
-
-  .cocktail-box { 
-    width: 100%;
-    margin-top: 20px; /* testo prende tutta la larghezza */
-  }
-
-  .cocktail-box h4,
-  .cocktail-box h2,
-  .cocktail-box p {
-    text-align: center; /* centra tutti i testi */
-  }
-
-  .experience-section img { 
-    width: 100%; /* immagine più grande come galleria */
-    max-width: 450px; /* limita la larghezza massima */
-    margin-left: 0 !important; /* rimuove margini precedenti */
-    border-radius: 20px; /* simile alla galleria */
-    object-fit: cover; /* mantiene proporzioni */
-  }
-}
-
-
-    /* GALLERIA */
-    .gallery-section {
-      background-color:#1c1c1ce3;
-      padding: 120px 8%;
-      text-align: center;
-    } 
-     .hero::after {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(31, 30, 30, 0.505);
-        z-index: 1;
-      }
-
-    .gallery-title {
-      font-size: 48px;
-      font-weight: 800;
-      margin-bottom: 10px;
-    }
-
-    .gallery-visit {
-      color:#e63946;
-      font-size: 15px;
-      font-weight: 600;
-      letter-spacing: 2px;
-      display: block;
-      margin-bottom: 10px;
-      margin-top: 10px;
-    }
-
-    .gallery-main-title {
-      font-size: 36px;
-      font-weight: 700;
-      margin-bottom: 10px;
-    }
-
-    .yellow-line{
-      width:120px;
-      height:4px;
-      background-color:#e63946;
-      margin: 10px auto 30px auto;
-      border-radius: 20px;
-    }
-
-    .gallery-text {
-      color: #cfcfcf;
-      font-size: 15px;
-      max-width: 800px;
-      margin: 0 auto 50px auto;
-      line-height: 1.6;
-    }
-
-    .gallery-row {
-      display: flex;
-      justify-content: center;
-      gap: 80px;
-      flex-wrap: wrap;
-    }
-
-    .gallery-row img {
-      width: 350px;
-      object-fit: cover;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      border-radius: 20px
-    }
-
-    .gallery-row img:hover {
-      cursor: pointer;
-      transform: translateY(-4px) scale(1.03);
-      box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-      z-index: 2;
-    }
-
-    @media (max-width: 1024px) {
-      .gallery-section { padding: 120px 8%; }
-      .gallery-main-title { font-size: 35px; }
-      .gallery-text { font-size: 15px; }
-      .gallery-row { gap: 80px; }
-      .gallery-row img { width: 340px; }
-    }
-
-    @media (max-width: 768px) {
-      .gallery-section { padding: 120px 8%; }
-      .gallery-main-title { font-size: 33px; }
-      .gallery-text { font-size: 14px; }
-      .gallery-row { gap: 75px; }
-      .gallery-row img { width: 330px; }
-    }
-
-    @media (max-width: 480px) {
-      .gallery-section { padding: 120px 8%; }
-      .gallery-main-title { font-size: 30px; }
-      .gallery-text { font-size: 13px; }
-      .gallery-row { gap: 70px; }
-      .gallery-row img { width: 320px; }
-    }
-
-    /* CONTATTI */
-    .contacts-section {
-      background-color: #151515;
-      padding: 100px 8%;
-      display: flex;
-      justify-content: space-between;
-      gap: 60px;
-      flex-wrap: wrap;
-    }
-
-    .contact-column h3 {
-      font-size: 26px;
-      margin-bottom: 20px;
-      color: white;
-    }
-
-    .contact-column ul {
-      list-style: none;
-      color: #cfcfcf;
-      line-height: 2;
-    }
-
-    .contact-column a {
-      color: #cfcfcf;
-      text-decoration: none;
-      transition: 0.3s;
-    }
-
-    .contact-column a:hover {
-      color: #ff9f43;
-    }
-
-    .newsletter input {
-      width: 250px;
-      padding: 10px;
-      border-radius: 5px;
-      border: none;
-      margin-right: 10px;
-    }
-      .newsletter button:hover {
-      cursor: pointer;
-      transform: translateY(1px) scale(1.01);
-      box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-      z-index: 2;
-    }
-
-    .newsletter button {
-      padding: 10px 18px;
-      border: none;
-      background: #e63946;
-      color: black;
-      border-radius: 5px;
-      font-weight: 700;
-      cursor: pointer;
-      font-family: Verdana;
-      font-size:13px;
-    }
-
-    @media (max-width: 1024px) {
-      .contacts-section { padding: 80px 5%; gap: 40px; }
-      .contact-column h3 { font-size: 22px; }
-      .contact-column { flex: 1 1 calc(50% - 20px); }
-    }
-
-    @media (max-width: 768px) {
-      .contacts-section { padding: 60px 20px; flex-direction: column; }
-      .contact-column { flex: 1 1 100%; }
-      .contact-column h3 { font-size: 18px; }
-      .newsletter input { width: 100%; margin-bottom: 10px; margin-right: 0; }
-      .newsletter button { width: 100%; }
-    }
-
-    @media (max-width: 480px) {
-      .contacts-section { padding: 40px 15px; }
-      .contact-column h3 { font-size: 16px; }
-      .contact-column ul { line-height: 1.8; font-size: 13px; }
-    }
-
-    /* LOGIN MODAL */
-  /* LOGIN & REGISTER MODAL */
-#login-modal {
-  display: none;
-  position: fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background: rgba(0,0,0,0.8);
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  padding: 20px;
-}
-
-.form-container {
-  width: 320px;
-  border-radius: 0.75rem;
-  background-color: rgba(22, 22, 22, 0.784);
-  padding: 2rem;
-  color: white;
-  max-height: 90vh;
-  overflow-y: auto;
-}
-
-.title {
-  text-align: center;
-  font-size: 1.5rem;
-  line-height: 2rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-}
-
-.form { margin-top: 1.5rem; }
-
-.input-group { margin-top: 0.25rem; font-size: 0.875rem; line-height: 1.25rem; }
-.input-group label { display: block; margin-bottom: 4px; color: rgba(22,22,22,0.784); }
-.input-group input {
-  width: 100%;
-  border-radius: 0.375rem;
-  border: 1px solid white;
-  outline: 0;
-  background-color: rgba(22, 22, 22, 0.508);
-  padding: 0.75rem 1rem;
-  color: whitesmoke;
-}
-/* STILE BOTTONE ORARIO E STATO */
 #status-button {
-    width: 200px;
-    padding: 12px;
-    border: none;
-    border-radius: 20px;
-    background:rgba(22, 22, 22, 0.929);
-    color: white;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    font-family: 'Montserrat', sans-serif;
-    margin-left: 25px;
-    
+  position:absolute; left:290px;
+  padding:8px 16px; border:1px solid rgba(255,255,255,0.1); border-radius:20px;
+  background:rgba(255,255,255,0.05); color:white; font-family:'Montserrat',sans-serif;
+  display:flex; align-items:center; gap:10px; backdrop-filter:blur(8px);
+}
+.time-info { display:flex; flex-direction:column; line-height:1.2; }
+.time-info span { font-size:10px; color:rgba(255,255,255,0.4); letter-spacing:1px; }
+.time-info strong { font-size:13px; color:white; letter-spacing:1px; }
+.status-badge { padding:4px 10px; border-radius:20px; font-size:10px; font-weight:800; letter-spacing:1.5px; }
+.status-badge.open { background:rgba(34,197,94,0.12); border:1px solid rgba(34,197,94,0.35); color:#4ade80; }
+.status-badge.closed { background:rgba(230,57,70,0.12); border:1px solid rgba(230,57,70,0.35); color:#ff8080; }
+
+.nav-center ul { display:flex; gap:2px; list-style:none; }
+.nav-center a {
+  color:rgba(255,255,255,0.55); font-weight:600; text-decoration:none;
+  font-size:12px; letter-spacing:2px; text-transform:uppercase;
+  transition:all 0.25s ease; cursor:pointer; padding:9px 16px; border-radius:7px; display:block;
+}
+.nav-center a:hover { color:white; background:rgba(255,255,255,0.07); }
+.nav-center li:last-child a {
+  color:#ff6b6b; border:1px solid rgba(230,57,70,0.35); background:rgba(230,57,70,0.08);
+  padding:8px 18px; border-radius:20px;
+}
+.nav-center li:last-child a:hover { background:rgba(230,57,70,0.2); border-color:rgba(230,57,70,0.6); color:white; }
+.social-icons { position:absolute; right:50px; display:flex; gap:8px; }
+.social-icons a {
+  width:34px; height:34px; border:1px solid rgba(255,255,255,0.12);
+  background:rgba(255,255,255,0.04); display:flex; justify-content:center; align-items:center;
+  border-radius:8px; color:rgba(255,255,255,0.5); font-size:14px;
+  transition:all 0.25s ease; text-decoration:none;
+}
+.social-icons a:hover { background:rgba(230,57,70,0.15); border-color:rgba(230,57,70,0.45); color:#ff8080; transform:translateY(-2px); }
+.menu-toggle {
+  display:none; position:absolute; right:20px; top:50%; transform:translateY(-50%);
+  background:transparent; border:none; color:white; font-size:24px; cursor:pointer; z-index:11;
 }
 
-#status-button .content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+/* ===== HERO ===== */
+.hero {
+  height:100vh; min-height:680px; position:relative;
+  display:flex; align-items:center; justify-content:center; text-align:center; overflow:hidden;
 }
-
-#status-button .left {
-    text-align: left;
+.hero-bg {
+  position:absolute; inset:0;
+  background-image:url('https://static.wixstatic.com/media/a24994_e80e1267c121468ea62129502fda4b57~mv2.png/v1/fill/w_640,h_428,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/a24994_e80e1267c121468ea62129502fda4b57~mv2.png');
+  background-size:cover; background-position:center;
+  filter:brightness(0.3) saturate(0.6); transform:scale(1.04);
 }
-
-#status-button .right {
-    font-weight: bold;
-    font-size: 20px;
+.hero-overlay {
+  position:absolute; inset:0; z-index:1;
+  background:radial-gradient(ellipse at 50% 100%,rgba(0,0,0,0.9) 0%,transparent 60%),
+    linear-gradient(180deg,rgba(0,0,0,0.45) 0%,transparent 40%,rgba(0,0,0,0.55) 100%);
 }
-
-#status-button .open {
-    color: green;
+.hero-texture {
+  position:absolute; inset:0; z-index:2; pointer-events:none;
+  background-image:radial-gradient(circle at 1px 1px,rgba(255,255,255,0.02) 1px,transparent 0);
+  background-size:28px 28px;
 }
-
-#status-button .closed {
-    color:  #e63946;
+.hero-content {
+  position:relative; z-index:3;
+  display:flex; flex-direction:column; align-items:center; padding:0 20px;
+  animation:fadeUp 1s ease both;
 }
+@keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
 
-@media (max-width: 768px) {
-  .form-container { width: 90%; max-width: 320px; }
-  #status-button { width: auto; font-size: 14px; margin-left: 10px; padding: 8px 12px; }
-  #status-button .right { font-size: 18px; }
+.hero-badge {
+  display:inline-flex; align-items:center; gap:8px;
+  padding:8px 22px; background:rgba(230,57,70,0.1); border:1px solid rgba(230,57,70,0.28);
+  border-radius:50px; font-size:11px; font-weight:800; letter-spacing:3px; text-transform:uppercase;
+  color:#ff8080; margin-bottom:28px;
+  animation:fadeUp 1s 0.2s ease both; opacity:0;
 }
+.hero-badge .dot { width:7px; height:7px; background:#4ade80; border-radius:50%; box-shadow:0 0 8px rgba(74,222,128,0.9); animation:pulseDot 2s infinite; }
+@keyframes pulseDot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.6;transform:scale(1.4)} }
 
-@media (max-width: 480px) {
-  .form-container { width: 95%; padding: 1.5rem; }
-  .input-group input { font-size: 16px; }
-  #status-button { width: auto; font-size: 12px; padding: 6px 10px; }
-  #status-button .content { flex-direction: column; align-items: flex-start; }
+.hero h1 {
+  font-family:'Playfair Display',serif;
+  font-size:clamp(62px,10vw,108px); font-weight:800; font-style:italic; line-height:1;
+  color:white; text-shadow:0 2px 30px rgba(0,0,0,0.6); margin-bottom:10px;
+  animation:fadeUp 1s 0.35s ease both; opacity:0;
 }
-/* OVERLAY SCURO */
-#closed-overlay {
-  display: none; /* nascosto finché non serve */
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  backdrop-filter: blur(3px);
-  background: rgba(0, 0, 0, 0.65);
-  z-index: 99999;
-
-  justify-content: center;
-  align-items: center;
+.hero-school {
+  font-size:clamp(11px,1.4vw,15px); font-weight:600; letter-spacing:5px;
+  text-transform:uppercase; color:rgba(255,255,255,0.38); margin-bottom:40px;
+  animation:fadeUp 1s 0.5s ease both; opacity:0;
 }
+.hero-tagline {
+  background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1);
+  border-radius:14px; padding:20px 36px; margin-bottom:48px; max-width:500px;
+  animation:fadeUp 1s 0.65s ease both; opacity:0; backdrop-filter:blur(8px);
+}
+.hero-tagline p { font-size:15px; color:rgba(255,255,255,0.65); line-height:1.65; font-weight:400; }
+.hero-tagline strong { color:white; font-weight:700; }
 
+.hero-cta { display:flex; gap:16px; flex-wrap:wrap; justify-content:center; animation:fadeUp 1s 0.8s ease both; opacity:0; }
+.btn-primary {
+  display:inline-flex; align-items:center; gap:10px;
+  padding:18px 46px; background:linear-gradient(135deg,#b22222,#e63946);
+  color:white; font-weight:800; font-size:14px; letter-spacing:2px; text-transform:uppercase;
+  border-radius:50px; text-decoration:none; transition:all 0.3s ease;
+  box-shadow:0 8px 32px rgba(230,57,70,0.5); border:1px solid rgba(255,255,255,0.08);
+}
+.btn-primary:hover { transform:translateY(-4px); box-shadow:0 14px 40px rgba(230,57,70,0.65); }
+.btn-ghost {
+  display:inline-flex; align-items:center; gap:10px;
+  padding:18px 36px; background:rgba(255,255,255,0.06); color:rgba(255,255,255,0.8);
+  font-weight:700; font-size:14px; letter-spacing:2px; text-transform:uppercase;
+  border-radius:50px; text-decoration:none; border:1px solid rgba(255,255,255,0.15); transition:all 0.3s ease;
+}
+.btn-ghost:hover { background:rgba(255,255,255,0.1); border-color:rgba(255,255,255,0.3); color:white; transform:translateY(-3px); }
 
-/* POPUP CENTRATO */
-#closed-popup {
-  width: 360px;
-  padding: 1.5rem;
-  background-color: rgba(6, 6, 6, 0.89);
-  border-radius: 12px;
+.scroll-hint {
+  position:absolute; bottom:36px; left:50%; transform:translateX(-50%);
+  z-index:3; display:flex; flex-direction:column; align-items:center; gap:8px;
+  animation:fadeUp 1s 1.2s ease both; opacity:0;
+}
+.scroll-hint span { font-size:9px; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,0.28); }
+.scroll-arrow { width:1px; height:40px; background:linear-gradient(180deg,rgba(255,255,255,0.35),transparent); animation:scrollPulse 2s infinite; }
+@keyframes scrollPulse { 0%,100%{opacity:0.3} 50%{opacity:1} }
+
+/* ===== COME FUNZIONA — REDESIGN ===== */
+.how-section {
+  background: linear-gradient(180deg, #0d0404 0%, #110606 50%, #0d0404 100%);
+  padding: 130px 8%;
   text-align: center;
-  box-shadow: 0px 15px 40px rgba(0,0,0,0.4);
+  position: relative;
+  overflow: hidden;
+}
+.how-section::before {
+  content: "";
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(230,57,70,0.28), transparent);
+}
+.how-section::after {
+  content: "HOW";
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(120px, 18vw, 240px);
+  font-weight: 700; font-style: italic;
+  color: rgba(230,57,70,0.025);
+  pointer-events: none; white-space: nowrap;
+  letter-spacing: -4px; user-select: none;
+}
+.how-corner-tl, .how-corner-br {
+  position: absolute; width: 100px; height: 100px; pointer-events: none;
+}
+.how-corner-tl { top: 60px; left: 60px; border-top: 1px solid rgba(230,57,70,0.2); border-left: 1px solid rgba(230,57,70,0.2); }
+.how-corner-br { bottom: 60px; right: 60px; border-bottom: 1px solid rgba(230,57,70,0.2); border-right: 1px solid rgba(230,57,70,0.2); }
+
+.how-header { position: relative; z-index: 2; margin-bottom: 80px; }
+.section-eyebrow {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-size: 10px; font-weight: 800; letter-spacing: 5px;
+  text-transform: uppercase; color: var(--red); margin-bottom: 18px;
+}
+.section-eyebrow::before, .section-eyebrow::after {
+  content: ""; display: block; width: 28px; height: 1px; background: rgba(230,57,70,0.5);
+}
+.how-section h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(32px, 5vw, 56px);
+  font-weight: 700; line-height: 1.05; margin-bottom: 18px;
+}
+.how-section h2 em { font-style: italic; color: rgba(255,255,255,0.4); }
+.how-subtitle {
+  font-size: 15px; color: rgba(255,255,255,0.38);
+  max-width: 420px; margin: 0 auto; line-height: 1.75; font-weight: 400;
 }
 
-/* Testi */
-#closed-popup .title {
-  font-weight: 800;
-  font-size: 20px;
-  color: whitesmoke;
+.steps-wrapper {
+  position: relative; z-index: 2;
+  max-width: 1100px; margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 80px 1fr 80px 1fr;
+  align-items: start;
 }
 
-#closed-popup .description {
-  margin-top: 1rem;
-  font-size: 0.95rem;
-  line-height: 1.4rem;
-  color: white;
+.step-connector {
+  display: flex; align-items: center; justify-content: center;
+  padding-top: 60px;
+}
+.step-connector-inner {
+  position: relative; width: 60px; height: 2px;
+  background: linear-gradient(90deg, rgba(230,57,70,0.5), rgba(230,57,70,0.2));
+}
+.step-connector-inner::before {
+  content: "";
+  position: absolute; right: -1px; top: 50%; transform: translateY(-50%);
+  width: 6px; height: 6px; border-radius: 50%; background: rgba(230,57,70,0.6);
 }
 
-/* Pulsante OK */
-#closed-popup .accept {
-  margin-top: 1.2rem;
-  font-size: 0.85rem;
-  background-color: #e63946;
-  font-weight: 700;
-  border-radius: 8px;
-  color: white;
-  padding: 0.7rem 1.4rem;
-  border: none;
-  cursor: pointer;
-  transition: 0.2s ease;
+.step-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 24px;
+  padding: 40px 32px 36px;
+  position: relative; text-align: left;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  overflow: hidden; cursor: default;
+}
+.step-card::before {
+  content: ""; position: absolute; inset: 0; border-radius: 24px;
+  border: 1px solid rgba(230,57,70,0); transition: border-color 0.4s ease; pointer-events: none;
+}
+.step-card::after {
+  content: ""; position: absolute; bottom: -60px; right: -40px;
+  width: 180px; height: 180px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(230,57,70,0.12) 0%, transparent 70%);
+  opacity: 0; transition: opacity 0.4s ease, transform 0.4s ease; pointer-events: none;
+}
+.step-card:hover {
+  background: rgba(255,255,255,0.055);
+  transform: translateY(-10px);
+  box-shadow: 0 24px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(230,57,70,0.15), inset 0 1px 0 rgba(255,255,255,0.06);
+}
+.step-card:hover::before { border-color: rgba(230,57,70,0.2); }
+.step-card:hover::after { opacity: 1; transform: scale(1.2); }
+.step-card:hover .step-icon-wrap { background: rgba(230,57,70,0.14); border-color: rgba(230,57,70,0.38); }
+.step-card:hover .step-icon-wrap .emoji { transform: scale(1.15) rotate(-5deg); }
+
+.step-bg-num {
+  position: absolute; top: -14px; right: 18px;
+  font-family: 'Playfair Display', serif;
+  font-size: 90px; font-weight: 700; font-style: italic;
+  color: rgba(255,255,255,0.025); line-height: 1;
+  user-select: none; pointer-events: none; transition: color 0.4s ease;
+}
+.step-card:hover .step-bg-num { color: rgba(230,57,70,0.06); }
+
+.step-num-pill {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px;
+  background: rgba(230,57,70,0.1); border: 1px solid rgba(230,57,70,0.28);
+  border-radius: 8px; font-size: 10px; font-weight: 800; letter-spacing: 1px;
+  color: #ff8080; margin-bottom: 20px;
+}
+.step-icon-wrap {
+  width: 58px; height: 58px;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px; display: flex; align-items: center; justify-content: center;
+  margin-bottom: 22px; transition: all 0.3s ease;
+}
+.step-icon-wrap .emoji {
+  font-size: 26px; display: block;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.step-card h3 { font-size: 18px; font-weight: 800; color: white; margin-bottom: 12px; letter-spacing: 0.3px; }
+.step-card p { font-size: 13.5px; color: rgba(255,255,255,0.44); line-height: 1.75; font-weight: 400; }
+.step-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-top: 22px; font-size: 10px; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase; color: rgba(230,57,70,0.6);
+  border-top: 1px solid rgba(255,255,255,0.06); padding-top: 16px; width: 100%;
+}
+.step-tag::before { content: ""; width: 16px; height: 1px; background: rgba(230,57,70,0.4); flex-shrink: 0; }
+
+.how-cta {
+  position: relative; z-index: 2;
+  margin-top: 72px; display: flex; flex-direction: column; align-items: center; gap: 16px;
+}
+.how-cta-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 3px;
+  text-transform: uppercase; color: rgba(255,255,255,0.25);
 }
 
-#closed-popup .accept:hover {
-  background-color: white;
-  color: black;
+/* Scroll reveal for how section */
+.step-card, .step-connector {
+  opacity: 0; transform: translateY(30px);
+  transition-property: opacity, transform;
+  transition-duration: 0.6s;
+  transition-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
+.step-card.visible, .step-connector.visible { opacity: 1; transform: translateY(0); }
+.steps-wrapper > .step-card:nth-child(1) { transition-delay: 0s; }
+.steps-wrapper > .step-connector:nth-child(2) { transition-delay: 0.2s; }
+.steps-wrapper > .step-card:nth-child(3) { transition-delay: 0.3s; }
+.steps-wrapper > .step-connector:nth-child(4) { transition-delay: 0.5s; }
+.steps-wrapper > .step-card:nth-child(5) { transition-delay: 0.6s; }
+.how-header { opacity: 0; transform: translateY(20px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.how-header.visible { opacity: 1; transform: translateY(0); }
+.how-cta { opacity: 0; transform: translateY(20px); transition: opacity 0.7s 0.7s ease, transform 0.7s 0.7s ease; }
+.how-cta.visible { opacity: 1; transform: translateY(0); }
 
-@media (max-width: 768px) {
-  #closed-popup { width: 85%; max-width: 360px; padding: 1.2rem; }
-  #closed-popup .title { font-size: 18px; }
-  #closed-popup .description { font-size: 0.9rem; }
+/* ===== STORIA ===== */
+.story-section {
+  background:linear-gradient(180deg,#110606,#0d0404); padding:120px 8%;
+  display:flex; align-items:center; gap:80px; position:relative;
 }
-
-@media (max-width: 480px) {
-  #closed-popup { width: 90%; padding: 1rem; }
-  #closed-popup .title { font-size: 16px; }
-  #closed-popup .description { font-size: 0.85rem; }
+.story-section::before { content:""; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,rgba(255,255,255,0.05),transparent); }
+.story-text { flex:1; }
+.story-text h2 { font-family:'Playfair Display',serif; font-size:clamp(30px,3.5vw,48px); font-weight:700; line-height:1.1; margin-bottom:22px; }
+.story-text h2 em { font-style:italic; color:rgba(255,255,255,0.58); }
+.red-bar { width:46px; height:3px; background:var(--red); border-radius:2px; margin-bottom:22px; }
+.story-text p { color:rgba(255,255,255,0.52); font-size:16px; line-height:1.85; margin-bottom:30px; max-width:480px; }
+.btn-outline {
+  display:inline-block; padding:13px 30px;
+  border:1px solid rgba(230,57,70,0.38); background:rgba(230,57,70,0.07);
+  color:#ff8080; font-weight:700; font-size:12px; letter-spacing:2px; text-transform:uppercase;
+  border-radius:50px; text-decoration:none; transition:all 0.3s ease;
 }
+.btn-outline:hover { background:rgba(230,57,70,0.18); color:white; transform:translateY(-2px); }
+.story-stats { display:flex; gap:34px; margin-top:34px; padding-top:30px; border-top:1px solid rgba(255,255,255,0.07); }
+.stat-num { font-family:'Playfair Display',serif; font-size:32px; font-weight:700; color:white; display:block; line-height:1; }
+.stat-label { font-size:10px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.28); margin-top:4px; display:block; }
+.story-image { flex:1; position:relative; display:flex; justify-content:flex-end; }
+.story-image img { width:100%; max-width:500px; border-radius:20px; object-fit:cover; filter:brightness(0.87) contrast(1.04); box-shadow:-16px 18px 50px rgba(0,0,0,0.55),0 0 0 1px rgba(255,255,255,0.04); }
+.story-image::before { content:""; position:absolute; top:-14px; right:-14px; width:80px; height:80px; border-top:2px solid rgba(230,57,70,0.32); border-right:2px solid rgba(230,57,70,0.32); border-radius:0 12px 0 0; z-index:1; }
 
+/* ===== GALLERY ===== */
+.gallery-section { background:linear-gradient(180deg,#0d0404,#080404); padding:120px 8%; text-align:center; position:relative; }
+.gallery-section::before { content:""; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,rgba(255,255,255,0.05),transparent); }
+.gallery-section h2 { font-family:'Playfair Display',serif; font-size:clamp(28px,4vw,44px); font-weight:700; margin-bottom:16px; }
+.section-rule { width:50px; height:3px; background:var(--red); border-radius:2px; margin:0 auto 56px; }
+.gallery-section .desc { color:rgba(255,255,255,0.42); font-size:15px; max-width:580px; margin:0 auto 56px; line-height:1.75; }
+.gallery-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; max-width:1060px; margin:0 auto; }
+.gallery-item { position:relative; overflow:hidden; border-radius:16px; border:1px solid rgba(255,255,255,0.06); cursor:pointer; aspect-ratio:4/3; }
+.gallery-item img { width:100%; height:100%; object-fit:cover; transition:transform 0.5s ease,filter 0.4s ease; filter:brightness(0.8) saturate(0.85); }
+.gallery-item:hover img { transform:scale(1.07); filter:brightness(0.95) saturate(1.1); }
+.gallery-item::after { content:""; position:absolute; inset:0; background:linear-gradient(180deg,transparent 50%,rgba(0,0,0,0.55) 100%); }
 
-.input-group input:focus { border-color: white; }
+/* ===== CONTATTI ===== */
+.contacts-section { background:#060202; padding:100px 8% 60px; border-top:1px solid rgba(255,255,255,0.04); }
+.contacts-grid { display:grid; grid-template-columns:2fr 1fr 1.5fr 1.5fr; gap:52px; max-width:1140px; margin:0 auto 52px; }
+.contact-brand img { width:52px; margin-bottom:16px; filter:drop-shadow(0 0 6px rgba(230,57,70,0.2)); }
+.contact-brand p { color:rgba(255,255,255,0.38); font-size:14px; line-height:1.75; max-width:210px; }
+.contact-col h4 { font-size:10px; font-weight:800; letter-spacing:3px; text-transform:uppercase; color:var(--red); margin-bottom:18px; }
+.contact-col ul { list-style:none; display:flex; flex-direction:column; gap:11px; }
+.contact-col ul li { font-size:14px; color:rgba(255,255,255,0.42); display:flex; align-items:flex-start; gap:10px; line-height:1.5; }
+.contact-col ul li i { color:rgba(230,57,70,0.58); margin-top:3px; font-size:12px; flex-shrink:0; }
+.contact-col a { color:rgba(255,255,255,0.42); text-decoration:none; transition:color 0.2s; }
+.contact-col a:hover { color:rgba(230,57,70,0.9); }
+.newsletter-form { display:flex; flex-direction:column; gap:10px; }
+.newsletter-form input { width:100%; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:12px 16px; font-size:13px; font-family:'Montserrat',sans-serif; color:white; outline:none; transition:border-color 0.25s; }
+.newsletter-form input::placeholder { color:rgba(255,255,255,0.24); }
+.newsletter-form input:focus { border-color:rgba(230,57,70,0.45); }
+.newsletter-form button { padding:12px; background:linear-gradient(135deg,#b22222,#e63946); color:white; border:none; border-radius:10px; font-weight:800; font-size:11px; letter-spacing:2px; text-transform:uppercase; cursor:pointer; font-family:'Montserrat',sans-serif; transition:all 0.3s ease; }
+.newsletter-form button:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(230,57,70,0.4); }
+.footer-bottom { max-width:1140px; margin:0 auto; padding-top:26px; border-top:1px solid rgba(255,255,255,0.05); display:flex; justify-content:space-between; align-items:center; gap:16px; }
+.footer-bottom p { font-size:12px; color:rgba(255,255,255,0.18); letter-spacing:1px; }
+.footer-socials { display:flex; gap:8px; }
+.footer-socials a { width:30px; height:30px; border:1px solid rgba(255,255,255,0.07); background:rgba(255,255,255,0.02); display:flex; justify-content:center; align-items:center; border-radius:7px; color:rgba(255,255,255,0.3); font-size:12px; text-decoration:none; transition:all 0.25s ease; }
+.footer-socials a:hover { background:rgba(230,57,70,0.15); border-color:rgba(230,57,70,0.4); color:#ff8080; }
 
-.forgot { display: flex; justify-content: flex-end; font-size: 0.75rem; line-height: 1rem; color: rgba(156, 163, 175,1); margin: 8px 0 14px 0; }
-.forgot a,.signup a { color: rgba(243, 244, 246, 1); text-decoration: none; font-size: 14px; }
-.forgot a:hover, .signup a:hover { text-decoration: underline rgba(167, 139, 250, 1); }
+/* ===== LOGIN MODAL ===== */
+#login-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); backdrop-filter:blur(6px); justify-content:center; align-items:center; z-index:1000; padding:20px; }
+.modal-inner { position:relative; }
+#close-login { position:absolute; top:-18px; right:-18px; cursor:pointer; font-size:26px; color:rgba(255,255,255,0.5); background:none; border:none; transition:color 0.2s; line-height:1; }
+#close-login:hover { color:white; }
+.form-container { width:340px; max-height:90vh; overflow-y:auto; border-radius:16px; background:rgba(10,3,3,0.97); backdrop-filter:blur(20px); border:1px solid rgba(230,57,70,0.18); padding:2rem; color:white; box-shadow:0 20px 60px rgba(0,0,0,0.7); }
+.form-container::-webkit-scrollbar { width:4px; }
+.form-container::-webkit-scrollbar-thumb { background:rgba(230,57,70,0.4); border-radius:4px; }
+.modal-title { text-align:center; font-size:17px; font-weight:800; letter-spacing:2px; text-transform:uppercase; margin-bottom:22px; }
+.form { display:flex; flex-direction:column; gap:11px; margin-top:4px; }
+.form .input-group label { display:block; font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.35); margin-bottom:6px; }
+.form .input-group input { width:100%; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:12px 16px; font-size:14px; font-family:'Montserrat',sans-serif; color:white; outline:none; transition:border-color 0.25s; }
+.form .input-group input:focus { border-color:rgba(230,57,70,0.5); }
+.forgot { display:flex; justify-content:flex-end; font-size:12px; color:rgba(255,255,255,0.35); margin:2px 0 6px; }
+.forgot a,.signup a { color:rgba(255,255,255,0.5); text-decoration:none; }
+.forgot a:hover,.signup a:hover { color:#ff8080; }
+.sign { width:100%; padding:13px; background:linear-gradient(135deg,#b22222,#e63946); color:white; border:none; border-radius:10px; font-weight:800; font-size:13px; letter-spacing:2px; text-transform:uppercase; cursor:pointer; font-family:'Montserrat',sans-serif; transition:all 0.3s ease; box-shadow:0 4px 16px rgba(230,57,70,0.3); margin-top:4px; }
+.sign:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(230,57,70,0.5); }
+.social-message { display:flex; align-items:center; padding:14px 0 6px; gap:12px; }
+.modal-line { flex:1; height:1px; background:rgba(255,255,255,0.07); }
+.social-message .message { font-size:11px; color:rgba(255,255,255,0.3); white-space:nowrap; letter-spacing:1px; }
+.signup { font-size:13px; color:rgba(255,255,255,0.35); text-align:center; margin-top:10px; }
+.signup a { color:rgba(255,255,255,0.55); cursor:pointer; }
+#register-form { margin-top:8px; }
 
-.sign { display: block; width: 100%; background-color: #e63946; padding: 0.75rem; text-align: center; color: rgba(17, 24, 39, 1); border: none; border-radius: 0.375rem; font-weight: 600; cursor:pointer; }
+/* ===== CLOSED OVERLAY ===== */
+#closed-overlay { display:none; position:fixed; inset:0; backdrop-filter:blur(6px); background:rgba(0,0,0,0.75); z-index:99999; justify-content:center; align-items:center; }
+#closed-popup { width:360px; max-width:90vw; padding:40px 32px; background:rgba(10,3,3,0.98); border:1px solid rgba(230,57,70,0.22); border-radius:20px; text-align:center; box-shadow:0 20px 60px rgba(0,0,0,0.8); }
+#closed-popup .icon { width:56px; height:56px; border-radius:50%; background:rgba(230,57,70,0.1); border:1px solid rgba(230,57,70,0.28); display:flex; justify-content:center; align-items:center; margin:0 auto 18px; font-size:22px; }
+#closed-popup .title { font-weight:800; font-size:17px; color:white; letter-spacing:1px; margin-bottom:10px; }
+#closed-popup .description { font-size:14px; line-height:1.65; color:rgba(255,255,255,0.5); margin-bottom:26px; }
+#closed-popup .accept { padding:13px 36px; background:linear-gradient(135deg,#b22222,#e63946); color:white; border:none; border-radius:50px; font-weight:800; font-size:13px; letter-spacing:2px; text-transform:uppercase; cursor:pointer; font-family:'Montserrat',sans-serif; transition:all 0.3s ease; box-shadow:0 6px 20px rgba(230,57,70,0.4); }
+#closed-popup .accept:hover { transform:translateY(-2px); box-shadow:0 10px 28px rgba(230,57,70,0.55); }
 
-.social-message { display: flex; align-items: center; padding-top: 1rem; }
-.line { height: 1px; flex: 1 1 0%; background-color: rgba(55, 65, 81, 1); }
-.social-message .message { padding-left: 0.75rem; padding-right: 0.75rem; font-size: 0.875rem; line-height: 1.25rem; color: rgba(156, 163, 175, 1); }
-
-/* REGISTER FORM */
-#register-form { margin-top: 1rem; }
+/* ===== RESPONSIVE ===== */
+@media (max-width:1024px) {
+  .contacts-grid { grid-template-columns:1fr 1fr; gap:36px; }
+  #status-button { left:220px; }
+  .story-section { gap:48px; padding:100px 6%; }
+}
+@media (max-width:900px) {
+  .steps-wrapper {
+    grid-template-columns: 1fr;
+    max-width: 460px; margin: 0 auto;
+  }
+  .step-connector {
+    padding: 8px 0 8px 50px;
+    justify-content: flex-start;
+  }
+  .step-connector-inner {
+    width: 2px; height: 40px;
+    background: linear-gradient(180deg, rgba(230,57,70,0.5), rgba(230,57,70,0.2));
+  }
+  .step-connector-inner::before {
+    bottom: -3px; top: auto; right: auto; left: 50%;
+    transform: translateX(-50%);
+  }
+  .how-corner-tl, .how-corner-br { display: none; }
+}
+@media (max-width:768px) {
+  .navbar { height:80px; padding:0 20px; }
+  .logo-left { left:20px; }
+  .logo-left img { width:48px; height:48px; }
+  .logo-brand .brand-sub { display:none; }
+  .logo-brand .brand-main { font-size:12px; }
+  #status-button { display:none; }
+  .nav-center { display:none; }
+  .nav-center.active { display:block; position:absolute; top:80px; left:0; width:100%; background:rgba(6,2,2,0.99); border-bottom:1px solid rgba(230,57,70,0.12); }
+  .nav-center.active ul { flex-direction:column; }
+  .nav-center.active a { padding:14px 24px; border-bottom:1px solid rgba(255,255,255,0.05); }
+  .social-icons { display:none; }
+  .menu-toggle { display:block; }
+  .story-section { flex-direction:column; padding:80px 6%; gap:48px; }
+  .story-image { justify-content:center; width:100%; }
+  .story-image img { max-width:100%; }
+  .story-image::before { display:none; }
+  .story-stats { gap:22px; flex-wrap:wrap; }
+  .gallery-grid { grid-template-columns:1fr 1fr; }
+  .contacts-grid { grid-template-columns:1fr 1fr; gap:26px; }
+  .footer-bottom { flex-direction:column; text-align:center; }
+  .hero-cta { flex-direction:column; align-items:center; }
+  .hero-tagline { padding:16px 24px; }
+  .how-section { padding: 100px 5%; }
+  .step-card { padding: 32px 24px 28px; }
+}
+@media (max-width:480px) {
+  .navbar { height:70px; }
+  .logo-left img { width:42px; height:42px; }
+  .gallery-grid { grid-template-columns:1fr; }
+  .contacts-grid { grid-template-columns:1fr; }
+  .story-stats { gap:18px; }
+}
   </style>
 </head>
-
 <body>
 
+<!-- NAVBAR -->
 <header class="navbar" id="navbar">
   <div class="logo-left">
     <img src="https://raw.githubusercontent.com/Rashmika274/ordini-bar-scuola-borsa/main/static/logo.png" alt="Logo">
+    <div class="logo-left-divider"></div>
+    <div class="logo-brand">
+      <span class="brand-sub">Sala &amp; Bar</span>
+      <span class="brand-main">Scuola Borsa</span>
+    </div>
   </div>
-
-  <!-- BOTTONE ORARIO E STATO -->
-  <div id="status-button-container" style="position:absolute; left:180px; top:50%; transform:translateY(-50%);">
-    <button id="status-button">
-        <div class="content">
-            <div class="left">
-                <div id="time"></div>
-                <div id="date"></div>
-                <h1 id="isBarOpen" hidden>{{data["open"]}}</h1>
-            </div>
-            <div class="right" id="status"></div>
-        </div>
-    </button>
+  <div id="status-button">
+    <div class="time-info">
+      <span id="date">—</span>
+      <strong id="time">—:—</strong>
+    </div>
+    <span class="status-badge closed" id="status">—</span>
+    <h1 id="isBarOpen" hidden>{{data["open"]}}</h1>
   </div>
-
   <button class="menu-toggle" id="menu-toggle">☰</button>
-
   <nav class="nav-center" id="nav-center">
     <ul>
       <li><a href="/">Home</a></li>
@@ -785,342 +506,277 @@
       <li><a id="login-btn">Login</a></li>
     </ul>
   </nav>
-
-  <div class="social-icons" id="social-icons">
+  <div class="social-icons">
     <a href="https://www.facebook.com/aziendaspecialediformazionescuolapaoloborsa/"><i class="fab fa-facebook-f"></i></a>
     <a href="https://www.instagram.com/scuola_borsa/"><i class="fab fa-instagram"></i></a>
     <a href="https://www.youtube.com/@ScuolaPaoloBorsaMonza"><i class="fab fa-youtube"></i></a>
   </div>
 </header>
 
-
+<!-- HERO -->
 <section class="hero" id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-texture"></div>
   <div class="hero-content">
-    <h2>SCUOLA BORSA</h2>
-    <h1>SALA BAR</h1>
-    <div class="buttons">
-      <a href="/menu" class="btn red">Ordina Ora</a>
+    <div class="hero-badge">
+      <span class="dot"></span>
+      Ordina Online — Consegna Al Piano
+    </div>
+    <h1>Sala Bar</h1>
+    <p class="hero-school">Scuola Paolo Borsa · Monza</p>
+    <div class="hero-tagline">
+      <p>Scegli cibi, bevande e dolci dal nostro menu,<br><strong>ordina Qui</strong> e ritira subito al bar.</p>
+    </div>
+    <div class="hero-cta">
+      <a href="/menu" class="btn-primary"><i class="fas fa-utensils"></i> Vai al Menu</a>
+      <a href="#come-funziona" class="btn-ghost"><i class="fas fa-info-circle"></i> Come funziona</a>
     </div>
   </div>
-</section>
-
-<!-- SEZIONE STORIA -->  
-<section class="experience-section" id="chi-siamo">
-  <div class="cocktail-box">
-    <h4 >SALA E BAR - SCUOLA BORSA</h4>
-    <h2>LA NOSTRA STORIA</h2>
-    <p>Dal 1861 al fianco della comunità:<br>
-    la Scuola Paolo Borsa è un punto di riferimento<br>
-    a Monza per la formazione professionale<br>
-    e la crescita culturale.</p>
-    <a href="https://www.scuola-borsa.it/corsi-tempo-libero" class="yellow-btn" style="text-align: center;">SCOPRI DI PIÙ</a>
-  </div>
-
-  <div style="width:50%; display:flex; justify-content:flex-end;">
-    <img src="https://raw.githubusercontent.com/Rashmika274/ordini-bar-scuola-borsa/main/static/chi%20siamo%206.png" style="width:800px; margin-left:50px;border-radius: 20px;">
+  <div class="scroll-hint">
+    <span>Scorri</span>
+    <div class="scroll-arrow"></div>
   </div>
 </section>
 
-<!-- ⭐⭐⭐ GALLERIA -->
+<!-- COME FUNZIONA — REDESIGN -->
+<section class="how-section" id="come-funziona">
+
+  <div class="how-corner-tl"></div>
+  <div class="how-corner-br"></div>
+
+  <div class="how-header">
+    <span class="section-eyebrow">Semplice e veloce</span>
+    <h2>Come <em>Funziona</em></h2>
+    <p class="how-subtitle">Tre passi e il tuo ordine è pronto. Nessuna fila, nessuna attesa.</p>
+  </div>
+
+  <div class="steps-wrapper">
+
+    <div class="step-card">
+      <span class="step-bg-num">01</span>
+      <div class="step-num-pill">01</div>
+      <div class="step-icon-wrap"><span class="emoji">📄</span></div>
+      <h3>Sfoglia il Menu</h3>
+      <p>Scegli tra cibi, bevande e dolci. Seleziona quello che vuoi con un click e aggiungilo al tuo ordine in pochi secondi.</p>
+      <span class="step-tag">Scegli i prodotti</span>
+    </div>
+
+    <div class="step-connector"><div class="step-connector-inner"></div></div>
+
+    <div class="step-card">
+      <span class="step-bg-num">02</span>
+      <div class="step-num-pill">02</div>
+      <div class="step-icon-wrap"><span class="emoji">📝</span></div>
+      <h3>Inserisci i Dati</h3>
+      <p>Aggiungi eventuali note, controlla le quantità e inserisci nome, cognome e classe. Tutto in una sola schermata.</p>
+      <span class="step-tag">Personalizza l'ordine</span>
+    </div>
+
+    <div class="step-connector"><div class="step-connector-inner"></div></div>
+
+    <div class="step-card">
+      <span class="step-bg-num">03</span>
+      <div class="step-num-pill">03</div>
+      <div class="step-icon-wrap"><span class="emoji">☕</span></div>
+      <h3>Ritira al Bar</h3>
+      <p>Premi INVIA e aspetta la conferma. Poi passa al bancone — il tuo ordine ti aspetta già pronto.</p>
+      <span class="step-tag">Goditi il tuo ordine</span>
+    </div>
+
+  </div>
+
+  <div class="how-cta">
+    <span class="how-cta-label">Pronto a ordinare?</span>
+    <a href="/menu" class="btn-primary"><i class="fas fa-utensils"></i>&nbsp; Vai al Menu</a>
+  </div>
+
+</section>
+
+<!-- STORIA -->
+<section class="story-section" id="chi-siamo">
+  <div class="story-text">
+    <span class="section-eyebrow">Sala e Bar — Scuola Borsa</span>
+    <h2>La Nostra <em>Storia</em></h2>
+    <div class="red-bar"></div>
+    <p>Dal 1861 al fianco della comunità: la Scuola Paolo Borsa è un punto di riferimento a Monza per la formazione professionale. I nostri studenti mettono in pratica ogni giorno passione e dedizione nel servire clienti e colleghi.</p>
+    <a href="https://www.scuola-borsa.it/corsi-tempo-libero" class="btn-outline" target="_blank">Scopri di più</a>
+    <div class="story-stats">
+      <div class="stat"><span class="stat-num">1861</span><span class="stat-label">Fondazione</span></div>
+      <div class="stat"><span class="stat-num">160+</span><span class="stat-label">Anni di storia</span></div>
+      <div class="stat"><span class="stat-num">∞</span><span class="stat-label">Passione</span></div>
+    </div>
+  </div>
+  <div class="story-image">
+    <img src="https://raw.githubusercontent.com/Rashmika274/ordini-bar-scuola-borsa/main/static/chi%20siamo%206.png" alt="La nostra storia">
+  </div>
+</section>
+
+<!-- GALLERY -->
 <section id="gallery" class="gallery-section">
-  <span class="gallery-visit"> SALA E BAR - SCUOLA BORSA</span>
-
-  <h3 class="gallery-main-title">I NOSTRI MOMENTI</h3>
-  <div class="yellow-line"></div>
-
-  <p class="gallery-text">
-   Al Bar della Scuola Paolo Borsa di Monza, ogni giorno è un'occasione per imparare e crescere. Gli studenti mettono in pratica le loro abilità, offrendo un servizio attento e professionale. I momenti vissuti qui raccontano storie di passione, dedizione e collaborazione. Questa galleria celebra la nostra esperienza e il nostro spirito di squadra.
-  </p>
-
-  <div class="gallery-row">
-    <img src="https://raw.githubusercontent.com/Rashmika274/ordini-bar-scuola-borsa/main/static/galleria%201.jpeg" alt="">
-    <img src="https://raw.githubusercontent.com/Rashmika274/ordini-bar-scuola-borsa/main/static/galleria%202.jpeg" alt="">
-    <img src="https://raw.githubusercontent.com/Rashmika274/ordini-bar-scuola-borsa/main/static/galleria%203.jpeg" alt="">
+  <span class="section-eyebrow">Sala e Bar — Scuola Borsa</span>
+  <h2>I Nostri Momenti</h2>
+  <div class="section-rule"></div>
+  <p class="desc">Al Bar della Scuola Paolo Borsa ogni giorno è un'occasione per imparare e crescere insieme.</p>
+  <div class="gallery-grid">
+    <div class="gallery-item"><img src="https://raw.githubusercontent.com/Rashmika274/ordini-bar-scuola-borsa/main/static/galleria%201.jpeg" alt="Galleria 1"></div>
+    <div class="gallery-item"><img src="https://raw.githubusercontent.com/Rashmika274/ordini-bar-scuola-borsa/main/static/galleria%202.jpeg" alt="Galleria 2"></div>
+    <div class="gallery-item"><img src="https://raw.githubusercontent.com/Rashmika274/ordini-bar-scuola-borsa/main/static/galleria%203.jpeg" alt="Galleria 3"></div>
   </div>
-
 </section>
 
-<!-- ⭐⭐⭐ CONTATTI -->
+<!-- CONTATTI -->
 <section class="contacts-section" id="contatti">
-
-  <div class="contact-column">
-    <img src="https://raw.githubusercontent.com/Rashmika274/ordini-bar-scuola-borsa/main/static/logo.png"  style="width:120px; margin-bottom:20px;">
-    <p style="color:#cfcfcf; max-width:250px;font-weight:500;">
-      Sala Bar - Scuola Borsa <br>
-      Professionalità, accoglienza e tradizione dal 1861.
-    </p>
+  <div class="contacts-grid">
+    <div class="contact-brand">
+      <img src="https://raw.githubusercontent.com/Rashmika274/ordini-bar-scuola-borsa/main/static/logo.png" alt="Logo">
+      <p>Sala Bar — Scuola Borsa.<br>Professionalità, accoglienza<br>e tradizione dal 1861.</p>
+    </div>
+    <div class="contact-col">
+      <h4>Link Rapidi</h4>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="#chi-siamo">Chi siamo</a></li>
+        <li><a href="#gallery">Galleria</a></li>
+        <li><a href="/menu">Menu</a></li>
+      </ul>
+    </div>
+    <div class="contact-col">
+      <h4>Contatti</h4>
+      <ul>
+        <li><i class="fa-solid fa-location-dot"></i>Via Borsa 10, 20900 Monza (MB)</li>
+        <li><i class="fa-solid fa-envelope"></i>info@scuola-borsa.it</li>
+        <li><i class="fa-solid fa-phone"></i>+039 6369230</li>
+      </ul>
+    </div>
+    <div class="contact-col">
+      <h4>Newsletter</h4>
+      <div class="newsletter-form">
+        <input type="email" placeholder="La tua email">
+        <button type="button">Iscriviti</button>
+      </div>
+    </div>
   </div>
-
-  <div class="contact-column">
-    <h3>Link Rapidi</h3>
-    <ul>
-      <li><a href="#">Home</a></li>
-      <li><a href="#chi-siamo">Chi siamo</a></li>
-      <li><a href="#gallery">Galleria</a></li>
-
-    </ul>
+  <div class="footer-bottom">
+    <p>© 2025 Scuola Paolo Borsa — Tutti i diritti riservati</p>
+    <div class="footer-socials">
+      <a href="https://www.facebook.com/aziendaspecialediformazionescuolapaoloborsa/"><i class="fab fa-facebook-f"></i></a>
+      <a href="https://www.instagram.com/scuola_borsa/"><i class="fab fa-instagram"></i></a>
+      <a href="https://www.youtube.com/@ScuolaPaoloBorsaMonza"><i class="fab fa-youtube"></i></a>
+    </div>
   </div>
-
-  <div class="contact-column">
-    <h3>Contatti</h3>
-    <ul>
-      <li><i class="fa-solid fa-location-dot"></i> Via Borsa 10 - 20900 Monza (MB)</li>
-      <li><i class="fa-solid fa-envelope"></i> info@scuola-borsa.it</li>
-      <li><i class="fa-solid fa-phone"></i> +039/6369230</li>
-    </ul>
-  </div>
-
-  <div class="contact-column newsletter">
-    <h3>Newsletter</h3>
-    <input type="email" placeholder="La tua email">
-    <button>Invia</button>
-  </div>
-
 </section>
 
 <!-- LOGIN MODAL -->
-<!-- LOGIN & REGISTER MODAL -->
 <div id="login-modal">
-  <div style="position:relative;">
-    <span id="close-login" style="position:absolute; top:-20px; right:-20px; cursor:pointer; font-size:30px; color:white;">&times;</span>
-
+  <div class="modal-inner">
+    <button id="close-login">&times;</button>
     <div class="form-container">
-      
-      <!-- LOGIN FORM -->
-      <p class="title">Login</p>
+      <p class="modal-title" id="modal-title">Login</p>
       <form class="form" id="login-form">
-        <div class="input-group">
-          <label for="username" style="color: white;">Username</label>
-          <input type="text" name="username" id="username" placeholder="">
-        </div>
-        <div class="input-group">
-          <label for="password" style="color: white;">Password</label>
-          <input type="password" name="password" id="password" placeholder="">
-          <div class="forgot">
-            <a href="#">Forgot Password ?</a>
-          </div>
-        </div>
-        <button class="sign" style="color: white;">Sign in</button>
+        <div class="input-group"><label for="username">Username</label><input type="text" name="username" id="username" placeholder="Il tuo username"></div>
+        <div class="input-group"><label for="password">Password</label><input type="password" name="password" id="password" placeholder="••••••••"></div>
+        <div class="forgot"><a href="#">Password dimenticata?</a></div>
+        <button class="sign" type="submit">Accedi</button>
       </form>
-
-      <!-- SOCIAL LOGIN MESSAGE -->
-      <div class="social-message">
-        <div class="line"></div>
-        <p class="message" style="color: rgba(245, 245, 245, 0.742);">Login with social accounts</p>
-        <div class="line"></div>
-      </div>
-
-      <!-- LINK TO REGISTER -->
-      <p class="signup" style="color:rgba(245, 245, 245, 0.742);">
-        Don't have an account? <a id="to-register" style="cursor:pointer;">Sign up</a>
-      </p>
-
-      <!-- REGISTER FORM -->
+      <div class="social-message"><div class="modal-line"></div><span class="message">oppure</span><div class="modal-line"></div></div>
+      <p class="signup">Non hai un account? <a id="to-register">Registrati</a></p>
       <div id="register-form" style="display:none;">
-        <p class="title"></p>
-        <form class="form" id="register-form-inner">
-          <div class="input-group">
-            <label for="reg-first" style="color: white;">First Name</label>
-            <input type="text" id="reg-first" placeholder="">
-          </div>
-          <div class="input-group">
-            <label for="reg-last" style="color: white;" >Last Name</label>
-            <input type="text" id="reg-last" placeholder="">
-          </div>
-          <div class="input-group">
-            <label for="reg-email" style="color: white;" >Email</label>
-            <input type="email" id="reg-email" placeholder="">
-          </div>
-          <div class="input-group">
-            <label for="reg-pass" style="color: white;" >Password</label>
-            <input type="password" id="reg-pass" placeholder="">
-          </div>
-          <div class="input-group">
-            <label for="reg-pass2" style="color: white;" >Confirm Password</label>
-            <input type="password" id="reg-pass2" placeholder="">
-          </div>
-          <button class="sign" style="color:white; margin-top:6px;">Create Account</button>
+        <form class="form" id="register-form-inner" style="margin-top:12px;">
+          <div class="input-group"><label>Nome</label><input type="text" id="reg-first" placeholder="Nome"></div>
+          <div class="input-group"><label>Cognome</label><input type="text" id="reg-last" placeholder="Cognome"></div>
+          <div class="input-group"><label>Email</label><input type="email" id="reg-email" placeholder="email@esempio.it"></div>
+          <div class="input-group"><label>Password</label><input type="password" id="reg-pass" placeholder="••••••••"></div>
+          <div class="input-group"><label>Conferma Password</label><input type="password" id="reg-pass2" placeholder="••••••••"></div>
+          <button class="sign" type="submit" style="margin-top:4px;">Crea Account</button>
         </form>
-        <p class="signup" style="color:rgba(245, 245, 245, 0.742);">
-          Already have an account? <a id="to-login" style="cursor:pointer;">Sign in</a>
-        </p>
+        <p class="signup" style="margin-top:10px;">Hai già un account? <a id="to-login">Accedi</a></p>
       </div>
-
     </div>
   </div>
 </div>
-<!-- POPUP ORARIO CHIUSO (OVERLAY + CENTRATO) -->
+
+<!-- CLOSED OVERLAY -->
 <div id="closed-overlay">
-    <div id="closed-popup" class="cookie-card">
-        <span class="title">⚠️ Servizio non disponibile</span>
-        <p class="description">
-            Il bar è attualmente <strong>CHIUSO</strong>.<br>
-            I servizi non sono più disponibili.
-        </p>
-        <div class="actions" style="justify-content: center;">
-            <button class="accept" id="close-popup-btn" style="font-weight:800;">OK</button>
-        </div>
-    </div>
+  <div id="closed-popup">
+    <div class="icon">⚠️</div>
+    <p class="title">Servizio non disponibile</p>
+    <p class="description">Il bar è attualmente <strong style="color:#ff8080;">CHIUSO</strong>.<br>I servizi non sono disponibili in questo momento.</p>
+    <button class="accept" id="close-popup-btn">OK, Ho capito</button>
+  </div>
 </div>
 
 <script>
-  // MOBILE MENU TOGGLE
-  const menuToggle = document.getElementById('menu-toggle');
-  const navCenter = document.getElementById('nav-center');
-  const socialIcons = document.getElementById('social-icons');
+// MOBILE MENU
+const menuToggle = document.getElementById('menu-toggle');
+const navCenter = document.getElementById('nav-center');
+menuToggle.addEventListener('click', () => navCenter.classList.toggle('active'));
+document.querySelectorAll('.nav-center a').forEach(l => l.addEventListener('click', () => navCenter.classList.remove('active')));
 
-  menuToggle.addEventListener('click', () => {
-    navCenter.classList.toggle('active');
-    socialIcons.classList.toggle('active');
-  });
-
-  // Chiudi menu quando clicki su un link
-  document.querySelectorAll('.nav-center a').forEach(link => {
-    link.addEventListener('click', () => {
-      navCenter.classList.remove('active');
-      socialIcons.classList.remove('active');
-    });
-  });
-
-  const navbar = document.getElementById("navbar"); 
-  const hero = document.getElementById("hero");
-
-  window.addEventListener("scroll", () => {
-    const heroBottom = hero.offsetTop + hero.offsetHeight;
-    navbar.classList.toggle("hidden", window.scrollY > heroBottom - 150);
-  });
-
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener("click", function(e) {
-      e.preventDefault();
-      const target = document.querySelector(this.getAttribute("href"));
-      if (target) target.scrollIntoView({ behavior: "smooth" });
-    });
-  });
-
- // APRE IL MODAL
-const loginBtn = document.getElementById('login-btn');
-const loginModal = document.getElementById('login-modal');
-const closeLogin = document.getElementById('close-login');
-
-loginBtn.addEventListener('click', () => {
-  loginModal.style.display = 'flex';
+// NAVBAR HIDE
+const navbar = document.getElementById("navbar");
+const heroEl = document.getElementById("hero");
+window.addEventListener("scroll", () => {
+  navbar.classList.toggle("hidden", window.scrollY > heroEl.offsetTop + heroEl.offsetHeight - 120);
 });
 
-closeLogin.addEventListener('click', () => {
-  loginModal.style.display = 'none';
+// SMOOTH SCROLL
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener("click", function(e) {
+    const t = document.querySelector(this.getAttribute("href"));
+    if (t) { e.preventDefault(); t.scrollIntoView({ behavior:"smooth" }); }
+  });
 });
 
-window.addEventListener('click', (e) => {
-  if (e.target === loginModal) {
-    loginModal.style.display = 'none';
+// STATUS
+function getRomeParts() {
+  const parts = {};
+  new Intl.DateTimeFormat('it-IT', { timeZone:'Europe/Rome', hour:'numeric', minute:'numeric', day:'numeric', month:'numeric', hour12:false })
+    .formatToParts(new Date()).forEach(p => parts[p.type] = p.value);
+  return { h:parseInt(parts.hour), m:parseInt(parts.minute), d:parseInt(parts.day), mo:parseInt(parts.month)-1 };
+}
+function updateStatus() {
+  const t = getRomeParts();
+  document.getElementById("time").textContent = `${String(t.h).padStart(2,"0")}:${String(t.m).padStart(2,"0")}`;
+  document.getElementById("date").textContent = `${t.d} ${["Gen","Feb","Mar","Apr","Mag","Giu","Lug","Ago","Set","Ott","Nov","Dic"][t.mo]}`;
+  const open = document.getElementById("isBarOpen").innerText.trim() === "true";
+  const badge = document.getElementById("status");
+  badge.textContent = open ? "OPEN" : "CLOSED";
+  badge.className = "status-badge " + (open ? "open" : "closed");
+}
+setInterval(updateStatus, 1000);
+updateStatus();
+
+// CLOSED POPUP
+function checkClosed() {
+  if (document.getElementById("status").textContent === "CLOSED") {
+    document.getElementById("closed-overlay").style.display = "flex";
+    document.body.style.overflow = "hidden";
   }
-});
-
-// SWITCH LOGIN ↔ REGISTER
-const loginForm = document.getElementById("login-form");
-const registerForm = document.getElementById("register-form");
-const toRegister = document.getElementById("to-register");
-const toLogin = document.getElementById("to-login");
-const formContainer = document.querySelector(".form-container");
-const socialMessage = document.querySelector(".social-message");
-const titleText = formContainer.querySelector(".title");
-
-// Mostra register
-toRegister.addEventListener("click", () => {
-  loginForm.style.display = "none";
-  registerForm.style.display = "block";
-  socialMessage.style.display = "none";
-  titleText.innerText = "Register";
-});
-
-// Torna a login
-toLogin.addEventListener("click", () => {
-  loginForm.style.display = "block";
-  registerForm.style.display = "none";
-  socialMessage.style.display = "flex";
-  titleText.innerText = "Login";
-});
-// --- BOTTONE ORARIO E STATO ---
-function getRomeTimeParts() {
-    const now = new Date();
-    const formatter = new Intl.DateTimeFormat('it-IT', {
-        timeZone: 'Europe/Rome',
-        hour: 'numeric',
-        minute: 'numeric',
-        day: 'numeric',
-        month: 'numeric',
-        year: 'numeric',
-        hour12: false
-    });
-    const parts = formatter.formatToParts(now);
-    const map = {};
-    parts.forEach(p => map[p.type] = p.value);
-    
-    return {
-        hours: parseInt(map.hour),
-        minutes: parseInt(map.minute),
-        day: parseInt(map.day),
-        month: parseInt(map.month) - 1 // mesi in JS sono 0-11
-    };
 }
+document.getElementById("close-popup-btn").addEventListener("click", () => window.location.href="https://www.google.com");
+checkClosed();
 
-function updateStatusButton() {
-    const romeTime = getRomeTimeParts();
+// LOGIN MODAL
+const loginModal = document.getElementById('login-modal');
+document.getElementById('login-btn').addEventListener('click', () => loginModal.style.display='flex');
+document.getElementById('close-login').addEventListener('click', () => loginModal.style.display='none');
+window.addEventListener('click', e => { if (e.target === loginModal) loginModal.style.display='none'; });
+const lf = document.getElementById("login-form");
+const rf = document.getElementById("register-form");
+const sm = document.querySelector(".social-message");
+const mt = document.getElementById("modal-title");
+document.getElementById("to-register").addEventListener("click", () => { lf.style.display="none"; rf.style.display="block"; sm.style.display="none"; mt.textContent="Registrati"; });
+document.getElementById("to-login").addEventListener("click", () => { lf.style.display="flex"; rf.style.display="none"; sm.style.display="flex"; mt.textContent="Login"; });
 
-    // ORARIO ATTUALE
-    let hours = romeTime.hours;
-    let minutes = romeTime.minutes.toString().padStart(2, "0");
-    document.getElementById("time").innerText = `${hours.toString().padStart(2,"0")}:${minutes}`;
+// SCROLL REVEAL — Come Funziona
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
 
-    // DATA ATTUALE
-    let day = romeTime.day;
-    let monthNames = ["Gen", "Feb", "Mar", "Apr", "Mag", "Giu",
-                      "Lug", "Ago", "Set", "Ott", "Nov", "Dic"];
-    let month = monthNames[romeTime.month];
-    document.getElementById("date").innerText = `${day} ${month}`;
-
-    // OPEN/CLOSED
-    let status = document.getElementById("isBarOpen").innerText
-    let statusElement = document.getElementById("status");
-
-    if (status == "true") {
-        statusElement.innerText = "OPEN";
-        statusElement.className = "right open";
-    } else {
-        statusElement.innerText = "CLOSED";
-        statusElement.className = "right closed";
-    }
-}
-
-// aggiorna ogni secondo
-setInterval(updateStatusButton, 1000);
-updateStatusButton();
-// --- POPUP CENTRALE SE FUORI ORARIO ---
-function checkClosedPopup() {
-    let barStatus = document.getElementById("status").innerText
-    
-    if (barStatus == "CLOSED") {
-        // mostra overlay + popup
-        document.getElementById("closed-overlay").style.display = "flex";
-
-        // blocca scroll
-        document.body.style.overflow = "hidden";
-    }
-}
-
-// pulsante OK chiude il popup
-document.getElementById("close-popup-btn").addEventListener("click", () => {
-    // Reindirizza l’utente fuori dal sito
-    window.location.href = "https://www.google.com";  
+document.querySelectorAll('.step-card, .step-connector, .how-header, .how-cta').forEach(el => {
+  revealObserver.observe(el);
 });
-
-// mostra popup appena caricata pagina
-checkClosedPopup();
-
-
-
 </script>
-
 </body>
 </html>
