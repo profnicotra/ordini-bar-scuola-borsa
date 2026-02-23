@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="style.css"> <!-- Se desideri aggiungere uno stile -->
+</head>
+<body>
+    <div class="container">
+        <h2>Accedi al tuo account</h2>
+        <form action="/login" method="POST">
+            <div class="form-group">
+                <label for="username">Nome Utente:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit">Accedi</button>
+        </form>
+        <p>Non hai un account? <a href="/register">Registrati qui</a></p>
+    </div>
+</body>
+</html>
