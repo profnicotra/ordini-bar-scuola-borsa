@@ -3,33 +3,48 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Ordina - Scuola Borsa</title>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet" />
+<title>Ordina — Bar Scuola Borsa</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 <style>
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-:root { --red:#e63946; --dark:#080404; }
+:root { --red:#e63946; --dark:#080202; }
+
+/* ═══ SFONDO FUMO ROSSO (uguale al menu) ═══ */
 body {
   font-family:'Montserrat',sans-serif;
   background:
-    radial-gradient(ellipse at 20% 40%, rgba(110,30,30,0.3) 0%, transparent 55%),
-    radial-gradient(ellipse at 80% 70%, rgba(70,15,15,0.25) 0%, transparent 50%),
-    linear-gradient(135deg, #0a0404 0%, #120505 50%, #0d0404 100%);
-  min-height:100vh;
-  color:white;
-  overflow-x:hidden;
+    radial-gradient(ellipse at 20% 40%, rgba(140,20,20,0.45) 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 70%, rgba(100,10,10,0.35) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 10%, rgba(180,30,30,0.2) 0%, transparent 40%),
+    linear-gradient(135deg, #0a0202 0%, #140404 40%, #0d0303 100%);
+  min-height:100vh; color:white; overflow-x:hidden;
+  background-attachment:fixed;
 }
 body::before {
   content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
-  background-image:radial-gradient(circle at 1px 1px, rgba(255,255,255,0.025) 1px, transparent 0);
+  background-image:radial-gradient(circle at 1px 1px, rgba(255,255,255,0.018) 1px, transparent 0);
   background-size:28px 28px;
 }
+body::after {
+  content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
+  background:
+    radial-gradient(ellipse at 15% 60%, rgba(200,30,30,0.12) 0%, transparent 45%),
+    radial-gradient(ellipse at 85% 30%, rgba(160,20,20,0.1) 0%, transparent 40%),
+    radial-gradient(ellipse at 50% 90%, rgba(180,25,25,0.08) 0%, transparent 35%);
+  animation:smokeMove 12s ease-in-out infinite alternate;
+}
+@keyframes smokeMove {
+  0%   { opacity:0.7; transform:scale(1) translateY(0); }
+  50%  { opacity:1;   transform:scale(1.06) translateY(-12px); }
+  100% { opacity:0.8; transform:scale(1.02) translateY(-6px); }
+}
 
-/* ===== NAVBAR ===== */
+/* ═══ NAVBAR ═══ */
 .navbar {
   display:flex; align-items:center; justify-content:center; gap:50px;
   padding:0 50px;
-  background:linear-gradient(180deg,rgba(6,6,6,0.98),rgba(10,3,3,0.95));
+  background:linear-gradient(180deg,rgba(6,2,2,0.98),rgba(10,3,3,0.95));
   backdrop-filter:blur(24px);
   border-bottom:1px solid rgba(230,57,70,0.15);
   box-shadow:0 8px 40px rgba(0,0,0,0.7);
@@ -54,252 +69,294 @@ body::before {
 .social-icons { position:absolute; right:50px; display:flex; gap:8px; }
 .social-icons a { width:34px; height:34px; border:1px solid rgba(255,255,255,0.12); background:rgba(255,255,255,0.04); display:flex; justify-content:center; align-items:center; border-radius:8px; color:rgba(255,255,255,0.5); font-size:14px; transition:all 0.25s ease; text-decoration:none; }
 .social-icons a:hover { background:rgba(230,57,70,0.15); border-color:rgba(230,57,70,0.45); color:#ff8080; transform:translateY(-2px); }
-.menu-toggle { display:none; position:absolute; right:20px; top:50%; transform:translateY(-50%); background:transparent; border:none; color:white; font-size:24px; cursor:pointer; z-index:11; }
+.menu-toggle { display:none; position:absolute; right:20px; top:50%; transform:translateY(-50%); background:transparent; border:none; color:white; font-size:24px; cursor:pointer; }
 
-/* ===== PAGE LAYOUT ===== */
+/* ═══ PAGE ═══ */
 .page-wrapper {
   position:relative; z-index:1;
   padding:120px 20px 80px;
   display:flex; flex-direction:column; align-items:center; min-height:100vh;
 }
-
-.page-header { text-align:center; margin-bottom:40px; }
-.page-header h1 { font-size:42px; font-weight:800; font-style:italic; font-family:'Georgia',serif; color:white; line-height:1; letter-spacing:1px; }
+.page-header { text-align:center; margin-bottom:40px; animation:fadeUp 0.7s ease both; }
+.page-header h1 {
+  font-family:'Playfair Display',serif;
+  font-size:clamp(34px,5vw,54px); font-weight:700; font-style:italic; color:white; line-height:1;
+}
 .page-header .accent-line { width:52px; height:3px; background:var(--red); border-radius:2px; margin:14px auto 0; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+@keyframes shake { 0%{transform:translateX(0)} 25%{transform:translateX(-5px)} 50%{transform:translateX(5px)} 75%{transform:translateX(-5px)} 100%{transform:translateX(0)} }
 
-/* ===== MAIN CARD ===== */
+/* ═══ MAIN CARD ═══ */
 .main-card {
-  width:100%; max-width:580px;
-  background:rgba(20,8,8,0.85);
-  backdrop-filter:blur(16px);
-  border:1px solid rgba(255,255,255,0.1);
-  border-radius:20px;
-  box-shadow:0 12px 50px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06);
+  width:100%; max-width:600px;
+  background:rgba(10,3,3,0.82);
+  backdrop-filter:blur(24px);
+  border:1px solid rgba(255,255,255,0.09);
+  border-radius:24px 24px 0 0;
+  box-shadow:0 12px 50px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.06);
   padding:32px;
-  margin-bottom:0;
+  position:relative; overflow:hidden;
+  animation:fadeUp 0.7s 0.1s ease both;
+}
+.main-card::before {
+  content:""; position:absolute; top:0; left:0; right:0; height:2px;
+  background:linear-gradient(90deg,transparent,rgba(230,57,70,0.6),transparent);
 }
 
-/* Section labels */
-.section-label {
-  font-size:10px; font-weight:800; letter-spacing:4px;
-  text-transform:uppercase; color:rgba(230,57,70,0.8);
-  margin-bottom:14px; display:block;
-}
+.section-label { font-size:10px; font-weight:800; letter-spacing:4px; text-transform:uppercase; color:rgba(230,57,70,0.75); margin-bottom:14px; display:block; }
+.red-divider { height:1px; background:linear-gradient(90deg,rgba(230,57,70,0.45),transparent); margin-bottom:20px; }
 
-.red-divider { height:1px; background:linear-gradient(90deg,rgba(230,57,70,0.5),transparent); margin-bottom:20px; }
-
-/* ===== PRODUCTS HEADER ===== */
-.products-header {
-  display:grid; grid-template-columns:1fr 100px 70px;
-  gap:14px; padding:0 4px; margin-bottom:12px;
-}
-.products-header span { font-size:10px; font-weight:800; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,0.3); }
+/* ═══ PRODUCT HEADER ═══ */
+.products-header { display:grid; grid-template-columns:1fr 100px 70px; gap:14px; padding:0 4px; margin-bottom:12px; }
+.products-header span { font-size:10px; font-weight:800; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,0.25); }
 .products-header .h-qty { text-align:center; }
 .products-header .h-price { text-align:right; }
 
-/* ===== PRODUCT CONTAINER ===== */
-#product-container { display:flex; flex-direction:column; gap:10px; max-height:320px; overflow-y:auto; padding-right:4px; }
-#product-container::-webkit-scrollbar { width:5px; }
-#product-container::-webkit-scrollbar-track { background:rgba(255,255,255,0.04); border-radius:10px; }
-#product-container::-webkit-scrollbar-thumb { background:rgba(230,57,70,0.4); border-radius:10px; }
+/* ═══ PRODUCT CONTAINER ═══ */
+#product-container { display:flex; flex-direction:column; gap:8px; max-height:320px; overflow-y:auto; padding-right:4px; }
+#product-container::-webkit-scrollbar { width:4px; }
+#product-container::-webkit-scrollbar-track { background:rgba(255,255,255,0.03); border-radius:10px; }
+#product-container::-webkit-scrollbar-thumb { background:rgba(230,57,70,0.35); border-radius:10px; }
 
-/* ===== PRODUCT CARD ===== */
+/* ═══ PRODUCT CARD ═══ */
 .product-card {
   display:grid; grid-template-columns:1fr 100px 70px;
   align-items:center; gap:14px;
-  background:rgba(255,255,255,0.06);
-  border:1px solid rgba(255,255,255,0.1);
-  border-radius:14px; padding:14px 16px;
-  transition:all 0.25s ease;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,0.05);
+  background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.09);
+  border-radius:14px; padding:13px 16px;
+  transition:all 0.2s ease;
 }
-.product-card:hover { background:rgba(255,255,255,0.09); border-color:rgba(255,255,255,0.18); }
-
+.product-card:hover { background:rgba(255,255,255,0.08); border-color:rgba(255,255,255,0.16); transform:translateX(2px); }
 .product-name { display:flex; align-items:center; gap:10px; min-width:0; }
-
-.product-name span {
-  font-size:15px; font-weight:700;
-  color:white;            /* BIANCO PIENO — leggibile */
-  line-height:1.4;
-  word-break:break-word;
-}
-
-/* NOTE BTN */
-.note-btn {
-  width:32px; height:32px; min-width:32px;
-  border-radius:8px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.14);
-  display:flex; justify-content:center; align-items:center;
-  cursor:pointer; transition:all 0.2s ease; flex-shrink:0;
-}
-.note-btn:hover { background:rgba(230,57,70,0.18); border-color:rgba(230,57,70,0.4); }
-.note-btn svg { stroke:rgba(255,255,255,0.65); }
+.product-name span { font-size:14px; font-weight:700; color:white; line-height:1.4; word-break:break-word; }
+.note-btn { width:30px; height:30px; min-width:30px; border-radius:8px; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.12); display:flex; justify-content:center; align-items:center; cursor:pointer; transition:all 0.2s ease; flex-shrink:0; }
+.note-btn:hover { background:rgba(230,57,70,0.15); border-color:rgba(230,57,70,0.35); }
+.note-btn svg { stroke:rgba(255,255,255,0.55); }
 .note-btn:hover svg { stroke:#ff9090; }
-
-/* QTY */
 .qty-column { display:flex; justify-content:center; }
-.qty-box { display:flex; align-items:center; gap:8px; }
-.qty-btn {
-  width:28px; height:28px;
-  background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.18);
-  border-radius:7px; color:white; font-size:17px; font-weight:700;
-  cursor:pointer; display:flex; align-items:center; justify-content:center;
-  transition:all 0.2s ease; line-height:1;
-}
-.qty-btn:hover { background:rgba(230,57,70,0.25); border-color:rgba(230,57,70,0.55); }
-.qty {
-  font-size:16px; font-weight:800; min-width:22px;
-  text-align:center; color:white;   /* bianco pieno */
-}
+.qty-box { display:flex; align-items:center; gap:7px; }
+.qty-btn { width:26px; height:26px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); border-radius:7px; color:white; font-size:16px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s ease; line-height:1; }
+.qty-btn:hover { background:rgba(230,57,70,0.22); border-color:rgba(230,57,70,0.5); }
+.qty { font-size:15px; font-weight:800; min-width:20px; text-align:center; color:white; }
+.product-price { font-size:14px; font-weight:700; color:rgba(255,255,255,0.8); text-align:right; white-space:nowrap; }
 
-/* PRICE */
-.product-price {
-  font-size:15px; font-weight:700;
-  color:rgba(255,255,255,0.85);   /* quasi bianco, ben leggibile */
-  text-align:right; white-space:nowrap;
-}
-
-/* ===== INPUTS ===== */
+/* ═══ INPUTS ═══ */
 .inputs-section { margin-top:28px; }
-
 .input-group { margin-bottom:12px; position:relative; }
-
-.input-group .input-icon {
-  position:absolute; left:16px; top:50%; transform:translateY(-50%);
-  color:rgba(255,255,255,0.3); font-size:14px; pointer-events:none;
-}
-
+.input-icon { position:absolute; left:16px; top:50%; transform:translateY(-50%); color:rgba(255,255,255,0.3); font-size:14px; pointer-events:none; }
 .input-group input {
-  width:100%;
-  background:rgba(255,255,255,0.07);
-  border:1px solid rgba(255,255,255,0.14);
+  width:100%; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12);
   border-radius:12px; padding:14px 16px 14px 42px;
-  font-size:14px; font-weight:600; font-family:'Montserrat',sans-serif;
-  color:white;    /* testo bianco mentre scrivi */
-  outline:none; transition:all 0.25s ease;
+  font-size:14px; font-weight:600; font-family:'Montserrat',sans-serif; color:white; outline:none; transition:all 0.25s ease;
 }
-.input-group input.no-icon { padding-left:16px; }
-.input-group input::placeholder { color:rgba(255,255,255,0.35); font-weight:400; }
-.input-group input:focus { border-color:rgba(230,57,70,0.55); background:rgba(255,255,255,0.09); }
-
+.input-group input::placeholder { color:rgba(255,255,255,0.3); font-weight:400; }
+.input-group input:focus { border-color:rgba(230,57,70,0.5); background:rgba(255,255,255,0.08); }
 .input-error { border-color:#e63946 !important; animation:shake 0.3s; }
-@keyframes shake { 0%{transform:translateX(0)} 25%{transform:translateX(-5px)} 50%{transform:translateX(5px)} 75%{transform:translateX(-5px)} 100%{transform:translateX(0)} }
 
-/* ===== TOTAL BAR ===== */
-.total-bar {
-  width:100%; max-width:580px;
-  background:rgba(10,3,3,0.92);
-  backdrop-filter:blur(20px);
-  border:1px solid rgba(255,255,255,0.1);
+/* ═══ CHECKOUT PANEL ═══ */
+.checkout-panel {
+  width:100%; max-width:600px;
+  background:rgba(6,2,2,0.92);
+  backdrop-filter:blur(28px);
+  border:1px solid rgba(255,255,255,0.09);
   border-top:1px solid rgba(230,57,70,0.25);
-  border-radius:0 0 20px 20px;
-  padding:18px 24px;
-  display:flex; align-items:center; justify-content:space-between; gap:16px;
-  margin-top:-1px;
-  box-shadow:0 14px 44px rgba(0,0,0,0.5);
+  border-radius:0 0 24px 24px;
+  padding:0; margin-top:-1px;
+  box-shadow:0 24px 70px rgba(0,0,0,0.7);
+  position:relative; overflow:hidden;
+  animation:fadeUp 0.7s 0.2s ease both;
 }
+.checkout-panel::after {
+  content:""; position:absolute; bottom:0; left:0; right:0; height:2px;
+  background:linear-gradient(90deg,transparent,rgba(230,57,70,0.4),transparent);
+}
+
+/* Total row */
+.total-row {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:22px 28px 18px;
+  border-bottom:1px solid rgba(255,255,255,0.05);
+}
+.total-label-group { display:flex; flex-direction:column; gap:3px; }
+.total-label { font-size:10px; font-weight:800; letter-spacing:4px; text-transform:uppercase; color:rgba(255,255,255,0.25); }
+.total-amount {
+  font-family:'Playfair Display',serif;
+  font-size:44px; font-weight:700; font-style:italic;
+  color:white; letter-spacing:-1px; line-height:1;
+}
+.total-amount .euro { font-size:22px; vertical-align:super; margin-right:2px; font-style:normal; color:rgba(255,255,255,0.5); }
 
 .clear-btn {
-  width:44px; height:44px; border-radius:10px;
-  background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12);
+  width:42px; height:42px; border-radius:10px;
+  background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1);
   display:flex; justify-content:center; align-items:center;
-  cursor:pointer; transition:all 0.25s ease; flex-shrink:0;
+  cursor:pointer; transition:all 0.25s ease;
 }
-.clear-btn:hover { background:rgba(230,57,70,0.18); border-color:rgba(230,57,70,0.45); }
-.clear-btn svg { stroke:rgba(255,255,255,0.55); }
+.clear-btn:hover { background:rgba(230,57,70,0.15); border-color:rgba(230,57,70,0.4); transform:scale(1.05); }
+.clear-btn svg { stroke:rgba(255,255,255,0.45); transition:stroke 0.2s; }
 .clear-btn:hover svg { stroke:#ff9090; }
 
-.total-price {
-  font-size:28px; font-weight:800;
-  color:white;   /* bianco pieno — ben visibile */
-  letter-spacing:1px; flex:1; text-align:center;
+/* Submit row */
+.submit-row { display:flex; flex-direction:column; gap:12px; padding:18px 28px 26px; }
+.submit-info { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.submit-info input {
+  background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.11);
+  border-radius:10px; padding:13px 14px;
+  font-size:13px; font-weight:600; font-family:'Montserrat',sans-serif; color:white;
+  outline:none; transition:all 0.25s ease; width:100%;
 }
+.submit-info input::placeholder { color:rgba(255,255,255,0.28); font-weight:400; }
+.submit-info input:focus { border-color:rgba(230,57,70,0.5); background:rgba(255,255,255,0.09); }
+.submit-info input.input-error { border-color:#e63946 !important; animation:shake 0.3s; }
 
 .checkout-btn {
-  background:linear-gradient(135deg,#b22222,#e63946);
-  color:white; border:none; padding:14px 32px;
-  font-size:14px; font-weight:800; letter-spacing:2px; text-transform:uppercase;
-  border-radius:12px; cursor:pointer; transition:all 0.3s ease;
-  box-shadow:0 4px 20px rgba(230,57,70,0.45); white-space:nowrap; flex-shrink:0;
-  font-family:'Montserrat',sans-serif;
+  width:100%;
+  background:linear-gradient(135deg,#8b0000,#c0152a,#e63946);
+  color:white; border:none; padding:19px 32px;
+  font-size:13px; font-weight:800; letter-spacing:3.5px; text-transform:uppercase;
+  border-radius:14px; cursor:pointer; transition:all 0.3s ease;
+  box-shadow:0 8px 32px rgba(230,57,70,0.4), inset 0 1px 0 rgba(255,255,255,0.12);
+  font-family:'Montserrat',sans-serif; display:flex; align-items:center; justify-content:center; gap:12px;
+  position:relative; overflow:hidden;
 }
-.checkout-btn:hover { transform:translateY(-3px); box-shadow:0 10px 28px rgba(230,57,70,0.6); }
+.checkout-btn::before {
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(135deg, rgba(255,255,255,0.08), transparent);
+  opacity:0; transition:opacity 0.3s;
+}
+.checkout-btn:hover { transform:translateY(-3px); box-shadow:0 14px 40px rgba(230,57,70,0.55), inset 0 1px 0 rgba(255,255,255,0.15); }
+.checkout-btn:hover::before { opacity:1; }
+.checkout-btn i { font-size:15px; }
 
-/* ===== OVERLAY ===== */
-.overlay { position:fixed; inset:0; background:rgba(0,0,0,0.7); backdrop-filter:blur(4px); opacity:0; display:none; transition:opacity 0.3s ease; z-index:200; }
+/* Note row */
+.note-row { padding:0 28px 0; margin-bottom:0; }
+.note-row .input-group { margin-bottom:0; }
+.note-row .input-group input { border-radius:10px; padding:12px 14px 12px 38px; font-size:13px; }
+.note-row .input-icon { font-size:13px; left:14px; }
+
+/* ═══ CUSTOM DROPDOWN CLASSE/TAVOLO ═══ */
+.classe-label {
+  font-size:10px; font-weight:800; letter-spacing:3px; text-transform:uppercase;
+  color:rgba(255,255,255,0.3); display:block; margin-bottom:8px;
+}
+.custom-select-wrapper { position:relative; width:100%; }
+.custom-select-trigger {
+  width:100%; display:flex; align-items:center; justify-content:space-between; gap:12px;
+  background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.11);
+  border-radius:12px; padding:12px 14px;
+  cursor:pointer; transition:all 0.25s ease; user-select:none;
+}
+.custom-select-trigger:hover { background:rgba(255,255,255,0.09); border-color:rgba(255,255,255,0.22); }
+.custom-select-trigger.open { border-color:rgba(230,57,70,0.5); background:rgba(255,255,255,0.08); border-radius:12px 12px 0 0; }
+.custom-select-trigger.select-error { border-color:#e63946 !important; animation:shake 0.3s; }
+.trigger-left { display:flex; align-items:center; gap:10px; }
+.trigger-icon { width:26px; height:26px; border-radius:7px; background:rgba(230,57,70,0.1); border:1px solid rgba(230,57,70,0.2); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.trigger-icon svg { stroke:rgba(230,57,70,0.65); }
+.trigger-text { display:flex; flex-direction:column; gap:1px; }
+#trigger-placeholder { font-size:13px; font-weight:400; color:rgba(255,255,255,0.28); }
+#trigger-value { font-size:13px; font-weight:700; color:white; display:none; }
+.trigger-arrow { flex-shrink:0; transition:transform 0.25s ease; }
+.trigger-arrow svg { stroke:rgba(255,255,255,0.3); }
+.custom-select-trigger.open .trigger-arrow { transform:rotate(180deg); }
+.custom-select-panel {
+  position:absolute; bottom:100%; left:0; right:0;
+  background:rgba(10,3,3,0.98); backdrop-filter:blur(24px);
+  border:1px solid rgba(230,57,70,0.22); border-bottom:none;
+  border-radius:12px 12px 0 0;
+  max-height:0; opacity:0; overflow:hidden;
+  transition:max-height 0.3s ease, opacity 0.2s ease;
+  z-index:500; box-shadow:0 -16px 48px rgba(0,0,0,0.75);
+}
+.custom-select-panel.open { max-height:240px; opacity:1; overflow:visible; }
+.custom-select-trigger.open { border-color:rgba(230,57,70,0.5); background:rgba(255,255,255,0.08); border-radius:0 0 12px 12px; }
+.panel-scroll { overflow-y:auto; max-height:190px; }
+.panel-search { padding:8px 10px; border-bottom:1px solid rgba(255,255,255,0.06); }
+.panel-search input { width:100%; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.09); border-radius:8px; padding:7px 11px; font-size:12px; font-weight:600; font-family:'Montserrat',sans-serif; color:white; outline:none; transition:border-color 0.2s; }
+.panel-search input::placeholder { color:rgba(255,255,255,0.28); font-weight:400; }
+.panel-search input:focus { border-color:rgba(230,57,70,0.4); }
+.panel-options { padding:5px; }
+.panel-options::-webkit-scrollbar { width:4px; }
+.panel-options::-webkit-scrollbar-thumb { background:rgba(230,57,70,0.3); border-radius:10px; }
+.option-item { display:flex; align-items:center; gap:10px; padding:9px 12px; border-radius:8px; cursor:pointer; font-size:13px; font-weight:700; color:rgba(255,255,255,0.55); letter-spacing:1px; transition:all 0.15s ease; }
+.option-item:hover { background:rgba(255,255,255,0.07); color:white; }
+.option-item.selected { background:rgba(230,57,70,0.14); color:white; }
+.option-item.hidden { display:none; }
+.option-dot { width:7px; height:7px; border-radius:50%; background:rgba(255,255,255,0.18); flex-shrink:0; transition:all 0.15s; }
+.option-item.selected .option-dot { background:#e63946; box-shadow:0 0 6px rgba(230,57,70,0.7); }
+
+/* ═══ OVERLAY ═══ */
+.overlay { position:fixed; inset:0; background:rgba(0,0,0,0.8); backdrop-filter:blur(6px); opacity:0; display:none; transition:opacity 0.3s ease; z-index:200; }
 .overlay.active { display:block; opacity:1; }
 
-/* ===== POPUP NOTE ===== */
+/* ═══ POPUP NOTE PRODOTTO ═══ */
 #popup-ingredienti {
-  width:360px;
-  background:rgba(12,4,4,0.97); backdrop-filter:blur(20px);
-  border:1px solid rgba(230,57,70,0.2); border-radius:20px;
-  padding:28px 24px 22px;
+  width:360px; background:rgba(10,3,3,0.97); backdrop-filter:blur(24px);
+  border:1px solid rgba(230,57,70,0.18); border-radius:22px; padding:28px 24px 22px;
   display:none; flex-direction:column; gap:14px;
   color:white; position:fixed; top:50%; left:50%;
   transform:translate(-50%,-50%) scale(0.88);
   transition:transform 0.25s ease, opacity 0.25s ease;
-  z-index:300; opacity:0;
-  box-shadow:0 24px 60px rgba(0,0,0,0.75);
+  z-index:300; opacity:0; box-shadow:0 28px 70px rgba(0,0,0,0.8);
 }
 #popup-ingredienti.active { display:flex; transform:translate(-50%,-50%) scale(1); opacity:1; }
-#popup-ingredienti h2 { font-size:14px; font-weight:800; letter-spacing:3px; text-transform:uppercase; color:white; text-align:center; margin:0; }
+#popup-ingredienti h2 { font-size:13px; font-weight:800; letter-spacing:3px; text-transform:uppercase; color:white; text-align:center; margin:0; }
+.ingredient-row { padding:11px 16px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.09); border-radius:10px; font-size:14px; font-weight:600; color:white; }
+.popup-close-btn { width:100%; padding:13px; background:rgba(230,57,70,0.1); border:1px solid rgba(230,57,70,0.25); border-radius:12px; color:#ff8080; font-weight:800; font-size:12px; letter-spacing:2px; text-transform:uppercase; cursor:pointer; transition:all 0.25s ease; font-family:'Montserrat',sans-serif; }
+.popup-close-btn:hover { background:rgba(230,57,70,0.22); color:white; }
 
-.ingredient-row {
-  padding:11px 16px;
-  background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.1);
-  border-radius:10px; font-size:14px; font-weight:600; color:white;  /* bianco pieno */
-}
-
-.popup-close-btn {
-  width:100%; padding:13px;
-  background:rgba(230,57,70,0.12); border:1px solid rgba(230,57,70,0.3);
-  border-radius:12px; color:#ff8080; font-weight:800; font-size:12px;
-  letter-spacing:2px; text-transform:uppercase; cursor:pointer;
-  transition:all 0.25s ease; font-family:'Montserrat',sans-serif; margin-top:2px;
-}
-.popup-close-btn:hover { background:rgba(230,57,70,0.25); color:white; }
-
-/* ===== SUCCESS POPUP ===== */
+/* ═══ SUCCESS POPUP ═══ */
 #success-popup {
   position:fixed; top:50%; left:50%;
   transform:translate(-50%,-50%) scale(0.82);
-  width:360px;
-  background:linear-gradient(145deg,#8B0000,#e63946);
-  border:none; border-radius:20px; padding:40px 30px;
-  text-align:center; display:none; flex-direction:column; align-items:center; gap:16px;
-  z-index:400; box-shadow:0 24px 60px rgba(230,57,70,0.55);
-  transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s ease;
-  opacity:0; font-family:'Montserrat',sans-serif;
+  width:420px; max-width:92vw;
+  background:rgba(8,2,2,0.98); backdrop-filter:blur(32px);
+  border:1px solid rgba(255,255,255,0.07);
+  border-radius:28px; padding:0;
+  text-align:center; display:none; flex-direction:column; align-items:stretch;
+  z-index:400; box-shadow:0 40px 90px rgba(0,0,0,0.9), 0 0 0 1px rgba(230,57,70,0.07);
+  transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s ease;
+  opacity:0; font-family:'Montserrat',sans-serif; overflow:hidden;
 }
 #success-popup.active { display:flex; transform:translate(-50%,-50%) scale(1); opacity:1; }
-#success-popup .icon-circle { width:66px; height:66px; border-radius:50%; background:rgba(255,255,255,0.15); border:2px solid rgba(255,255,255,0.3); display:flex; justify-content:center; align-items:center; }
-#success-popup .icon-circle svg { width:32px; height:32px; stroke:white; }
-#success-popup h2 { font-size:22px; font-weight:800; color:white; margin:0; }
-#success-popup p { font-size:14px; font-weight:500; color:rgba(255,255,255,0.85); margin:0; line-height:1.65; }
-#success-close { position:absolute; top:12px; right:12px; cursor:pointer; font-weight:900; font-size:14px; color:white; background:rgba(0,0,0,0.2); border:none; border-radius:50%; width:28px; height:28px; display:flex; align-items:center; justify-content:center; transition:0.3s; }
-#success-close:hover { background:rgba(255,255,255,0.2); }
+.success-top-bar { height:3px; background:linear-gradient(90deg,transparent,#22c55e 30%,#4ade80 50%,#22c55e 70%,transparent); opacity:0.85; }
+.success-body { display:flex; flex-direction:column; align-items:center; gap:16px; padding:40px 36px 34px; }
+.success-icon-wrap { width:80px; height:80px; border-radius:50%; background:radial-gradient(circle,rgba(34,197,94,0.13) 0%,rgba(34,197,94,0.04) 70%); border:1px solid rgba(34,197,94,0.22); display:flex; justify-content:center; align-items:center; box-shadow:0 0 32px rgba(34,197,94,0.08); }
+.success-icon-wrap svg { width:36px; height:36px; stroke:#4ade80; stroke-width:2.5; }
+.success-eyebrow { font-size:10px; font-weight:800; letter-spacing:4px; text-transform:uppercase; color:rgba(34,197,94,0.65); }
+#success-popup h2 { font-family:'Playfair Display',serif; font-size:26px; font-weight:700; font-style:italic; color:white; margin:0; line-height:1.2; }
+#success-popup p { font-size:13px; color:rgba(255,255,255,0.45); margin:0; line-height:1.8; }
+.success-divider { width:40px; height:2px; background:rgba(34,197,94,0.28); border-radius:2px; }
+.success-close-btn { margin:0 36px 36px; padding:15px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.09); border-radius:14px; color:rgba(255,255,255,0.45); font-weight:700; font-size:12px; letter-spacing:2px; text-transform:uppercase; cursor:pointer; transition:all 0.25s ease; font-family:'Montserrat',sans-serif; }
+.success-close-btn:hover { background:rgba(255,255,255,0.09); color:white; border-color:rgba(255,255,255,0.18); }
+#success-x { position:absolute; top:16px; right:16px; cursor:pointer; color:rgba(255,255,255,0.28); background:rgba(255,255,255,0.05); border:none; border-radius:50%; width:28px; height:28px; display:flex; align-items:center; justify-content:center; transition:0.3s; font-size:14px; font-weight:800; }
+#success-x:hover { background:rgba(255,255,255,0.1); color:white; }
 
-/* ===== ERROR BOX ===== */
-#error-box {
-  position:fixed; top:-120px; left:50%; transform:translateX(-50%);
-  background:linear-gradient(145deg,#8B0000,#e63946);
-  padding:22px 46px 22px 22px; border-radius:14px;
-  box-shadow:0 8px 30px rgba(230,57,70,0.55);
-  color:white; font-family:'Montserrat',sans-serif;
-  width:360px; max-width:92%;
-  transition:top 0.5s ease, opacity 0.5s ease;
-  z-index:99999; opacity:0;
-  display:flex; flex-direction:column; align-items:flex-start; gap:8px;
+/* ═══ CLEAR POPUP ═══ */
+#clear-popup {
+  position:fixed; top:50%; left:50%;
+  transform:translate(-50%,-50%) scale(0.85);
+  width:380px; max-width:92vw;
+  background:rgba(8,2,2,0.98); backdrop-filter:blur(32px);
+  border:1px solid rgba(255,255,255,0.07); border-radius:24px; padding:0;
+  display:none; flex-direction:column; z-index:400;
+  box-shadow:0 32px 80px rgba(0,0,0,0.9);
+  transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s ease;
+  opacity:0; font-family:'Montserrat',sans-serif; overflow:hidden;
 }
-#error-box.show { top:24px; opacity:1; }
-#error-box strong { font-size:17px; font-weight:800; color:white; }
-#error-box p { margin:0; line-height:1.35; font-size:14px; color:rgba(255,255,255,0.9); font-weight:500; }
-#error-box .confirm-btn { margin-top:6px; width:100%; padding:12px; border-radius:10px; background:white; color:#8B0000; border:none; font-weight:800; font-family:'Montserrat',sans-serif; cursor:pointer; transition:0.3s; font-size:13px; letter-spacing:1px; }
-#error-box .confirm-btn:hover { background:rgba(255,255,255,0.88); }
-#error-box .close-btn { position:absolute; top:10px; right:10px; cursor:pointer; font-weight:900; font-size:18px; color:white; background:rgba(0,0,0,0.18); border:none; border-radius:50%; width:26px; height:26px; display:flex; align-items:center; justify-content:center; transition:0.3s; }
-#error-box .close-btn:hover { background:rgba(255,255,255,0.25); }
+#clear-popup.active { display:flex; transform:translate(-50%,-50%) scale(1); opacity:1; }
+.clear-top-bar { height:3px; background:linear-gradient(90deg,transparent,rgba(230,57,70,0.55) 30%,#e63946 50%,rgba(230,57,70,0.55) 70%,transparent); }
+.clear-body { padding:36px 32px 26px; display:flex; flex-direction:column; align-items:center; gap:14px; text-align:center; }
+.clear-icon-wrap { width:62px; height:62px; border-radius:18px; background:rgba(230,57,70,0.07); border:1px solid rgba(230,57,70,0.18); display:flex; align-items:center; justify-content:center; font-size:26px; }
+.clear-eyebrow { font-size:10px; font-weight:800; letter-spacing:4px; text-transform:uppercase; color:rgba(230,57,70,0.55); }
+.clear-body h3 { font-family:'Playfair Display',serif; font-size:22px; font-weight:700; font-style:italic; color:white; margin:0; }
+.clear-body p { font-size:13px; color:rgba(255,255,255,0.4); margin:0; line-height:1.7; }
+.clear-actions { padding:0 32px 32px; display:flex; flex-direction:column; gap:10px; }
+.clear-confirm-btn { width:100%; padding:15px; background:linear-gradient(135deg,#8b0000,#c0152a,#e63946); color:white; border:none; border-radius:12px; font-weight:800; font-family:'Montserrat',sans-serif; font-size:12px; letter-spacing:2.5px; text-transform:uppercase; cursor:pointer; transition:all 0.25s ease; box-shadow:0 6px 20px rgba(230,57,70,0.3); display:flex; align-items:center; justify-content:center; gap:8px; }
+.clear-confirm-btn:hover { transform:translateY(-2px); box-shadow:0 10px 28px rgba(230,57,70,0.45); }
+.clear-cancel-btn { width:100%; padding:13px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.09); border-radius:12px; color:rgba(255,255,255,0.4); font-weight:700; font-family:'Montserrat',sans-serif; font-size:12px; letter-spacing:2px; text-transform:uppercase; cursor:pointer; transition:all 0.25s ease; }
+.clear-cancel-btn:hover { background:rgba(255,255,255,0.08); color:rgba(255,255,255,0.7); }
 
-/* ===== RESPONSIVE ===== */
+/* ═══ RESPONSIVE ═══ */
 @media (max-width:768px) {
   .navbar { height:80px; padding:0 20px; }
   .logo-left { left:20px; }
@@ -314,21 +371,17 @@ body::before {
   .menu-toggle { display:block; }
   .page-wrapper { padding-top:100px; padding-left:14px; padding-right:14px; }
   .main-card { padding:22px 18px; }
-  .total-bar { padding:14px 18px; }
-  .page-header h1 { font-size:32px; }
+  .total-row,.submit-row { padding-left:18px; padding-right:18px; }
 }
 @media (max-width:480px) {
   .navbar { height:70px; }
-  .page-header h1 { font-size:26px; }
-  .main-card,.total-bar { border-radius:16px; }
-  .total-bar { border-radius:0 0 16px 16px; }
-  .total-price { font-size:23px; }
-  .checkout-btn { padding:12px 20px; font-size:13px; }
-  .product-card { gap:10px; }
-  .products-header { gap:10px; }
+  .submit-info { grid-template-columns:1fr; }
+  .total-amount { font-size:36px; }
+  .success-body { padding:32px 22px 26px; }
+  .success-close-btn { margin:0 22px 26px; }
+  .clear-body { padding:28px 22px 20px; }
+  .clear-actions { padding:0 22px 26px; }
 }
-
-.info-input::placeholder { color:var(--placeholder-color, rgba(255,255,255,0.35)); }
 </style>
 </head>
 <body>
@@ -360,7 +413,7 @@ body::before {
   </div>
 </header>
 
-<form action="{{url_for('orders.new_order')}}" method="POST">
+<form action="{{url_for('orders.new_order')}}" method="POST" id="order-form">
 <div class="page-wrapper">
 
   <div class="page-header">
@@ -368,29 +421,24 @@ body::before {
     <div class="accent-line"></div>
   </div>
 
+  <!-- MAIN CARD -->
   <div class="main-card">
-
-    <!-- PRODOTTI -->
     <span class="section-label">Prodotti selezionati</span>
     <div class="red-divider"></div>
-
     <div class="products-header">
       <span>Prodotto</span>
       <span class="h-qty">Quantità</span>
       <span class="h-price">Prezzo</span>
     </div>
-
     <div id="product-container"></div>
     <input type="hidden" id="prodottiSelezionati" name="prodottiSelezionati">
 
-    <!-- NOTE + INFO -->
     <div class="inputs-section">
-
       <span class="section-label" style="margin-top:26px; display:block;">Note generali</span>
       <div class="red-divider"></div>
       <div class="input-group">
         <i class="input-icon fas fa-sticky-note"></i>
-        <input id="noteGenerali" type="text" class="note-input" placeholder="Aggiungi una nota..." list="lista-note-generali" name="noteGenerali"/>
+        <input id="noteGenerali" type="text" placeholder="Aggiungi una nota..." list="lista-note-generali" name="noteGenerali"/>
         <datalist id="lista-note-generali">
           {% for gruppo in general_notes %}
             {% for nota in gruppo.note %}
@@ -399,52 +447,79 @@ body::before {
           {% endfor %}
         </datalist>
       </div>
+    </div>
+  </div>
 
-      <span class="section-label" style="margin-top:22px; display:block;">Informazioni</span>
-      <div class="red-divider"></div>
-      <div class="input-group">
-        <i class="input-icon fas fa-user"></i>
-        <input id="nome" type="text" class="info-input" placeholder="Nome" name="nome"/>
+  <!-- CHECKOUT PANEL -->
+  <div class="checkout-panel">
+    <div class="total-row">
+      <div class="total-label-group">
+        <span class="total-label">Totale ordine</span>
+        <div class="total-amount" id="total"><span class="euro">€</span><span id="total-num">0,00</span></div>
       </div>
-      <div class="input-group">
-        <i class="input-icon fas fa-user"></i>
-        <input id="cognome" type="text" class="info-input" placeholder="Cognome" name="cognome"/>
-      </div>
-      <div class="input-group">
-        <i class="input-icon fas fa-graduation-cap"></i>
-        <input id="classe" type="text" class="info-input" placeholder="Classe" list="lista-classi" name="classe"/>
-        <datalist id="lista-classi">
-          {% for c in listClass %}
-            <option value="{{ c.nome }}">
-          {% endfor %}
-        </datalist>
-      </div>
+      <button id="clearCartBtn" class="clear-btn" type="button" title="Svuota carrello">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+          <path d="M10 11v6"/><path d="M14 11v6"/>
+          <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+        </svg>
+      </button>
     </div>
 
-    <input type="hidden" id="totalInput" name="total" value="0">
+    <div class="submit-row">
+      <div class="submit-info">
+        <input id="nome" type="text" placeholder="Nome" name="nome"/>
+        <input id="cognome" type="text" placeholder="Cognome" name="cognome"/>
+
+        <div style="grid-column:1/-1;">
+          <span class="classe-label">Classe / Tavolo</span>
+          <div class="custom-select-wrapper" id="classe-select-wrapper">
+            <div class="custom-select-trigger" id="select-trigger">
+              <div class="trigger-left">
+                <div class="trigger-icon">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
+                  </svg>
+                </div>
+                <div class="trigger-text">
+                  <span id="trigger-placeholder">Seleziona classe o tavolo...</span>
+                  <span id="trigger-value"></span>
+                </div>
+              </div>
+              <div class="trigger-arrow">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"/>
+                </svg>
+              </div>
+            </div>
+            <div class="custom-select-panel" id="select-panel">
+              <div class="panel-search">
+                <input type="text" id="search-input" placeholder="Cerca..."/>
+              </div>
+              <div class="panel-scroll">
+                <div class="panel-options" id="options-list"></div>
+              </div>
+            </div>
+          </div>
+          <input type="hidden" id="classe" name="classe"/>
+        </div>
+      </div>
+
+      <button class="checkout-btn" id="invia" type="button">
+        <i class="fas fa-paper-plane"></i> INVIA ORDINE
+      </button>
+    </div>
   </div>
 
-  <!-- TOTAL BAR -->
-  <div class="total-bar">
-    <button id="clearCartBtn" class="clear-btn" type="button" title="Svuota ordine">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="3 6 5 6 21 6"></polyline>
-        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
-        <path d="M10 11v6"></path><path d="M14 11v6"></path>
-        <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path>
-      </svg>
-    </button>
-    <div class="total-price" id="total">€0,00</div>
-    <button class="checkout-btn" id="invia" type="button">INVIA</button>
-  </div>
-
+  <input type="hidden" id="totalInput" name="total" value="0">
 </div>
 </form>
 
 <!-- OVERLAY -->
 <div class="overlay" id="overlay"></div>
 
-<!-- POPUP NOTE -->
+<!-- POPUP NOTE PRODOTTO -->
 <div id="popup-ingredienti">
   <h2>Note Prodotto</h2>
   <div class="red-divider" style="margin-bottom:4px;"></div>
@@ -454,22 +529,35 @@ body::before {
 
 <!-- SUCCESS POPUP -->
 <div id="success-popup">
-  <button type="button" id="success-close">✕</button>
-  <div class="icon-circle">
-    <svg fill="none" stroke-width="2.5" stroke="white" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-      <path d="M20 6L9 17l-5-5"></path>
-    </svg>
+  <button type="button" id="success-x">✕</button>
+  <div class="success-top-bar"></div>
+  <div class="success-body">
+    <div class="success-icon-wrap">
+      <svg fill="none" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+        <path d="M20 6L9 17l-5-5"/>
+      </svg>
+    </div>
+    <span class="success-eyebrow">Ordine ricevuto</span>
+    <div class="success-divider"></div>
+    <h2>Ordine confermato!</h2>
+    <p>Grazie per aver ordinato.<br>Il tuo ordine sarà pronto al più presto.</p>
   </div>
-  <h2>Ordine confermato!</h2>
-  <p>Grazie per aver ordinato da noi.<br>Il tuo ordine sarà pronto al più presto.</p>
+  <button class="success-close-btn" id="success-close-btn" type="button">Chiudi</button>
 </div>
 
-<!-- ERROR BOX (svuota carrello) -->
-<div id="error-box">
-  <strong>Attenzione!</strong>
-  <p>Vuoi cancellare tutti gli ordini?</p>
-  <button class="confirm-btn">SÌ, SVUOTA</button>
-  <button type="button" class="close-btn">&times;</button>
+<!-- CLEAR POPUP -->
+<div id="clear-popup">
+  <div class="clear-top-bar"></div>
+  <div class="clear-body">
+    <div class="clear-icon-wrap">🗑️</div>
+    <span class="clear-eyebrow">Attenzione</span>
+    <h3>Svuota carrello</h3>
+    <p>Vuoi cancellare tutti i prodotti<br>selezionati? L'azione è irreversibile.</p>
+  </div>
+  <div class="clear-actions">
+    <button class="clear-confirm-btn" id="clear-confirm"><i class="fas fa-trash-alt"></i> SÌ, SVUOTA</button>
+    <button class="clear-cancel-btn" id="clear-cancel">Annulla</button>
+  </div>
 </div>
 
 <script>
@@ -478,63 +566,50 @@ document.addEventListener("DOMContentLoaded", function () {
   let products = JSON.parse(localStorage.getItem("orderedItems")) || [];
   products = products.filter(p => p.name && !isNaN(p.price));
 
-  const productContainer = document.getElementById("product-container");
-  const totalPriceEl = document.getElementById("total");
+  const productContainer    = document.getElementById("product-container");
+  const overlay             = document.getElementById("overlay");
+  const popupIngredienti    = document.getElementById("popup-ingredienti");
+  const ingredientContainer = document.getElementById("ingredient-container");
+  const successPopup        = document.getElementById("success-popup");
+  const clearPopup          = document.getElementById("clear-popup");
 
   // Mobile nav
   const menuToggle = document.getElementById('menu-toggle');
-  const navCenter = document.getElementById('nav-center');
+  const navCenter  = document.getElementById('nav-center');
   if (menuToggle) {
     menuToggle.addEventListener('click', () => navCenter.classList.toggle('active'));
-    document.querySelectorAll('.nav-center a').forEach(l => l.addEventListener('click', () => navCenter.classList.remove('active')));
+    navCenter.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navCenter.classList.remove('active')));
+    document.addEventListener('click', e => {
+      if (!document.getElementById('navbar').contains(e.target)) navCenter.classList.remove('active');
+    });
   }
 
   function saveOrderedItems() {
     localStorage.setItem("orderedItems", JSON.stringify(products));
-    window.orderedProducts = products;
     updateHiddenInput();
   }
-
   function updateHiddenInput() {
     try { document.getElementById("prodottiSelezionati").value = JSON.stringify(products); }
     catch(e) { document.getElementById("prodottiSelezionati").value = ""; }
   }
 
-  window.orderedProducts = products;
-
-  const ingredientiProdotto = {
-    "Focaccia": ["Pane","Pomodoro","Mozzarella"],
-    "Cup Cake": ["Farina","Zucchero","Burro","Uova","Vaniglia"],
-    "Pizzette": ["Pomodoro","Mozzarella","Basilico"],
-    "Panino": ["Pane","Prosciutto","Formaggio","Insalata"],
-  };
-
-  products.forEach(prod => {
-    if (!prod.ingredients || prod.ingredients.length === 0) {
-      prod.ingredients = ingredientiProdotto[prod.name] || [`${prod.name} Base`, "Sale", "Olio"];
-      prod.extra = prod.extra || [];
-      prod.allergeni = prod.allergeni || [];
-    }
-  });
-
-  saveOrderedItems();
-
   let currentProductIndex = null;
 
-  /* RENDER */
+  function formatPrice(val) {
+    return val.toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2});
+  }
+
   function renderProducts() {
     productContainer.innerHTML = "";
     let total = 0;
-
     products.forEach((p, i) => {
       const row = document.createElement("div");
       row.className = "product-card";
       row.innerHTML = `
         <div class="product-name">
           <button class="note-btn" type="button" data-index="${i}" title="Note prodotto">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 20h9"/>
-              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/>
             </svg>
           </button>
           <span>${p.name}</span>
@@ -546,21 +621,21 @@ document.addEventListener("DOMContentLoaded", function () {
             <button class="qty-btn" data-index="${i}" data-action="plus">+</button>
           </div>
         </div>
-        <div class="product-price">€${(p.price*(p.qty||1)).toLocaleString('it-IT',{minimumFractionDigits:0,maximumFractionDigits:2})}</div>
+        <div class="product-price">€${formatPrice(p.price*(p.qty||1))}</div>
       `;
       productContainer.appendChild(row);
       total += p.price * (p.qty || 1);
     });
-
-    totalPriceEl.textContent = `€${total.toLocaleString('it-IT',{minimumFractionDigits:0,maximumFractionDigits:2})}`;
+    document.getElementById("total-num").textContent = formatPrice(total);
+    document.getElementById("totalInput").value = formatPrice(total);
     updateHiddenInput();
   }
 
-  /* CLICKS */
   productContainer.addEventListener("click", function(e) {
-    if (e.target.classList.contains("qty-btn")) {
-      const i = e.target.dataset.index;
-      const a = e.target.dataset.action;
+    if (e.target.classList.contains("qty-btn") || e.target.closest(".qty-btn")) {
+      const btn = e.target.closest(".qty-btn");
+      const i = parseInt(btn.dataset.index);
+      const a = btn.dataset.action;
       if (a === "plus") { if ((products[i].qty||1) < 10) products[i].qty = (products[i].qty||1)+1; }
       else products[i].qty = Math.max(1, (products[i].qty||1)-1);
       saveOrderedItems(); renderProducts(); return;
@@ -568,11 +643,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const nb = e.target.closest(".note-btn");
     if (nb) { currentProductIndex = nb.dataset.index; showPopupIngredienti(); }
   });
-
-  /* POPUP NOTE */
-  const overlay = document.getElementById("overlay");
-  const popupIngredienti = document.getElementById("popup-ingredienti");
-  const ingredientContainer = document.getElementById("ingredient-container");
 
   document.getElementById("back").addEventListener("click", () => {
     popupIngredienti.classList.remove("active");
@@ -582,7 +652,8 @@ document.addEventListener("DOMContentLoaded", function () {
   function showPopupIngredienti() {
     ingredientContainer.innerHTML = "";
     const prod = products[currentProductIndex];
-    prod.ingredients.forEach(ing => {
+    const ingredients = (prod && prod.ingredients) ? prod.ingredients : [`${prod.name}`];
+    ingredients.forEach(ing => {
       const row = document.createElement("div");
       row.className = "ingredient-row";
       row.textContent = ing;
@@ -592,63 +663,105 @@ document.addEventListener("DOMContentLoaded", function () {
     overlay.classList.add("active");
   }
 
-  /* INVIO */
-  const btnInvia = document.getElementById("invia");
-  const nomeInput = document.getElementById("nome");
+  // ═══ DROPDOWN CLASSE/TAVOLO ═══
+  const classiData    = {{ listClass | tojson }};
+  const selectTrigger = document.getElementById('select-trigger');
+  const selectPanel   = document.getElementById('select-panel');
+  const optionsList   = document.getElementById('options-list');
+  const classeInput   = document.getElementById('classe');
+  const searchInput   = document.getElementById('search-input');
+  const triggerPh     = document.getElementById('trigger-placeholder');
+  const triggerVal    = document.getElementById('trigger-value');
+
+  classiData.forEach(c => {
+    const item = document.createElement('div');
+    item.className = 'option-item';
+    item.dataset.value = c.nome;
+    item.innerHTML = `<span class="option-dot"></span>${c.nome}`;
+    item.addEventListener('click', () => selectOption(c.nome, item));
+    optionsList.appendChild(item);
+  });
+
+  function selectOption(value, el) {
+    document.querySelectorAll('.option-item').forEach(x => x.classList.remove('selected'));
+    el.classList.add('selected');
+    classeInput.value = value;
+    triggerPh.style.display = 'none';
+    triggerVal.style.display = 'block';
+    triggerVal.textContent = value;
+    closeSelectPanel();
+  }
+  function openSelectPanel() { selectPanel.classList.add('open'); selectTrigger.classList.add('open'); setTimeout(() => searchInput.focus(), 150); }
+  function closeSelectPanel() { selectPanel.classList.remove('open'); selectTrigger.classList.remove('open'); }
+
+  selectTrigger.addEventListener('click', e => {
+    e.stopPropagation();
+    selectPanel.classList.contains('open') ? closeSelectPanel() : openSelectPanel();
+  });
+  searchInput.addEventListener('input', () => {
+    const q = searchInput.value.toLowerCase();
+    document.querySelectorAll('.option-item').forEach(item => {
+      item.classList.toggle('hidden', !item.dataset.value.toLowerCase().includes(q));
+    });
+  });
+  document.addEventListener('click', e => {
+    if (!document.getElementById('classe-select-wrapper').contains(e.target)) closeSelectPanel();
+  });
+
+  function checkClasse() {
+    if (!classeInput.value) {
+      selectTrigger.classList.add('select-error');
+      setTimeout(() => selectTrigger.classList.remove('select-error'), 600);
+      return false;
+    }
+    return true;
+  }
+
+  // ═══ INVIO ═══
+  const btnInvia     = document.getElementById("invia");
+  const nomeInput    = document.getElementById("nome");
   const cognomeInput = document.getElementById("cognome");
-  const classeInput = document.getElementById("classe");
-  const successPopup = document.getElementById("success-popup");
 
   btnInvia.addEventListener("click", () => {
     let valid = true;
-
     function checkName(input, label) {
       input.classList.remove("input-error");
-      if (!/^[A-Za-zÀ-ÖØ-öø-ÿ]{3,}$/.test(input.value.trim())) {
+      if (!/^[A-Za-zÀ-ÖØ-öø-ÿ]{2,}$/.test(input.value.trim())) {
         valid = false; input.classList.add("input-error"); input.value = "";
-        input.placeholder = `⚠ Scrivi il ${label}`; input.style.setProperty("--placeholder-color","#e63946");
+        input.placeholder = `⚠ Scrivi il ${label}`;
       }
     }
-
-    function checkClasse(input) {
-      const opzioni = Array.from(document.querySelectorAll("#lista-classi option")).map(o => o.value);
-      if (!opzioni.includes(input.value.trim())) {
-        input.classList.add("input-error"); input.value = "";
-        input.placeholder = "⚠ Scrivi la classe"; input.style.setProperty("--placeholder-color","#e63946"); return false;
-      }
-      return true;
-    }
-
-    checkName(nomeInput,"nome"); checkName(cognomeInput,"cognome");
-    if (!checkClasse(classeInput)) valid = false;
+    checkName(nomeInput, "nome");
+    checkName(cognomeInput, "cognome");
+    if (!checkClasse()) valid = false;
     if (!valid) { nomeInput.scrollIntoView({behavior:"smooth",block:"center"}); return; }
-    if (!products.length) { alert("Devi ordinare almeno un prodotto!"); return; }
+    if (!products.length) { alert("Seleziona almeno un prodotto!"); return; }
 
     updateHiddenInput();
     if (ordineInviato) return;
     ordineInviato = true;
-    successPopup.classList.add("active");
     overlay.classList.add("active");
-    document.getElementById("totalInput").value = document.getElementById("total").textContent;
-    setTimeout(() => document.querySelector("form").submit(), 3000);
+    successPopup.classList.add("active");
+    setTimeout(() => document.getElementById("order-form").submit(), 2800);
   });
 
-  /* CHIUDI SUCCESS */
-  document.getElementById("success-close").addEventListener("click", () => {
+  function closeSuccessPopup() {
     successPopup.classList.remove("active");
     overlay.classList.remove("active");
     localStorage.removeItem("orderedItems");
     products = []; renderProducts();
-    ["nome","cognome","classe","noteGenerali"].forEach(id => document.getElementById(id).value = "");
-    document.getElementById("total").textContent = "€0,00";
-    document.getElementById("totalInput").value = "0";
-  });
+    ["nome","cognome","noteGenerali"].forEach(id => { const el = document.getElementById(id); if(el) el.value=""; });
+    classeInput.value = "";
+    triggerPh.style.display = 'block'; triggerVal.style.display = 'none'; triggerVal.textContent = '';
+    document.querySelectorAll('.option-item').forEach(x => x.classList.remove('selected'));
+  }
+  document.getElementById("success-x").addEventListener("click", closeSuccessPopup);
+  document.getElementById("success-close-btn").addEventListener("click", closeSuccessPopup);
 
-  /* SVUOTA */
-  const errorBox = document.getElementById("error-box");
-  document.getElementById("clearCartBtn").addEventListener("click", () => errorBox.classList.add("show"));
-  errorBox.querySelector(".close-btn").addEventListener("click", () => errorBox.classList.remove("show"));
-  errorBox.querySelector(".confirm-btn").addEventListener("click", () => { localStorage.removeItem("orderedItems"); location.reload(); });
+  // ═══ CLEAR CART ═══
+  document.getElementById("clearCartBtn").addEventListener("click", () => { clearPopup.classList.add("active"); overlay.classList.add("active"); });
+  document.getElementById("clear-cancel").addEventListener("click", () => { clearPopup.classList.remove("active"); overlay.classList.remove("active"); });
+  document.getElementById("clear-confirm").addEventListener("click", () => { localStorage.removeItem("orderedItems"); location.reload(); });
 
   renderProducts();
 });

@@ -7,640 +7,271 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 <style>
-* { 
-  margin: 0; 
-  padding: 0; 
-  box-sizing: border-box; 
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family:"Montserrat",sans-serif;
+  background:
+    radial-gradient(ellipse at 20% 40%, rgba(140,20,20,0.45) 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 70%, rgba(100,10,10,0.35) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 10%, rgba(180,30,30,0.2) 0%, transparent 40%),
+    linear-gradient(135deg, #0a0202 0%, #140404 40%, #0d0303 100%);
+  min-height:100vh; color:#fff;
+  background-attachment: fixed;
+}
+html, body { width:100%; overflow-x:hidden; }
+
+/* Texture puntini + particelle fumo */
+body::before {
+  content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
+  background-image:radial-gradient(circle at 1px 1px, rgba(255,255,255,0.018) 1px, transparent 0);
+  background-size:28px 28px;
+}
+/* Alone rosso nebbia */
+body::after {
+  content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
+  background:
+    radial-gradient(ellipse at 15% 60%, rgba(200,30,30,0.12) 0%, transparent 45%),
+    radial-gradient(ellipse at 85% 30%, rgba(160,20,20,0.1) 0%, transparent 40%),
+    radial-gradient(ellipse at 50% 90%, rgba(180,25,25,0.08) 0%, transparent 35%);
+  animation: smokeMove 12s ease-in-out infinite alternate;
+}
+@keyframes smokeMove {
+  0%   { opacity:0.7; transform:scale(1) translateY(0); }
+  50%  { opacity:1;   transform:scale(1.06) translateY(-12px); }
+  100% { opacity:0.8; transform:scale(1.02) translateY(-6px); }
 }
 
-body { 
-  font-family: "Montserrat", sans-serif; 
-  background-color: black; 
-  color: white;
-  overflow-x: hidden;
-}
-
-html, body {
-  width: 100%;
-  overflow-x: hidden;
-}
-
-/* ============================================
-   NAVBAR
-   ============================================ */
+/* NAVBAR */
 .navbar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 50px;
-  padding: 0 50px;
-  background: linear-gradient(180deg, rgba(6,6,6,0.98) 0%, rgba(10,3,3,0.95) 100%);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border-bottom: 1px solid rgba(230, 57, 70, 0.15);
-  box-shadow: 0 8px 40px rgba(0,0,0,0.7), inset 0 -1px 0 rgba(255,255,255,0.04);
-  position: fixed;
-  width: 100%;
-  top: 0;
-  height: 90px;
-  z-index: 10;
-  transition: top 0.6s ease;
+  display:flex; align-items:center; justify-content:center; gap:50px;
+  padding:0 50px;
+  background:linear-gradient(180deg,rgba(6,6,6,0.98),rgba(10,3,3,0.95));
+  backdrop-filter:blur(24px);
+  border-bottom:1px solid rgba(230,57,70,0.15);
+  box-shadow:0 8px 40px rgba(0,0,0,0.7);
+  position:fixed; width:100%; top:0; height:90px; z-index:1000;
+  transition:top 0.3s ease;
 }
-
-/* Sottile linea rossa in cima */
 .navbar::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent 0%, #e63946 25%, #ff8080 50%, #e63946 75%, transparent 100%);
-  opacity: 0.7;
+  content:""; position:absolute; top:0; left:0; right:0; height:2px;
+  background:linear-gradient(90deg,transparent,#e63946 25%,#ff8080 50%,#e63946 75%,transparent);
+  opacity:0.7;
+}
+.navbar.hidden { top:-90px; }
+.logo-left { position:absolute; left:50px; display:flex; align-items:center; gap:12px; }
+.logo-left img { width:62px; height:62px; object-fit:contain; filter:drop-shadow(0 0 8px rgba(230,57,70,0.3)); }
+.logo-left-divider { width:1px; height:30px; background:rgba(255,255,255,0.15); }
+.logo-brand { display:flex; flex-direction:column; line-height:1.15; }
+.logo-brand .brand-sub { font-size:10px; font-weight:400; letter-spacing:3.5px; text-transform:uppercase; color:rgba(255,255,255,0.35); }
+.logo-brand .brand-main { font-size:14px; font-weight:800; letter-spacing:2.5px; text-transform:uppercase; color:white; }
+.nav-center ul { display:flex; gap:2px; list-style:none; }
+.nav-center a { color:rgba(255,255,255,0.55); font-weight:600; text-decoration:none; font-size:12px; letter-spacing:2px; text-transform:uppercase; transition:all 0.25s ease; cursor:pointer; padding:9px 16px; border-radius:7px; display:block; }
+.nav-center a:hover { color:white; background:rgba(255,255,255,0.07); }
+.nav-center li:last-child a { color:#ff6b6b; border:1px solid rgba(230,57,70,0.35); background:rgba(230,57,70,0.08); padding:8px 18px; border-radius:20px; }
+.nav-center li:last-child a:hover { background:rgba(230,57,70,0.2); border-color:rgba(230,57,70,0.6); color:white; }
+.social-icons { position:absolute; right:50px; display:flex; gap:8px; }
+.social-icons a { width:34px; height:34px; border:1px solid rgba(255,255,255,0.12); background:rgba(255,255,255,0.04); display:flex; justify-content:center; align-items:center; border-radius:8px; color:rgba(255,255,255,0.5); font-size:14px; transition:all 0.25s ease; text-decoration:none; }
+.social-icons a:hover { background:rgba(230,57,70,0.15); border-color:rgba(230,57,70,0.45); color:#ff8080; transform:translateY(-2px); }
+.menu-toggle { display:none; position:absolute; right:20px; top:50%; transform:translateY(-50%); background:transparent; border:none; color:#fff; font-size:24px; cursor:pointer; z-index:1001; }
+
+/* HERO */
+.menu-hero {
+  min-height:100vh;
+  position:relative; z-index:1;
+  display:flex; justify-content:center; align-items:center;
+  text-align:center; padding-top:120px; padding-bottom:80px; flex-direction:column;
+}
+.menu-hero::before { display:none; }
+.menu-content { position:relative; z-index:3; width:100%; max-width:1200px; padding:0 30px; margin:0 auto; display:flex; flex-direction:column; align-items:center; }
+.menu-title-wrapper { display:flex; align-items:center; justify-content:center; gap:20px; margin-bottom:30px; animation:fadeInDown 0.8s ease; flex-direction:column; gap:8px; }
+@keyframes fadeInDown { from{opacity:0;transform:translateY(-30px)} to{opacity:1;transform:translateY(0)} }
+
+.title-eyebrow {
+  font-size:11px; font-weight:800; letter-spacing:8px; text-transform:uppercase;
+  color:rgba(255,255,255,0.35); display:flex; align-items:center; gap:14px;
+}
+.title-eyebrow::before, .title-eyebrow::after {
+  content:""; display:block; width:40px; height:1px;
+  background:linear-gradient(90deg, transparent, rgba(230,57,70,0.5));
+}
+.title-eyebrow::after { background:linear-gradient(270deg, transparent, rgba(230,57,70,0.5)); }
+
+.menu-title-main {
+  display:flex; align-items:center; gap:18px;
+}
+.menu-subtitle {
+  font-size:clamp(28px,4vw,42px); font-weight:300; margin:0;
+  color:rgba(255,255,255,0.55); font-style:italic; letter-spacing:2px;
+  font-family:'Playfair Display',serif;
+}
+.menu-title {
+  font-size:clamp(64px,10vw,96px); font-style:italic; font-weight:800; margin:0;
+  color:white; line-height:1; letter-spacing:-2px;
+  text-shadow:0 0 80px rgba(230,57,70,0.25), 0 4px 30px rgba(0,0,0,0.5);
+  padding-bottom:6px; /* fix U tagliata */
+}
+.title-accent-bar {
+  width:70px; height:3px; margin:4px auto 0;
+  background:linear-gradient(90deg, rgba(230,57,70,0.4), #e63946, rgba(230,57,70,0.4));
+  border-radius:2px; box-shadow:0 0 12px rgba(230,57,70,0.4);
 }
 
-.navbar.hidden { 
-  top: -100px; 
-}
+/* TABS */
+.menu-list { display:flex; border-radius:50px; justify-content:center; width:100%; max-width:700px; margin-top:30px; background:rgba(255,255,255,0.05); backdrop-filter:blur(10px); border:2px solid rgba(255,255,255,0.1); overflow:hidden; box-shadow:0 8px 30px rgba(0,0,0,0.3); animation:fadeInUp 0.8s ease 0.2s both; }
+@keyframes fadeInUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+.menu-list a { flex:1; display:flex; justify-content:center; align-items:center; color:#fff; text-decoration:none; font-weight:600; font-size:18px; background:transparent; cursor:pointer; transition:all 0.3s ease; letter-spacing:8px; font-family:Verdana,sans-serif; padding:15px 20px; position:relative; }
+.menu-list a:hover { background:rgba(230,57,70,0.08); }
+.menu-list a.active { background:linear-gradient(135deg,#e63946,#ff4b5c); color:#fff; font-weight:700; box-shadow:0 4px 15px rgba(230,57,70,0.4); }
 
-/* LOGO */
-.logo-left { 
-  position: absolute; 
-  left: 50px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.logo-left img { 
-  width: 62px;
-  height: 62px;
-  object-fit: contain;
-  filter: drop-shadow(0 0 8px rgba(230,57,70,0.3));
-}
-
-/* Testo brand accanto al logo */
-.logo-left::after {
-  content: "SCUOLA BORSA";
-  font-size: 13px;
-  font-weight: 800;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: white;
-  opacity: 0.92;
-}
-
-/* Separatore verticale tra logo e brand */
-.logo-left-divider {
-  width: 1px;
-  height: 30px;
-  background: rgba(255,255,255,0.15);
-  margin: 0 2px;
-}
-
-/* LINK NAV */
-.nav-center ul { 
-  display: flex; 
-  gap: 2px; 
-  list-style: none; 
-}
-
-.nav-center a {
-  color: rgba(255,255,255,0.55);
-  font-weight: 600;
-  text-decoration: none;
-  font-size: 12px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  transition: all 0.25s ease;
-  cursor: pointer;
-  padding: 9px 16px;
-  border-radius: 7px;
-  position: relative;
-  display: block;
-}
-
-.nav-center a:hover { 
-  color: white;
-  background: rgba(255,255,255,0.07);
-}
-
-/* Pill rossa per Login */
-.nav-center li:last-child a {
-  color: #ff6b6b;
-  border: 1px solid rgba(230,57,70,0.35);
-  background: rgba(230,57,70,0.08);
-  padding: 8px 18px;
-  border-radius: 20px;
-  letter-spacing: 1.5px;
-}
-
-.nav-center li:last-child a:hover {
-  background: rgba(230,57,70,0.2);
-  border-color: rgba(230,57,70,0.6);
-  color: white;
-}
-
-/* SOCIAL ICONS */
-.social-icons {
-  position: absolute;
-  right: 50px;
-  display: flex;
-  gap: 8px;
-}
-
-.social-icons a {
-  width: 34px;
-  height: 34px;
-  border: 1px solid rgba(255,255,255,0.12);
-  background: rgba(255,255,255,0.04);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 8px;
-  color: rgba(255,255,255,0.5);
-  font-size: 14px;
-  transition: all 0.25s ease;
-  text-decoration: none;
-}
-
-.social-icons a:hover { 
-  background: rgba(230,57,70,0.15);
-  border-color: rgba(230,57,70,0.45);
-  color: #ff8080;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(230,57,70,0.2);
-}
-
-.menu-toggle {
-  display: none;
-  position: absolute;
-  right: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: transparent;
-  border: none;
-  color: white;
-  font-size: 24px;
-  cursor: pointer;
-  z-index: 11;
-}
-
-/* ============================================
-   HERO SECTION
-   ============================================ */
-.menu-hero { 
-  min-height: 100vh; 
-  background: 
-    radial-gradient(ellipse at 20% 50%, rgba(120, 40, 40, 0.45) 0%, transparent 60%),
-    radial-gradient(ellipse at 80% 20%, rgba(80, 20, 20, 0.35) 0%, transparent 55%),
-    radial-gradient(ellipse at 60% 80%, rgba(60, 10, 10, 0.3) 0%, transparent 50%),
-    linear-gradient(135deg, #0a0a0a 0%, #1a0a0a 40%, #120505 70%, #0d0d0d 100%);
-  position: relative; 
-  display: flex; 
-  justify-content: center; 
-  align-items: center; 
-  text-align: center; 
-  padding-top: 120px; 
-  flex-direction: column; 
-}
-
-.menu-hero::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: 
-    radial-gradient(circle at 1px 1px, rgba(255,255,255,0.03) 1px, transparent 0);
-  background-size: 32px 32px;
-  z-index: 1;
-  pointer-events: none;
-}
-
-.menu-hero::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: 
-    radial-gradient(ellipse at 50% 0%, rgba(230, 57, 70, 0.08) 0%, transparent 60%),
-    radial-gradient(ellipse at 50% 100%, rgba(0,0,0,0.6) 0%, transparent 50%);
-  z-index: 1;
-  pointer-events: none;
-}
-
-.menu-content { 
-  position: relative; 
-  z-index: 3; 
-  width: 100%; 
-  max-width: 1200px; 
-  padding: 0 20px; 
-  margin: 0 auto; 
-  display: flex; 
-  flex-direction: column; 
-  align-items: center; 
-}
-
-.menu-title-wrapper { 
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
-  margin-bottom: 15px;
-}
-
-.menu-subtitle { 
-  font-size: 45px; 
-  font-weight: 300; 
-  margin: 0;
-}
-
-.yellow-line { 
-  width: 60px; 
-  height: 4px; 
-  background-color: #e63946; 
-}
-
-.menu-title { 
-  font-size: 75px; 
-  font-style: italic; 
-  font-weight: 800; 
-  margin: 0;
-}
-
-/* ============================================
-   MENU TABS
-   ============================================ */
-.menu-list { 
-  display: flex; 
-  border-radius: 5px; 
-  justify-content: center; 
-  width: 100%; 
-  max-width: 900px;
-  margin-top: 20px; 
-  border: 2px solid white; 
-  height: 45px; 
-}
-
-.menu-list a { 
-  flex: 1; 
-  display: flex; 
-  justify-content: center; 
-  align-items: center; 
-  color: white; 
-  border-radius: 5px; 
-  text-decoration: none; 
-  font-weight: 600; 
-  font-size: 18px; 
-  background: transparent; 
-  border-right: 1px solid white; 
-  cursor: pointer; 
-  transition: 0.3s; 
-  letter-spacing: 10px; 
-  font-family: Verdana; 
-}
-
-.menu-list a:last-child {
-  border-right: none;
-}
-
-.menu-list a.active {
-  background: white;
-  color: black;
-  font-weight: 700;
-}
-
-/* ============================================
-   MENU ITEMS CONTAINER
-   ============================================ */
+/* =============================================
+   MENU GRID — COMPATTO, NOMI COMPLETI
+   ============================================= */
 #menu-lists {
-  margin-top: 30px;
-  text-align: left;
-  display: none;
-  width: 100%;
-  /* max-width gestita da JS in base alle colonne */
-  gap: 10px 40px;
-  padding-bottom: 20px;
+  margin-top:32px; text-align:left; display:none;
+  width:100%; max-width:1100px; gap:6px;
+  animation:fadeInUp 0.5s ease;
+  /* 3 colonne su desktop, si adatta */
+  grid-template-columns: repeat(3, 1fr);
 }
 
-/* Layout classi dinamiche via JS */
-#menu-lists.cols-1 { max-width: 600px; grid-template-columns: 1fr; }
-#menu-lists.cols-2 { max-width: 900px; grid-template-columns: repeat(2, 1fr); }
-#menu-lists.cols-3 { max-width: 1100px; grid-template-columns: repeat(3, 1fr); }
-#menu-lists.cols-4 { max-width: 1200px; grid-template-columns: repeat(4, 1fr); }
-
-/* ============================================
-   MENU ITEM
-   ============================================ */
+/* SINGOLA RIGA PRODOTTO */
 .menu-item {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  column-gap: 10px;
-  padding: 0 14px;
-  border-radius: 12px;
-  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-  height: 64px;
-  border: 1px solid rgba(255,255,255,0.09);
-  background: rgba(255,255,255,0.05);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  box-shadow: 0 2px 12px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.07);
+  display:flex; align-items:center; gap:10px;
+  padding:10px 13px; border-radius:9px;
+  background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1);
+  cursor:pointer; transition:all 0.2s ease;
+  min-height:0;
 }
-
-.menu-item:hover {
-  background: rgba(255, 255, 255, 0.09);
-  border-color: rgba(255,255,255,0.18);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
-}
-
-.menu-item.selected {
-  background: rgba(230, 57, 70, 0.12);
-  border-color: rgba(230, 57, 70, 0.35);
-  box-shadow: 0 4px 20px rgba(230,57,70,0.15), inset 0 1px 0 rgba(255,255,255,0.07);
-}
-
-/* Colonna nome */
-.menu-item > div:first-child {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-width: 0;
-}
+.menu-item:hover { background:rgba(255,255,255,0.09); border-color:rgba(230,57,70,0.45); transform:translateX(3px); }
+.menu-item.selected { background:rgba(230,57,70,0.15); border-color:rgba(230,57,70,0.6); }
 
 /* Checkbox */
 .select-square {
-  width: 24px;
-  height: 24px;
-  min-width: 24px;
-  flex-shrink: 0;
-  border: 2px dashed #838282;
-  background: transparent;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
+  width:22px; height:22px; min-width:22px; flex-shrink:0;
+  border:2px dashed rgba(255,255,255,0.28); background:rgba(0,0,0,0.3);
+  border-radius:5px; cursor:pointer; transition:all 0.2s ease;
+  display:flex; align-items:center; justify-content:center; position:relative;
 }
+.select-square::after { content:'✓'; font-size:13px; font-weight:800; color:#fff; opacity:0; transform:scale(0); transition:all 0.2s ease; }
+.select-square:hover { border-color:rgba(230,57,70,0.6); background:rgba(230,57,70,0.1); }
+.select-square.selected { background:linear-gradient(135deg,#e63946,#ff4b5c); border:2px solid #e63946; box-shadow:0 2px 8px rgba(230,57,70,0.4); }
+.select-square.selected::after { opacity:1; transform:scale(1); }
 
-.select-square::after {
-  content: "";
-  width: 0;
-  height: 0;
-  transition: all 0.2s ease;
+/* NOME — visibile per intero, va a capo se necessario */
+.product-name {
+  white-space:normal !important;
+  overflow:visible !important;
+  text-overflow:unset !important;
+  word-break:break-word;
+  font-weight:600; font-size:13px;
+  color:rgba(255,255,255,0.88); flex:1; line-height:1.35;
+  transition:color 0.2s ease;
 }
+.menu-item:hover .product-name { color:#fff; }
+.menu-item.selected .product-name { color:#ff8080; font-weight:700; }
 
-.select-square.selected {
-  background: #e63946;
-  border: 2px solid #e63946;
-}
-
-.select-square.selected::after {
-  content: "✓";
-  color: white;
-  font-size: 13px;
-  font-weight: 800;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-/* Nome prodotto */
-.menu-item > div:first-child > span {
-  white-space: normal;
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  word-break: break-word;
-  font-weight: 600;
-  font-size: 15px;
-  color: white;
-  flex: 1;
-  min-width: 0;
-  line-height: 1.35;
-}
-
-/* Separatore puntini */
-.dots {
-  width: 100%;
-  height: 1px;
-  position: relative;
-  pointer-events: none;
-  margin: 0 4px;
-  min-width: 10px;
-}
-
-.dots::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  border-bottom: 2px dashed rgba(255, 255, 255, 0.25);
-}
+/* Linea punteggiata */
+.allergen-space { flex:1; height:1px; position:relative; pointer-events:none; min-width:10px; }
+.allergen-space::before { content:""; position:absolute; left:0; right:0; top:50%; border-bottom:1px dashed rgba(255,255,255,0.1); }
+.menu-item:hover .allergen-space::before { border-color:rgba(230,57,70,0.2); }
 
 /* Prezzo */
-.price {
-  white-space: nowrap;
-  min-width: 58px;
-  text-align: right;
-  font-weight: 700;
-  font-size: 15px;
-  color: rgba(255, 255, 255, 0.75);
-}
+.price { white-space:nowrap; font-weight:700; font-size:13px; color:rgba(255,255,255,0.82); flex-shrink:0; display:flex; align-items:center; gap:1px; transition:color 0.2s ease; }
+.euro { font-size:11px; opacity:0.6; font-weight:600; }
+.menu-item:hover .price { color:#e63946; }
+.menu-item.selected .price { color:#ff8080; }
 
-.euro {
-  font-size: 13px;
-  position: relative;
-  top: -1px;
-  margin-right: 1px;
-  opacity: 0.8;
-}
-
-/* ============================================
-   PRONTO BUTTON
-   ============================================ */
+/* BOTTONE PRONTO */
 #pronto-btn {
-  margin-top: 30px;
-  margin-bottom: 40px;
-  padding: 16px 36px;
-  width: 90%;
-  max-width: 260px;
-  font-size: 20px;
-  font-weight: 800;
-  background: linear-gradient(145deg, #B22222, #FF4B5C);
-  color: #ffffff;
-  border: none;
-  border-radius: 50px;
-  cursor: pointer;
-  box-shadow: 0 8px 20px rgba(230, 57, 70, 0.6);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s ease;
+  margin-top:40px; padding:18px 50px; width:90%; max-width:300px;
+  font-size:22px; font-weight:800;
+  background:linear-gradient(145deg,#e63946,#ff4b5c); color:#fff;
+  border:none; border-radius:50px; cursor:pointer;
+  box-shadow:0 10px 30px rgba(230,57,70,0.5); transition:all 0.4s ease;
+  text-transform:uppercase; letter-spacing:2px; position:relative; overflow:hidden;
 }
+#pronto-btn::before { content:''; position:absolute; top:50%; left:50%; width:0; height:0; border-radius:50%; background:rgba(255,255,255,0.2); transform:translate(-50%,-50%); transition:width 0.6s,height 0.6s; }
+#pronto-btn:hover::before { width:300px; height:300px; }
+#pronto-btn:hover { transform:translateY(-5px); box-shadow:0 15px 40px rgba(230,57,70,0.6); }
 
-#pronto-btn:hover {
-  background: linear-gradient(145deg, #FF4B5C, #B22222);
-  color: white;
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(230, 57, 70, 0.7);
-}
-
-/* ============================================
-   ERROR BOX
-   ============================================ */
+/* ERROR BOX */
 #error-box {
-  position: fixed;
-  top: -100px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: linear-gradient(145deg, #B22222, #FF4B5C);
-  padding: 20px 40px 20px 20px;
-  border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(230, 57, 70, 0.6);
-  color: white;
-  font-weight: 600;
-  font-family: "Montserrat", sans-serif;
-  font-size: 16px;
-  width: 350px;
-  max-width: 90%;
-  transition: top 0.5s ease, opacity 0.5s ease;
-  z-index: 99999;
-  opacity: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 8px;
+  position:fixed; top:-120px; left:50%; transform:translateX(-50%);
+  background:rgba(10,3,3,0.97); backdrop-filter:blur(24px);
+  border:1px solid rgba(230,57,70,0.35);
+  padding:0; border-radius:18px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.8), 0 0 0 1px rgba(230,57,70,0.1);
+  color:#fff; font-family:"Montserrat",sans-serif;
+  width:360px; max-width:92%;
+  transition:top 0.45s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s ease;
+  z-index:99999; opacity:0; overflow:hidden;
+}
+#error-box.show { top:100px !important; opacity:1; }
+#error-box .error-bar { height:3px; background:linear-gradient(90deg,transparent,#e63946 30%,#ff6b6b 50%,#e63946 70%,transparent); }
+#error-box .error-body { display:flex; align-items:center; gap:14px; padding:18px 48px 18px 20px; }
+#error-box .error-icon { width:40px; height:40px; min-width:40px; border-radius:12px; background:rgba(230,57,70,0.12); border:1px solid rgba(230,57,70,0.25); display:flex; align-items:center; justify-content:center; font-size:20px; }
+#error-box .error-text strong { display:block; font-size:13px; font-weight:800; letter-spacing:1px; color:white; margin-bottom:3px; }
+#error-box .error-text p { margin:0; font-size:12px; color:rgba(255,255,255,0.5); line-height:1.5; font-weight:500; }
+#error-box .close-btn { position:absolute; top:50%; right:14px; transform:translateY(-50%); cursor:pointer; color:rgba(255,255,255,0.3); background:rgba(255,255,255,0.06); border:none; border-radius:50%; width:26px; height:26px; display:flex; align-items:center; justify-content:center; transition:all 0.2s ease; font-size:13px; font-weight:800; }
+#error-box .close-btn:hover { background:rgba(255,255,255,0.12); color:white; }
+
+/* LOGIN MODAL */
+#login-modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); backdrop-filter:blur(5px); justify-content:center; align-items:center; z-index:10000; }
+.form-container { width:360px; max-width:90%; border-radius:20px; background:rgba(22,22,22,0.95); backdrop-filter:blur(20px); padding:40px 30px; color:#fff; box-shadow:0 20px 60px rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.1); }
+.title { text-align:center; font-size:28px; font-weight:700; margin-bottom:30px; color:#fff; }
+.form { margin-top:20px; }
+.input-group { margin-bottom:20px; }
+.input-group label { display:block; margin-bottom:8px; color:#fff; font-weight:600; font-size:14px; }
+.input-group input { width:100%; border-radius:10px; border:2px solid rgba(255,255,255,0.1); outline:none; background:rgba(0,0,0,0.3); padding:12px 16px; color:#fff; font-size:15px; transition:all 0.3s ease; }
+.input-group input:focus { border-color:#e63946; background:rgba(230,57,70,0.05); }
+.forgot { display:flex; justify-content:flex-end; font-size:13px; margin-top:8px; }
+.forgot a, .signup a { color:#e63946; text-decoration:none; font-weight:600; }
+.sign { display:block; width:100%; background:linear-gradient(145deg,#e63946,#ff4b5c); padding:14px; text-align:center; color:#fff; border:none; border-radius:10px; font-weight:700; font-size:16px; cursor:pointer; margin-top:25px; transition:all 0.3s ease; }
+.sign:hover { transform:translateY(-2px); }
+.social-message { display:flex; align-items:center; padding:25px 0 20px; }
+.line { height:1px; flex:1; background:rgba(255,255,255,0.1); }
+.social-message .message { padding:0 15px; font-size:13px; color:rgba(255,255,255,0.5); }
+.signup { text-align:center; color:rgba(255,255,255,0.7); font-size:14px; margin-top:20px; }
+#register-form { margin-top:20px; display:none; }
+
+@media (max-width:1024px) {
+  .navbar { gap:30px; padding:0 30px; }
+  .logo-left { left:30px; }
+  .social-icons { right:30px; }
+}
+@media (max-width:768px) {
+  .navbar { height:80px; padding:0 20px; }
+  .logo-left { left:20px; }
+  .logo-brand .brand-sub { display:none; }
+  .logo-brand .brand-main { font-size:12px; }
+  .nav-center { display:none; }
+  .nav-center.active { display:block; position:absolute; top:80px; left:0; width:100%; background:rgba(6,2,2,0.99); border-bottom:1px solid rgba(230,57,70,0.12); }
+  .nav-center.active ul { flex-direction:column; }
+  .nav-center.active a { padding:14px 24px; border-bottom:1px solid rgba(255,255,255,0.05); font-size:13px; }
+  .social-icons { display:none; }
+  .menu-toggle { display:block; }
+  .menu-hero { padding-top:100px; background-attachment:scroll; }
+  .menu-content { padding:0 16px; }
+  #menu-lists { grid-template-columns:1fr; max-width:500px; margin-top:24px; gap:5px; }
+  .menu-list { margin-top:30px; flex-direction:column; max-width:400px; border-radius:20px; }
+  .menu-list a { letter-spacing:4px; padding:15px 20px; border-bottom:1px solid rgba(255,255,255,0.05); }
+  .menu-title { font-size:52px; }
+  .menu-subtitle { font-size:32px; }
+  .product-name { font-size:13px; }
+}
+@media (max-width:480px) {
+  .navbar { height:70px; }
+  .menu-hero { padding-top:90px; }
+  .menu-title { font-size:42px; }
+  .menu-subtitle { font-size:28px; }
+  .menu-item { padding:9px 11px; gap:8px; }
+  .product-name { font-size:12px; }
+  .price { font-size:12px; }
 }
 
-#error-box.show {
-  top: 40px !important;
-  opacity: 1;
-}
-
-#error-box strong { font-size: 18px; font-weight: 800; }
-#error-box p { margin: 0; line-height: 1.3; }
-
-#error-box .close-btn {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  cursor: pointer;
-  font-weight: 900;
-  font-size: 20px;
-  color: white;
-  background: rgba(0, 0, 0, 0.2);
-  border: none;
-  border-radius: 50%;
-  width: 28px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: 0.3s;
-}
-
-#error-box .close-btn:hover { background: rgba(255, 255, 255, 0.3); }
-
-/* ============================================
-   LOGIN MODAL
-   ============================================ */
-#login-modal { 
-  display: none; 
-  position: fixed; 
-  top: 0; left: 0; 
-  width: 100%; height: 100%; 
-  background: rgba(0, 0, 0, 0.8); 
-  justify-content: center; 
-  align-items: center; 
-  z-index: 1000; 
-}
-
-.form-container { 
-  width: 320px; 
-  border-radius: 0.75rem; 
-  background-color: rgba(22, 22, 22, 0.784); 
-  padding: 2rem; 
-  color: white; 
-}
-
-.title { text-align: center; font-size: 1.5rem; line-height: 2rem; font-weight: 700; margin-bottom: 1rem; }
-.form { margin-top: 1.5rem; }
-.input-group { margin-top: 0.25rem; font-size: 0.875rem; line-height: 1.25rem; }
-.input-group label { display: block; margin-bottom: 4px; color: white; }
-.input-group input { width: 100%; border-radius: 0.375rem; border: 1px solid white; outline: 0; background-color: rgba(22, 22, 22, 0.508); padding: 0.75rem 1rem; color: whitesmoke; }
-.input-group input:focus { border-color: white; }
-.forgot { display: flex; justify-content: flex-end; font-size: 0.75rem; color: rgba(156, 163, 175, 1); margin: 8px 0 14px 0; }
-.forgot a, .signup a { color: rgba(243, 244, 246, 1); text-decoration: none; font-size: 14px; }
-.sign { display: block; width: 100%; background-color: #e63946; padding: 0.75rem; text-align: center; color: white; border: none; border-radius: 0.375rem; font-weight: 600; cursor: pointer; }
-.social-message { display: flex; align-items: center; padding-top: 1rem; }
-.line { height: 1px; flex: 1 1 0%; background-color: rgba(55, 65, 81, 1); }
-.social-message .message { padding: 0 0.75rem; font-size: 0.875rem; color: rgba(156, 163, 175, 1); }
-#register-form { margin-top: 1rem; display: none; }
-
-/* ============================================
-   RESPONSIVE
-   ============================================ */
-@media (max-width: 1024px) {
-  .navbar { gap: 30px; padding: 15px 30px; height: 120px; }
-  .logo-left { left: 30px; }
-  .logo-left img { width: 100px; }
-  .nav-center ul { gap: 25px; }
-  .nav-center a { font-size: 16px; }
-  .social-icons { right: 30px; gap: 20px; }
-  /* Max 2 colonne su tablet */
-  #menu-lists.cols-3,
-  #menu-lists.cols-4 { 
-    max-width: 900px;
-    grid-template-columns: repeat(2, 1fr) !important; 
-  }
-}
-
-@media (max-width: 768px) {
-  .navbar { justify-content: flex-start; padding: 12px 15px; height: 80px; gap: 0; }
-  .logo-left { position: relative; left: 0; margin-right: auto; }
-  .logo-left img { width: 80px; }
-  .nav-center { display: none; }
-  .nav-center.active { display: block; position: absolute; top: 80px; left: 0; width: 100%; background: rgba(22, 22, 22, 0.95); }
-  .nav-center.active ul { flex-direction: column; }
-  .nav-center.active a { padding: 15px 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
-  .social-icons { display: none; }
-  .menu-toggle { display: block; }
-  .menu-hero { padding-top: 100px; }
-  .menu-content { width: 100%; padding: 0 16px; }
-  .menu-title-wrapper { margin-top: 30px; }
-  .menu-list { margin-top: 60px; }
-  .menu-title { font-size: 52px; }
-  .menu-subtitle { font-size: 32px; }
-
-  /* Sempre 1 colonna su mobile piccolo */
-  #menu-lists.cols-1,
-  #menu-lists.cols-2,
-  #menu-lists.cols-3,
-  #menu-lists.cols-4 { 
-    max-width: 100%;
-    grid-template-columns: 1fr !important; 
-  }
-
-  #pronto-btn { padding: 0.9rem 2rem; font-size: 18px; max-width: 220px; }
-}
-
-@media (max-width: 480px) {
-  .navbar { height: 65px;
-}
-  .logo-left img { width: 70px; }
-  .menu-hero { padding-top: 90px; }
-  .menu-list { margin-top: 80px; flex-direction: column; height: auto; }
-  .menu-list a { border-right: none; border-bottom: 1px solid white; letter-spacing: 4px; padding: 12px 0; }
-  .menu-title { font-size: 40px; }
-  .menu-subtitle { font-size: 26px; }
-  .menu-item > div:first-child > span { font-size: 14px; }
-  .price { font-size: 14px; min-width: 52px; }
-  #pronto-btn { width: 100%; max-width: 100%; }
-}
+::-webkit-scrollbar { width:12px; }
+::-webkit-scrollbar-track { background:#000; }
+::-webkit-scrollbar-thumb { background:linear-gradient(135deg,#e63946,#ff4b5c); border-radius:10px; }
 </style>
 </head>
 <body>
@@ -650,8 +281,12 @@ html, body {
 <!-- NAVBAR -->
 <header class="navbar" id="navbar">
   <div class="logo-left">
-    <img src="https://raw.githubusercontent.com/Rashmika274/ordini-bar-scuola-borsa/main/static/logo.png" alt="Logo">
+    <img src="https://raw.githubusercontent.com/Rashmika274/ordini-bar-scuola-borsa/main/static/logo.png" alt="Logo Scuola Borsa">
     <div class="logo-left-divider"></div>
+    <div class="logo-brand">
+      <span class="brand-sub">Sala &amp; Bar</span>
+      <span class="brand-main">Scuola Borsa</span>
+    </div>
   </div>
   <button class="menu-toggle" id="menu-toggle">☰</button>
   <nav class="nav-center" id="nav-center">
@@ -674,229 +309,156 @@ html, body {
 <section class="menu-hero" id="the-menu">
   <div class="menu-content">
     <div class="menu-title-wrapper">
-      <div>
-        <h3 class="menu-subtitle">The</h3>
-        <div class="yellow-line"></div>
+      <div class="title-eyebrow">Bar Scuola Borsa</div>
+      <div class="menu-title-main">
+        <span class="menu-subtitle">The</span>
+        <h1 class="menu-title">Menu</h1>
       </div>
-      <h1 class="menu-title">Menu</h1>
+      <div class="title-accent-bar"></div>
     </div>
-    
+
     <div class="menu-list">
       <a data-menu="share">CIBI</a>
       <a data-menu="sustain">BEVANDE</a>
       <a data-menu="indulge">DOLCI</a>
     </div>
-    
+
     <div id="menu-lists"></div>
-    
-    <button id="pronto-btn" class="show-btn">PRONTO</button>
+
+    <button id="pronto-btn">PRONTO</button>
   </div>
 </section>
 
 <!-- ERROR BOX -->
-<div id="error-box">
-  <strong>Errore!</strong>
-  <p>Oh no!<br>Devi selezionare almeno un prodotto</p>
-  <button class="close-btn" aria-label="Close Error">&times;</button>
+<div id="error-box" role="alert">
+  <div class="error-bar"></div>
+  <div class="error-body">
+    <div class="error-icon">⚠️</div>
+    <div class="error-text">
+      <strong>Attenzione</strong>
+      <p id="error-msg">Seleziona almeno un prodotto</p>
+    </div>
+  </div>
+  <button class="close-btn" aria-label="Chiudi">✕</button>
 </div>
 
 <!-- LOGIN MODAL -->
 <div id="login-modal">
   <div style="position:relative;">
-    <span id="close-login" style="position:absolute; top:-20px; right:-20px; cursor:pointer; font-size:30px; color:white;">&times;</span>
+    <span id="close-login" style="position:absolute;top:-25px;right:-25px;cursor:pointer;font-size:32px;color:#fff;">&times;</span>
     <div class="form-container">
       <p class="title">Login</p>
       <form class="form" id="login-form">
         <div class="input-group">
           <label for="username">Username</label>
-          <input type="text" name="username" id="username" placeholder="">
+          <input type="text" name="username" id="username" placeholder="Inserisci username">
         </div>
         <div class="input-group">
           <label for="password">Password</label>
-          <input type="password" name="password" id="password" placeholder="">
-          <div class="forgot"><a href="#">Forgot Password?</a></div>
+          <input type="password" name="password" id="password" placeholder="Inserisci password">
+          <div class="forgot"><a href="#">Password dimenticata?</a></div>
         </div>
-        <button class="sign">Sign in</button>
+        <button class="sign" type="submit">Accedi</button>
       </form>
       <div class="social-message">
-        <div class="line"></div>
-        <p class="message">Login with social accounts</p>
-        <div class="line"></div>
+        <div class="line"></div><p class="message">Login con social</p><div class="line"></div>
       </div>
-      <p class="signup" style="color:rgba(245,245,245,0.742);">
-        Don't have an account? <a id="to-register" style="cursor:pointer;">Sign up</a>
-      </p>
-      <div id="register-form" style="display:none;">
-        <p class="title">Register</p>
-        <form class="form" id="register-form-inner">
-          <div class="input-group"><label for="reg-first">First Name</label><input type="text" id="reg-first" placeholder=""></div>
-          <div class="input-group"><label for="reg-last">Last Name</label><input type="text" id="reg-last" placeholder=""></div>
-          <div class="input-group"><label for="reg-email">Email</label><input type="email" id="reg-email" placeholder=""></div>
-          <div class="input-group"><label for="reg-pass">Password</label><input type="password" id="reg-pass" placeholder=""></div>
-          <div class="input-group"><label for="reg-pass2">Confirm Password</label><input type="password" id="reg-pass2" placeholder=""></div>
-          <button class="sign" style="margin-top:6px;">Create Account</button>
+      <p class="signup">Non hai un account? <a id="to-register">Registrati</a></p>
+      <div id="register-form">
+        <p class="title">Registrati</p>
+        <form class="form">
+          <div class="input-group"><label>Nome</label><input type="text" placeholder="Il tuo nome"></div>
+          <div class="input-group"><label>Cognome</label><input type="text" placeholder="Il tuo cognome"></div>
+          <div class="input-group"><label>Email</label><input type="email" placeholder="la-tua-email@esempio.com"></div>
+          <div class="input-group"><label>Password</label><input type="password" placeholder="Scegli una password"></div>
+          <div class="input-group"><label>Conferma Password</label><input type="password" placeholder="Ripeti la password"></div>
+          <button class="sign" type="submit">Crea Account</button>
         </form>
-        <p class="signup" style="color:rgba(245,245,245,0.742);">
-          Already have an account? <a id="to-login" style="cursor:pointer;">Sign in</a>
-        </p>
+        <p class="signup">Hai già un account? <a id="to-login">Accedi</a></p>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-/* ============================================
-   DATI DAL SERVER
-   ============================================ */
 const datiRaw = document.getElementById("contenitore").getAttribute("data");
-console.log("📦 Dati dal server:", datiRaw);
 
-/* ============================================
-   MOBILE MENU TOGGLE
-   ============================================ */
+// Mobile nav
 const menuToggle = document.getElementById('menu-toggle');
-const navCenter = document.getElementById('nav-center');
-const socialIcons = document.getElementById('social-icons');
-
+const navCenter  = document.getElementById('nav-center');
 if (menuToggle) {
-  menuToggle.addEventListener('click', () => {
-    navCenter.classList.toggle('active');
-    socialIcons.classList.toggle('active');
-  });
-  document.querySelectorAll('.nav-center a').forEach(link => {
-    link.addEventListener('click', () => {
-      navCenter.classList.remove('active');
-      socialIcons.classList.remove('active');
-    });
+  menuToggle.addEventListener('click', () => navCenter.classList.toggle('active'));
+  document.querySelectorAll('.nav-center a').forEach(l => l.addEventListener('click', () => navCenter.classList.remove('active')));
+  document.addEventListener('click', e => {
+    if (!navCenter.contains(e.target) && !menuToggle.contains(e.target)) navCenter.classList.remove('active');
   });
 }
 
-/* ============================================
-   PARSING DATI
-   ============================================ */
+const menuLinks     = document.querySelectorAll(".menu-list a");
+const listContainer = document.getElementById("menu-lists");
+const prontoBtn     = document.getElementById("pronto-btn");
+const errorBox      = document.getElementById("error-box");
+
+// Parse dati
 let datiDB = { items: [] };
 try {
   if (datiRaw && datiRaw !== "{{data}}") {
-    let stringaPulita = datiRaw
+    let s = datiRaw
       .replace(/Decimal\(['"]?([^'"]*)['"]?\)/g, '$1')
-      .replace(/None/g, 'null')
-      .replace(/True/g, 'true')
-      .replace(/False/g, 'false')
+      .replace(/None/g, 'null').replace(/True/g, 'true').replace(/False/g, 'false')
       .replace(/'/g, '"');
-    datiDB = JSON.parse(stringaPulita);
+    datiDB = JSON.parse(s);
   }
-} catch (e) {
-  console.error("❌ Errore parsing dati:", e);
-}
+} catch(e) { console.error("Parsing dati:", e); }
 
-/* ============================================
-   ORGANIZZA PRODOTTI PER CATEGORIA
-   ============================================ */
 const cibo = [], bevande = [], dolci = [];
 const listaItems = Array.isArray(datiDB) ? datiDB : (datiDB.items || []);
 
 listaItems.forEach(item => {
-  const nome = item.prodotto || "Prodotto senza nome";
+  const nome   = item.prodotto || "Prodotto";
   const prezzo = item.prezzo_euro || "0.00";
-  const cat = (item.categoria || "").toLowerCase();
-  const prodotto = [nome, prezzo];
-  if (cat === 'bevande') bevande.push(prodotto);
-  else if (cat === 'dolci') dolci.push(prodotto);
-  else cibo.push(prodotto);
+  const cat    = (item.categoria || "").toLowerCase();
+  const p      = [nome, prezzo];
+  if (cat === 'bevande') bevande.push(p);
+  else if (cat === 'dolci') dolci.push(p);
+  else cibo.push(p);
 });
 
 const menuData = { share: cibo, sustain: bevande, indulge: dolci };
-console.log("🍽️ Menu organizzato:", menuData);
-
-/* ============================================
-   CALCOLO COLONNE SMART
-   
-   Regola:
-   - 1-4 prodotti   → 1 colonna
-   - 5-8 prodotti   → 2 colonne
-   - 9-15 prodotti  → 3 colonne
-   - 16+ prodotti   → 4 colonne
-   
-   Su tablet (≤1024px): max 2 colonne
-   Su mobile (≤768px): sempre 1 colonna
-   ============================================ */
-function getColumnsCount(itemCount) {
-  const w = window.innerWidth;
-  if (w <= 768) return 1;
-  if (w <= 1024) {
-    if (itemCount <= 4) return 1;
-    return 2;
-  }
-  // Desktop
-  if (itemCount <= 4)  return 1;
-  if (itemCount <= 8)  return 2;
-  if (itemCount <= 15) return 3;
-  return 4;
-}
-
-/* ============================================
-   DOM & STATO
-   ============================================ */
-const menuLinks = document.querySelectorAll(".menu-list a");
-const listContainer = document.getElementById("menu-lists");
-const prontoBtn = document.getElementById("pronto-btn");
-const errorBox = document.getElementById("error-box");
-const errorCloseBtn = errorBox.querySelector(".close-btn");
-
 let selectedItems = {};
 
-/* ============================================
-   RENDERING MENU
-   ============================================ */
 function renderMenu(category) {
   const items = menuData[category] || [];
-  
-  // Mostra il container
   listContainer.style.display = "grid";
-  
-  // Rimuovi classi colonne precedenti
-  listContainer.classList.remove("cols-1", "cols-2", "cols-3", "cols-4");
-  
-  // Applica classe colonne corretta
-  const cols = getColumnsCount(items.length);
-  listContainer.classList.add("cols-" + cols);
 
   if (items.length === 0) {
-    listContainer.innerHTML = `<p style="text-align:center; padding:20px; grid-column:1/-1;">Nessun prodotto disponibile.</p>`;
+    listContainer.innerHTML = `<p style="text-align:center;padding:40px;color:rgba(255,255,255,0.5);grid-column:1/-1;">Nessun prodotto disponibile.</p>`;
     return;
   }
 
-  // HTML prodotti
   listContainer.innerHTML = items.map(item => `
     <div class="menu-item ${selectedItems[item[0]] ? 'selected' : ''}" data-name="${item[0]}">
-      <div>
-        <div class="select-square ${selectedItems[item[0]] ? 'selected' : ''}" 
-             data-name="${item[0]}" 
-             data-price="${item[1]}"></div>
-        <span title="${item[0]}">${item[0]}</span>
-      </div>
-      <div class="dots"></div>
+      <div class="select-square ${selectedItems[item[0]] ? 'selected' : ''}" data-name="${item[0]}" data-price="${item[1]}"></div>
+      <span class="product-name">${item[0]}</span>
+      <div class="allergen-space"></div>
       <span class="price"><span class="euro">€</span>${parseFloat(item[1]).toFixed(2)}</span>
     </div>
   `).join("");
 
-  // Click sui checkbox
-  listContainer.querySelectorAll(".select-square").forEach(sq => {
-    sq.addEventListener("click", () => {
+  listContainer.querySelectorAll(".menu-item").forEach(row => {
+    row.addEventListener("click", () => {
+      const sq   = row.querySelector(".select-square");
       const name = sq.dataset.name;
-      const price = sq.dataset.price;
-      const menuItem = sq.closest(".menu-item");
-
+      const price= sq.dataset.price;
       if (selectedItems[name]) {
         delete selectedItems[name];
         sq.classList.remove("selected");
-        menuItem.classList.remove("selected");
+        row.classList.remove("selected");
       } else {
         selectedItems[name] = price;
         sq.classList.add("selected");
-        menuItem.classList.add("selected");
+        row.classList.add("selected");
       }
-
       localStorage.setItem("selectedItems", JSON.stringify(selectedItems));
       updateProntoBtn();
     });
@@ -904,85 +466,68 @@ function renderMenu(category) {
 }
 
 function updateProntoBtn() {
-  prontoBtn.style.opacity = Object.keys(selectedItems).length > 0 ? "1" : "0.5";
+  const n = Object.keys(selectedItems).length;
+  prontoBtn.style.opacity = n > 0 ? "1" : "0.5";
+  prontoBtn.style.pointerEvents = n > 0 ? "auto" : "none";
 }
 
-/* ============================================
-   EVENTI
-   ============================================ */
-errorCloseBtn.addEventListener("click", () => errorBox.classList.remove("show"));
+errorBox.querySelector(".close-btn").addEventListener("click", () => errorBox.classList.remove("show"));
+let errTimeout;
+function showError(msg) {
+  document.getElementById('error-msg').innerHTML = msg;
+  errorBox.classList.add("show");
+  clearTimeout(errTimeout);
+  errTimeout = setTimeout(() => errorBox.classList.remove("show"), 4000);
+}
 
 let currentCategory = "share";
-
 menuLinks.forEach(link => {
   link.addEventListener("click", () => {
-    menuLinks.forEach(btn => btn.classList.remove("active"));
+    menuLinks.forEach(b => b.classList.remove("active"));
     link.classList.add("active");
     currentCategory = link.dataset.menu;
     renderMenu(currentCategory);
   });
 });
 
-window.addEventListener("resize", () => renderMenu(currentCategory));
-
 prontoBtn.addEventListener("click", () => {
   if (Object.keys(selectedItems).length === 0) {
-    const nomi = { share: "CIBI", sustain: "BEVANDE", indulge: "DOLCI" };
-    errorBox.querySelector("p").innerHTML = `Oh no!<br>Devi selezionare almeno un prodotto nella sezione ${nomi[currentCategory] || "prodotto"}`;
-    errorBox.classList.add("show");
-    setTimeout(() => errorBox.classList.remove("show"), 4000);
+    showError("Devi selezionare almeno un prodotto!");
     return;
   }
-
-  const orderedItems = Object.entries(selectedItems).map(([name, price]) => ({
-    name, price: parseFloat(price), qty: 1
+  const orderedItems = Object.entries(selectedItems).map(([nome, prezzo]) => ({
+    name: nome, price: parseFloat(prezzo), qty: 1
   }));
-
   localStorage.setItem("orderedItems", JSON.stringify(orderedItems));
   window.location.href = "/orders";
 });
 
-// Avvio
 if (menuLinks[0]) menuLinks[0].click();
 
-/* ============================================
-   LOGIN MODAL
-   ============================================ */
-const loginBtn = document.getElementById('login-btn');
+// Navbar hide on scroll
+let lastScroll = 0;
+window.addEventListener('scroll', () => {
+  const cur = window.pageYOffset;
+  const nav = document.getElementById('navbar');
+  if (cur > lastScroll && cur > 200) nav.classList.add('hidden');
+  else nav.classList.remove('hidden');
+  lastScroll = cur;
+});
+
+// Login modal
+const loginBtn   = document.getElementById('login-btn');
 const loginModal = document.getElementById('login-modal');
 const closeLogin = document.getElementById('close-login');
-
-if (loginBtn) loginBtn.addEventListener('click', () => loginModal.style.display = 'flex');
+if (loginBtn)   loginBtn.addEventListener('click', () => loginModal.style.display = 'flex');
 if (closeLogin) closeLogin.addEventListener('click', () => loginModal.style.display = 'none');
 window.addEventListener('click', e => { if (e.target === loginModal) loginModal.style.display = 'none'; });
 
-const loginForm = document.getElementById("login-form");
-const registerForm = document.getElementById("register-form");
 const toRegister = document.getElementById("to-register");
-const toLogin = document.getElementById("to-login");
-const formContainer = document.querySelector(".form-container");
-const socialMessage = document.querySelector(".social-message");
-const titleText = formContainer?.querySelector(".title");
-
-if (toRegister) {
-  toRegister.addEventListener("click", () => {
-    loginForm.style.display = "none";
-    registerForm.style.display = "block";
-    if (socialMessage) socialMessage.style.display = "none";
-    if (titleText) titleText.innerText = "Register";
-  });
-}
-
-if (toLogin) {
-  toLogin.addEventListener("click", () => {
-    loginForm.style.display = "block";
-    registerForm.style.display = "none";
-    if (socialMessage) socialMessage.style.display = "flex";
-    if (titleText) titleText.innerText = "Login";
-  });
-}
-
-console.log("✅ Menu inizializzato correttamente!");
+const toLogin    = document.getElementById("to-login");
+const loginForm  = document.getElementById("login-form");
+const registerForm = document.getElementById("register-form");
+if (toRegister) toRegister.addEventListener("click", () => { loginForm.style.display="none"; registerForm.style.display="block"; });
+if (toLogin)    toLogin.addEventListener("click",    () => { loginForm.style.display="block"; registerForm.style.display="none"; });
 </script>
 </body>
 </html>
