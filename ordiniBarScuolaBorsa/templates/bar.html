@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Menu - Scuola Borsa</title>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700;1,900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
@@ -145,7 +145,7 @@ body::after {
 .menu-item:hover { background:rgba(255,255,255,0.09); border-color:rgba(230,57,70,0.45); transform:translateX(3px); }
 .menu-item.selected { background:rgba(230,57,70,0.15); border-color:rgba(230,57,70,0.6); }
 
-/* Checkbox */
+/* CHECKBOX riprogettata */
 .select-square {
   width:22px; height:22px; min-width:22px; flex-shrink:0;
   border:2px dashed rgba(255,255,255,0.28); background:rgba(0,0,0,0.3);
@@ -424,12 +424,42 @@ listaItems.forEach(item => {
   else cibo.push(p);
 });
 
+// Dati demo se nessun dato dal server
+if (listaItems.length === 0) {
+  cibo.push(
+    ["Panino al Prosciutto", "3.50"],
+    ["Tramezzino Tonno e Olive", "3.00"],
+    ["Toast Formaggio e Cotto", "2.80"],
+    ["Piadina Vegetariana", "4.00"],
+    ["Insalata Mista", "4.50"],
+    ["Focaccia Genovese", "2.50"]
+  );
+  bevande.push(
+    ["Caffè Espresso", "1.10"],
+    ["Cappuccino", "1.40"],
+    ["Succo di Frutta", "2.00"],
+    ["Acqua Naturale 0,5L", "0.80"],
+    ["Tè Freddo", "1.80"]
+  );
+  dolci.push(
+    ["Cornetto alla Crema", "1.30"],
+    ["Piccolo Nutella", "1.50"],
+    ["Torta della Nonna", "2.50"],
+    ["Muffin ai Mirtilli", "1.80"]
+  );
+}
+
 const menuData = { share: cibo, sustain: bevande, indulge: dolci };
 let selectedItems = {};
 
 function renderMenu(category) {
   const items = menuData[category] || [];
   listContainer.style.display = "grid";
+
+  // Riapplica animazione
+  listContainer.style.animation = "none";
+  listContainer.offsetHeight;
+  listContainer.style.animation = "fadeUp 0.5s cubic-bezier(0.16,1,0.3,1) both";
 
   if (items.length === 0) {
     listContainer.innerHTML = `<p style="text-align:center;padding:40px;color:rgba(255,255,255,0.5);grid-column:1/-1;">Nessun prodotto disponibile.</p>`;
@@ -443,7 +473,7 @@ function renderMenu(category) {
       <div class="allergen-space"></div>
       <span class="price"><span class="euro">€</span>${parseFloat(item[1]).toFixed(2)}</span>
     </div>
-  `).join("");
+  `}).join("");
 
   listContainer.querySelectorAll(".menu-item").forEach(row => {
     row.addEventListener("click", () => {

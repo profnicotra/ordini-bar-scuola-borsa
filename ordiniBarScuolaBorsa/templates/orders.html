@@ -12,7 +12,7 @@
 
 /* ═══ SFONDO FUMO ROSSO (uguale al menu) ═══ */
 body {
-  font-family:'Montserrat',sans-serif;
+  font-family: "DM Sans", sans-serif;
   background:
     radial-gradient(ellipse at 20% 40%, rgba(140,20,20,0.45) 0%, transparent 55%),
     radial-gradient(ellipse at 80% 70%, rgba(100,10,10,0.35) 0%, transparent 50%),
@@ -21,6 +21,7 @@ body {
   min-height:100vh; color:white; overflow-x:hidden;
   background-attachment:fixed;
 }
+
 body::before {
   content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
   background-image:radial-gradient(circle at 1px 1px, rgba(255,255,255,0.018) 1px, transparent 0);
@@ -50,10 +51,53 @@ body::after {
   box-shadow:0 8px 40px rgba(0,0,0,0.7);
   position:fixed; width:100%; top:0; height:90px; z-index:100;
 }
+
 .navbar::before {
-  content:""; position:absolute; top:0; left:0; right:0; height:2px;
-  background:linear-gradient(90deg,transparent,#e63946 25%,#ff8080 50%,#e63946 75%,transparent);
-  opacity:0.7;
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, #e63946 25%, #ff8080 50%, #e63946 75%, transparent);
+  opacity: 0.7;
+}
+
+.logo-left {
+  position: absolute; left: 50px;
+  display: flex; align-items: center; gap: 12px;
+}
+.logo-left img {
+  width: 62px; height: 62px; object-fit: contain;
+  filter: drop-shadow(0 0 8px rgba(230,57,70,0.3));
+}
+.logo-left-divider { width: 1px; height: 30px; background: rgba(255,255,255,0.15); }
+.logo-brand { display: flex; flex-direction: column; line-height: 1.15; }
+.logo-brand .brand-sub { font-size: 10px; font-weight: 400; letter-spacing: 3.5px; text-transform: uppercase; color: rgba(255,255,255,0.35); }
+.logo-brand .brand-main { font-size: 14px; font-weight: 600; letter-spacing: 2.5px; text-transform: uppercase; color: white; }
+
+.nav-center ul { display: flex; gap: 2px; list-style: none; }
+.nav-center a {
+  color: rgba(255,255,255,0.55); font-weight: 500; text-decoration: none;
+  font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
+  transition: all 0.25s ease; cursor: pointer; padding: 9px 16px;
+  border-radius: 7px; display: block;
+}
+.nav-center a:hover { color: white; background: rgba(255,255,255,0.07); }
+.nav-center li:last-child a {
+  color: #ff6b6b; border: 1px solid rgba(230,57,70,0.35);
+  background: rgba(230,57,70,0.08); padding: 8px 18px; border-radius: 20px;
+}
+.nav-center li:last-child a:hover { background: rgba(230,57,70,0.2); border-color: rgba(230,57,70,0.6); color: white; }
+
+.social-icons { position: absolute; right: 50px; display: flex; gap: 8px; }
+.social-icons a {
+  width: 34px; height: 34px; border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.04); display: flex; justify-content: center;
+  align-items: center; border-radius: 8px; color: rgba(255,255,255,0.5);
+  font-size: 14px; transition: all 0.25s ease; text-decoration: none;
+}
+.social-icons a:hover { background: rgba(230,57,70,0.15); border-color: rgba(230,57,70,0.45); color: #ff8080; transform: translateY(-2px); }
+
+.menu-toggle {
+  display: none; position: absolute; right: 20px; top: 50%;
+  transform: translateY(-50%); background: transparent; border: none;
+  color: white; font-size: 24px; cursor: pointer; z-index: 11;
 }
 .logo-left { position:absolute; left:50px; display:flex; align-items:center; gap:12px; }
 .logo-left img { width:62px; height:62px; object-fit:contain; filter:drop-shadow(0 0 8px rgba(230,57,70,0.3)); }
@@ -73,9 +117,9 @@ body::after {
 
 /* ═══ PAGE ═══ */
 .page-wrapper {
-  position:relative; z-index:1;
-  padding:120px 20px 80px;
-  display:flex; flex-direction:column; align-items:center; min-height:100vh;
+  position: relative; z-index: 1;
+  padding: 120px 20px 80px;
+  display: flex; flex-direction: column; align-items: center; min-height: 100vh;
 }
 .page-header { text-align:center; margin-bottom:40px; animation:fadeUp 0.7s ease both; }
 .page-header h1 {
@@ -416,9 +460,15 @@ body::after {
 <form action="{{url_for('orders.new_order')}}" method="POST" id="order-form">
 <div class="page-wrapper">
 
+  <!-- HEADER -->
   <div class="page-header">
-    <h1>Il tuo Ordine</h1>
-    <div class="accent-line"></div>
+    <div class="hero-eyebrow">
+      <div class="eyebrow-line"></div>
+      <span class="eyebrow-text">Scuola Borsa</span>
+      <div class="eyebrow-line right"></div>
+    </div>
+    <h1>Ordine</h1>
+    <p class="hero-tagline">Riepilogo e conferma</p>
   </div>
 
   <!-- MAIN CARD -->

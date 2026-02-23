@@ -2,6 +2,7 @@ from flask import Flask
 from ordiniBarScuolaBorsa.models import db
 from flask_login import LoginManager
 import logging
+import os
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -10,7 +11,10 @@ login_manager = LoginManager()
 
 def create_app():
     app = Flask(__name__)
-    app.config.from_pyfile("config.py")
+    
+    # Carica la configurazione dal file config.py nella stessa directory
+    config_path = os.path.join(os.path.dirname(__file__), 'config.py')
+    app.config.from_pyfile(config_path)
 
     db.init_app(app)
     login_manager.init_app(app)
