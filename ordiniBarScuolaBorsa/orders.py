@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import current_user
-from ordiniBarScuolaBorsa.models import get_products, is_bar_open, get_all_positions, add_queue
+from ordiniBarScuolaBorsa.models import get_products, is_bar_open, get_all_positions, get_general_notes, add_queue
 import json
 import logging
 
@@ -29,6 +29,8 @@ def orders():
             'picture': current_user.picture
         }
 
+    general_notes = get_general_notes()
+
     data = {
         "title": "Nuovo Ordine - Bar Scuola Borsa",
         "open": is_bar_open(),
@@ -37,7 +39,7 @@ def orders():
         "user_info": user_info
     }
 
-    return render_template('orders.html', data=data, positions=posizioni, listClass=posizioni)
+    return render_template('orders.html', data=data, positions=posizioni, listClass=posizioni, general_notes=general_notes)
 
 
 @bp.route("/new_order", methods=["POST"])
@@ -106,6 +108,8 @@ def new_order():
         logger.info(f"Cliente: {customer_full_name}")
         logger.info(f"Prodotti: {selectedProducts}")
         logger.info(f"Totale: €{totale_euro}")
+        if general_note:
+            logger.info(f"Nota generale selezionata: {general_note}")
         if user:
             logger.info(f"Utente autenticato: {user.email} (Professore: {user.is_professor})")
 

@@ -150,7 +150,7 @@ def get_products(user=None):
     results = []
 
     query = db.session.query(
-        Prodotto.id,  # Aggiunto per riferimento
+        Prodotto.id,
         Prodotto.nome.label('prodotto'),
         Prodotto.prezzo_euro,
         Prodotto.prezzo_interni,
@@ -174,7 +174,7 @@ def get_products(user=None):
             'prodotto': item.prodotto,
             'prezzo_euro': item.prezzo_euro,
             'prezzo_interni': item.prezzo_interni,
-            'prezzo_mostrato': prezzo_da_mostrare,  # NUOVO: per template
+            'prezzo_mostrato': prezzo_da_mostrare,
             'categoria': item.categoria,
             'esclusivo': item.esclusivo,
             'obbligatorio_default': item.obbligatorio_default,
@@ -232,14 +232,6 @@ def add_queue(posizione_id, righe, creato_da=None, totale_euro=None, stato='NUOV
     """
     Aggiunge un ordine alla coda
     COMPATIBILE con codice esistente + supporto autenticazione
-    
-    Parametri:
-    - posizione_id: ID posizione
-    - righe: lista righe ordine (può essere stringa vuota "" per compatibilità)
-    - creato_da: nome cliente (opzionale se user è fornito)
-    - totale_euro: totale ordine (opzionale, verrà calcolato se non fornito)
-    - stato: stato ordine (default 'NUOVO')
-    - user: oggetto User se autenticato (opzionale, NUOVO)
     """
     try:
         # Determina il tipo di prezzo
@@ -255,13 +247,12 @@ def add_queue(posizione_id, righe, creato_da=None, totale_euro=None, stato='NUOV
             user_id=user.id if user else None,
             creato_da=creato_da or 'system',
             tipo_prezzo=tipo_prezzo,
-            totale_euro=totale_euro or 0  # Usa il totale fornito o 0
+            totale_euro=totale_euro or 0
         )
 
-        # Se righe è una lista, processala (nuovo comportamento)
+        # Se righe è una lista, processala
         if isinstance(righe, list) and len(righe) > 0:
             for riga in righe:
-                # Recupera il prodotto per ottenere il prezzo corretto
                 prodotto = db.session.query(Prodotto).filter(Prodotto.id == riga['prodotto_id']).first()
                 if prodotto:
                     prezzo_unit = prodotto.get_price(user)
@@ -273,8 +264,6 @@ def add_queue(posizione_id, righe, creato_da=None, totale_euro=None, stato='NUOV
                         prezzo_euro_unit=prezzo_unit
                     )
                     db.session.add(ordine_riga)
-        # Altrimenti mantieni compatibilità con chiamate che passano ""
-        # (non crea righe, solo l'ordine)
 
         db.session.add(new_order)
         db.session.commit()
