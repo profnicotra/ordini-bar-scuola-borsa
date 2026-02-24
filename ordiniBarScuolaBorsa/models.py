@@ -188,40 +188,48 @@ def get_queue():
     try:
         ordini = db.session.query(Ordine).order_by(Ordine.creato_il.desc()).all()
         results = []
-        
+
         for ordine in ordini:
+            # Raggruppa tutte le righe (prodotti) per questo ordine
             righe = db.session.query(OrdineRiga).filter(OrdineRiga.ordine_id == ordine.id).all()
-            
+            items = []
+
             for riga in righe:
                 prodotto = db.session.query(Prodotto).filter(Prodotto.id == riga.prodotto_id).first()
                 note_query = db.session.query(Note).join(
                     OrdineRigaNota, Note.id == OrdineRigaNota.nota_id
                 ).filter(OrdineRigaNota.ordine_riga_id == riga.id).all()
-                
+
+                # Se non ci sono note, mantieni almeno un elemento None per compatibilità
                 if not note_query:
                     note_query = [None]
-                
+
                 for nota in note_query:
-                    # Informazioni utente
-                    user_info = ""
-                    if ordine.user:
-                        user_info = f"{ordine.user.nome} {ordine.user.cognome}"
-                        if ordine.user.is_professor:
-                            user_info += " 👨‍🏫"
-                    
-                    results.append({
-                        'id': ordine.id,
+                    items.append({
                         'prodotto': prodotto.nome if prodotto else 'Prodotto sconosciuto',
                         'quantita': riga.quantita,
                         'nota': nota.nome if nota else None,
-                        'posizione': ordine.posizione.nome if ordine.posizione else 'N/A',
-                        'stato': ordine.stato,
-                        'totale_euro': float(ordine.totale_euro) if ordine.totale_euro else 0,
-                        'creato_il': ordine.creato_il.strftime('%d/%m/%Y %H:%M') if ordine.creato_il else '',
-                        'tipo_prezzo': ordine.tipo_prezzo if hasattr(ordine, 'tipo_prezzo') else 'pubblico',
-                        'utente': user_info or ordine.creato_da or 'Anonimo'
+                        'prezzo_unit': float(riga.prezzo_euro_unit) if riga.prezzo_euro_unit else None
                     })
-        
+
+            # Informazioni utente
+            user_info = ""
+            if ordine.user:
+                user_info = f"{ordine.user.nome} {ordine.user.cognome}"
+                if ordine.user.is_professor:
+                    user_info += " 👨‍🏫"
+
+            results.append({
+                'id': ordine.id,
+                'items': items,
+                'posizione': ordine.posizione.nome if ordine.posizione else 'N/A',
+                'stato': ordine.stato,
+                'totale_euro': float(ordine.totale_euro) if ordine.totale_euro else 0,
+                'creato_il': ordine.creato_il.strftime('%d/%m/%Y %H:%M') if ordine.creato_il else '',
+                'tipo_prezzo': ordine.tipo_prezzo if hasattr(ordine, 'tipo_prezzo') else 'pubblico',
+                'utente': user_info or ordine.creato_da or 'Anonimo'
+            })
+
         return results
 
     except Exception as e:

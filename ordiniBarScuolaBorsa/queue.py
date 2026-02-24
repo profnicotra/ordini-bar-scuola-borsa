@@ -9,10 +9,10 @@ bp = Blueprint("queue", __name__, url_prefix="/queue")
 
 @bp.get("/")
 def queue():
-    data = {"title" : "Coda Bar Scuola Borsa",
-        "open": True,   
-        "queue" : [get_queue()]},        
-    return render_template('queue.html', data=data)
+    # Passa la lista di ordini alla template come variabile `queue`.
+    data = {"title": "Coda Bar Scuola Borsa", "open": True}
+    queue_list = get_queue()
+    return render_template('queue.html', queue=queue_list, data=data)
 
 @bp.get("/api/ordini")
 def get_ordini():

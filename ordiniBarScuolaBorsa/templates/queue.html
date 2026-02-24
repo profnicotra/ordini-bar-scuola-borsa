@@ -221,15 +221,17 @@ body::before {
       </div>
 
       <div class="card-body">
+        {% for item in ordine['items'] %}
         <div class="order-item">
           <div class="item-left">
-            <span class="item-name">{{ ordine.prodotto }}</span>
-            {% if ordine.nota %}
-              <span class="item-nota">📝 {{ ordine.nota }}</span>
+            <span class="item-name">{{ item.prodotto }}</span>
+            {% if item.nota %}
+              <span class="item-nota">📝 {{ item.nota }}</span>
             {% endif %}
           </div>
-          <div class="item-qty">×{{ ordine.quantita }}</div>
+          <div class="item-qty">×{{ item.quantita }}</div>
         </div>
+        {% endfor %}
       </div>
 
       <div class="card-footer">
