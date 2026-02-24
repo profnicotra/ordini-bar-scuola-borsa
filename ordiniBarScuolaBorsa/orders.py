@@ -1,7 +1,9 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for
 from flask_login import current_user
-from ordiniBarScuolaBorsa.models import get_products, is_bar_open, get_all_positions, get_general_notes, add_queue
-from ordiniBarScuolaBorsa.models import get_products, is_bar_open, get_all_positions, add_queue, get_general_notes, Prodotto, db
+from ordiniBarScuolaBorsa.models import (
+    get_products, is_bar_open, get_all_positions,
+    get_general_notes, add_queue, Prodotto, db
+)
 import json
 import logging
 
@@ -15,33 +17,23 @@ def orders():
     Pagina per creare un nuovo ordine.
     Mostra i prezzi corretti in base all'utente autenticato.
     """
-    user = current_user if current_user.is_authenticated else None
+    user      = current_user if current_user.is_authenticated else None
     posizioni = get_all_positions()
     general_notes = get_general_notes()
 
     user_info = None
     if current_user.is_authenticated:
         user_info = {
-            'nome': current_user.nome,
-            'cognome': current_user.cognome,
-            'email': current_user.email,
+            'nome':        current_user.nome,
+            'cognome':     current_user.cognome,
+            'email':       current_user.email,
             'is_professor': current_user.is_professor,
             'tipo_prezzo': 'Prezzi Riservati' if current_user.is_professor else 'Prezzi Pubblici',
-            'picture': current_user.picture
+            'picture':     current_user.picture
         }
 
-    general_notes = get_general_notes()
-
-    data = {
-        "title": "Nuovo Ordine - Bar Scuola Borsa",
-        "open": is_bar_open(),
-        "items": [products],
-        "classi": posizioni,
-        "user_info": user_info
-    }
-
-    return render_template('orders.html', data=data, positions=posizioni, listClass=posizioni, general_notes=general_notes)
-
+    # FIX: rimosso "items": [products] — products non era definito qui
+    # FIX: rimosso il secondo return render_template duplicato
     return render_template(
         'orders.html',
         positions=posizioni,
@@ -77,24 +69,20 @@ def new_order():
             return redirect(url_for('orders.orders'))
 
         # ── 2. Converti nomi → righe con prodotto_id ──
-        user = current_user if current_user.is_authenticated else None
+        user  = current_user if current_user.is_authenticated else None
         righe = []
 
         for item in selected_products:
             nome_prodotto = str(item.get("name", "")).strip()
             qty = max(1, int(item.get("qty", 1)))
 
-            # Cerca il prodotto per nome (case-insensitive)
             prodotto = db.session.query(Prodotto).filter(
                 db.func.lower(Prodotto.nome) == nome_prodotto.lower(),
                 Prodotto.attivo == True
             ).first()
 
             if prodotto:
-                righe.append({
-                    'prodotto_id': prodotto.id,
-                    'quantita': qty
-                })
+                righe.append({'prodotto_id': prodotto.id, 'quantita': qty})
             else:
                 logger.warning(f"Prodotto non trovato nel DB: '{nome_prodotto}' — riga ignorata")
 
@@ -111,17 +99,8 @@ def new_order():
         else:
             customer_full_name = f"{customer_name} {customer_surname}".strip() or "Anonimo"
 
-        # Log debug
-        logger.info(f"--- DETTAGLIO ORDINE ---")
-        logger.info(f"ID Posizione: {position_id}")
-        logger.info(f"Cliente: {customer_full_name}")
-        logger.info(f"Prodotti: {selectedProducts}")
-        logger.info(f"Totale: €{totale_euro}")
-        if general_note:
-            logger.info(f"Nota generale selezionata: {general_note}")
-
         # ── 4. Totale ──
-        price_raw = request.form.get("total", "0")
+        price_raw   = request.form.get("total", "0")
         price_clean = price_raw.replace('€', '').replace(',', '.').strip()
         try:
             totale_euro = float(price_clean)
@@ -129,16 +108,14 @@ def new_order():
             totale_euro = 0.0
 
         # ── 5. Posizione (classe/tavolo) ──
-        position = request.form.get("classe", "").strip()
+        position  = request.form.get("classe", "").strip()
         positions = get_all_positions()
         position_id = None
 
         if position:
-            # Prima prova come ID numerico diretto
             try:
                 position_id = int(position)
             except ValueError:
-                # Altrimenti cerca per nome
                 pname = position.lower()
                 for p in positions:
                     if p.get('nome', '').strip().lower() == pname:
@@ -149,17 +126,21 @@ def new_order():
             logger.warning(f"Posizione non trovata: '{position}'")
             return redirect(url_for('orders.orders'))
 
-        # ── 6. Log ──
+        # ── 6. Nota generale ──
+        general_note = request.form.get("noteGenerali", "").strip()
+
+        # ── 7. Log (FIX: spostato DOPO che tutte le variabili sono definite) ──
         logger.info("--- NUOVO ORDINE ---")
         logger.info(f"Cliente:      {customer_full_name}")
         logger.info(f"Posizione ID: {position_id}")
         logger.info(f"Righe:        {righe}")
         logger.info(f"Totale:       €{totale_euro:.2f}")
-
+        if general_note:
+            logger.info(f"Nota generale: {general_note}")
         if user:
             logger.info(f"Utente: {user.email} | Professore: {user.is_professor}")
 
-        # ── 7. Salva ordine ──
+        # ── 8. Salva ordine ──
         success = add_queue(
             posizione_id=position_id,
             righe=righe,
