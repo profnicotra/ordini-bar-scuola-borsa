@@ -1,10 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import current_user
-<<<<<<< HEAD
 from ordiniBarScuolaBorsa.models import get_products, is_bar_open, get_all_positions, get_general_notes, add_queue
-=======
 from ordiniBarScuolaBorsa.models import get_products, is_bar_open, get_all_positions, add_queue, get_general_notes, Prodotto, db
->>>>>>> 9f539397ce474ad2ce6ce89179466358cdc3680b
 import json
 import logging
 
@@ -33,7 +30,6 @@ def orders():
             'picture': current_user.picture
         }
 
-<<<<<<< HEAD
     general_notes = get_general_notes()
 
     data = {
@@ -45,7 +41,7 @@ def orders():
     }
 
     return render_template('orders.html', data=data, positions=posizioni, listClass=posizioni, general_notes=general_notes)
-=======
+
     return render_template(
         'orders.html',
         positions=posizioni,
@@ -53,7 +49,6 @@ def orders():
         general_notes=general_notes,
         user_info=user_info
     )
->>>>>>> 9f539397ce474ad2ce6ce89179466358cdc3680b
 
 
 @bp.route("/new_order", methods=["POST"])
@@ -116,7 +111,6 @@ def new_order():
         else:
             customer_full_name = f"{customer_name} {customer_surname}".strip() or "Anonimo"
 
-<<<<<<< HEAD
         # Log debug
         logger.info(f"--- DETTAGLIO ORDINE ---")
         logger.info(f"ID Posizione: {position_id}")
@@ -125,7 +119,7 @@ def new_order():
         logger.info(f"Totale: €{totale_euro}")
         if general_note:
             logger.info(f"Nota generale selezionata: {general_note}")
-=======
+
         # ── 4. Totale ──
         price_raw = request.form.get("total", "0")
         price_clean = price_raw.replace('€', '').replace(',', '.').strip()
@@ -161,7 +155,7 @@ def new_order():
         logger.info(f"Posizione ID: {position_id}")
         logger.info(f"Righe:        {righe}")
         logger.info(f"Totale:       €{totale_euro:.2f}")
->>>>>>> 9f539397ce474ad2ce6ce89179466358cdc3680b
+
         if user:
             logger.info(f"Utente: {user.email} | Professore: {user.is_professor}")
 
