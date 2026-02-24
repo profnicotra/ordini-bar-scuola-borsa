@@ -1,554 +1,302 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Coda Ordini Sala Bar</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700;1,900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Coda Ordini — Bar Scuola Borsa</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet"/>
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+:root { --red:#e63946; --dark:#080404; }
+body {
+  font-family:'Montserrat',sans-serif;
+  background:
+    radial-gradient(ellipse at 10% 20%, rgba(110,30,30,0.22) 0%, transparent 50%),
+    radial-gradient(ellipse at 90% 80%, rgba(70,15,15,0.18) 0%, transparent 50%),
+    linear-gradient(135deg,#0a0404 0%,#120505 50%,#0d0404 100%);
+  min-height:100vh; color:white; overflow-x:hidden;
+}
+body::before {
+  content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
+  background-image:radial-gradient(circle at 1px 1px,rgba(255,255,255,0.022) 1px,transparent 0);
+  background-size:28px 28px;
+}
 
-    :root {
-      --red: #e63946;
-      --red-light: #ff6b6b;
-      --border: rgba(255,255,255,0.08);
-      --bg: #080808;
-    }
+/* HEADER */
+.site-header {
+  position:sticky; top:0; z-index:100;
+  background:linear-gradient(180deg,rgba(6,6,6,0.98),rgba(10,3,3,0.95));
+  backdrop-filter:blur(24px);
+  border-bottom:1px solid rgba(230,57,70,0.15);
+  box-shadow:0 8px 40px rgba(0,0,0,0.7);
+  padding:0 40px; height:80px;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.site-header::before {
+  content:""; position:absolute; top:0; left:0; right:0; height:2px;
+  background:linear-gradient(90deg,transparent,#e63946 25%,#ff8080 50%,#e63946 75%,transparent);
+  opacity:0.7;
+}
+.header-logo { display:flex; align-items:center; gap:12px; }
+.header-logo img { width:46px; height:46px; object-fit:contain; filter:drop-shadow(0 0 6px rgba(230,57,70,0.3)); }
+.header-logo-divider { width:1px; height:26px; background:rgba(255,255,255,0.15); }
+.header-logo-text { display:flex; flex-direction:column; line-height:1.15; }
+.header-logo-text .ls { font-size:9px; font-weight:400; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,0.35); }
+.header-logo-text .lm { font-size:13px; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:white; }
+.header-center {
+  position:absolute; left:50%; transform:translateX(-50%);
+  font-family:'Playfair Display',serif; font-size:20px; font-weight:700; font-style:italic; color:white;
+}
+.header-right { display:flex; align-items:center; gap:10px; }
+.live-badge {
+  display:flex; align-items:center; gap:7px;
+  padding:7px 14px; border-radius:20px;
+  background:rgba(74,222,128,0.1); border:1px solid rgba(74,222,128,0.25);
+  font-size:10px; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:#4ade80;
+}
+.live-dot { width:7px; height:7px; border-radius:50%; background:#4ade80; box-shadow:0 0 8px rgba(74,222,128,0.9); animation:pulseDot 2s infinite; }
+@keyframes pulseDot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.6;transform:scale(1.4)} }
 
-    body {
-      font-family: 'DM Sans', sans-serif;
-      background-color: #080808;
-      background-image:
-        radial-gradient(ellipse at 20% 40%, rgba(110,30,30,0.35) 0%, transparent 55%),
-        radial-gradient(ellipse at 80% 70%, rgba(70,15,15,0.25) 0%, transparent 50%),
-        radial-gradient(ellipse at 50% 0%, rgba(230,57,70,0.07) 0%, transparent 55%),
-        linear-gradient(135deg, #080808 0%, #120505 50%, #0d0808 100%);
-      background-attachment: fixed;
-      color: #f5f5f5;
-      min-height: 100vh;
-    }
+/* COUNTERS */
+.count-bar {
+  position:relative; z-index:1;
+  padding:22px 40px 0;
+  display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+}
+.count-chip {
+  display:flex; align-items:center; gap:7px;
+  padding:7px 14px; border-radius:20px;
+  font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase;
+}
+.chip-nuovo { background:rgba(230,57,70,0.1); border:1px solid rgba(230,57,70,0.22); color:#ff8080; }
+.chip-prep  { background:rgba(251,191,36,0.1); border:1px solid rgba(251,191,36,0.22); color:#fbbf24; }
+.chip-pronto{ background:rgba(74,222,128,0.1); border:1px solid rgba(74,222,128,0.22); color:#4ade80; }
+.chip-num   { font-size:14px; font-weight:800; }
 
-    /* ===== HEADER ===== */
-    header {
-      background: linear-gradient(180deg, rgba(6,6,6,0.98), rgba(10,3,3,0.95));
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      padding: 0 50px;
-      height: 90px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-bottom: 1px solid rgba(230,57,70,0.15);
-      box-shadow: 0 8px 40px rgba(0,0,0,0.7);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
+/* GRID */
+.queue-grid {
+  position:relative; z-index:1;
+  padding:22px 40px 60px;
+  display:grid; grid-template-columns:repeat(3,1fr); gap:20px;
+}
 
-    header::before {
-      content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-      background: linear-gradient(90deg, transparent, #e63946 25%, #ff8080 50%, #e63946 75%, transparent);
-      opacity: 0.7;
-    }
+/* ORDER CARD */
+.order-card {
+  background:rgba(18,6,6,0.88); backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,0.09); border-radius:20px;
+  overflow:hidden; position:relative;
+  box-shadow:0 8px 32px rgba(0,0,0,0.5);
+  transition:transform 0.25s ease, box-shadow 0.25s ease;
+  animation:cardIn 0.4s ease both;
+}
+@keyframes cardIn { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+.order-card:hover { transform:translateY(-4px); box-shadow:0 16px 48px rgba(0,0,0,0.6); }
 
-    .header-inner {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-    }
+/* coloured left stripe */
+.order-card.s-nuovo::before  { content:""; position:absolute; top:0; left:0; bottom:0; width:3px; background:#e63946; }
+.order-card.s-prep::before   { content:""; position:absolute; top:0; left:0; bottom:0; width:3px; background:#fbbf24; }
+.order-card.s-pronto::before { content:""; position:absolute; top:0; left:0; bottom:0; width:3px; background:#4ade80; box-shadow:0 0 10px rgba(74,222,128,0.4); }
 
-    .header-eyebrow {
-      display: flex; align-items: center; gap: 12px;
-    }
+/* Card top */
+.card-top {
+  padding:18px 20px 14px;
+  display:flex; align-items:flex-start; justify-content:space-between;
+  border-bottom:1px solid rgba(255,255,255,0.06);
+}
+.card-id    { font-size:10px; font-weight:800; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,0.28); margin-bottom:4px; }
+.card-name  { font-size:17px; font-weight:800; color:white; line-height:1.2; }
+.card-place { font-size:12px; color:rgba(255,255,255,0.4); font-weight:600; margin-top:3px; }
+.card-meta  { display:flex; flex-direction:column; align-items:flex-end; gap:6px; flex-shrink:0; }
+.status-badge { font-size:10px; font-weight:800; letter-spacing:1.5px; text-transform:uppercase; padding:4px 10px; border-radius:20px; white-space:nowrap; }
+.b-nuovo  { background:rgba(230,57,70,0.12); border:1px solid rgba(230,57,70,0.28); color:#ff8080; }
+.b-prep   { background:rgba(251,191,36,0.12); border:1px solid rgba(251,191,36,0.28); color:#fbbf24; }
+.b-pronto { background:rgba(74,222,128,0.12); border:1px solid rgba(74,222,128,0.28); color:#4ade80; }
+.card-time { font-size:11px; color:rgba(255,255,255,0.26); font-weight:600; }
 
-    .eyebrow-line {
-      width: 40px; height: 1px;
-      background: linear-gradient(90deg, transparent, var(--red));
-    }
-    .eyebrow-line.right {
-      background: linear-gradient(90deg, var(--red), transparent);
-    }
+/* Card body */
+.card-body { padding:14px 20px; }
+.order-item {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:9px 12px; margin-bottom:7px;
+  background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08); border-radius:10px;
+}
+.order-item:last-child { margin-bottom:0; }
+.item-left { display:flex; flex-direction:column; gap:3px; }
+.item-name { font-size:14px; font-weight:700; color:white; }
+.item-nota { font-size:11px; color:#ff9090; font-style:italic; }
+.item-qty {
+  font-size:13px; font-weight:800; color:white; flex-shrink:0;
+  background:rgba(230,57,70,0.14); border:1px solid rgba(230,57,70,0.24);
+  width:30px; height:30px; border-radius:8px; display:flex; align-items:center; justify-content:center;
+}
 
-    .eyebrow-text {
-      font-size: 10px; font-weight: 600;
-      letter-spacing: 4px; text-transform: uppercase;
-      color: var(--red-light); opacity: 0.85;
-    }
+/* Card footer */
+.card-footer {
+  padding:12px 20px 18px;
+  border-top:1px solid rgba(255,255,255,0.06);
+}
+.footer-total { font-size:20px; font-weight:800; color:white; margin-bottom:12px; }
+.footer-total .sym { font-size:13px; vertical-align:super; color:rgba(255,255,255,0.45); margin-right:1px; }
+.action-row { display:flex; gap:8px; }
+.btn-act {
+  flex:1; padding:10px 6px; border-radius:10px; border:none;
+  font-family:'Montserrat',sans-serif; font-size:11px; font-weight:800;
+  letter-spacing:1px; text-transform:uppercase; cursor:pointer;
+  transition:all 0.25s ease; display:flex; align-items:center; justify-content:center; gap:5px;
+}
+.btn-prep   { background:rgba(251,191,36,0.12); border:1px solid rgba(251,191,36,0.28); color:#fbbf24; }
+.btn-pronto { background:rgba(74,222,128,0.12); border:1px solid rgba(74,222,128,0.28); color:#4ade80; }
+.btn-del    { background:rgba(230,57,70,0.1);   border:1px solid rgba(230,57,70,0.25);  color:#ff8080; flex:0 0 36px; }
+.btn-act:hover { transform:translateY(-2px); filter:brightness(1.15); }
+.btn-act:disabled { opacity:0.3; cursor:not-allowed; transform:none !important; filter:none !important; }
 
-    header h1 {
-      font-family: 'Playfair Display', serif;
-      font-style: italic;
-      font-weight: 900;
-      font-size: 34px;
-      letter-spacing: -0.5px;
-      background: linear-gradient(160deg, #ffffff 0%, rgba(255,255,255,0.75) 60%, rgba(230,57,70,0.6) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      position: relative;
-    }
+/* EMPTY */
+.empty-state {
+  grid-column:1/-1; text-align:center;
+  padding:80px 20px; display:flex; flex-direction:column; align-items:center; gap:14px;
+}
+.empty-icon { font-size:52px; opacity:0.22; }
+.empty-text { font-size:17px; font-weight:700; color:rgba(255,255,255,0.28); }
+.empty-sub  { font-size:13px; color:rgba(255,255,255,0.15); }
 
-    header h1::after {
-      content: "✦";
-      position: absolute;
-      right: -26px;
-      top: 6px;
-      font-size: 18px;
-      -webkit-text-fill-color: var(--red);
-      opacity: 0.6;
-      animation: spin 8s linear infinite;
-    }
+/* Scrollbar */
+::-webkit-scrollbar { width:6px; }
+::-webkit-scrollbar-track { background:rgba(255,255,255,0.03); }
+::-webkit-scrollbar-thumb { background:rgba(230,57,70,0.35); border-radius:4px; }
 
-    @keyframes spin {
-      from { transform: rotate(0deg); }
-      to   { transform: rotate(360deg); }
-    }
-
-    /* ===== MAIN ===== */
-    main {
-      position: relative; z-index: 1;
-      padding: 40px;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-      justify-items: center;
-    }
-
-    /* ===== ORDER CARD ===== */
-    .order-card {
-      background: linear-gradient(135deg, rgba(20,10,10,0.85) 0%, rgba(15,8,8,0.6) 100%);
-      border: 1px solid var(--border);
-      border-left: 3px solid var(--red);
-      border-radius: 16px;
-      padding: 22px 24px;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      width: 100%;
-      max-width: 420px;
-      transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .order-card:hover {
-      border-color: rgba(255,255,255,0.13);
-      border-left-color: var(--red);
-      background: linear-gradient(135deg, rgba(30,14,14,0.9) 0%, rgba(22,10,10,0.75) 100%);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.07);
-      transform: translateY(-3px);
-    }
-
-    /* ===== ORDER HEADER ===== */
-    .order-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 14px;
-      padding-bottom: 14px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .order-title {
-      font-family: 'Playfair Display', serif;
-      font-size: 20px;
-      font-weight: 700;
-      font-style: italic;
-      color: white;
-      letter-spacing: 0;
-    }
-
-    .order-status {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 700;
-      text-transform: uppercase;
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 10px;
-      letter-spacing: 1.5px;
-    }
-
-    .status-nuovo      { background: rgba(230,57,70,0.15); color: var(--red-light); border: 1px solid rgba(230,57,70,0.3); }
-    .status-in-preparazione { background: rgba(233,196,106,0.15); color: #e9c46a; border: 1px solid rgba(233,196,106,0.3); }
-    .status-pronto     { background: rgba(42,157,143,0.15); color: #2dd4bf; border: 1px solid rgba(42,157,143,0.3); }
-    .status-consegnato { background: rgba(42,157,143,0.1); color: #2a9d8f; border: 1px solid rgba(42,157,143,0.2); }
-    .status-annullato  { background: rgba(230,57,70,0.1); color: rgba(230,57,70,0.7); border: 1px solid rgba(230,57,70,0.2); }
-
-    /* ===== CUSTOMER INFO ===== */
-    .customer-info {
-      font-size: 13px;
-      font-weight: 500;
-      color: rgba(255,255,255,0.55);
-      margin-bottom: 5px;
-      display: flex;
-      align-items: center;
-      gap: 7px;
-    }
-
-    .customer-info .info-icon {
-      font-size: 12px;
-      opacity: 0.6;
-    }
-
-    /* ===== ORDER ITEMS ===== */
-    .order-items {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 12px 14px;
-      margin-top: 14px;
-    }
-
-    .item {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      padding: 7px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-      font-size: 14px;
-      gap: 10px;
-    }
-
-    .item:last-child { border-bottom: none; padding-bottom: 0; }
-    .item:first-child { padding-top: 0; }
-
-    .item-name {
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-      gap: 3px;
-    }
-
-    .item-name-text {
-      font-weight: 500;
-      color: rgba(255,255,255,0.9);
-      font-size: 14px;
-    }
-
-    .item-note {
-      font-size: 11px;
-      color: rgba(255,107,107,0.75);
-      font-style: italic;
-      font-weight: 400;
-    }
-
-    .item-qty {
-      font-family: 'Playfair Display', serif;
-      font-weight: 700;
-      font-size: 14px;
-      color: rgba(255,255,255,0.5);
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-
-    /* ===== ORDER FOOTER ===== */
-    .order-footer {
-      border-top: 1px solid var(--border);
-      margin-top: 16px;
-      padding-top: 14px;
-    }
-
-    .order-notes {
-      font-size: 12px;
-      font-weight: 500;
-      color: rgba(255,255,255,0.4);
-      letter-spacing: 0.5px;
-      margin-bottom: 12px;
-    }
-
-    .order-notes strong {
-      color: rgba(255,255,255,0.65);
-      font-weight: 600;
-    }
-
-    .order-total-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .order-total-price {
-      font-family: 'Playfair Display', serif;
-      font-size: 20px;
-      font-weight: 700;
-      color: white;
-    }
-
-    .order-actions {
-      display: flex;
-      gap: 8px;
-    }
-
-    /* ===== BUTTONS ===== */
-    .btn {
-      border: none;
-      padding: 8px 16px;
-      border-radius: 20px;
-      cursor: pointer;
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 700;
-      font-size: 11px;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .btn:active { transform: scale(0.97); }
-
-    .btn:disabled {
-      opacity: 0.35;
-      cursor: not-allowed;
-      transform: none !important;
-      box-shadow: none !important;
-    }
-
-    .btn-preparazione {
-      background: rgba(233,196,106,0.12);
-      color: #e9c46a;
-      border: 1px solid rgba(233,196,106,0.3);
-    }
-    .btn-preparazione:hover:not(:disabled) {
-      background: rgba(233,196,106,0.22);
-      border-color: rgba(233,196,106,0.55);
-      box-shadow: 0 4px 14px rgba(233,196,106,0.2);
-      transform: translateY(-2px);
-    }
-
-    .btn-pronto {
-      background: rgba(42,157,143,0.12);
-      color: #2dd4bf;
-      border: 1px solid rgba(42,157,143,0.3);
-    }
-    .btn-pronto:hover:not(:disabled) {
-      background: rgba(42,157,143,0.22);
-      border-color: rgba(42,157,143,0.55);
-      box-shadow: 0 4px 14px rgba(42,157,143,0.2);
-      transform: translateY(-2px);
-    }
-
-    .btn-delete {
-      background: rgba(230,57,70,0.1);
-      color: var(--red-light);
-      border: 1px solid rgba(230,57,70,0.25);
-    }
-    .btn-delete:hover {
-      background: rgba(230,57,70,0.2);
-      border-color: rgba(230,57,70,0.5);
-      box-shadow: 0 4px 14px rgba(230,57,70,0.2);
-      transform: translateY(-2px);
-    }
-
-    /* ===== EMPTY STATE ===== */
-    #orders-container:empty::after {
-      content: "Nessun ordine in coda";
-      display: block;
-      padding: 80px 20px;
-      text-align: center;
-      opacity: 0.3;
-      font-size: 14px;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      grid-column: 1 / -1;
-    }
-
-    /* ===== SCROLLBAR ===== */
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: rgba(255,255,255,0.03); }
-    ::-webkit-scrollbar-thumb { background: rgba(230,57,70,0.35); border-radius: 10px; }
-    ::-webkit-scrollbar-thumb:hover { background: rgba(230,57,70,0.55); }
-
-    /* ===== ANIMATIONS ===== */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .order-card { animation: fadeUp 0.5s cubic-bezier(0.16,1,0.3,1) both; }
-    .order-card:nth-child(1) { animation-delay: 0.05s; }
-    .order-card:nth-child(2) { animation-delay: 0.10s; }
-    .order-card:nth-child(3) { animation-delay: 0.15s; }
-    .order-card:nth-child(4) { animation-delay: 0.20s; }
-    .order-card:nth-child(5) { animation-delay: 0.25s; }
-    .order-card:nth-child(6) { animation-delay: 0.30s; }
-
-    /* ===== RESPONSIVE ===== */
-    @media (max-width: 1200px) {
-      main { grid-template-columns: repeat(2, 1fr); }
-    }
-    @media (max-width: 1024px) {
-      header { padding: 0 24px; }
-      main { padding: 24px; gap: 16px; }
-    }
-    @media (max-width: 768px) {
-      header { height: 75px; }
-      header h1 { font-size: 24px; }
-      main { grid-template-columns: 1fr; padding: 16px; }
-      .order-card { max-width: 100%; }
-      .order-actions { flex-wrap: wrap; }
-    }
-    @media (max-width: 480px) {
-      header h1 { font-size: 20px; }
-      .order-total-row { flex-direction: column; align-items: flex-start; }
-    }
-  </style>
+/* RESPONSIVE */
+@media (max-width:1100px) { .queue-grid { grid-template-columns:repeat(2,1fr); } }
+@media (max-width:700px) {
+  .site-header { padding:0 20px; }
+  .header-center { display:none; }
+  .count-bar { padding:16px 20px 0; }
+  .queue-grid { padding:16px 20px 40px; grid-template-columns:1fr; }
+}
+@media (max-width:480px) {
+  .header-logo-text .ls { display:none; }
+}
+</style>
 </head>
 <body>
 
-  <header>
-    <div class="header-inner">
-      <div class="header-eyebrow">
-        <div class="eyebrow-line"></div>
-        <span class="eyebrow-text">Sala &amp; Bar</span>
-        <div class="eyebrow-line right"></div>
-      </div>
-      <h1>Coda Ordini</h1>
+<!-- HEADER -->
+<header class="site-header">
+  <div class="header-logo">
+    <img src="https://raw.githubusercontent.com/Rashmika274/ordini-bar-scuola-borsa/main/static/logo.png" alt="Logo">
+    <div class="header-logo-divider"></div>
+    <div class="header-logo-text">
+      <span class="ls">Sala &amp; Bar</span>
+      <span class="lm">Scuola Borsa</span>
     </div>
-  </header>
+  </div>
+  <div class="header-center">Coda Ordini</div>
+  <div class="header-right">
+    <div class="live-badge"><div class="live-dot"></div>Live</div>
+  </div>
+</header>
 
-  <main id="orders-container">
+<!-- COUNTERS -->
+<div class="count-bar">
+  <div class="count-chip chip-nuovo"><span class="chip-num" id="cnt-nuovo">0</span>&nbsp;Nuovi</div>
+  <div class="count-chip chip-prep"><span class="chip-num" id="cnt-prep">0</span>&nbsp;In preparazione</div>
+  <div class="count-chip chip-pronto"><span class="chip-num" id="cnt-pronto">0</span>&nbsp;Pronti</div>
+</div>
 
-    <!-- Ordine 01 -->
-    <div class="order-card">
-      <div class="order-header">
-        <div class="order-title">Ordine #01</div>
-        <div class="order-status status-in-preparazione">In preparazione</div>
-      </div>
+<!-- ORDERS -->
+<main class="queue-grid" id="orders-container">
 
-      <div class="customer-info"><span class="info-icon">👤</span> Mario Rossi – Aula 1</div>
-      <div class="customer-info"><span class="info-icon">🕐</span> 12/12/2025 09:15</div>
-
-      <div class="order-items">
-        <div class="item">
-          <div class="item-name">
-            <span class="item-name-text">Caffè</span>
-            <span class="item-note">Senza zucchero</span>
-          </div>
-          <span class="item-qty">×2</span>
+  {% if queue %}
+    {% for ordine in queue %}
+    <div class="order-card s-nuovo">
+      <div class="card-top">
+        <div>
+          <div class="card-id">Ordine #{{ ordine.id }}</div>
+          <div class="card-name">{{ ordine.utente }}</div>
+          <div class="card-place">📍 {{ ordine.posizione }}</div>
         </div>
-        <div class="item">
-          <div class="item-name">
-            <span class="item-name-text">Cornetto</span>
-          </div>
-          <span class="item-qty">×1</span>
-        </div>
-      </div>
-
-      <div class="order-footer">
-        <div class="order-notes"><strong>Note:</strong> —</div>
-        <div class="order-total-row">
-          <span class="order-total-price">€4,50</span>
-          <div class="order-actions">
-            <button class="btn btn-preparazione" onclick="markPreparazione(this)">Prep.</button>
-            <button class="btn btn-pronto" onclick="markPronto(this)">Pronto</button>
-            <button class="btn btn-delete" onclick="removeOrder(this)">Elimina</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Ordine 02 -->
-    <div class="order-card">
-      <div class="order-header">
-        <div class="order-title">Ordine #102</div>
-        <div class="order-status status-pronto">Pronto</div>
-      </div>
-
-      <div class="customer-info"><span class="info-icon">👤</span> Sara Bianchi – Aula 3</div>
-      <div class="customer-info"><span class="info-icon">🕐</span> 12/12/2025 09:20</div>
-
-      <div class="order-items">
-        <div class="item">
-          <div class="item-name">
-            <span class="item-name-text">Cappuccino</span>
-            <span class="item-note">Latte di soia</span>
-          </div>
-          <span class="item-qty">×1</span>
+        <div class="card-meta">
+          <span class="status-badge b-nuovo">Nuovo</span>
+          <span class="card-time">{{ ordine.creato_il }}</span>
         </div>
       </div>
 
-      <div class="order-footer">
-        <div class="order-notes"><strong>Note:</strong> —</div>
-        <div class="order-total-row">
-          <span class="order-total-price">€2,50</span>
-          <div class="order-actions">
-            <button class="btn btn-preparazione" onclick="markPreparazione(this)">Prep.</button>
-            <button class="btn btn-pronto" onclick="markPronto(this)">Pronto</button>
-            <button class="btn btn-delete" onclick="removeOrder(this)">Elimina</button>
+      <div class="card-body">
+        <div class="order-item">
+          <div class="item-left">
+            <span class="item-name">{{ ordine.prodotto }}</span>
+            {% if ordine.nota %}
+              <span class="item-nota">📝 {{ ordine.nota }}</span>
+            {% endif %}
           </div>
+          <div class="item-qty">×{{ ordine.quantita }}</div>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <div class="footer-total"><span class="sym">€</span>{{ "%.2f"|format(ordine.totale_euro) }}</div>
+        <div class="action-row">
+          <button class="btn-act btn-prep"   onclick="setStatus(this,'prep')"  >🔥 Prep</button>
+          <button class="btn-act btn-pronto" onclick="setStatus(this,'pronto')">✓ Pronto</button>
+          <button class="btn-act btn-del"    onclick="removeCard(this)"        >🗑</button>
         </div>
       </div>
     </div>
-
-    <!-- Ordine 03 -->
-    <div class="order-card">
-      <div class="order-header">
-        <div class="order-title">Ordine #103</div>
-        <div class="order-status status-nuovo">Nuovo</div>
-      </div>
-
-      <div class="customer-info"><span class="info-icon">👤</span> Luigi Verdi – Aula 2</div>
-      <div class="customer-info"><span class="info-icon">🕐</span> 12/12/2025 09:25</div>
-
-      <div class="order-items">
-        <div class="item">
-          <div class="item-name">
-            <span class="item-name-text">Panino</span>
-          </div>
-          <span class="item-qty">×3</span>
-        </div>
-      </div>
-
-      <div class="order-footer">
-        <div class="order-notes"><strong>Note:</strong> —</div>
-        <div class="order-total-row">
-          <span class="order-total-price">€9,00</span>
-          <div class="order-actions">
-            <button class="btn btn-preparazione" onclick="markPreparazione(this)">Prep.</button>
-            <button class="btn btn-pronto" onclick="markPronto(this)">Pronto</button>
-            <button class="btn btn-delete" onclick="removeOrder(this)">Elimina</button>
-          </div>
-        </div>
-      </div>
+    {% endfor %}
+  {% else %}
+    <div class="empty-state">
+      <div class="empty-icon">📋</div>
+      <div class="empty-text">Nessun ordine in coda</div>
+      <div class="empty-sub">Gli ordini appariranno qui non appena arrivano</div>
     </div>
+  {% endif %}
 
-  </main>
+</main>
 
-  <script>
-    function removeOrder(button) {
-      const card = button.closest('.order-card');
-      if (!card) return;
-      card.style.transition = 'all 0.35s ease';
-      card.style.opacity = '0';
-      card.style.transform = 'translateY(12px) scale(0.97)';
-      setTimeout(() => card.remove(), 350);
-    }
+<script>
+function updateCounts() {
+  document.getElementById('cnt-nuovo').textContent  = document.querySelectorAll('.order-card.s-nuovo').length;
+  document.getElementById('cnt-prep').textContent   = document.querySelectorAll('.order-card.s-prep').length;
+  document.getElementById('cnt-pronto').textContent = document.querySelectorAll('.order-card.s-pronto').length;
+}
 
-    function markPreparazione(button) {
-      const card = button.closest('.order-card');
-      const badge = card.querySelector('.order-status');
-      badge.className = 'order-status status-in-preparazione';
-      badge.textContent = 'In preparazione';
-      button.disabled = true;
-    }
+function setStatus(btn, status) {
+  const card  = btn.closest('.order-card');
+  const badge = card.querySelector('.status-badge');
+  const btnPrep   = card.querySelector('.btn-prep');
+  const btnPronto = card.querySelector('.btn-pronto');
 
-    function markPronto(button) {
-      const card = button.closest('.order-card');
-      const badge = card.querySelector('.order-status');
-      badge.className = 'order-status status-pronto';
-      badge.textContent = 'Pronto';
-      button.disabled = true;
-      // Disabilita anche il bottone preparazione
-      const btnPrep = card.querySelector('.btn-preparazione');
-      if (btnPrep) btnPrep.disabled = true;
-    }
-  </script>
+  card.classList.remove('s-nuovo','s-prep','s-pronto');
+  badge.classList.remove('b-nuovo','b-prep','b-pronto');
+
+  if (status === 'prep') {
+    card.classList.add('s-prep');
+    badge.classList.add('b-prep');
+    badge.textContent = 'In preparazione';
+    btnPrep.disabled  = true;
+    btnPronto.disabled = false;
+  } else {
+    card.classList.add('s-pronto');
+    badge.classList.add('b-pronto');
+    badge.textContent  = 'Pronto';
+    btnPrep.disabled   = true;
+    btnPronto.disabled = true;
+  }
+  updateCounts();
+}
+
+function removeCard(btn) {
+  const card = btn.closest('.order-card');
+  card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+  card.style.opacity    = '0';
+  card.style.transform  = 'scale(0.92) translateY(-6px)';
+  setTimeout(() => { card.remove(); updateCounts(); }, 300);
+}
+
+updateCounts();
+
+// auto-refresh ogni 30s
+setTimeout(() => location.reload(), 30000);
+</script>
 
 </body>
 </html>
