@@ -3,6 +3,7 @@ from ordiniBarScuolaBorsa.models import get_queue
 from ordiniBarScuolaBorsa import models
 from ordiniBarScuolaBorsa.models import db, Ordine
 import logging
+from datetime import datetime, timedelta
 
 logger = logging.getLogger(__name__)
 bp = Blueprint("queue", __name__, url_prefix="/queue")
@@ -38,6 +39,15 @@ def update_ordine_stato(ordine_id):
             return jsonify({"error": "Ordine non trovato"}), 404
         
         ordine.stato = nuovo_stato
+        
+        # Se lo stato diventa PRONTO, registra il timestamp
+        if nuovo_stato == 'PRONTO':
+            ordine.stato_pronto_da = datetime.now()
+            logger.info(f"Ordine {ordine_id} impostato PRONTO. Timer di 10 minuti attivato.")
+        else:
+            # Se lo stato cambia da PRONTO a qualcos'altro, resetta il timestamp
+            ordine.stato_pronto_da = None
+        
         db.session.commit()
         
         return jsonify({"success": True, "stato": nuovo_stato}), 200
@@ -60,6 +70,29 @@ def delete_ordine(ordine_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
+
+
+def check_and_update_ready_orders():
+    """Controlla gli ordini PRONTO e li cambia a DA_SPARECCHIARE dopo 10 minuti"""
+    try:
+        now = datetime.now()
+        timeout = now - timedelta(minutes=10)
+        
+        # Trova ordini che sono stati pronti per più di 10 minuti
+        expired_orders = Ordine.query.filter(
+            Ordine.stato == 'PRONTO',
+            Ordine.stato_pronto_da.isnot(None),
+            Ordine.stato_pronto_da <= timeout
+        ).all()
+        
+        if expired_orders:
+            logger.info(f"Trovati {len(expired_orders)} ordini scaduti. Cambio stato a DA_SPARECCHIARE")
+            for ordine in expired_orders:
+                ordine.stato = 'DA_SPARECCHIARE'
+                ordine.stato_pronto_da = None
+            db.session.commit()
+    except Exception as e:
+        logger.error(f"Errore nel check_and_update_ready_orders: {str(e)}", exc_info=True)
 
 
 # @bp.get("/update", methods=["POST"])

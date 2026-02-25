@@ -1,6 +1,7 @@
 from flask import Flask
 from ordiniBarScuolaBorsa.models import db
 from flask_login import LoginManager
+from apscheduler.schedulers.background import BackgroundScheduler
 import logging
 import os
 
@@ -8,6 +9,7 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 login_manager = LoginManager()
+scheduler = BackgroundScheduler()
 
 def create_app():
     app = Flask(__name__)
@@ -60,6 +62,22 @@ def create_app():
 
     with app.app_context():
         db.create_all()
+
+    # Inizializza APScheduler per controllare gli ordini scaduti
+    with app.app_context():
+        from ordiniBarScuolaBorsa.queue import check_and_update_ready_orders
+        
+        if not scheduler.running:
+            scheduler.add_job(
+                func=check_and_update_ready_orders,
+                trigger="interval",
+                seconds=60,  # Controlla ogni 60 secondi
+                id="check_ready_orders",
+                name="Controlla ordini pronti scaduti",
+                replace_existing=True
+            )
+            scheduler.start()
+            logger.info("APScheduler avviato - Task 'check_ready_orders' programmato ogni 60 secondi")
 
     logger.info("App Flask creata e DB inizializzato")
     return app

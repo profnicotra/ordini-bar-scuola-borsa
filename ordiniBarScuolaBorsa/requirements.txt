@@ -26,6 +26,9 @@ urllib3==2.1.0        # Gestione URL sicure
 # Email validation (opzionale ma utile)
 email-validator==2.1.0
 
+# Background tasks e scheduling
+APScheduler==3.10.4
+
 # ============================================
 # OPZIONALE: Database PostgreSQL (per futuro)
 # ============================================

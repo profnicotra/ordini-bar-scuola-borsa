@@ -89,6 +89,7 @@ class Ordine(db.Model):
     creato_da = db.Column(db.String)
     totale_euro = db.Column(db.Numeric(10, 2), default=0)
     tipo_prezzo = db.Column(db.String(20), default='pubblico')  # NUOVO
+    stato_pronto_da = db.Column(db.DateTime, nullable=True)  # Timestamp quando diventa PRONTO
 
     posizione = db.relationship('Posizione', back_populates='ordini')
     righe = db.relationship('OrdineRiga', back_populates='ordine', cascade="all, delete-orphan")
@@ -230,7 +231,8 @@ def get_queue():
                 'totale_euro': float(ordine.totale_euro) if ordine.totale_euro else 0,
                 'creato_il': ordine.creato_il.strftime('%d/%m/%Y %H:%M') if ordine.creato_il else '',
                 'tipo_prezzo': ordine.tipo_prezzo if hasattr(ordine, 'tipo_prezzo') else 'pubblico',
-                'utente': user_info or ordine.creato_da or 'Anonimo'
+                'utente': user_info or ordine.creato_da or 'Anonimo',
+                'stato_pronto_da': ordine.stato_pronto_da.isoformat() if ordine.stato_pronto_da else None
             })
 
         return results
