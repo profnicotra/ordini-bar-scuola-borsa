@@ -91,7 +91,7 @@ class Ordine(db.Model):
     tipo_prezzo = db.Column(db.String(20), default='pubblico')  # NUOVO
 
     posizione = db.relationship('Posizione', back_populates='ordini')
-    righe = db.relationship('OrdineRiga', back_populates='ordine')
+    righe = db.relationship('OrdineRiga', back_populates='ordine', cascade="all, delete-orphan")
     user = db.relationship('User', back_populates='ordini', foreign_keys=[user_id])  # NUOVO
 
 class OrdineRiga(db.Model):
@@ -105,6 +105,7 @@ class OrdineRiga(db.Model):
 
     ordine = db.relationship('Ordine', back_populates='righe')
     prodotto = db.relationship('Prodotto')
+    note_righe = db.relationship('OrdineRigaNota', back_populates='riga', cascade="all, delete-orphan")
 
 class OrdineRigaNota(db.Model):
     __tablename__ = 'ordine_righe_note'
@@ -112,6 +113,8 @@ class OrdineRigaNota(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     ordine_riga_id = db.Column(db.Integer, db.ForeignKey('ordine_righe.id'), nullable=False)
     nota_id = db.Column(db.Integer, db.ForeignKey('note.id'), nullable=False)
+    
+    riga = db.relationship('OrdineRiga', back_populates='note_righe')
 
 class Impostazione(db.Model):
     __tablename__ = 'impostazioni'
@@ -266,12 +269,13 @@ def add_queue(posizione_id, righe, creato_da=None, totale_euro=None, stato='NUOV
                     prezzo_unit = prodotto.get_price(user)
                     
                     ordine_riga = OrdineRiga(
-                        prodotto_id=riga['prodotto_id'], 
-                        quantita=riga['quantita'], 
-                        ordine=new_order,
+                        prodotto_id=riga['prodotto_id'],
+                        quantita=riga['quantita'],
                         prezzo_euro_unit=prezzo_unit
                     )
-                    db.session.add(ordine_riga)
+                    # Append to the parent collection so delete-orphan cascade
+                    # does not treat the new row as an orphan before commit.
+                    new_order.righe.append(ordine_riga)
 
         db.session.add(new_order)
         db.session.commit()
