@@ -36,8 +36,21 @@ body { font-family:'Montserrat',sans-serif; background:var(--dark); color:white;
 .social-icons a { width:34px; height:34px; border:1px solid rgba(255,255,255,0.12); background:rgba(255,255,255,0.04); display:flex; justify-content:center; align-items:center; border-radius:8px; color:rgba(255,255,255,0.5); font-size:14px; transition:all 0.25s ease; text-decoration:none; }
 .social-icons a:hover { background:rgba(230,57,70,0.15); border-color:rgba(230,57,70,0.45); color:#ff8080; transform:translateY(-2px); }
 .menu-toggle { display:none; position:absolute; right:20px; top:50%; transform:translateY(-50%); background:transparent; border:none; color:white; font-size:24px; cursor:pointer; z-index:11; }
+
+/* ================================================================
+   HERO — background aggiornato con immagine Scuola Borsa
+   ================================================================ */
 .hero { height:100vh; min-height:680px; position:relative; display:flex; align-items:center; justify-content:center; text-align:center; overflow:hidden; }
-.hero-bg { position:absolute; inset:0; background-size:cover; background-position:center; filter:brightness(0.3) saturate(0.6); transform:scale(1.04); }
+.hero-bg {
+  position:absolute; inset:0;
+  background-size:cover;
+  background-position:center top;
+  filter:brightness(0.28) saturate(0.55) contrast(1.1);
+  transform:scale(1.04);
+  transition: transform 8s ease;
+}
+.hero:hover .hero-bg { transform: scale(1.0); }
+
 .hero-overlay { position:absolute; inset:0; z-index:1; background:radial-gradient(ellipse at 50% 100%,rgba(0,0,0,0.9) 0%,transparent 60%), linear-gradient(180deg,rgba(0,0,0,0.45) 0%,transparent 40%,rgba(0,0,0,0.55) 100%); }
 .hero-texture { position:absolute; inset:0; z-index:2; pointer-events:none; background-image:radial-gradient(circle at 1px 1px,rgba(255,255,255,0.02) 1px,transparent 0); background-size:28px 28px; }
 .hero-content { position:relative; z-index:3; display:flex; flex-direction:column; align-items:center; padding:0 20px; animation:fadeUp 1s ease both; }
@@ -76,13 +89,7 @@ body { font-family:'Montserrat',sans-serif; background:var(--dark); color:white;
 .step-connector-inner { position:relative; width:60px; height:2px; background:linear-gradient(90deg,rgba(230,57,70,0.5),rgba(230,57,70,0.2)); }
 .step-connector-inner::before { content:""; position:absolute; right:-1px; top:50%; transform:translateY(-50%); width:6px; height:6px; border-radius:50%; background:rgba(230,57,70,0.6); }
 .step-card { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.07); border-radius:24px; padding:40px 32px 36px; position:relative; text-align:left; transition:all 0.4s cubic-bezier(0.175,0.885,0.32,1.275); overflow:hidden; cursor:default; }
-.step-card:hover {
-  background: rgba(255,255,255,0.055);
-  transform: translateY(-10px);
-  box-shadow: 0 24px 60px rgba(0,0,0,0.5),
-              0 0 0 1px rgba(230,57,70,0.15),
-              inset 0 1px 0 rgba(255,255,255,0.06);
-}
+.step-card:hover { background:rgba(255,255,255,0.055); transform:translateY(-10px); box-shadow:0 24px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(230,57,70,0.15), inset 0 1px 0 rgba(255,255,255,0.06); }
 .step-bg-num { position:absolute; top:-14px; right:18px; font-family:'Playfair Display',serif; font-size:90px; font-weight:700; font-style:italic; color:rgba(255,255,255,0.025); line-height:1; user-select:none; pointer-events:none; }
 .step-num-pill { display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; background:rgba(230,57,70,0.1); border:1px solid rgba(230,57,70,0.28); border-radius:8px; font-size:10px; font-weight:800; letter-spacing:1px; color:#ff8080; margin-bottom:20px; }
 .step-icon-wrap { width:58px; height:58px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:16px; display:flex; align-items:center; justify-content:center; margin-bottom:22px; }
@@ -187,58 +194,28 @@ body { font-family:'Montserrat',sans-serif; background:var(--dark); color:white;
   .logo-brand .brand-main { font-size:12px; }
   #status-button { display:none; }
   .nav-center { display:none; }
-
-  .nav-center.active {
-    display: block;
-    position: absolute;
-    top: 80px;
-    left: 0;
-    width: 100%;
-    background: rgba(6,2,2,0.99);
-    border-bottom: 1px solid rgba(230,57,70,0.12);
-  }
-  .nav-center.active ul { flex-direction: column; }
-  .nav-center.active a {
-    padding: 14px 24px;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-  }
-  .social-icons { display: none; }
-  .menu-toggle { display: block; }
-
-  .story-section {
-    flex-direction: column;
-    padding: 80px 6%;
-    gap: 48px;
-  }
-  .story-image { justify-content: center; width: 100%; }
-  .story-image img { max-width: 100%; }
-  .story-image::before { display: none; }
-
-  .gallery-grid { grid-template-columns: 1fr 1fr; }
-  .contacts-grid { grid-template-columns: 1fr 1fr; gap: 26px; }
-  .footer-bottom { flex-direction: column; text-align: center; }
-  .hero-cta { flex-direction: column; align-items: center; }
-  .hero-tagline { padding: 16px 24px; }
-  .how-section { padding: 100px 5%; }
-  .step-card { padding: 32px 24px 28px; }
+  .nav-center.active { display:block; position:absolute; top:80px; left:0; width:100%; background:rgba(6,2,2,0.99); border-bottom:1px solid rgba(230,57,70,0.12); }
+  .nav-center.active ul { flex-direction:column; }
+  .nav-center.active a { padding:14px 24px; border-bottom:1px solid rgba(255,255,255,0.05); }
+  .social-icons { display:none; }
+  .menu-toggle { display:block; }
+  .story-section { flex-direction:column; padding:80px 6%; gap:48px; }
+  .story-image { justify-content:center; width:100%; }
+  .story-image img { max-width:100%; }
+  .story-image::before { display:none; }
+  .gallery-grid { grid-template-columns:1fr 1fr; }
+  .contacts-grid { grid-template-columns:1fr 1fr; gap:26px; }
+  .footer-bottom { flex-direction:column; text-align:center; }
+  .hero-cta { flex-direction:column; align-items:center; }
+  .hero-tagline { padding:16px 24px; }
+  .how-section { padding:100px 5%; }
+  .step-card { padding:32px 24px 28px; }
 }
 @media (max-width:480px) { .navbar { height:70px; } .logo-left img { width:42px; height:42px; } .gallery-grid { grid-template-columns:1fr; } .contacts-grid { grid-template-columns:1fr; } }
   </style>
 </head>
 <body>
 
-{#
-  ================================================================
-  AZIONE RICHIESTA — rinomina questi file in static/ prima di usare:
-    "open o close.jpg"  →  hero.jpg
-    (gli altri con spazi funzionano già via url_for)
-  Dal terminale VS Code (Windows):
-    cd ordiniBarScuolaBorsa/static
-    ren "open o close.jpg" hero.jpg
-  ================================================================
-#}
-
-{# Dati bar iniettati via JSON tag — sicuro, nessun problema di escape Jinja #}
 <script id="bar-data" type="application/json">
   { "open": "{{ data.get('open', 'true') | lower }}" }
 </script>
@@ -283,11 +260,9 @@ body { font-family:'Montserrat',sans-serif; background:var(--dark); color:white;
   </div>
 </header>
 
-<!-- HERO
-     FIX: style inline con url_for — il browser riceve l'URL già encodato da Flask.
-     Il file deve chiamarsi hero.jpg (senza spazi). -->
+<!-- HERO — background image: scuola borsa.png da GitHub -->
 <section class="hero" id="hero">
-  <div class="hero-bg" style="background-image: url('{{ url_for('static', filename='hero-bg') }}');"></div>
+  <div class="hero-bg" style="background-image: url('https://raw.githubusercontent.com/profnicotra/ordini-bar-scuola-borsa/main/ordiniBarScuolaBorsa/static/scuola%20borsa.png');"></div>
   <div class="hero-overlay"></div>
   <div class="hero-texture"></div>
   <div class="hero-content">
@@ -471,7 +446,7 @@ body { font-family:'Montserrat',sans-serif; background:var(--dark); color:white;
 
 <script>
 // ================================================================
-// 1. LEGGI STATO BAR dal JSON tag — no crash, no escape Jinja
+// 1. LEGGI STATO BAR dal JSON tag
 // ================================================================
 const barData  = JSON.parse(document.getElementById('bar-data').textContent);
 const barAperto = barData.open !== "false";
@@ -505,7 +480,7 @@ function updateClock() {
   }
 }
 setInterval(updateClock, 1000);
-updateClock(); // subito al caricamento, senza aspettare 1 secondo
+updateClock();
 
 // ================================================================
 // 3. OVERLAY BAR CHIUSO
@@ -514,9 +489,7 @@ if (!barAperto) {
   const ov = document.getElementById("closed-overlay");
   if (ov) { ov.style.display = "flex"; document.body.style.overflow = "hidden"; }
 }
-document.getElementById("close-popup-btn")
-  // NUOVO (chiude semplicemente l'overlay)
-.addEventListener("click", () => {
+document.getElementById("close-popup-btn").addEventListener("click", () => {
   document.getElementById("closed-overlay").style.display = "none";
   document.body.style.overflow = "visible";
 });
@@ -575,7 +548,7 @@ document.getElementById("to-login").addEventListener("click", () => {
 });
 
 // ================================================================
-// 8. SCROLL REVEAL — step cards + header/cta
+// 8. SCROLL REVEAL
 // ================================================================
 const revealObs = new IntersectionObserver(
   entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
