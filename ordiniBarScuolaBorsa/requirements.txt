@@ -12,32 +12,22 @@ Flask-SQLAlchemy==3.1.1
 SQLAlchemy==2.0.23
 
 # Autenticazione e OAuth
-flask-Login==0.6.3
+Flask-Login==0.6.3
 Authlib==1.3.0
 
 # Gestione variabili d'ambiente
 python-dotenv==1.0.0
 
 # HTTP Requests e sicurezza
-requests==2.31.0      # Richiesto da Authlib per OAuth
-cryptography==41.0.7  # Richiesto da Authlib per JWT
-urllib3==2.1.0        # Gestione URL sicure
+requests==2.31.0
+cryptography==41.0.7
+urllib3==2.1.0
 
-# Email validation (opzionale ma utile)
+# Email validation
 email-validator==2.1.0
 
 # Background tasks e scheduling
 APScheduler==3.10.4
-
-# ============================================
-# OPZIONALE: Database PostgreSQL (per futuro)
-# ============================================
-# 
-# Se in futuro vuoi passare da SQLite a PostgreSQL:
-# psycopg2-binary==2.9.9
-#
-# Per installarlo decommentare (rimuovere #) e eseguire:
-# pip install -r requirements.txt
 
 # ============================================
 # INSTALLAZIONE:
@@ -56,62 +46,3 @@ APScheduler==3.10.4
 #   source venv/bin/activate
 #   
 #   pip install -r requirements.txt
-#
-# ============================================
-# VERIFICA INSTALLAZIONE:
-# ============================================
-# 
-# Dopo l'installazione, verifica con:
-#   pip list
-#
-# Dovresti vedere tutte le librerie sopra elencate
-#
-# Test veloce dell'ambiente:
-#   python -c "import flask, flask_login, authlib, dotenv; print('✅ Tutto OK!')"
-#
-# ============================================
-# AGGIORNAMENTO DIPENDENZE:
-# ============================================
-#
-# Per aggiornare tutte le dipendenze:
-#   pip install --upgrade -r requirements.txt
-#
-# Per aggiornare una singola libreria:
-#   pip install --upgrade nome-libreria
-#
-# ============================================
-# NOTE SULLA VERSIONE PYTHON:
-# ============================================
-#
-# Richiede Python 3.8 o superiore
-# Testato con Python 3.10, 3.11 e 3.12
-#
-# Per verificare la tua versione:
-#   python --version
-#
-# ============================================
-# RISOLUZIONE PROBLEMI COMUNI:
-# ============================================
-#
-# 1. Errore "Microsoft Visual C++ 14.0 required" (Windows):
-#    - Installa: https://visualstudio.microsoft.com/downloads/
-#    - Oppure usa: pip install --only-binary :all: cryptography
-#
-# 2. Errore con cryptography su sistemi vecchi:
-#    - pip install --upgrade pip setuptools wheel
-#    - pip install cryptography
-#
-# 3. Conflitti di versione:
-#    - pip uninstall flask flask-login authlib
-#    - pip install -r requirements.txt
-#
-# ============================================
-# DIPENDENZE PER SVILUPPO (OPZIONALI):
-# ============================================
-#
-# Se vuoi tool di sviluppo, aggiungi:
-# pytest==7.4.3              # Testing
-# black==23.12.1             # Code formatter
-# flake8==6.1.0              # Linter
-# python-decouple==3.8       # Gestione config avanzata
-#
