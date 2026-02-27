@@ -331,7 +331,9 @@ body::after {
 }
 
 .col-head .c-qty { 
-  text-align: center; 
+  text-align: left; /* align label with buttons */
+  padding-left: 8px; /* moved a bit right */
+  /* if you want to tweak more, adjust this value */
 }
 
 .col-head .c-price { 
@@ -405,8 +407,9 @@ body::after {
 .qty-ctrl { 
   display: flex; 
   align-items: center; 
-  justify-content: center; 
+  justify-content: flex-start; /* start so buttons and number line up with header */
   gap: 8px; 
+  padding-left: 12px; /* match label padding */
 }
 
 .qty-btn { 
@@ -1055,6 +1058,27 @@ body::after {
   .prod-row {
     grid-template-columns: 1fr 90px 70px;
   }
+}
+
+/* additional small device tweaks */
+@media (max-width:420px) {
+  .page { padding: 110px 12px 70px; }
+  .card-inner { padding: 20px 16px 18px; }
+  .inputs-block { padding: 0 16px 20px; }
+  .checkout-form { padding: 0 16px 22px; }
+  .checkout-total { padding: 18px 16px 12px; }
+  .name-row { grid-template-columns: 1fr; }
+  .submit-btn { padding: 16px 28px; font-size: 11px; }
+  .prod-list { max-height: 240px; }
+  .col-head, .prod-row { grid-template-columns: 1fr 80px 60px; }
+}
+
+@media (orientation:landscape) and (max-width:768px) {
+  /* keep more content visible when device rotated */
+  .page { padding-top: 100px; }
+  .card { max-width: 90%; }
+  .checkout { max-width: 90%; }
+  .prod-list { max-height: 300px; }
 }
 </style>
 </head>
