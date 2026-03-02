@@ -6,351 +6,545 @@
   <title>Coda Ordini Sala Bar</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
   <style>
-    /* ... il tuo CSS esistente ... */
-
     * {
       box-sizing: border-box;
     }
 
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Montserrat', sans-serif;
-      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
-      color: #f5f5f5;
-      min-height: 100vh;
-    }
+body {
+  font-family: var(--sans);
+  background: var(--dark);
+  min-height: 100vh; 
+  color: white; 
+  overflow-x: hidden;
+  position: relative;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
-    header {
-      background: linear-gradient(90deg, #161616 0%, #1f1f1f 100%);
-      padding: 25px 40px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-       justify-content: center;
-      border-bottom: 4px solid #e63946;
-      box-shadow: 0 8px 32px rgba(230, 57, 70, 0.2);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-.order-notes {
-   display: flex;
+/* Background effects */
+body::before {
+  content:""; 
+  position: fixed; 
+  inset: 0; 
+  pointer-events: none; 
+  z-index: 0;
+  background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.02) 1px, transparent 0);
+  background-size: 32px 32px;
+}
+
+body::after {
+  content:"";
+  position: fixed;
+  pointer-events: none;
+  z-index: 0;
+  top: -20vh;
+  right: -15vw;
+  width: 60vw;
+  height: 60vh;
+  background: radial-gradient(ellipse, rgba(230,57,70,0.08) 0%, transparent 65%);
+}
+
+/* ── HEADER ── */
+.header {
+  position: sticky; 
+  top: 0; 
+  z-index: 100;
+  height: 90px;
+  background: linear-gradient(180deg, rgba(6,6,6,0.98), rgba(10,3,3,0.95)); 
+  backdrop-filter: blur(24px);
+  border-bottom: 1px solid rgba(230,57,70,0.15);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.7);
+  display: flex; 
+  align-items: center; 
   justify-content: space-between;
-  align-items: center;
-  margin-top: 8px;
-  padding-bottom: 18px;
-  margin-bottom: 16px;
-  font-weight: 600;
-  color: #ffffff;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.08);
-  width: 100%;
-
+  padding: 0 50px;
+  padding-top: max(0px, env(safe-area-inset-top));
+  padding-left: max(50px, calc(env(safe-area-inset-left) + 50px));
+  padding-right: max(50px, calc(env(safe-area-inset-right) + 50px));
 }
 
-
-    header h1 {
-      font-size: 32px;
-      font-weight: 800;
-      margin: 0;
-      background: linear-gradient(90deg, #e63946, #ff6b6b);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      letter-spacing: 1px;
-      text-shadow: 0 0 30px rgba(230, 57, 70, 0.3);
-    }
-
-   main {
-  padding: 40px;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 30px;
-  justify-items: center;
+.header::before {
+  content:""; 
+  position: absolute; 
+  top: 0; 
+  left: 0; 
+  right: 0; 
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #e63946 25%, #ff8080 50%, #e63946 75%, transparent);
+  opacity: 0.7;
 }
 
-    .order-card {
-      background: linear-gradient(135deg, rgba(15, 15, 15, 0.9) 0%, rgba(25, 25, 25, 0.9) 100%);
-      border-left: 6px solid #e63946;
-      border-radius: 12px;
-      padding: 24px 28px;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-      width: 100%;
-      max-width: 420px;
-    }
-    .order-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-      padding-bottom: 12px;
-      border-bottom: 2px solid rgba(255, 255, 255, 0.08);
-    }
+.h-logo { 
+  display: flex; 
+  align-items: center; 
+  gap: 12px; 
+}
 
-    .order-title {
-      font-size: 22px;
-      font-weight: 800;
-      color: #ffffff;
-      letter-spacing: 0.5px;
-    }
+.h-logo img { 
+  width: 62px; 
+  height: 62px; 
+  object-fit: contain; 
+  filter: drop-shadow(0 0 8px rgba(230,57,70,0.3)); 
+}
 
-    .order-status {
-      font-weight: 700;
-      text-transform: uppercase;
-      padding: 4px 12px;
-      border-radius: 12px;
-      font-size: 12px;
-    }
-    /* Status colors */
-    .status-nuovo {
-      background-color:#e63946;
-      color: #0d0d0d;
-    }
-    .status-in-preparazione {
-      background-color: #e9c46a;
-      color: #0d0d0d;
-    }
-    .status-pronto {
-      background-color:rgba(2, 87, 2, 0.988);
-      color: #000000;
-    }
-    .status-consegnato {
-      background-color: #2a9d8f;
-      color: #0d0d0d;
-    }
-    .status-annullato {
-      background-color: #e63946;
-      color: #ffffff;
-    }
-    .customer-info {
-      margin-bottom: 10px;
-      font-size: 14px;
-      opacity: 0.9;
-      color: #e0e0e0;
-      font-weight: 500;
-    }
+.h-logo-div { 
+  width: 1px; 
+  height: 30px; 
+  background: rgba(255,255,255,0.15); 
+}
 
-    .customer-info:first-of-type::before {
-      content: "👤 ";
-      margin-right: 6px;
-    }
+.h-logo-text { 
+  display: flex; 
+  flex-direction: column; 
+  line-height: 1.15; 
+}
 
-    .customer-info:nth-of-type(2)::before {
-      content: "🕐 ";
-      margin-right: 6px;
-      opacity: 0.7;
-    }
+.h-logo-text .lt { 
+  font-size: 10px; 
+  font-weight: 400; 
+  letter-spacing: 3.5px; 
+  text-transform: uppercase; 
+  color: rgba(255,255,255,0.35); 
+}
 
-    .order-items {
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      margin-top: 14px;
-      padding-top: 14px;
-      background: rgba(255, 255, 255, 0.02);
-      padding: 12px;
-      border-radius: 8px;
-      margin-top: 14px;
-    }
+.h-logo-text .lb { 
+  font-size: 14px; 
+  font-weight: 800; 
+  letter-spacing: 2.5px; 
+  text-transform: uppercase; 
+  color: white; 
+}
 
-    .item {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 8px;
-      font-size: 15px;
-      padding: 6px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    }
+.h-center {
+  font-family: var(--serif); 
+  font-size: 20px; 
+  font-style: italic; 
+  color: white; 
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
 
-    .item:last-child {
-      border-bottom: none;
-      margin-bottom: 0;
-    }
+.h-right { 
+  display: flex; 
+  align-items: center; 
+  gap: 12px; 
+}
 
-    .item-name {
-      display: flex;
-      flex-direction: column;
-      padding-top: 4px;
-      flex: 1;
-    }
+.live-pill {
+  display: flex; 
+  align-items: center; 
+  gap: 8px;
+  padding: 8px 18px; 
+  border-radius: 50px;
+  background: rgba(34,197,94,0.1); 
+  border: 1px solid rgba(34,197,94,0.25);
+  font-size: 10px; 
+  font-weight: 700; 
+  letter-spacing: 3px; 
+  text-transform: uppercase; 
+  color: #4ade80;
+}
 
-    .item-name::before {
-      content: "🛒 ";
-      margin-right: 6px;
-    }
+.live-dot { 
+  width: 7px; 
+  height: 7px; 
+  border-radius: 50%; 
+  background: #4ade80; 
+  box-shadow: 0 0 10px rgba(74,222,128,0.9); 
+  animation: puls 2s infinite; 
+}
 
-    .item-note {
-      font-size: 12px;
-      color: #ff9999;
-      margin-top: 3px;
-      font-style: italic;
-      opacity: 0.85;
-    }
+@keyframes puls { 
+  0%, 100% { opacity: 1; transform: scale(1); } 
+  50% { opacity: 0.6; transform: scale(1.4); } 
+}
 
-    .item-note::before {
-      content: "📝 ";
-      margin-right: 4px;
-    }
+.refresh-btn {
+  width: 38px; 
+  height: 38px; 
+  border-radius: 10px;
+  background: rgba(255,255,255,0.05); 
+  border: 1px solid var(--border);
+  display: flex; 
+  align-items: center; 
+  justify-content: center;
+  cursor: pointer; 
+  transition: all 0.25s; 
+  color: rgba(255,255,255,0.4); 
+  font-size: 16px;
+}
 
-    .order-footer {
-      border-top: 2px solid rgba(255, 255, 255, 0.08);
-      margin-top: 16px;
-      padding-top: 12px;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      font-weight: 600;
-    }
-    .order-actions {
-      display: flex;
-      gap: 12px;
-      margin-left: auto;
-      margin-top: 12px;
-    }
+.refresh-btn:hover { 
+  background: rgba(255,255,255,0.1); 
+  color: white; 
+  transform: translateY(-2px);
+}
 
-    .btn-delete {
-      background: linear-gradient(135deg, #e63946 0%, #c71c23 100%);
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 700;
-      font-size: 13px;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 0 4px 15px rgba(230, 57, 70, 0.3);
-      position: relative;
-      overflow: hidden;
-    }
+/* ── STATS BAR ── */
+.stats-bar {
+  position: relative; 
+  z-index: 1;
+  padding: 24px 50px 0;
+  display: flex; 
+  gap: 12px; 
+  flex-wrap: wrap;
+}
 
-    .btn-delete::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: rgba(255, 255, 255, 0.2);
-      transition: left 0.3s ease;
-    }
-    .btn-delete:hover {
-      background-color: #c71c23;
-      transform: scale(1.05);
-      box-shadow: 0 4px 12px rgba(230, 57, 70, 0.4);
-    }
-    .btn-delete:active {
-      transform: scale(0.98);
-    }
-    .btn-pronto {
-      background-color: #02a502;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 700;
-      font-size: 13px;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 0 4px 15px rgba(2, 165, 2, 0.3);
-      position: relative;
-      overflow: hidden;
-    }
+.stat-chip {
+  display: flex; 
+  align-items: center; 
+  gap: 10px;
+  padding: 10px 20px; 
+  border-radius: 50px;
+  font-size: 11px; 
+  font-weight: 700; 
+  letter-spacing: 1.5px; 
+  text-transform: uppercase;
+  backdrop-filter: blur(8px);
+}
 
-    .btn-pronto::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: rgba(255, 255, 255, 0.2);
-      transition: left 0.3s ease;
-    }
-    .btn-pronto:hover {
-      background-color: #028902;
-      transform: scale(1.05);
-      box-shadow: 0 4px 12px rgba(2, 169, 2, 0.4);
-    }
-    .btn-pronto:active {
-      transform: scale(0.98);
-    }
-    .btn-pronto:disabled {
-      background: linear-gradient(135deg, #444444 0%, #333333 100%);
-      cursor: not-allowed;
-      opacity: 0.5;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-      transform: none;
-    }
+.stat-chip .n { 
+  font-size: 18px; 
+  font-weight: 800; 
+}
 
-    .btn-pronto:disabled:hover {
-      transform: none;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    }
+.sc-new { 
+  background: rgba(230,57,70,0.12); 
+  border: 1px solid rgba(230,57,70,0.25); 
+  color: #ff8080; 
+}
 
-    .btn-preparazione{
-      background-color: #a07602;;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 700;
-      font-size: 13px;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 0 4px 15px #7d5900e1;
-      position: relative;
-      overflow: hidden;
-    }
+.sc-prep { 
+  background: rgba(245,158,11,0.12); 
+  border: 1px solid rgba(245,158,11,0.25); 
+  color: #fbbf24; 
+}
 
-    .btn-preparazione::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: rgba(255, 255, 255, 0.2);
-      transition: left 0.3s ease;
-    }
-    .btn-preparazione:hover {
-      background-color: #a07602;;
-      transform: scale(1.05);
-      box-shadow: 0 4px 12px #6c4e01bc;
-    }
-    .btn-preparazione:active {
-      transform: scale(0.98);
-    }
-    .btn-preparazione:disabled {
-      background: linear-gradient(135deg, #444444 0%, #333333 100%);
-      cursor: not-allowed;
-      opacity: 0.5;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-      transform: none;
-    }
+.sc-ready { 
+  background: rgba(34,197,94,0.12); 
+  border: 1px solid rgba(34,197,94,0.25); 
+  color: #4ade80; 
+}
 
-    .btn-preparazione:disabled:hover {
-      transform: none;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    }
-    /* Empty state */
-    #orders-container:empty::after {
-      content: "📋 Nessun ordine in coda";
-      display: block;
-      padding: 60px 20px;
-      text-align: center;
-      opacity: 0.7;
-      font-size: 18px;
-    }
+/* ── GRID ── */
+.grid {
+  position: relative; 
+  z-index: 1;
+  padding: 24px 50px 80px;
+  display: grid; 
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 20px;
+}
 
-    /* Scrollbar styling */
-    ::-webkit-scrollbar {
-      width: 10px;
-    }
+/* ── ORDER CARD ── */
+.order-card {
+  background: var(--card);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
+  border-radius: 24px; 
+  overflow: hidden;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  animation: cardIn 0.45s ease both;
+  display: flex; 
+  flex-direction: column;
+}
 
-    ::-webkit-scrollbar-track {
-      background: rgba(255, 255, 255, 0.05);
-    }
+@keyframes cardIn { 
+  from { opacity: 0; transform: translateY(16px); } 
+  to { opacity: 1; transform: translateY(0); } 
+}
+
+.order-card:hover { 
+  transform: translateY(-5px); 
+  box-shadow: 0 16px 50px rgba(0,0,0,0.7); 
+}
+
+/* Status stripe */
+.order-card .stripe { 
+  height: 3px; 
+  width: 100%; 
+}
+
+.order-card.s-new .stripe { 
+  background: linear-gradient(90deg, var(--red), transparent); 
+}
+
+.order-card.s-prep .stripe { 
+  background: linear-gradient(90deg, var(--gold), transparent); 
+}
+
+.order-card.s-ready .stripe { 
+  background: linear-gradient(90deg, var(--green), transparent); 
+  box-shadow: 0 0 14px rgba(34,197,94,0.4); 
+}
+
+/* Card top */
+.card-top {
+  padding: 20px 24px 16px;
+  display: flex; 
+  align-items: flex-start; 
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.card-left { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 4px; 
+}
+
+.card-id { 
+  font-size: 9px; 
+  font-weight: 800; 
+  letter-spacing: 3.5px; 
+  text-transform: uppercase; 
+  color: rgba(255,255,255,0.25); 
+}
+
+.card-name { 
+  font-size: 17px; 
+  font-weight: 800; 
+  color: white; 
+  line-height: 1.2; 
+}
+
+.card-loc { 
+  font-size: 12px; 
+  color: rgba(255,255,255,0.4); 
+  font-weight: 400; 
+  margin-top: 3px; 
+}
+
+.card-right { 
+  display: flex; 
+  flex-direction: column; 
+  align-items: flex-end; 
+  gap: 7px; 
+  flex-shrink: 0; 
+}
+
+.status-tag {
+  font-size: 10px; 
+  font-weight: 800; 
+  letter-spacing: 1.8px; 
+  text-transform: uppercase;
+  padding: 6px 14px; 
+  border-radius: 50px; 
+  white-space: nowrap;
+}
+
+.t-new { 
+  background: rgba(230,57,70,0.15); 
+  border: 1px solid rgba(230,57,70,0.3); 
+  color: #ff8080; 
+}
+
+.t-prep { 
+  background: rgba(245,158,11,0.15); 
+  border: 1px solid rgba(245,158,11,0.3); 
+  color: #fbbf24; 
+}
+
+.t-ready { 
+  background: rgba(34,197,94,0.15); 
+  border: 1px solid rgba(34,197,94,0.3); 
+  color: #4ade80; 
+}
+
+.card-time { 
+  font-size: 11px; 
+  color: rgba(255,255,255,0.22); 
+  font-weight: 400; 
+}
+
+.card-timer {
+  font-size: 12px;
+  font-weight: 700;
+  color: #4ade80;
+  padding: 4px 8px;
+  background: rgba(34,197,94,0.15);
+  border-radius: 6px;
+  text-align: center;
+  min-width: 60px;
+}
+
+/* Items */
+.card-items { 
+  padding: 16px 24px; 
+  flex: 1; 
+  display: flex; 
+  flex-direction: column; 
+  gap: 8px; 
+}
+
+.order-item {
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: rgba(255,255,255,0.04); 
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+}
+
+.item-info { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 3px; 
+}
+
+.item-name { 
+  font-size: 14px; 
+  font-weight: 600; 
+  color: white; 
+}
+
+.item-nota { 
+  font-size: 11px; 
+  color: #ff9090; 
+  font-style: italic; 
+}
+
+.item-qty {
+  font-size: 14px; 
+  font-weight: 800; 
+  color: white;
+  background: rgba(230,57,70,0.18); 
+  border: 1px solid rgba(230,57,70,0.25);
+  width: 34px; 
+  height: 34px; 
+  border-radius: 10px;
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  flex-shrink: 0;
+}
+
+/* Card footer */
+.card-footer {
+  padding: 16px 24px 20px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.footer-total {
+  font-family: var(--serif); 
+  font-size: 32px; 
+  font-style: italic;
+  color: white; 
+  margin-bottom: 16px; 
+  line-height: 1;
+  font-weight: 700;
+}
+
+.footer-total .sym { 
+  font-size: 16px; 
+  font-style: normal; 
+  color: rgba(255,255,255,0.4); 
+  margin-right: 2px; 
+  vertical-align: super; 
+}
+
+/* Action buttons */
+.actions { 
+  display: grid; 
+  grid-template-columns: 1fr 1fr 46px; 
+  gap: 10px; 
+}
+
+.act-btn {
+  padding: 15px 12px;
+  border: none; 
+  border-radius: 13px; 
+  cursor: pointer;
+  font-family: var(--sans); 
+  font-size: 11px; 
+  font-weight: 800;
+  letter-spacing: 1.8px; 
+  text-transform: uppercase;
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  gap: 8px;
+  transition: all 0.25s ease;
+}
+
+.act-btn:hover { 
+  transform: translateY(-2px); 
+  filter: brightness(1.15); 
+}
+
+.act-btn:disabled { 
+  opacity: 0.3; 
+  cursor: not-allowed; 
+  transform: none !important; 
+  filter: none !important; 
+}
+
+/* Touch-friendly interactive elements */
+button, a {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.act-prep {
+  background: rgba(245,158,11,0.16); 
+  border: 1px solid rgba(245,158,11,0.35); 
+  color: #fbbf24;
+}
+
+.act-ready {
+  background: rgba(34,197,94,0.16); 
+  border: 1px solid rgba(34,197,94,0.35); 
+  color: #4ade80;
+}
+
+.act-del {
+  background: rgba(230,57,70,0.12); 
+  border: 1px solid rgba(230,57,70,0.25); 
+  color: #ff8080;
+  font-size: 16px; 
+  padding: 0;
+}
+
+/* ── EMPTY STATE ── */
+.empty {
+  grid-column: 1/-1; 
+  text-align: center; 
+  padding: 120px 20px;
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  gap: 18px;
+}
+
+.empty-icon { 
+  font-size: 64px; 
+  opacity: 0.2; 
+}
+
+.empty-title { 
+  font-family: var(--serif); 
+  font-size: 30px; 
+  font-style: italic; 
+  color: rgba(255,255,255,0.3);
+  font-weight: 700;
+}
+
+.empty-sub { 
+  font-size: 14px; 
+  color: rgba(255,255,255,0.18); 
+  font-weight: 300; 
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { 
+  width: 6px; 
+}
+
+::-webkit-scrollbar-track { 
+  background: rgba(255,255,255,0.02); 
+}
 
     ::-webkit-scrollbar-thumb {
       background: linear-gradient(135deg, #e63946 0%, #ff6b6b 100%);
@@ -439,151 +633,204 @@
 
     @media (max-width: 768px) {
       header h1 {
-        font-size: 20px;
+        font-size: 24px;
+        margin-left: 0 !important;
       }
       main {
-        grid-template-columns: 1fr;
+        padding: 15px;
+        gap: 15px;
+      }
+      .order-card {
+        width: 100%;
+        max-width: 100%;
       }
     }
+
+    @media (max-width: 480px) {
+      header h1 {
+        font-size: 20px;
+      }
+      .order-card {
+        padding: 15px;
+      }
+    }
+
+    @media (max-width: 1200px) {
+  main {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  main {
+    grid-template-columns: 1fr;
+  }
+}
+
   </style>
 </head>
 <body>
+
   <header>
-    <h1>Coda Ordini Sala Bar</h1>
+    <h1 style="font-family: verdana; font-weight:800; text-align: center;">
+      CODA DA ORDINI SALA BAR
+    </h1>
   </header>
 
   <main id="orders-container">
-    <!-- Gli ordini verranno caricati qui dal JavaScript -->
+
+    <!-- Ordine 01 -->
+    <div class="order-card">
+      <div class="order-header">
+        <div class="order-title">Ordine #01 :</div>
+        <div class="order-status status-in-preparazione">In preparazione</div>
+      </div>
+
+      <div class="customer-info">Mario Rossi – Aula 1</div>
+      <div class="customer-info">12/12/2025 09:15</div>
+
+      <div class="order-items">
+        <div class="item">
+          <div class="item-name">Caffè <span class="item-note">Senza zucchero</span></div>
+          <div>x2</div>
+        </div>
+        <div class="item">
+          <div class="item-name">Cornetto</div>
+          <div>x1</div>
+        </div>
+      </div>
+
+      <div class="order-footer">
+        <div class="order-notes">Note Generali :</div>
+        <div class="order-total">
+          <span>Totale €4,50</span>
+          <div class="order-actions">
+           <button class="btn-preparazione" onclick="markPreparazione(this)">Preparazione</button>
+<button class="btn-pronto" onclick="markPronto(this)">Pronto</button>
+<button class="btn-delete" onclick="removeOrder(this)">Elimina</button>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ordine 02 -->
+    <div class="order-card">
+      <div class="order-header">
+        <div class="order-title">Ordine #102</div>
+        <div class="order-status status-pronto">Pronto</div>
+      </div>
+
+      <div class="customer-info">Sara Bianchi – Aula 3</div>
+      <div class="customer-info">12/12/2025 09:20</div>
+
+      <div class="order-items">
+        <div class="item">
+          <div class="item-name">Cappuccino <span class="item-note">Latte di soia</span></div>
+          <div>x1</div>
+        </div>
+      </div>
+
+      <div class="order-footer">
+        <div class="order-notes">Note Generali :</div>
+        <div class="order-total">
+          <span>Totale €2,50</span>
+          <div class="order-actions">
+           <button class="btn-preparazione" onclick="markPreparazione(this)">Preparazione</button>
+<button class="btn-pronto" onclick="markPronto(this)">Pronto</button>
+<button class="btn-delete" onclick="removeOrder(this)">Elimina</button>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ordine 03 -->
+    <div class="order-card">
+      <div class="order-header">
+        <div class="order-title">Ordine #103</div>
+        <div class="order-status status-nuovo">Nuovo</div>
+      </div>
+
+      <div class="customer-info">Luigi Verdi – Aula 2</div>
+      <div class="customer-info">12/12/2025 09:25</div>
+
+      <div class="order-items">
+        <div class="item">
+          <div class="item-name">Panino</div>
+          <div>x3</div>
+        </div>
+      </div>
+
+      <div class="order-footer">
+        <div class="order-notes">Note Generali :</div>
+        <div class="order-total">
+          <span>Totale €9,00</span>
+          <div class="order-actions">
+            <button class="btn-preparazione" onclick="markPreparazione(this)">Preparazione</button>
+<button class="btn-pronto" onclick="markPronto(this)">Pronto</button>
+<button class="btn-delete" onclick="removeOrder(this)">Elimina</button>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
   </main>
 
-  <!-- Aggiungi il tag audio qui, preferibilmente prima dello script -->
-  <audio id="notification-sound" src="campanella.mp3" preload="auto"></audio>
-
-  <script>
-    // Questo è un esempio di dati di ordini. Nel tuo caso, questi dati
-    // probabilmente arriveranno da un backend o da un'API.
-    let orders = [
-      {
-        id: 'ORD001',
-        customer: 'Mario Rossi',
-        time: '10:30',
-        status: 'nuovo',
-        items: [
-          { name: 'Caffè', qty: 2 },
-          { name: 'Cornetto', qty: 1, note: 'Vuoto' }
-        ],
-        notes: 'Tavolo 5'
-      },
-      {
-        id: 'ORD002',
-        customer: 'Giulia Verdi',
-        time: '10:35',
-        status: 'in-preparazione',
-        items: [
-          { name: 'Cappuccino', qty: 1 },
-          { name: 'Spremuta', qty: 1 }
-        ],
-        notes: ''
-      },
-      {
-        id: 'ORD003',
-        customer: 'Luca Bianchi',
-        time: '10:40',
-        status: 'pronto',
-        items: [
-          { name: 'Tè Verde', qty: 1 },
-          { name: 'Muffin', qty: 1, note: 'Riscaldato' }
-        ],
-        notes: 'Da asporto'
-      }
-    ];
-
-    let previousOrdersCount = orders.length; // Inizializza con il numero di ordini attuali
-
-    function renderOrders() {
-      const ordersContainer = document.getElementById('orders-container');
-      ordersContainer.innerHTML = ''; // Pulisce il contenitore prima di renderizzare
-
-      orders.forEach(order => {
-        const orderCard = document.createElement('div');
-        orderCard.className = 'order-card';
-        orderCard.dataset.orderId = order.id; // Utile per identificare l'ordine
-
-        let itemsHtml = order.items.map(item => `
-          <div class="item">
-            <span class="item-name">${item.qty}x ${item.name} ${item.note ? `<span class="item-note">${item.note}</span>` : ''}</span>
-          </div>
-        `).join('');
-
-        orderCard.innerHTML = `
-          <div class="order-header">
-            <h2 class="order-title">Ordine #${order.id}</h2>
-            <span class="order-status status-${order.status}">${order.status.replace('-', ' ')}</span>
-          </div>
-          <div class="customer-info">👤 ${order.customer}</div>
-          <div class="customer-info">🕐 ${order.time}</div>
-          <div class="order-items">
-            ${itemsHtml}
-          </div>
-          ${order.notes ? `<div class="order-notes">Note: ${order.notes}</div>` : ''}
-          <div class="order-footer">
-            <div class="order-actions">
-              <button class="btn-preparazione" onclick="updateOrderStatus('${order.id}', 'in-preparazione')" ${order.status === 'in-preparazione' || order.status === 'pronto' || order.status === 'consegnato' ? 'disabled' : ''}>In Preparazione</button>
-              <button class="btn-pronto" onclick="updateOrderStatus('${order.id}', 'pronto')" ${order.status === 'pronto' || order.status === 'consegnato' ? 'disabled' : ''}>Pronto</button>
-              <button class="btn-delete" onclick="deleteOrder('${order.id}')">Elimina</button>
-            </div>
-          </div>
-        `;
-        ordersContainer.appendChild(orderCard);
-      });
-    }
-<audio id="notification-sound" src="campanella.mp3" preload="auto"></audio>
-
 <script>
-  let previousOrdersCount = 0;
+function removeOrder(button) {
+  const orderCard = button.closest('.order-card');
+  if (!orderCard) return;
 
-  function playNotificationSound() {
-    const audio = document.getElementById('notification-sound');
-    audio.pause();
-    audio.currentTime = 0;
-    audio.play().catch(e => {
-      console.log('Audio playback prevented:', e);
-    });
-  }
+  orderCard.style.transition = 'all 0.3s ease';
+  orderCard.style.opacity = '0';
+  orderCard.style.transform = 'translateX(100%)';
+  setTimeout(() => orderCard.remove(), 300);
+}
 
-  // Funzione da chiamare quando ricevi nuovi ordini dal backend
-  function updateOrders(newOrders) {
-    if (newOrders.length > previousOrdersCount) {
-      playNotificationSound();
-    }
-    previousOrdersCount = newOrders.length;
-    renderOrders(newOrders);
-  }
+function markPreparazione(button) {
+  const orderCard = button.closest('.order-card');
+  const statusBadge = orderCard.querySelector('.order-status');
 
-  // Sblocca l'audio al primo click dell'utente
-  document.body.addEventListener('click', () => {
-    const audio = document.getElementById('notification-sound');
-    audio.play().then(() => {
-      audio.pause();
-      audio.currentTime = 0;
-      console.log('Audio unlocked by user interaction');
-    }).catch(() => {
-      console.log('Audio unlock failed');
-    });
-  }, { once: true });
+  // Rimuove tutte le classi di stato
+  statusBadge.classList.remove(
+    'status-nuovo',
+    'status-in-preparazione',
+    'status-pronto',
+    'status-consegnato',
+    'status-annullato'
+  );
 
-  // Esempio di funzione renderOrders (da adattare al tuo codice)
-  function renderOrders(orders) {
-    const container = document.getElementById('orders-container');
-    container.innerHTML = '';
-    orders.forEach(order => {
-      // crea e aggiungi elementi DOM per ogni ordine
-      // ...
-    });
-  }
+  // Imposta stato "In preparazione"
+  statusBadge.classList.add('status-in-preparazione');
+  statusBadge.textContent = 'In preparazione';
 
-  // Esempio: quando ricevi dati dal backend, chiama updateOrders
-  // updateOrders(nuoviOrdini);
+  // 🔒 Disabilita il bottone Preparazione
+  button.disabled = true;
+}
+
+function markPronto(button) {
+  const orderCard = button.closest('.order-card');
+  const statusBadge = orderCard.querySelector('.order-status');
+
+  // Rimuove tutte le classi di stato precedenti
+  statusBadge.classList.remove(
+    'status-nuovo',
+    'status-in-preparazione',
+    'status-pronto',
+    'status-consegnato',
+    'status-annullato'
+  );
+
+  // Aggiunge la classe "pronto"
+  statusBadge.classList.add('status-pronto');
+  statusBadge.textContent = 'Pronto';
+
+  // Disabilita il bottone pronto
+  button.disabled = true;
+}
 </script>
 
-   
+</body>
+</html>

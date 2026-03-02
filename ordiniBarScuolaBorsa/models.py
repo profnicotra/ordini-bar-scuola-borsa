@@ -89,9 +89,10 @@ class Ordine(db.Model):
     creato_da = db.Column(db.String)
     totale_euro = db.Column(db.Numeric(10, 2), default=0)
     tipo_prezzo = db.Column(db.String(20), default='pubblico')  # NUOVO
+    stato_pronto_da = db.Column(db.DateTime, nullable=True)  # Timestamp quando diventa PRONTO
 
     posizione = db.relationship('Posizione', back_populates='ordini')
-    righe = db.relationship('OrdineRiga', back_populates='ordine')
+    righe = db.relationship('OrdineRiga', back_populates='ordine', cascade="all, delete-orphan")
     user = db.relationship('User', back_populates='ordini', foreign_keys=[user_id])  # NUOVO
 
 class OrdineRiga(db.Model):
@@ -105,6 +106,7 @@ class OrdineRiga(db.Model):
 
     ordine = db.relationship('Ordine', back_populates='righe')
     prodotto = db.relationship('Prodotto')
+    note_righe = db.relationship('OrdineRigaNota', back_populates='riga', cascade="all, delete-orphan")
 
 class OrdineRigaNota(db.Model):
     __tablename__ = 'ordine_righe_note'
@@ -112,6 +114,8 @@ class OrdineRigaNota(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     ordine_riga_id = db.Column(db.Integer, db.ForeignKey('ordine_righe.id'), nullable=False)
     nota_id = db.Column(db.Integer, db.ForeignKey('note.id'), nullable=False)
+    
+    riga = db.relationship('OrdineRiga', back_populates='note_righe')
 
 class Impostazione(db.Model):
     __tablename__ = 'impostazioni'
@@ -150,7 +154,7 @@ def get_products(user=None):
     results = []
 
     query = db.session.query(
-        Prodotto.id,  # Aggiunto per riferimento
+        Prodotto.id,
         Prodotto.nome.label('prodotto'),
         Prodotto.prezzo_euro,
         Prodotto.prezzo_interni,
@@ -174,7 +178,7 @@ def get_products(user=None):
             'prodotto': item.prodotto,
             'prezzo_euro': item.prezzo_euro,
             'prezzo_interni': item.prezzo_interni,
-            'prezzo_mostrato': prezzo_da_mostrare,  # NUOVO: per template
+            'prezzo_mostrato': prezzo_da_mostrare,
             'categoria': item.categoria,
             'esclusivo': item.esclusivo,
             'obbligatorio_default': item.obbligatorio_default,
@@ -188,40 +192,49 @@ def get_queue():
     try:
         ordini = db.session.query(Ordine).order_by(Ordine.creato_il.desc()).all()
         results = []
-        
+
         for ordine in ordini:
+            # Raggruppa tutte le righe (prodotti) per questo ordine
             righe = db.session.query(OrdineRiga).filter(OrdineRiga.ordine_id == ordine.id).all()
-            
+            items = []
+
             for riga in righe:
                 prodotto = db.session.query(Prodotto).filter(Prodotto.id == riga.prodotto_id).first()
                 note_query = db.session.query(Note).join(
                     OrdineRigaNota, Note.id == OrdineRigaNota.nota_id
                 ).filter(OrdineRigaNota.ordine_riga_id == riga.id).all()
-                
+
+                # Se non ci sono note, mantieni almeno un elemento None per compatibilità
                 if not note_query:
                     note_query = [None]
-                
+
                 for nota in note_query:
-                    # Informazioni utente
-                    user_info = ""
-                    if ordine.user:
-                        user_info = f"{ordine.user.nome} {ordine.user.cognome}"
-                        if ordine.user.is_professor:
-                            user_info += " 👨‍🏫"
-                    
-                    results.append({
-                        'id': ordine.id,
+                    items.append({
                         'prodotto': prodotto.nome if prodotto else 'Prodotto sconosciuto',
                         'quantita': riga.quantita,
                         'nota': nota.nome if nota else None,
-                        'posizione': ordine.posizione.nome if ordine.posizione else 'N/A',
-                        'stato': ordine.stato,
-                        'totale_euro': float(ordine.totale_euro) if ordine.totale_euro else 0,
-                        'creato_il': ordine.creato_il.strftime('%d/%m/%Y %H:%M') if ordine.creato_il else '',
-                        'tipo_prezzo': ordine.tipo_prezzo if hasattr(ordine, 'tipo_prezzo') else 'pubblico',
-                        'utente': user_info or ordine.creato_da or 'Anonimo'
+                        'prezzo_unit': float(riga.prezzo_euro_unit) if riga.prezzo_euro_unit else None
                     })
-        
+
+            # Informazioni utente
+            user_info = ""
+            if ordine.user:
+                user_info = f"{ordine.user.nome} {ordine.user.cognome}"
+                if ordine.user.is_professor:
+                    user_info += " 👨‍🏫"
+
+            results.append({
+                'id': ordine.id,
+                'items': items,
+                'posizione': ordine.posizione.nome if ordine.posizione else 'N/A',
+                'stato': ordine.stato,
+                'totale_euro': float(ordine.totale_euro) if ordine.totale_euro else 0,
+                'creato_il': ordine.creato_il.strftime('%d/%m/%Y %H:%M') if ordine.creato_il else '',
+                'tipo_prezzo': ordine.tipo_prezzo if hasattr(ordine, 'tipo_prezzo') else 'pubblico',
+                'utente': user_info or ordine.creato_da or 'Anonimo',
+                'stato_pronto_da': ordine.stato_pronto_da.isoformat() if ordine.stato_pronto_da else None
+            })
+
         return results
 
     except Exception as e:
@@ -232,14 +245,6 @@ def add_queue(posizione_id, righe, creato_da=None, totale_euro=None, stato='NUOV
     """
     Aggiunge un ordine alla coda
     COMPATIBILE con codice esistente + supporto autenticazione
-    
-    Parametri:
-    - posizione_id: ID posizione
-    - righe: lista righe ordine (può essere stringa vuota "" per compatibilità)
-    - creato_da: nome cliente (opzionale se user è fornito)
-    - totale_euro: totale ordine (opzionale, verrà calcolato se non fornito)
-    - stato: stato ordine (default 'NUOVO')
-    - user: oggetto User se autenticato (opzionale, NUOVO)
     """
     try:
         # Determina il tipo di prezzo
@@ -255,26 +260,24 @@ def add_queue(posizione_id, righe, creato_da=None, totale_euro=None, stato='NUOV
             user_id=user.id if user else None,
             creato_da=creato_da or 'system',
             tipo_prezzo=tipo_prezzo,
-            totale_euro=totale_euro or 0  # Usa il totale fornito o 0
+            totale_euro=totale_euro or 0
         )
 
-        # Se righe è una lista, processala (nuovo comportamento)
+        # Se righe è una lista, processala
         if isinstance(righe, list) and len(righe) > 0:
             for riga in righe:
-                # Recupera il prodotto per ottenere il prezzo corretto
                 prodotto = db.session.query(Prodotto).filter(Prodotto.id == riga['prodotto_id']).first()
                 if prodotto:
                     prezzo_unit = prodotto.get_price(user)
                     
                     ordine_riga = OrdineRiga(
-                        prodotto_id=riga['prodotto_id'], 
-                        quantita=riga['quantita'], 
-                        ordine=new_order,
+                        prodotto_id=riga['prodotto_id'],
+                        quantita=riga['quantita'],
                         prezzo_euro_unit=prezzo_unit
                     )
-                    db.session.add(ordine_riga)
-        # Altrimenti mantieni compatibilità con chiamate che passano ""
-        # (non crea righe, solo l'ordine)
+                    # Append to the parent collection so delete-orphan cascade
+                    # does not treat the new row as an orphan before commit.
+                    new_order.righe.append(ordine_riga)
 
         db.session.add(new_order)
         db.session.commit()

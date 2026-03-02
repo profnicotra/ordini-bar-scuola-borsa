@@ -1,54 +1,34 @@
 from flask import Flask
+from ordiniBarScuolaBorsa.models import db
 from flask_login import LoginManager
-from ordiniBarScuolaBorsa.models import db, User
-from dotenv import load_dotenv
+from apscheduler.schedulers.background import BackgroundScheduler
 import logging
 import os
-
-# Carica variabili d'ambiente dal file .env
-load_dotenv()
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-# Inizializza Flask-Login
 login_manager = LoginManager()
+scheduler = BackgroundScheduler()
 
 def create_app():
     app = Flask(__name__)
     
-    # Configurazioni
-    app.config.from_pyfile("config.py")
-    
-    # SECRET_KEY per le sessioni (IMPORTANTE!)
-    app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'chiave-segreta-temporanea-da-cambiare')
-    
-    # Configurazione Google OAuth
-    app.config['GOOGLE_CLIENT_ID'] = os.getenv('GOOGLE_CLIENT_ID')
-    app.config['GOOGLE_CLIENT_SECRET'] = os.getenv('GOOGLE_CLIENT_SECRET')
-    
-    # Inizializza il database
+    # Carica la configurazione dal file config.py nella stessa directory
+    config_path = os.path.join(os.path.dirname(__file__), 'config.py')
+    app.config.from_pyfile(config_path)
+
     db.init_app(app)
-    
-    # Inizializza Flask-Login
     login_manager.init_app(app)
-    login_manager.login_view = 'auth.login'  # Redirect se non autenticato
-    login_manager.login_message = 'Effettua il login per continuare'
-    login_manager.login_message_category = 'info'
-    
-    # User loader per Flask-Login
-    @login_manager.user_loader
-    def load_user(user_id):
-        return User.query.get(int(user_id))
-    
-    # Importa e registra i blueprint ESISTENTI
+
+    # Importa e registra i blueprint
     from ordiniBarScuolaBorsa.index import bp as index_bp
     app.register_blueprint(index_bp)
 
     from ordiniBarScuolaBorsa.menu import bp as menu_bp
     app.register_blueprint(menu_bp)
 
-    from ordiniBarScuolaBorsa.queue_manager import bp as queue_bp
+    from ordiniBarScuolaBorsa.queue import bp as queue_bp
     app.register_blueprint(queue_bp)
 
     from ordiniBarScuolaBorsa.orders import bp as orders_bp
@@ -59,28 +39,47 @@ def create_app():
 
     from ordiniBarScuolaBorsa.toggle import bp as toggle_bp
     app.register_blueprint(toggle_bp)
-    
-    # NUOVO: registra il blueprint auth
+
+    from ordiniBarScuolaBorsa.login import bp as login_bp
+    app.register_blueprint(login_bp)
+
     from ordiniBarScuolaBorsa.auth import bp as auth_bp, init_oauth
     app.register_blueprint(auth_bp)
-    
-    # Inizializza OAuth
-    init_oauth(app)
 
-    # Crea le tabelle del database
+    # Inizializza OAuth solo se le credenziali Google sono configurate
+    if app.config.get('GOOGLE_CLIENT_ID') and app.config.get('GOOGLE_CLIENT_SECRET'):
+        init_oauth(app)
+        logger.info("Google OAuth inizializzato")
+    else:
+        logger.warning("GOOGLE_CLIENT_ID/SECRET non configurati — OAuth Google disabilitato")
+
+    # user_loader: dice a flask_login come ricaricare l'utente dalla sessione
+    from ordiniBarScuolaBorsa.models import User
+
+    @login_manager.user_loader
+    def load_user(user_id):
+        return User.query.get(int(user_id))
+
     with app.app_context():
         db.create_all()
-        logger.info("Database inizializzato con successo")
-        
-        # Verifica che la tabella users esista
-        from sqlalchemy import inspect
-        inspector = inspect(db.engine)
-        tables = inspector.get_table_names()
-        logger.info(f"Tabelle presenti: {tables}")
-    
-    logger.info("App Flask creata e configurata con successo")
-    logger.info(f"Google OAuth configurato: {bool(app.config.get('GOOGLE_CLIENT_ID'))}")
 
+    # Inizializza APScheduler per controllare gli ordini scaduti
+    with app.app_context():
+        from ordiniBarScuolaBorsa.queue import check_and_update_ready_orders
+        
+        if not scheduler.running:
+            scheduler.add_job(
+                func=check_and_update_ready_orders,
+                trigger="interval",
+                seconds=60,  # Controlla ogni 60 secondi
+                id="check_ready_orders",
+                name="Controlla ordini pronti scaduti",
+                replace_existing=True
+            )
+            scheduler.start()
+            logger.info("APScheduler avviato - Task 'check_ready_orders' programmato ogni 60 secondi")
+
+    logger.info("App Flask creata e DB inizializzato")
     return app
 
 app = create_app()
