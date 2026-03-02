@@ -6,6 +6,8 @@
   <title>Coda Ordini Sala Bar</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
   <style>
+    /* ... il tuo CSS esistente ... */
+
     * {
       box-sizing: border-box;
     }
@@ -437,204 +439,151 @@
 
     @media (max-width: 768px) {
       header h1 {
-        font-size: 24px;
-        margin-left: 0 !important;
-      }
-      main {
-        padding: 15px;
-        gap: 15px;
-      }
-      .order-card {
-        width: 100%;
-        max-width: 100%;
-      }
-    }
-
-    @media (max-width: 480px) {
-      header h1 {
         font-size: 20px;
       }
-      .order-card {
-        padding: 15px;
+      main {
+        grid-template-columns: 1fr;
       }
     }
-
-    @media (max-width: 1200px) {
-  main {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 768px) {
-  main {
-    grid-template-columns: 1fr;
-  }
-}
-
   </style>
 </head>
 <body>
-
   <header>
-    <h1 style="font-family: verdana; font-weight:800; text-align: center;">
-      CODA DA ORDINI SALA BAR
-    </h1>
+    <h1>Coda Ordini Sala Bar</h1>
   </header>
 
   <main id="orders-container">
-
-    <!-- Ordine 01 -->
-    <div class="order-card">
-      <div class="order-header">
-        <div class="order-title">Ordine #01 :</div>
-        <div class="order-status status-in-preparazione">In preparazione</div>
-      </div>
-
-      <div class="customer-info">Mario Rossi – Aula 1</div>
-      <div class="customer-info">12/12/2025 09:15</div>
-
-      <div class="order-items">
-        <div class="item">
-          <div class="item-name">Caffè <span class="item-note">Senza zucchero</span></div>
-          <div>x2</div>
-        </div>
-        <div class="item">
-          <div class="item-name">Cornetto</div>
-          <div>x1</div>
-        </div>
-      </div>
-
-      <div class="order-footer">
-        <div class="order-notes">Note Generali :</div>
-        <div class="order-total">
-          <span>Totale €4,50</span>
-          <div class="order-actions">
-           <button class="btn-preparazione" onclick="markPreparazione(this)">Preparazione</button>
-<button class="btn-pronto" onclick="markPronto(this)">Pronto</button>
-<button class="btn-delete" onclick="removeOrder(this)">Elimina</button>
-
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Ordine 02 -->
-    <div class="order-card">
-      <div class="order-header">
-        <div class="order-title">Ordine #102</div>
-        <div class="order-status status-pronto">Pronto</div>
-      </div>
-
-      <div class="customer-info">Sara Bianchi – Aula 3</div>
-      <div class="customer-info">12/12/2025 09:20</div>
-
-      <div class="order-items">
-        <div class="item">
-          <div class="item-name">Cappuccino <span class="item-note">Latte di soia</span></div>
-          <div>x1</div>
-        </div>
-      </div>
-
-      <div class="order-footer">
-        <div class="order-notes">Note Generali :</div>
-        <div class="order-total">
-          <span>Totale €2,50</span>
-          <div class="order-actions">
-           <button class="btn-preparazione" onclick="markPreparazione(this)">Preparazione</button>
-<button class="btn-pronto" onclick="markPronto(this)">Pronto</button>
-<button class="btn-delete" onclick="removeOrder(this)">Elimina</button>
-
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Ordine 03 -->
-    <div class="order-card">
-      <div class="order-header">
-        <div class="order-title">Ordine #103</div>
-        <div class="order-status status-nuovo">Nuovo</div>
-      </div>
-
-      <div class="customer-info">Luigi Verdi – Aula 2</div>
-      <div class="customer-info">12/12/2025 09:25</div>
-
-      <div class="order-items">
-        <div class="item">
-          <div class="item-name">Panino</div>
-          <div>x3</div>
-        </div>
-      </div>
-
-      <div class="order-footer">
-        <div class="order-notes">Note Generali :</div>
-        <div class="order-total">
-          <span>Totale €9,00</span>
-          <div class="order-actions">
-            <button class="btn-preparazione" onclick="markPreparazione(this)">Preparazione</button>
-<button class="btn-pronto" onclick="markPronto(this)">Pronto</button>
-<button class="btn-delete" onclick="removeOrder(this)">Elimina</button>
-
-          </div>
-        </div>
-      </div>
-    </div>
-
+    <!-- Gli ordini verranno caricati qui dal JavaScript -->
   </main>
 
+  <!-- Aggiungi il tag audio qui, preferibilmente prima dello script -->
+  <audio id="notification-sound" src="campanella.mp3" preload="auto"></audio>
+
+  <script>
+    // Questo è un esempio di dati di ordini. Nel tuo caso, questi dati
+    // probabilmente arriveranno da un backend o da un'API.
+    let orders = [
+      {
+        id: 'ORD001',
+        customer: 'Mario Rossi',
+        time: '10:30',
+        status: 'nuovo',
+        items: [
+          { name: 'Caffè', qty: 2 },
+          { name: 'Cornetto', qty: 1, note: 'Vuoto' }
+        ],
+        notes: 'Tavolo 5'
+      },
+      {
+        id: 'ORD002',
+        customer: 'Giulia Verdi',
+        time: '10:35',
+        status: 'in-preparazione',
+        items: [
+          { name: 'Cappuccino', qty: 1 },
+          { name: 'Spremuta', qty: 1 }
+        ],
+        notes: ''
+      },
+      {
+        id: 'ORD003',
+        customer: 'Luca Bianchi',
+        time: '10:40',
+        status: 'pronto',
+        items: [
+          { name: 'Tè Verde', qty: 1 },
+          { name: 'Muffin', qty: 1, note: 'Riscaldato' }
+        ],
+        notes: 'Da asporto'
+      }
+    ];
+
+    let previousOrdersCount = orders.length; // Inizializza con il numero di ordini attuali
+
+    function renderOrders() {
+      const ordersContainer = document.getElementById('orders-container');
+      ordersContainer.innerHTML = ''; // Pulisce il contenitore prima di renderizzare
+
+      orders.forEach(order => {
+        const orderCard = document.createElement('div');
+        orderCard.className = 'order-card';
+        orderCard.dataset.orderId = order.id; // Utile per identificare l'ordine
+
+        let itemsHtml = order.items.map(item => `
+          <div class="item">
+            <span class="item-name">${item.qty}x ${item.name} ${item.note ? `<span class="item-note">${item.note}</span>` : ''}</span>
+          </div>
+        `).join('');
+
+        orderCard.innerHTML = `
+          <div class="order-header">
+            <h2 class="order-title">Ordine #${order.id}</h2>
+            <span class="order-status status-${order.status}">${order.status.replace('-', ' ')}</span>
+          </div>
+          <div class="customer-info">👤 ${order.customer}</div>
+          <div class="customer-info">🕐 ${order.time}</div>
+          <div class="order-items">
+            ${itemsHtml}
+          </div>
+          ${order.notes ? `<div class="order-notes">Note: ${order.notes}</div>` : ''}
+          <div class="order-footer">
+            <div class="order-actions">
+              <button class="btn-preparazione" onclick="updateOrderStatus('${order.id}', 'in-preparazione')" ${order.status === 'in-preparazione' || order.status === 'pronto' || order.status === 'consegnato' ? 'disabled' : ''}>In Preparazione</button>
+              <button class="btn-pronto" onclick="updateOrderStatus('${order.id}', 'pronto')" ${order.status === 'pronto' || order.status === 'consegnato' ? 'disabled' : ''}>Pronto</button>
+              <button class="btn-delete" onclick="deleteOrder('${order.id}')">Elimina</button>
+            </div>
+          </div>
+        `;
+        ordersContainer.appendChild(orderCard);
+      });
+    }
+<audio id="notification-sound" src="campanella.mp3" preload="auto"></audio>
+
 <script>
-function removeOrder(button) {
-  const orderCard = button.closest('.order-card');
-  if (!orderCard) return;
+  let previousOrdersCount = 0;
 
-  orderCard.style.transition = 'all 0.3s ease';
-  orderCard.style.opacity = '0';
-  orderCard.style.transform = 'translateX(100%)';
-  setTimeout(() => orderCard.remove(), 300);
-}
+  function playNotificationSound() {
+    const audio = document.getElementById('notification-sound');
+    audio.pause();
+    audio.currentTime = 0;
+    audio.play().catch(e => {
+      console.log('Audio playback prevented:', e);
+    });
+  }
 
-function markPreparazione(button) {
-  const orderCard = button.closest('.order-card');
-  const statusBadge = orderCard.querySelector('.order-status');
+  // Funzione da chiamare quando ricevi nuovi ordini dal backend
+  function updateOrders(newOrders) {
+    if (newOrders.length > previousOrdersCount) {
+      playNotificationSound();
+    }
+    previousOrdersCount = newOrders.length;
+    renderOrders(newOrders);
+  }
 
-  // Rimuove tutte le classi di stato
-  statusBadge.classList.remove(
-    'status-nuovo',
-    'status-in-preparazione',
-    'status-pronto',
-    'status-consegnato',
-    'status-annullato'
-  );
+  // Sblocca l'audio al primo click dell'utente
+  document.body.addEventListener('click', () => {
+    const audio = document.getElementById('notification-sound');
+    audio.play().then(() => {
+      audio.pause();
+      audio.currentTime = 0;
+      console.log('Audio unlocked by user interaction');
+    }).catch(() => {
+      console.log('Audio unlock failed');
+    });
+  }, { once: true });
 
-  // Imposta stato "In preparazione"
-  statusBadge.classList.add('status-in-preparazione');
-  statusBadge.textContent = 'In preparazione';
+  // Esempio di funzione renderOrders (da adattare al tuo codice)
+  function renderOrders(orders) {
+    const container = document.getElementById('orders-container');
+    container.innerHTML = '';
+    orders.forEach(order => {
+      // crea e aggiungi elementi DOM per ogni ordine
+      // ...
+    });
+  }
 
-  // 🔒 Disabilita il bottone Preparazione
-  button.disabled = true;
-}
-
-function markPronto(button) {
-  const orderCard = button.closest('.order-card');
-  const statusBadge = orderCard.querySelector('.order-status');
-
-  // Rimuove tutte le classi di stato precedenti
-  statusBadge.classList.remove(
-    'status-nuovo',
-    'status-in-preparazione',
-    'status-pronto',
-    'status-consegnato',
-    'status-annullato'
-  );
-
-  // Aggiunge la classe "pronto"
-  statusBadge.classList.add('status-pronto');
-  statusBadge.textContent = 'Pronto';
-
-  // Disabilita il bottone pronto
-  button.disabled = true;
-}
+  // Esempio: quando ricevi dati dal backend, chiama updateOrders
+  // updateOrders(nuoviOrdini);
 </script>
 
-</body>
-</html>
+   

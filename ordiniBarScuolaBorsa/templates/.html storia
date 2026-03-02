@@ -1,0 +1,843 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Generatore PPTX — Hamas vs Fatah (5 slide)</title>
+  <meta name="description" content="Crea e scarica un file PowerPoint (.pptx) con 5 slide sulle differenze tra Hamas e Fatah, in italiano e con parole semplici." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- PptxGenJS (library to generate PPTX in-browser) -->
+  <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+
+  <style>
+    :root{
+      --bg: #0b0f14;
+      --panel: rgba(255,255,255,.06);
+      --panel2: rgba(255,255,255,.09);
+      --stroke: rgba(255,255,255,.12);
+      --text: rgba(255,255,255,.9);
+      --muted: rgba(255,255,255,.68);
+      --muted2: rgba(255,255,255,.55);
+      --accent: #e9c46a;
+      --accent2: #2a9d8f;
+      --danger: #e76f51;
+      --ok: #8ab4ff;
+      --shadow: 0 18px 60px rgba(0,0,0,.55);
+      --radius: 22px;
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background:
+        radial-gradient(1100px 700px at 15% 15%, rgba(42,157,143,.22), transparent 60%),
+        radial-gradient(1000px 600px at 85% 25%, rgba(231,111,81,.18), transparent 58%),
+        radial-gradient(900px 700px at 50% 90%, rgba(233,196,106,.14), transparent 60%),
+        linear-gradient(180deg, #070a0f, #0b0f14 45%, #070a0f);
+      color: var(--text);
+      overflow-x:hidden;
+    }
+
+    .grain{
+      position:fixed; inset:0;
+      pointer-events:none;
+      opacity:.12;
+      mix-blend-mode:overlay;
+      background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="260" height="260"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="3" stitchTiles="stitch"/></filter><rect width="260" height="260" filter="url(%23n)" opacity=".55"/></svg>');
+      background-size:260px 260px;
+    }
+
+    header{
+      position:sticky; top:0; z-index:50;
+      backdrop-filter: blur(12px);
+      background: linear-gradient(180deg, rgba(11,15,20,.82), rgba(11,15,20,.55));
+      border-bottom: 1px solid rgba(255,255,255,.10);
+    }
+    .wrap{
+      width:min(1100px, calc(100% - 40px));
+      margin:0 auto;
+    }
+    .nav{
+      display:flex; align-items:center; justify-content:space-between;
+      padding:16px 0;
+      gap:18px;
+    }
+    .brand{
+      display:flex; align-items:center; gap:12px;
+      text-decoration:none; color:var(--text);
+      min-width: 240px;
+    }
+    .mark{
+      width:40px; height:40px;
+      border-radius: 14px;
+      background:
+        radial-gradient(16px 16px at 30% 30%, rgba(233,196,106,.85), transparent 60%),
+        radial-gradient(18px 18px at 70% 65%, rgba(42,157,143,.85), transparent 62%),
+        linear-gradient(135deg, rgba(255,255,255,.16), rgba(255,255,255,.06));
+      border: 1px solid rgba(255,255,255,.16);
+      box-shadow: 0 10px 35px rgba(0,0,0,.35);
+    }
+    .brand b{
+      font-family: Fraunces, serif;
+      font-weight: 700;
+      letter-spacing: .2px;
+      font-size: 15px;
+      line-height:1.1;
+      display:block;
+    }
+    .brand span{
+      display:block;
+      font-size:12px;
+      color:var(--muted);
+      margin-top:2px;
+    }
+
+    .actions{
+      display:flex; align-items:center; gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    button{
+      -webkit-tap-highlight-color: transparent;
+      font: inherit;
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,.14);
+      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.04));
+      padding: 10px 12px;
+      border-radius: 14px;
+      cursor:pointer;
+      transition: transform .18s ease, background .18s ease, border-color .18s ease, box-shadow .18s ease;
+      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+      display:inline-flex; align-items:center; gap:10px;
+    }
+    button:hover{
+      transform: translateY(-1px);
+      border-color: rgba(255,255,255,.22);
+      background: linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.05));
+    }
+    button:active{ transform: translateY(0px) scale(.99); }
+    .btn-primary{
+      border-color: rgba(233,196,106,.35);
+      background: linear-gradient(180deg, rgba(233,196,106,.26), rgba(255,255,255,.04));
+      box-shadow: 0 16px 45px rgba(233,196,106,.08), 0 14px 40px rgba(0,0,0,.35);
+    }
+    .btn-primary:hover{
+      border-color: rgba(233,196,106,.55);
+      box-shadow: 0 20px 55px rgba(233,196,106,.12), 0 14px 40px rgba(0,0,0,.35);
+    }
+
+    main{ padding: 28px 0 56px; }
+
+    .hero{
+      display:grid;
+      grid-template-columns: 1.25fr .75fr;
+      gap: 22px;
+      align-items:stretch;
+      margin-top: 14px;
+    }
+
+    .panel{
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
+      border: 1px solid rgba(255,255,255,.12);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      position:relative;
+    }
+
+    .hero .panel:first-child{
+      padding: 28px 26px;
+    }
+
+    .kicker{
+      display:flex; align-items:center; gap:10px;
+      color: var(--muted);
+      font-size: 13px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .dot{
+      width:10px; height:10px; border-radius:99px;
+      background: radial-gradient(circle at 35% 35%, rgba(255,255,255,.9), rgba(255,255,255,.0)),
+                  linear-gradient(135deg, var(--accent2), var(--danger));
+      box-shadow: 0 0 0 4px rgba(255,255,255,.05);
+    }
+
+    h1{
+      font-family: Fraunces, serif;
+      font-weight: 700;
+      margin: 12px 0 10px;
+      font-size: clamp(30px, 3.2vw, 44px);
+      line-height: 1.05;
+      letter-spacing: .2px;
+    }
+    .lead{
+      color: var(--muted);
+      margin: 0;
+      font-size: 15.5px;
+      line-height: 1.65;
+      max-width: 58ch;
+    }
+
+    .chips{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top: 18px;
+    }
+    .chip{
+      padding: 9px 11px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      color: rgba(255,255,255,.78);
+      font-size: 13px;
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+    }
+    .chip i{
+      width: 7px; height: 7px; border-radius: 99px;
+      display:inline-block;
+      background: rgba(233,196,106,.9);
+      box-shadow: 0 0 0 3px rgba(233,196,106,.14);
+    }
+
+    .side{
+      padding: 18px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    .side h2{
+      margin: 0;
+      font-family: Fraunces, serif;
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing:.2px;
+    }
+    .side p{
+      margin:0;
+      color: var(--muted);
+      font-size: 13.5px;
+      line-height:1.6;
+    }
+
+    .mini{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-top: 8px;
+    }
+    .mini .row{
+      padding: 12px 12px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.10);
+      display:flex; gap:12px; align-items:flex-start;
+    }
+    .ico{
+      width: 34px; height: 34px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: linear-gradient(135deg, rgba(233,196,106,.22), rgba(42,157,143,.15));
+      display:grid; place-items:center;
+      flex:0 0 auto;
+    }
+    .ico svg{ opacity:.9 }
+    .row b{ display:block; font-size: 13.5px; margin-bottom: 3px; }
+    .row span{ display:block; color: var(--muted2); font-size: 12.5px; line-height:1.45; }
+
+    .editor{
+      margin-top: 22px;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+      align-items:start;
+    }
+
+    .editor .panel{
+      padding: 18px;
+    }
+
+    .panel h3{
+      margin:0 0 10px;
+      font-family: Fraunces, serif;
+      font-size: 18px;
+      letter-spacing:.2px;
+    }
+
+    .help{
+      color: var(--muted2);
+      font-size: 13px;
+      line-height: 1.55;
+      margin: 0 0 14px;
+    }
+
+    textarea{
+      width:100%;
+      min-height: 360px;
+      resize: vertical;
+      border-radius: 16px;
+      padding: 14px 14px;
+      color: rgba(255,255,255,.92);
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.25);
+      outline: none;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 12.8px;
+      line-height: 1.5;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+    }
+    textarea:focus{
+      border-color: rgba(233,196,106,.35);
+      box-shadow: 0 0 0 4px rgba(233,196,106,.10), inset 0 1px 0 rgba(255,255,255,.06);
+    }
+
+    .preview{
+      position:relative;
+      padding: 18px;
+      overflow:hidden;
+    }
+    .deck{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    /* Allowed as list/gallery preview */
+    .slide{
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border: 1px solid rgba(255,255,255,.12);
+      padding: 14px 14px;
+      position:relative;
+      overflow:hidden;
+    }
+    .slide::before{
+      content:"";
+      position:absolute; inset:-1px;
+      background:
+        radial-gradient(380px 120px at 10% 0%, rgba(42,157,143,.18), transparent 55%),
+        radial-gradient(420px 150px at 100% 0%, rgba(231,111,81,.14), transparent 55%);
+      pointer-events:none;
+    }
+    .slide > *{ position:relative; }
+    .slide .top{
+      display:flex; align-items:baseline; justify-content:space-between;
+      gap: 10px;
+    }
+    .slide h4{
+      margin:0;
+      font-family: Fraunces, serif;
+      font-size: 15px;
+      letter-spacing:.2px;
+    }
+    .badge{
+      font-size: 11px;
+      color: rgba(255,255,255,.72);
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.05);
+      padding: 6px 8px;
+      border-radius: 999px;
+      white-space:nowrap;
+    }
+    .slide ul{
+      margin: 10px 0 0;
+      padding-left: 18px;
+      color: rgba(255,255,255,.78);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .footer{
+      margin-top: 26px;
+      color: var(--muted2);
+      font-size: 12.5px;
+      line-height: 1.6;
+      padding: 18px 0 0;
+      border-top: 1px solid rgba(255,255,255,.10);
+    }
+
+    .reveal{
+      opacity:0;
+      transform: translateY(10px);
+      animation: rise .75s ease forwards;
+    }
+    .reveal.d2{ animation-delay:.08s; }
+    .reveal.d3{ animation-delay:.16s; }
+    .reveal.d4{ animation-delay:.24s; }
+    @keyframes rise{
+      to{ opacity:1; transform: translateY(0); }
+    }
+
+    .toast{
+      position: fixed;
+      right: 18px; bottom: 18px;
+      background: rgba(10,12,16,.72);
+      border: 1px solid rgba(255,255,255,.14);
+      backdrop-filter: blur(10px);
+      color: rgba(255,255,255,.86);
+      padding: 12px 12px;
+      border-radius: 16px;
+      box-shadow: 0 16px 50px rgba(0,0,0,.55);
+      max-width: min(360px, calc(100% - 36px));
+      opacity:0;
+      transform: translateY(10px);
+      transition: opacity .2s ease, transform .2s ease;
+      pointer-events:none;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+    .toast.show{
+      opacity:1;
+      transform: translateY(0);
+    }
+    .toast b{ font-weight: 600; color: rgba(255,255,255,.92); }
+
+    @media (max-width: 920px){
+      .hero{ grid-template-columns: 1fr; }
+      .brand{ min-width: unset; }
+      .editor{ grid-template-columns: 1fr; }
+      textarea{ min-height: 280px; }
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .reveal{ animation:none; opacity:1; transform:none; }
+      button{ transition:none; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="grain" aria-hidden="true"></div>
+
+  <header>
+    <div class="wrap nav">
+      <a class="brand" href="#" aria-label="Home">
+        <div class="mark" aria-hidden="true"></div>
+        <div>
+          <b>PowerPoint pronto</b>
+          <span>Hamas vs Fatah — 5 slide, parole semplici</span>
+        </div>
+      </a>
+      <div class="actions">
+        <button id="btnReset" type="button" title="Ripristina il testo predefinito">
+          <span aria-hidden="true">↺</span> Ripristina
+        </button>
+        <button id="btnDownload" class="btn-primary" type="button" title="Scarica il file .pptx">
+          <span aria-hidden="true">⬇</span> Scarica .pptx
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <div class="panel reveal">
+        <div class="kicker"><span class="dot" aria-hidden="true"></span> Generatore in-browser</div>
+        <h1>File PowerPoint (.pptx) in 1 click, con contenuti chiari e neutri.</h1>
+        <p class="lead">
+          Qui sotto trovi il testo delle <b>5 slide</b>. Puoi modificarlo (restando su parole semplici) e poi
+          scaricare un <b>.pptx</b> direttamente dal browser.
+        </p>
+        <div class="chips" aria-label="Caratteristiche">
+          <span class="chip"><i aria-hidden="true"></i> 5 slide</span>
+          <span class="chip"><i aria-hidden="true"></i> Layout 16:9</span>
+          <span class="chip"><i aria-hidden="true"></i> Titoli + punti elenco</span>
+          <span class="chip"><i aria-hidden="true"></i> Stile pulito e leggibile</span>
+        </div>
+      </div>
+
+      <aside class="panel side reveal d2" aria-label="Note importanti">
+        <h2>Nota rapida</h2>
+        <p>
+          Le slide sono scritte in modo semplice, con un tono informativo. Evitano dettagli tecnici e
+          cercano di non usare linguaggio offensivo.
+        </p>
+        <div class="mini" role="list">
+          <div class="row" role="listitem">
+            <div class="ico" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <path d="M12 3l9 4.5-9 4.5-9-4.5L12 3Z" stroke="rgba(255,255,255,.9)" stroke-width="1.6" stroke-linejoin="round"/>
+                <path d="M3 10.5V17l9 4.5 9-4.5v-6.5" stroke="rgba(255,255,255,.75)" stroke-width="1.6" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div>
+              <b>Contenuto modificabile</b>
+              <span>Puoi cambiare titoli e punti prima di generare il file.</span>
+            </div>
+          </div>
+          <div class="row" role="listitem">
+            <div class="ico" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <path d="M12 2v4" stroke="rgba(255,255,255,.85)" stroke-width="1.6" stroke-linecap="round"/>
+                <path d="M7 6h10" stroke="rgba(255,255,255,.85)" stroke-width="1.6" stroke-linecap="round"/>
+                <path d="M8 22h8" stroke="rgba(255,255,255,.75)" stroke-width="1.6" stroke-linecap="round"/>
+                <path d="M9 6v6a3 3 0 0 0 6 0V6" stroke="rgba(255,255,255,.75)" stroke-width="1.6" stroke-linecap="round"/>
+                <path d="M9 12l-2 2a5 5 0 0 0 10 0l-2-2" stroke="rgba(255,255,255,.6)" stroke-width="1.6" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div>
+              <b>Design leggibile</b>
+              <span>Contrasto alto, tipografia grande, impaginazione semplice.</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="editor" aria-label="Editor e anteprima">
+      <article class="panel reveal d3">
+        <h3>Testo delle slide (JSON)</h3>
+        <p class="help">
+          Ogni slide ha un <b>titolo</b> e una lista di <b>punti</b>.
+          Mantieni frasi corte: meglio 5–7 parole per riga.
+        </p>
+        <textarea id="jsonInput" spellcheck="false" aria-label="Editor JSON"></textarea>
+      </article>
+
+      <aside class="panel preview reveal d4" aria-label="Anteprima">
+        <h3>Anteprima veloce</h3>
+        <p class="help">Questa è una preview testuale. Il file PPTX avrà un layout grafico coerente.</p>
+
+        <div id="deck" class="deck" aria-live="polite"></div>
+
+        <div class="footer">
+          <div><b>Export</b>: il download genera un file <code>.pptx</code> sul tuo dispositivo.</div>
+          <div>
+            Se qualcosa non va, dimmi: <i>tema colori (chiaro/scuro), livello di dettaglio, pubblico (scuola/media/superiori)</i>.
+          </div>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const DEFAULT_DECK = [
+      {
+        title: "Hamas e Fatah: chi sono (in breve)",
+        bullets: [
+          "Sono due movimenti politici palestinesi",
+          "Hanno idee e strategie diverse",
+          "La divisione pesa sulla politica palestinese"
+        ],
+        note: "Introduzione semplice ai due attori."
+      },
+      {
+        title: "Dove governano oggi",
+        bullets: [
+          "Hamas: soprattutto nella Striscia di Gaza",
+          "Fatah: soprattutto in Cisgiordania",
+          "Questo crea due amministrazioni separate"
+        ],
+        note: "Focus sul controllo territoriale."
+      },
+      {
+        title: "Idee e obiettivi (semplificati)",
+        bullets: [
+          "Hamas: visione più religiosa (islamica)",
+          "Fatah: visione più laica e nazionalista",
+          "Entrambi parlano di uno Stato palestinese"
+        ],
+        note: "Ideologia presentata in modo non tecnico."
+      },
+      {
+        title: "Metodi e rapporti con l’estero",
+        bullets: [
+          "Fatah: punta più su politica e negoziati",
+          "Hamas: è legato anche alla lotta armata",
+          "Molti paesi trattano i due in modo diverso"
+        ],
+        note: "Differenze su approccio e relazioni."
+      },
+      {
+        title: "Effetti sulla vita politica",
+        bullets: [
+          "Meno unità nelle decisioni comuni",
+          "Più difficoltà nel trovare accordi interni",
+          "La popolazione vive conseguenze pratiche"
+        ],
+        note: "Impatto complessivo della divisione."
+      }
+    ];
+
+    const $ = (s, el=document) => el.querySelector(s);
+    const deckEl = $("#deck");
+    const inputEl = $("#jsonInput");
+    const toastEl = $("#toast");
+
+    function showToast(html, ms=2600){
+      toastEl.innerHTML = html;
+      toastEl.classList.add("show");
+      window.clearTimeout(showToast._t);
+      showToast._t = window.setTimeout(()=> toastEl.classList.remove("show"), ms);
+    }
+
+    function setEditorValue(obj){
+      inputEl.value = JSON.stringify(obj, null, 2);
+      renderPreview();
+    }
+
+    function safeParse(){
+      try{
+        const data = JSON.parse(inputEl.value);
+        if(!Array.isArray(data)) throw new Error("Il JSON deve essere un array di slide.");
+        if(data.length !== 5) {
+          // Not fatal, but requested 5
+          showToast(`<b>Nota:</b> hai ${data.length} slide. Ne erano richieste 5.`);
+        }
+        data.forEach((s, idx)=>{
+          if(!s.title || typeof s.title !== "string") throw new Error(`Slide ${idx+1}: manca "title" (string).`);
+          if(!Array.isArray(s.bullets)) throw new Error(`Slide ${idx+1}: "bullets" deve essere un array.`);
+        });
+        return data;
+      }catch(e){
+        showToast(`<b>Errore JSON:</b> ${e.message}`, 4200);
+        return null;
+      }
+    }
+
+    function renderPreview(){
+      const data = safeParse();
+      if(!data) return;
+
+      deckEl.innerHTML = "";
+      data.forEach((s, i)=>{
+        const slide = document.createElement("article");
+        slide.className = "slide";
+        slide.innerHTML = `
+          <div class="top">
+            <h4>${escapeHtml(s.title)}</h4>
+            <span class="badge">Slide ${i+1}</span>
+          </div>
+          <ul>
+            ${s.bullets.map(b => `<li>${escapeHtml(String(b))}</li>`).join("")}
+          </ul>
+        `;
+        deckEl.appendChild(slide);
+      });
+    }
+
+    function escapeHtml(str){
+      return str.replace(/[&<>"']/g, (m)=>({
+        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+      }[m]));
+    }
+
+    // ---------- PPTX generation ----------
+    function hexToRgb(hex){
+      const h = hex.replace("#","").trim();
+      const full = (h.length===3) ? h.split("").map(c=>c+c).join("") : h;
+      const n = parseInt(full, 16);
+      return { r:(n>>16)&255, g:(n>>8)&255, b:n&255 };
+    }
+
+    function rgbToHex({r,g,b}){
+      const to = (x)=> x.toString(16).padStart(2,"0");
+      return (to(r)+to(g)+to(b)).toUpperCase();
+    }
+
+    function mix(hexA, hexB, t){
+      const a=hexToRgb(hexA), b=hexToRgb(hexB);
+      const m = {
+        r: Math.round(a.r + (b.r-a.r)*t),
+        g: Math.round(a.g + (b.g-a.g)*t),
+        b: Math.round(a.b + (b.b-a.b)*t),
+      };
+      return rgbToHex(m);
+    }
+
+    function buildPptx(slides){
+      if(typeof PptxGenJS === "undefined"){
+        showToast(`<b>Libreria mancante:</b> impossibile generare PPTX (PptxGenJS non caricato).`, 4200);
+        return null;
+      }
+
+      const pptx = new PptxGenJS();
+      pptx.layout = "LAYOUT_WIDE"; // 13.333 x 7.5
+
+      // Theme-ish constants (PptxGen uses font names installed; fallback may occur)
+      const COL_BG = "0B0F14";
+      const COL_PANEL = "121A24";
+      const COL_TEXT = "F2F4F8";
+      const COL_MUTED = "B9C0CB";
+      const COL_ACCENT = "E9C46A";
+      const COL_ACCENT2 = "2A9D8F";
+      const COL_DANGER = "E76F51";
+
+      const W = 13.333, H = 7.5;
+
+      slides.forEach((s, idx)=>{
+        const slide = pptx.addSlide();
+
+        // Background
+        slide.addShape(pptx.ShapeType.rect, {
+          x:0, y:0, w:W, h:H,
+          fill: { color: COL_BG },
+          line: { color: COL_BG }
+        });
+
+        // Decorative corner gradients (approx with layered translucent shapes)
+        slide.addShape(pptx.ShapeType.ellipse, {
+          x:-1.2, y:-1.0, w:6.2, h:4.0,
+          fill: { color: COL_ACCENT2, transparency: 78 },
+          line: { color: COL_ACCENT2, transparency: 100 }
+        });
+        slide.addShape(pptx.ShapeType.ellipse, {
+          x:W-5.3, y:-1.4, w:6.2, h:4.6,
+          fill: { color: COL_DANGER, transparency: 84 },
+          line: { color: COL_DANGER, transparency: 100 }
+        });
+        slide.addShape(pptx.ShapeType.ellipse, {
+          x:W/2-3.5, y:H-3.0, w:7.0, h:3.6,
+          fill: { color: COL_ACCENT, transparency: 88 },
+          line: { color: COL_ACCENT, transparency: 100 }
+        });
+
+        // Main panel
+        slide.addShape(pptx.ShapeType.roundRect, {
+          x:0.72, y:0.74, w:W-1.44, h:H-1.48,
+          fill: { color: COL_PANEL, transparency: 18 },
+          line: { color: "2B3646", transparency: 30, width: 1 }
+        });
+
+        // Header line
+        slide.addShape(pptx.ShapeType.rect, {
+          x:0.96, y:0.92, w:W-1.92, h:0.02,
+          fill: { color: mix("#2A9D8F","#E9C46A",0.55), transparency: 10 },
+          line: { color: mix("#2A9D8F","#E9C46A",0.55), transparency: 10 }
+        });
+
+        // Small "chip" with slide number
+        slide.addShape(pptx.ShapeType.roundRect, {
+          x:W-3.0, y:1.05, w:2.2, h:0.45,
+          fill: { color: "FFFFFF", transparency: 92 },
+          line: { color: "FFFFFF", transparency: 86, width: 1 }
+        });
+        slide.addText(`Slide ${idx+1} / ${slides.length}`, {
+          x:W-2.9, y:1.15, w:2.0, h:0.3,
+          fontFace: "Inter",
+          fontSize: 12,
+          color: COL_MUTED
+        });
+
+        // Title
+        slide.addText(s.title, {
+          x:1.05, y:1.08, w:W-4.2, h:0.9,
+          fontFace: "Georgia", // Fraunces-like fallback
+          fontSize: 36,
+          bold: true,
+          color: COL_TEXT
+        });
+
+        // Accent underline
+        slide.addShape(pptx.ShapeType.roundRect, {
+          x:1.05, y:1.95, w:3.1, h:0.12,
+          fill: { color: COL_ACCENT, transparency: 8 },
+          line: { color: COL_ACCENT, transparency: 100 }
+        });
+
+        // Bullets
+        const bulletText = (s.bullets || []).map(b => String(b).trim()).filter(Boolean);
+
+        // Left column bullets
+        const fontSize = 22;
+        const lineSpacing = 30; // points
+        slide.addText(
+          bulletText.map(t => ({ text: t, options: { bullet: { indent: fontSize }, hanging: 6 } })),
+          {
+            x:1.15, y:2.35, w:W-2.3, h:H-3.2,
+            fontFace: "Inter",
+            fontSize,
+            color: COL_TEXT,
+            valign: "top",
+            paraSpaceAfter: 6,
+            lineSpacingMultiple: 1.1
+          }
+        );
+
+        // Footer note (small, optional)
+        slide.addText("Testo semplice • tono informativo", {
+          x:1.05, y:H-1.1, w:6.5, h:0.35,
+          fontFace: "Inter",
+          fontSize: 12,
+          color: COL_MUTED
+        });
+
+        // Decorative vertical bar
+        slide.addShape(pptx.ShapeType.roundRect, {
+          x:0.96, y:2.2, w:0.12, h:H-3.1,
+          fill: { color: COL_ACCENT2, transparency: 65 },
+          line: { color: COL_ACCENT2, transparency: 100 }
+        });
+      });
+
+      return pptx;
+    }
+
+    async function downloadPptx(){
+      const data = safeParse();
+      if(!data) return;
+
+      const pptx = buildPptx(data);
+      if(!pptx) return;
+
+      // Sanitized filename
+      const filename = "Hamas_vs_Fatah_5_slide.pptx";
+      showToast(`<b>Generazione in corso…</b> tra poco parte il download.`);
+
+      try{
+        await pptx.writeFile({ fileName: filename });
+        showToast(`<b>Fatto.</b> File scaricato: <code>${filename}</code>`);
+      }catch(err){
+        console.error(err);
+        showToast(`<b>Errore export:</b> ${String(err && err.message ? err.message : err)}`, 5200);
+      }
+    }
+
+    // Events
+    inputEl.addEventListener("input", ()=>{
+      // Debounced render
+      window.clearTimeout(renderPreview._t);
+      renderPreview._t = window.setTimeout(renderPreview, 120);
+    });
+
+    $("#btnReset").addEventListener("click", ()=> {
+      setEditorValue(DEFAULT_DECK);
+      showToast(`<b>Ripristinato.</b> Testo predefinito caricato.`);
+    });
+
+    $("#btnDownload").addEventListener("click", downloadPptx);
+
+    // IntersectionObserver reveal (subtle)
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting){
+          e.target.style.animationPlayState = "running";
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll(".reveal").forEach((el)=>{
+      // already animating on load; keep for future extensions
+      io.observe(el);
+    });
+
+    // Init
+    setEditorValue(DEFAULT_DECK);
+  </script>
+</body>
+</html>
