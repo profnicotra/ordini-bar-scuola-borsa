@@ -1,14 +1,23 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Coda Ordini Sala Bar</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Coda Ordini — Bar Scuola Borsa</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,800&display=swap" rel="stylesheet"/>
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --red:   #e63946;
+  --gold:  #f59e0b;
+  --green: #22c55e;
+  --dark:  #080404;
+  --card:  rgba(14,6,6,0.88);
+  --border:rgba(255,255,255,0.08);
+  --sans:  'Montserrat', sans-serif;
+  --serif: 'Playfair Display', Georgia, serif;
+}
 
 body {
   font-family: var(--sans);
@@ -353,17 +362,6 @@ body::after {
   font-weight: 400; 
 }
 
-.card-timer {
-  font-size: 12px;
-  font-weight: 700;
-  color: #4ade80;
-  padding: 4px 8px;
-  background: rgba(34,197,94,0.15);
-  border-radius: 6px;
-  text-align: center;
-  min-width: 60px;
-}
-
 /* Items */
 .card-items { 
   padding: 16px 24px; 
@@ -535,291 +533,213 @@ body::after {
   background: rgba(255,255,255,0.02); 
 }
 
-    ::-webkit-scrollbar-thumb {
-      background: linear-gradient(135deg, #e63946 0%, #ff6b6b 100%);
-      border-radius: 5px;
-    }
+::-webkit-scrollbar-thumb { 
+  background: rgba(230,57,70,0.3); 
+  border-radius: 4px; 
+}
 
-    ::-webkit-scrollbar-thumb:hover {
-      background: linear-gradient(135deg, #ff6b6b 0%, #e63946 100%);
-    }
-
-    /* Loading animation */
-    @keyframes pulse {
-      0%, 100% {
-        opacity: 1;
-      }
-      50% {
-        opacity: 0.5;
-      }
-    }
-
-    .loading {
-      animation: pulse 1.5s ease-in-out infinite;
-    }
-
-    /* Responsivo */
-    @media (max-width: 768px) {
-      header h1 {
-        font-size: 24px;
-      }
-
-      main {
-        padding: 20px;
-        gap: 15px;
-      }
-
-      .order-card {
-        padding: 16px 20px;
-      }
-
-      .order-header {
-        flex-direction: column;
-        gap: 10px;
-        align-items: flex-start;
-      }
-
-      .order-actions {
-        width: 100%;
-        justify-content: flex-end;
-      }
-
-      .order-footer {
-        flex-direction: column;
-        gap: 12px;
-        align-items: flex-start;
-      }
-
-      .btn-delete, .btn-pronto {
-        padding: 8px 14px;
-        font-size: 12px;
-      }
-    }
-
-    /* RESPONSIVE DESIGN - Solo riduzione dimensioni, layout identico */
-    @media (max-width: 1024px) {
-      header {
-        padding: 18px 20px;
-        flex-direction: column;
-        gap: 10px;
-        text-align: center;
-      }
-      header h1 {
-        font-size: 26px;
-        margin-left: 0 !important;
-      }
-      main {
-        padding: 20px;
-        gap: 20px;
-        justify-content: center;
-      }
-      .order-card {
-        width: 100%;
-        max-width: 400px;
-        padding: 19px 23px;
-      }
-    }
-
-    @media (max-width: 768px) {
-      header h1 {
-        font-size: 24px;
-        margin-left: 0 !important;
-      }
-      main {
-        padding: 15px;
-        gap: 15px;
-      }
-      .order-card {
-        width: 100%;
-        max-width: 100%;
-      }
-    }
-
-    @media (max-width: 480px) {
-      header h1 {
-        font-size: 20px;
-      }
-      .order-card {
-        padding: 15px;
-      }
-    }
-
-    @media (max-width: 1200px) {
-  main {
-    grid-template-columns: repeat(2, 1fr);
+/* ── RESPONSIVE ── */
+@media (max-width:800px) {
+  .header { 
+    padding: 0 24px; 
+  }
+  
+  .h-center { 
+    display: none; 
+  }
+  
+  .stats-bar { 
+    padding: 18px 24px 0; 
+  }
+  
+  .grid { 
+    padding: 18px 24px 60px; 
+    grid-template-columns: 1fr; 
   }
 }
 
-@media (max-width: 768px) {
-  main {
-    grid-template-columns: 1fr;
+@media (max-width:480px) {
+  .header {
+    height: 80px;
+    padding: 0 20px;
+  }
+  
+  .h-logo img {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .h-logo-text .lt { 
+    display: none; 
+  }
+  
+  .h-logo-text .lb {
+    font-size: 12px;
+  }
+  
+  .actions { 
+    grid-template-columns: 1fr 1fr 44px; 
+  }
+  
+  .stat-chip {
+    padding: 8px 16px;
   }
 }
-
-  </style>
+</style>
 </head>
 <body>
 
-  <header>
-    <h1 style="font-family: verdana; font-weight:800; text-align: center;">
-      CODA DA ORDINI SALA BAR
-    </h1>
-  </header>
+<header class="header">
+  <div class="h-logo">
+    <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" onerror="this.style.visibility='hidden'">
+    <div class="h-logo-div"></div>
+    <div class="h-logo-text">
+      <span class="lt">Sala &amp; Bar</span>
+      <span class="lb">Scuola Borsa</span>
+    </div>
+  </div>
 
-  <main id="orders-container">
+  <div class="h-center">Coda Ordini</div>
 
-    <!-- Ordine 01 -->
-    <div class="order-card">
-      <div class="order-header">
-        <div class="order-title">Ordine #01 :</div>
-        <div class="order-status status-in-preparazione">In preparazione</div>
+  <div class="h-right">
+    <div class="live-pill"><div class="live-dot"></div>Live</div>
+    <button class="refresh-btn" onclick="location.reload()" title="Aggiorna">↻</button>
+  </div>
+</header>
+
+<div class="stats-bar">
+  <div class="stat-chip sc-new"><span class="n" id="cnt-new">0</span>Nuovi</div>
+  <div class="stat-chip sc-prep"><span class="n" id="cnt-prep">0</span>In preparazione</div>
+  <div class="stat-chip sc-ready"><span class="n" id="cnt-ready">0</span>Pronti</div>
+</div>
+
+<main class="grid" id="orders-container">
+  {% if queue %}
+    {% for ordine in queue %}
+    <div class="order-card s-new" data-id="{{ ordine.id }}">
+      <div class="stripe"></div>
+
+      <div class="card-top">
+        <div class="card-left">
+          <div class="card-id">Ordine #{{ ordine.id }}</div>
+          <div class="card-name">{{ ordine.utente }}</div>
+          <div class="card-loc">📍 {{ ordine.posizione }}</div>
+        </div>
+        <div class="card-right">
+          <span class="status-tag t-new">Nuovo</span>
+          <span class="card-time">{{ ordine.creato_il }}</span>
+        </div>
       </div>
 
-      <div class="customer-info">Mario Rossi – Aula 1</div>
-      <div class="customer-info">12/12/2025 09:15</div>
-
-      <div class="order-items">
-        <div class="item">
-          <div class="item-name">Caffè <span class="item-note">Senza zucchero</span></div>
-          <div>x2</div>
-        </div>
-        <div class="item">
-          <div class="item-name">Cornetto</div>
-          <div>x1</div>
-        </div>
-      </div>
-
-      <div class="order-footer">
-        <div class="order-notes">Note Generali :</div>
-        <div class="order-total">
-          <span>Totale €4,50</span>
-          <div class="order-actions">
-           <button class="btn-preparazione" onclick="markPreparazione(this)">Preparazione</button>
-<button class="btn-pronto" onclick="markPronto(this)">Pronto</button>
-<button class="btn-delete" onclick="removeOrder(this)">Elimina</button>
-
+      <div class="card-items">
+        {% for item in ordine['items'] %}
+        <div class="order-item">
+          <div class="item-info">
+            <span class="item-name">{{ item.prodotto }}</span>
+            {% if item.nota %}<span class="item-nota">📝 {{ item.nota }}</span>{% endif %}
           </div>
+          <div class="item-qty">×{{ item.quantita }}</div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <div class="card-footer">
+        <div class="footer-total"><span class="sym">€</span>{{ "%.2f"|format(ordine.totale_euro) }}</div>
+        <div class="actions">
+          <button class="act-btn act-prep" onclick="setStatus(this,'prep')">🔥 Preparazione</button>
+          <button class="act-btn act-ready" onclick="setStatus(this,'ready')">✓ Pronto</button>
+          <button class="act-btn act-del" onclick="removeCard(this)">🗑</button>
         </div>
       </div>
     </div>
-
-    <!-- Ordine 02 -->
-    <div class="order-card">
-      <div class="order-header">
-        <div class="order-title">Ordine #102</div>
-        <div class="order-status status-pronto">Pronto</div>
-      </div>
-
-      <div class="customer-info">Sara Bianchi – Aula 3</div>
-      <div class="customer-info">12/12/2025 09:20</div>
-
-      <div class="order-items">
-        <div class="item">
-          <div class="item-name">Cappuccino <span class="item-note">Latte di soia</span></div>
-          <div>x1</div>
-        </div>
-      </div>
-
-      <div class="order-footer">
-        <div class="order-notes">Note Generali :</div>
-        <div class="order-total">
-          <span>Totale €2,50</span>
-          <div class="order-actions">
-           <button class="btn-preparazione" onclick="markPreparazione(this)">Preparazione</button>
-<button class="btn-pronto" onclick="markPronto(this)">Pronto</button>
-<button class="btn-delete" onclick="removeOrder(this)">Elimina</button>
-
-          </div>
-        </div>
-      </div>
+    {% endfor %}
+  {% else %}
+    <div class="empty">
+      <div class="empty-icon">📋</div>
+      <div class="empty-title">Nessun ordine</div>
+      <div class="empty-sub">Gli ordini arriveranno qui in tempo reale</div>
     </div>
-
-    <!-- Ordine 03 -->
-    <div class="order-card">
-      <div class="order-header">
-        <div class="order-title">Ordine #103</div>
-        <div class="order-status status-nuovo">Nuovo</div>
-      </div>
-
-      <div class="customer-info">Luigi Verdi – Aula 2</div>
-      <div class="customer-info">12/12/2025 09:25</div>
-
-      <div class="order-items">
-        <div class="item">
-          <div class="item-name">Panino</div>
-          <div>x3</div>
-        </div>
-      </div>
-
-      <div class="order-footer">
-        <div class="order-notes">Note Generali :</div>
-        <div class="order-total">
-          <span>Totale €9,00</span>
-          <div class="order-actions">
-            <button class="btn-preparazione" onclick="markPreparazione(this)">Preparazione</button>
-<button class="btn-pronto" onclick="markPronto(this)">Pronto</button>
-<button class="btn-delete" onclick="removeOrder(this)">Elimina</button>
-
-          </div>
-        </div>
-      </div>
-    </div>
-
-  </main>
+  {% endif %}
+</main>
 
 <script>
-function removeOrder(button) {
-  const orderCard = button.closest('.order-card');
-  if (!orderCard) return;
-
-  orderCard.style.transition = 'all 0.3s ease';
-  orderCard.style.opacity = '0';
-  orderCard.style.transform = 'translateX(100%)';
-  setTimeout(() => orderCard.remove(), 300);
+function updateCounts() {
+  document.getElementById('cnt-new').textContent = document.querySelectorAll('.order-card.s-new').length;
+  document.getElementById('cnt-prep').textContent = document.querySelectorAll('.order-card.s-prep').length;
+  document.getElementById('cnt-ready').textContent = document.querySelectorAll('.order-card.s-ready').length;
 }
 
-function markPreparazione(button) {
-  const orderCard = button.closest('.order-card');
-  const statusBadge = orderCard.querySelector('.order-status');
+function setStatus(btn, status) {
+  const card = btn.closest('.order-card');
+  const tag = card.querySelector('.status-tag');
+  const bPrep = card.querySelector('.act-prep');
+  const bReady = card.querySelector('.act-ready');
 
-  // Rimuove tutte le classi di stato
-  statusBadge.classList.remove(
-    'status-nuovo',
-    'status-in-preparazione',
-    'status-pronto',
-    'status-consegnato',
-    'status-annullato'
-  );
+  card.classList.remove('s-new', 's-prep', 's-ready');
+  tag.classList.remove('t-new', 't-prep', 't-ready');
 
-  // Imposta stato "In preparazione"
-  statusBadge.classList.add('status-in-preparazione');
-  statusBadge.textContent = 'In preparazione';
+  if (status === 'prep') {
+    card.classList.add('s-prep');
+    tag.classList.add('t-prep');
+    tag.textContent = 'In preparazione';
+    bPrep.disabled = true;
+    bReady.disabled = false;
+  } else {
+    card.classList.add('s-ready');
+    tag.classList.add('t-ready');
+    tag.textContent = 'Pronto ✓';
+    bPrep.disabled = true;
+    bReady.disabled = true;
+  }
 
-  // 🔒 Disabilita il bottone Preparazione
-  button.disabled = true;
+  // Sync con API
+  const id = card.dataset.id;
+  const stato = status === 'prep' ? 'IN_PREPARAZIONE' : 'PRONTO';
+  fetch(`/queue/api/ordini/${id}/stato`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ stato })
+  }).catch(e => console.warn('API error:', e));
+
+  updateCounts();
 }
 
-function markPronto(button) {
-  const orderCard = button.closest('.order-card');
-  const statusBadge = orderCard.querySelector('.order-status');
+function removeCard(btn) {
+  const card = btn.closest('.order-card');
+  const id = card.dataset.id;
 
-  // Rimuove tutte le classi di stato precedenti
-  statusBadge.classList.remove(
-    'status-nuovo',
-    'status-in-preparazione',
-    'status-pronto',
-    'status-consegnato',
-    'status-annullato'
-  );
+  card.style.transition = 'opacity 0.35s ease, transform 0.35s ease';
+  card.style.opacity = '0';
+  card.style.transform = 'scale(0.94) translateY(-10px)';
 
-  // Aggiunge la classe "pronto"
-  statusBadge.classList.add('status-pronto');
-  statusBadge.textContent = 'Pronto';
+  fetch(`/queue/api/ordini/${id}`, { method: 'DELETE' })
+    .catch(e => console.warn('API error:', e));
 
-  // Disabilita il bottone pronto
-  button.disabled = true;
+  setTimeout(() => {
+    card.remove();
+    updateCounts();
+    
+    // Check if empty
+    if (document.querySelectorAll('.order-card').length === 0) {
+      document.getElementById('orders-container').innerHTML = `
+        <div class="empty">
+          <div class="empty-icon">📋</div>
+          <div class="empty-title">Nessun ordine</div>
+          <div class="empty-sub">Gli ordini arriveranno qui in tempo reale</div>
+        </div>
+      `;
+    }
+  }, 350);
 }
+
+updateCounts();
+
+// Auto-refresh ogni 30s
+let autoRefresh = setTimeout(() => location.reload(), 30000);
+document.addEventListener('click', () => {
+  clearTimeout(autoRefresh);
+  autoRefresh = setTimeout(() => location.reload(), 30000);
+});
 </script>
-
 </body>
 </html>
