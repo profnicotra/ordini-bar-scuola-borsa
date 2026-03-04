@@ -17,8 +17,6 @@ body {
   color: white; 
   overflow-x: hidden;
   position: relative;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Background effects */
@@ -58,9 +56,6 @@ body::after {
   align-items: center; 
   justify-content: space-between;
   padding: 0 50px;
-  padding-top: max(0px, env(safe-area-inset-top));
-  padding-left: max(50px, calc(env(safe-area-inset-left) + 50px));
-  padding-right: max(50px, calc(env(safe-area-inset-right) + 50px));
 }
 
 .header::before {
@@ -479,12 +474,6 @@ body::after {
   cursor: not-allowed; 
   transform: none !important; 
   filter: none !important; 
-}
-
-/* Touch-friendly interactive elements */
-button, a {
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
 }
 
 .act-prep {
