@@ -1,1365 +1,1530 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Ordina + Ingredienti</title>
-
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Ordine — Bar Scuola Borsa</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 <style>
-/* --- STILI ORIGINALI (immutati) --- */
-/* --- STILI ORIGINALI (immutati) --- */
-body {
-    margin: 0;
-    padding: 0;
-    font-family: "SF Pro Display", Arial, sans-serif;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background-image: url("https://static.wixstatic.com/media/a24994_e95a621e8db84322a7402a21df89543b~mv2.jpg");
-    background-size: cover;
-    position: relative;
-    overflow: hidden;
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --red:     #e63946;
+  --dark:    #080404;
+  --surface: rgba(255,255,255,0.04);
+  --border:  rgba(255,255,255,0.08);
+  --border-h:rgba(255,255,255,0.14);
+  --text:    rgba(255,255,255,0.9);
+  --muted:   rgba(255,255,255,0.4);
+  --sans:    'Montserrat', sans-serif;
+  --serif:   'Playfair Display', Georgia, serif;
 }
+
+body { 
+  font-family: var(--sans); 
+  background: var(--dark); 
+  color: var(--text); 
+  min-height: 100vh; 
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Background texture */
+body::before {
+  content:""; 
+  position: fixed; 
+  inset: 0; 
+  pointer-events: none; 
+  z-index: 0;
+  background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.022) 1px, transparent 0);
+  background-size: 28px 28px;
+}
+
 body::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(31, 30, 30, 0.722);
-    backdrop-filter: blur(6px);
-    z-index: 0;
-}
-.card, .total-card {
-    position: relative;
-    z-index: 5;
-    background-color: rgba(0, 0, 0, 0.841);
-}
-.card {
-    width: 400px;
-    border-radius: 18px;
-    padding: 22px;
-    color: white;
-    text-align: left;
-    backdrop-filter: blur(4px);
-    margin-bottom: 18px;
-    max-height: 350px;
-    overflow-y: auto;
-}
-h2 {
-    text-align: center;
-    margin-top: 0;
-    margin-bottom: 10px;
-    font-size: 22px;
-    font-weight: 700;
-}
-.divider {
-    height: 3px;
-    background:#e63946;
-    margin: 20px 0 16px 0;
-    border-radius: 30px;
-}
-.divider1 {
-    height:3px;
-    background:#e63946;
-    border-radius:30px;
-}
-.header-row, .product-row {
-    display: grid;
-    grid-template-columns: 140px 140px 80px;
-    text-align: center;
-    align-items: center;
-}
-.header-row {
-    margin-bottom:12px;
-    font-size:18px;
-    font-weight:600;
-}
-.product-row {
-    margin-bottom:18px;
-    font-size:15px;
-    position: relative;
-}
-.product-name {
-    text-align:left;
-    display:flex;
-    flex-direction:column;
-    align-items:flex-start;
-    gap:5px;
-}
-.qty-box {
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    gap:8px;
-    margin-right:24px;   /* 🔥 sposta tutto il blocco a destra */
+  content:""; 
+  position: fixed; 
+  pointer-events: none; 
+  z-index: 0;
+  top: -30vh; 
+  left: -20vw; 
+  width: 70vw; 
+  height: 70vh;
+  background: radial-gradient(ellipse, rgba(230,57,70,0.09) 0%, transparent 70%);
 }
 
-.qty-btn {
-    background: rgba(255,255,255,0.18);
-    padding:4px 12px;
-    border-radius:8px;
-    border:none;
-    font-size:18px;
-    color:white;
-    cursor:pointer;
-}
-.price {
-    text-align:right;
-    padding-right:8px;
-    font-size:17px;
-    font-weight:500;
-    font-family:'Segoe UI';
-}
-.ingredient-list {
-    font-size:13px;
-    color:#e63946;
-    font-weight:600;
-}
-.total-card {
-    width:410px;
-    padding:16px;
-    border-radius:0 0 16px 16px;
-    margin-top:-15px;
-    display:flex;
-    color:white;
-    justify-content:space-between;
-    align-items:center;
-}
-.total-price {
-    font-size:25px;
-    font-weight:700;
-    width: 100%;          /* 🔥 prende tutto lo spazio disponibile */
-    text-align: center;
-    margin-left:px;   /* 🔥 centra il testo */
-}
-
-.checkout-btn {
-    background:#e63946;
-    color:white;
-    border:none;
-    padding:10px 26px;
-    font-size:16px;
-    font-weight:800;
-    border-radius:30px;
-    cursor:pointer;
-    transition:0.2s;
-}
-.checkout-btn:hover {
-    background:white;
-    color:black;
-}
-.card::-webkit-scrollbar {
-    width:10px;
-}
-.card::-webkit-scrollbar-track {
-    background:#333;
-    border-radius:10px;
-}
-.card::-webkit-scrollbar-thumb {
-    background-color:white;
-    border-radius:10px;
-    border:2px solid #333;
-}
-.card::-webkit-scrollbar-thumb:hover {
-    background-color:#e63946;
-}
-.note-input, .info-input {
-    font-size:100%;
-    padding:0.8em;
-    outline:none;
-    border:2px solid white;
-    background-color:transparent;
-    border-radius:20px;
-    width:365px;
-    color:white;
-    margin-top:8px;
-}
-.input-error {
-    border-color:#e63946 !important;
-    animation: shake 0.3s;
-}
-@keyframes shake {
-    0% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    50% { transform: translateX(5px); }
-    75% { transform: translateX(-5px); }
-    100% { transform: translateX(0); }
-}
-
-/* POPUP — overlay */
-.overlay {
-    position: fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    background: rgba(0,0,0,0.6);
-    opacity: 0;
-    display:none;
-    transition: opacity .3s ease;
-    z-index:10;
-}
-.overlay.active {
-    display:block;
-    opacity:1;
-}
-
-/* CARD - Aggiungi Note */
-#ingredient-card {
-    width: 300px;
-    background: rgba(0, 0, 0, 0.914);
-    border-radius: 20px;
-    padding: 24px;
-    display: none;
-    flex-direction: column;
-    gap: 20px;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 15;
-    font-family: 'Franklin Gothic Medium';
-    font-size: 5px;
-}
-#ingredient-card .title {
-    color:white;
-    text-align:center;
-    font-size:24px;
-    font-weight:800;
-}
-#ingredient-card .controls {
-    display:flex;
-    justify-content:space-between;
-    margin-top:20px;
-}
-#ingredient-card .btn {
-    width:115px;
-    padding:14px;
-    border-radius:25px;
-    background:#e63946;
-    color:white;
-    font-weight:800;
-    border:none;
-    cursor:pointer;
-}
-
-/* popup ingredienti */
-#popup-ingredienti {
-    width: 300px;
-    background: rgba(0, 0, 0, 0.934);
-    padding:20px;
-    border-radius:30px;
-    display:none;
-    flex-direction: column;
-    gap:15px;
-    color:white;
-    position: fixed;
-    top:50%;
-    left:50%;
-    transform: translate(-50%, -50%) scale(.6);
-    transition: .25s ease;
-    z-index:20;
-}
-#popup-ingredienti.active {
-    display:flex;
-    transform: translate(-50%, -50%) scale(1);
-}
-
-.ingredient-row {
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    width:100%;
-    margin-bottom:18px;
-}
-
-/* --- BOTTONE + circolare --- */
-.wrapper {
-  display: inline-flex;
-}
-.wrapper .circle {
-  cursor:pointer;
-  width:42px;
-  height:42px;
-  border-radius:50%;
-  background:#e63946;
-  color:white;
-  font-size:24px;
-  font-weight:700;
-  border:2px solid white;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-}
-
-/* nav buttons */
-.nav-buttons {
-    display:flex;
-    justify-content:space-between;
-    width:100%;
-    margin-top:12px;
-}
-.nav-btn {
-    background:#e63946;
-    color:white;
-    border:none;
-    padding:10px 18px;
-    border-radius:20px;
-    font-weight:700;
-    cursor:pointer;
-}
-
-/* ---------------------------- */
-/*   NUOVO POPUP OPZIONI */
-/* ---------------------------- */
-
-#popup-optioni-ingrediente {
-    width: 220px;
-    background: rgba(0,0,0,0.92);
-    padding: 24px;
-    border-radius: 22px;
-    display: none;
-    flex-direction: column;
-    gap: 15px;
-    font-weight:400;
-    font-size:14px;
-   font-family: 'Montserrat', sans-serif;
-    color: white;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(.7);
-    transition: .25s ease;
-    z-index: 30;
-}
-
-#popup-optioni-ingrediente.active {
-    display: flex;
-    transform: translate(-50%, -50%) scale(1);
-}
-
-.option-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.option-radio {
-    width: 18px;
-    height: 18px;
-}
-
-.option-label {
-    font-size: 16px;
-    cursor: pointer;
-}
-
-#popup-optioni-save {
-    background:#e63946;
-    border:none;
-    padding:12px;
-    color:white;
-    font-weight:700;
-    border-radius:25px;
-    cursor:pointer;
-}
-/* ============================= */
-/* POPUP SUCCESSO ORDINE (NUOVO) */
-/* ============================= */
-
-#success-popup {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(.7);
-    width: 330px;
-    background: rgb(0, 0, 0);
-    border: 1px solid wheat;
-    border-radius: 20px;
-    padding: 30px;
-    text-align: center;
-    display: none;
-    flex-direction: column;
-    gap: 18px;
-    z-index: 200;
-    box-shadow: 0 2px 10px rgb(0 0 0 / 0.2);
-    transition: .25s ease;
-    font-family: Arial, sans-serif;
-}
-.clear-btn {
-    width: 90px;
-    height: 55px;
-    border-radius: 50%;
-    background: #e63946;
-    border: 1px solid white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    margin-right: 12px;
-    transition: 0.2s;
-}
-
-.clear-btn:hover {
-    background: white;
-}
-
-.clear-btn:hover svg {
-    stroke: black;
-}
-
-#success-popup.active {
-    display: flex;
-    transform: translate(-50%, -50%) scale(1);
-}
-
-#success-popup .icon-circle {
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    background: #e63947c3;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0 auto;
-}
-
-#success-popup .icon-circle svg {
-    width: 36px;
-    height: 36px;
-    stroke:white;
-}
-.info-input::placeholder {
-    color: var(--placeholder-color, white);
-}
-
-#success-popup h2 {
-    color:white;
-    font-size: 22px;
-    margin: 0;
-}
-
-#success-popup p {
-    font-size: 16px;
-    margin: 0;
-    line-height: 20px;
-    color:white;
-    font-family:"Montserrat",sans-serif;
-    font-weight: 500;
-}
-
-
-#success-close {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    background: transparent;
-    border: none;
-    font-size: 22px;
-    cursor: pointer;
-    color:  #e63946;
-}
-.option-radio:checked {
-    accent-color: #e63946;
-}
-#error-box {
-    font-family: "Montserrat",sans-serif; 
-  position: fixed;
-  top: -200px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgb(26, 26, 26);
-  padding: 15px 20px;
-  border-radius: 10px;
-  color: whitesmoke;
-  font-weight: 700;
-  width: 330px;
+/* ── NAVBAR ── */
+.navbar {
+  position: fixed; 
+  top: 0; 
+  left: 0; 
+  right: 0; 
+  z-index: 1000;
+  height: 90px; 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between;
+  padding: 0 50px;
+  background: linear-gradient(180deg, rgba(6,6,6,0.98), rgba(10,3,3,0.95)); 
+  backdrop-filter: blur(24px);
+  border-bottom: 1px solid rgba(230,57,70,0.15);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.7);
   transition: top 0.5s ease;
-  z-index: 9999;
-  border: 1px solid whitesmoke;
 }
 
-#error-box.show {
-  top: 40px;
+.navbar.hidden { top: -100px; }
+
+.navbar::before {
+  content:""; 
+  position: absolute; 
+  top: 0; 
+  left: 0; 
+  right: 0; 
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #e63946 25%, #ff8080 50%, #e63946 75%, transparent);
+  opacity: 0.7;
 }
 
-#error-box .confirm-btn {
-  margin-top: 12px;
-  width: 100%;
-  padding: 10px;
-  border-radius: 10px;
-  background: #e63946;
+.logo-left { 
+  display: flex; 
+  align-items: center; 
+  gap: 12px; 
+}
+
+.logo-left img { 
+  width: 62px; 
+  height: 62px; 
+  object-fit: contain; 
+  filter: drop-shadow(0 0 8px rgba(230,57,70,0.3)); 
+}
+
+.logo-left-divider { 
+  width: 1px; 
+  height: 30px; 
+  background: rgba(255,255,255,0.15); 
+}
+
+.logo-brand { 
+  display: flex; 
+  flex-direction: column; 
+  line-height: 1.15; 
+}
+
+.logo-brand .brand-sub { 
+  font-size: 10px; 
+  font-weight: 400; 
+  letter-spacing: 3.5px; 
+  text-transform: uppercase; 
+  color: rgba(255,255,255,0.35); 
+}
+
+.logo-brand .brand-main { 
+  font-size: 14px; 
+  font-weight: 800; 
+  letter-spacing: 2.5px; 
+  text-transform: uppercase; 
+  color: white; 
+}
+
+.nav-links { 
+  display: flex; 
+  gap: 2px; 
+  list-style: none; 
+}
+
+.nav-links a { 
+  color: rgba(255,255,255,0.55); 
+  font-weight: 600; 
+  text-decoration: none; 
+  font-size: 12px; 
+  letter-spacing: 2px; 
+  text-transform: uppercase; 
+  transition: all 0.25s ease; 
+  cursor: pointer; 
+  padding: 9px 16px; 
+  border-radius: 7px; 
+  display: block; 
+}
+
+.nav-links a:hover { 
+  color: white; 
+  background: rgba(255,255,255,0.07); 
+}
+
+.nav-links li:last-child a { 
+  color: #ff6b6b; 
+  border: 1px solid rgba(230,57,70,0.35); 
+  background: rgba(230,57,70,0.08); 
+  padding: 8px 18px; 
+  border-radius: 20px; 
+}
+
+.nav-links li:last-child a:hover { 
+  background: rgba(230,57,70,0.2); 
+  border-color: rgba(230,57,70,0.6); 
+  color: white; 
+}
+
+.social-icons { 
+  display: flex; 
+  gap: 8px; 
+}
+
+.social-icons a { 
+  width: 34px; 
+  height: 34px; 
+  border: 1px solid rgba(255,255,255,0.12); 
+  background: rgba(255,255,255,0.04); 
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+  border-radius: 8px; 
+  color: rgba(255,255,255,0.5); 
+  font-size: 14px; 
+  transition: all 0.25s ease; 
+  text-decoration: none; 
+}
+
+.social-icons a:hover { 
+  background: rgba(230,57,70,0.15); 
+  border-color: rgba(230,57,70,0.45); 
+  color: #ff8080; 
+  transform: translateY(-2px); 
+}
+
+.menu-toggle { 
+  display: none; 
+  background: transparent; 
+  border: none; 
+  color: white; 
+  font-size: 24px; 
+  cursor: pointer; 
+}
+
+/* ── PAGE ── */
+.page { 
+  position: relative; 
+  z-index: 1; 
+  min-height: 100vh; 
+  padding: 130px 20px 80px; 
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+}
+
+.page-head { 
+  text-align: center; 
+  margin-bottom: 50px; 
+  animation: rise 0.7s ease both; 
+}
+
+.section-eyebrow { 
+  display: inline-flex; 
+  align-items: center; 
+  gap: 10px; 
+  font-size: 10px; 
+  font-weight: 800; 
+  letter-spacing: 5px; 
+  text-transform: uppercase; 
+  color: var(--red); 
+  margin-bottom: 18px; 
+}
+
+.section-eyebrow::before, .section-eyebrow::after { 
+  content:""; 
+  display: block; 
+  width: 28px; 
+  height: 1px; 
+  background: rgba(230,57,70,0.5); 
+}
+
+.page-head h1 { 
+  font-family: var(--serif); 
+  font-size: clamp(40px, 7vw, 72px); 
+  font-weight: 700; 
+  font-style: italic;
+  line-height: 1; 
+  margin-bottom: 14px;
   color: white;
-  border: none;
-  font-weight: 800;
-  cursor: pointer;
-  font-family: verdana;
-  font-weight: 800;
-}
-#error-box .confirm-btn:hover {
-  background:white;
-  color: black;
 }
 
-#error-box .close-btn {
+.page-head .sub { 
+  font-size: 12px; 
+  font-weight: 300; 
+  letter-spacing: 4px; 
+  text-transform: uppercase; 
+  color: var(--muted); 
+}
+
+/* ── CARD ── */
+.card {
+  width: 100%; 
+  max-width: 600px;
+  background: rgba(15,8,8,0.7); 
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border); 
+  border-radius: 24px 24px 0 0;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+  animation: rise 0.7s 0.1s ease both; 
+  overflow: hidden;
+}
+
+.card-inner { 
+  padding: 32px 32px 28px; 
+}
+
+.s-head { 
+  display: flex; 
+  align-items: center; 
+  gap: 10px; 
+  margin-bottom: 20px; 
+}
+
+.s-head .s-label { 
+  font-size: 10px; 
+  font-weight: 700; 
+  letter-spacing: 4px; 
+  text-transform: uppercase; 
+  color: var(--red); 
+}
+
+.s-head::after { 
+  content:""; 
+  flex: 1; 
+  height: 1px; 
+  background: linear-gradient(90deg, rgba(230,57,70,0.4), transparent); 
+}
+
+.prod-list { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 8px; 
+  max-height: 340px; 
+  overflow-y: auto; 
+  padding-right: 4px; 
+}
+
+.prod-list::-webkit-scrollbar { 
+  width: 4px; 
+}
+
+.prod-list::-webkit-scrollbar-thumb { 
+  background: rgba(230,57,70,0.3); 
+  border-radius: 10px; 
+}
+
+.col-head { 
+  display: grid; 
+  grid-template-columns: 1fr 110px 80px; 
+  column-gap: 16px; /* explicit gap so QUANTITÀ and PREZZO never merge */
+  row-gap: 0;
+  padding: 0 8px 10px; 
+  border-bottom: 1px solid var(--border); 
+  margin-bottom: 6px; 
+}
+
+.col-head span { 
+  font-size: 9px; 
+  font-weight: 700; 
+  letter-spacing: 3px; 
+  text-transform: uppercase; 
+  color: rgba(255,255,255,0.25); 
+}
+
+.col-head .c-qty { 
+  text-align: left;
+  padding-left: 8px;
+}
+
+.col-head .c-price { 
+  text-align: right; 
+}
+
+.prod-row { 
+  display: grid; 
+  grid-template-columns: 1fr 110px 80px; 
+  align-items: center; 
+  column-gap: 16px; /* match col-head gap */
+  row-gap: 0;
+  padding: 14px 16px; 
+  border-radius: 14px; 
+  border: 1px solid transparent; 
+  transition: all 0.25s ease; 
+  background: rgba(255,255,255,0.02);
+}
+
+.prod-row:hover { 
+  background: rgba(255,255,255,0.05); 
+  border-color: var(--border); 
+  transform: translateX(4px);
+}
+
+.prod-info { 
+  display: flex; 
+  align-items: center; 
+  gap: 10px; 
+  min-width: 0;
+  padding-right: 12px; /* spazio visivo tra nome e bottone − */
+}
+
+.prod-note-btn { 
+  flex-shrink: 0; 
+  width: 28px; 
+  height: 28px; 
+  border-radius: 8px; 
+  background: transparent; 
+  border: 1px solid var(--border); 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  cursor: pointer; 
+  transition: all 0.25s; 
+  color: var(--muted); 
+}
+
+.prod-note-btn:hover { 
+  background: rgba(230,57,70,0.12); 
+  border-color: rgba(230,57,70,0.4); 
+  color: #ff8080; 
+}
+
+.prod-note-btn svg { 
+  width: 13px; 
+  height: 13px; 
+  stroke: currentColor; 
+  fill: none; 
+  stroke-width: 2; 
+  stroke-linecap: round; 
+}
+
+/* ═══════════════════════════════════════════
+   FIX: nome prodotto visibile per intero
+   - Rimosso: overflow:hidden e text-overflow:ellipsis
+   - Il testo rimane su una sola riga (nowrap)
+   - Su mobile il font si riduce via media query
+     così tutto sta su una riga senza "..."
+   ═══════════════════════════════════════════ */
+.prod-name { 
+  font-size: 14px; 
+  font-weight: 600; 
+  color: white; 
+  white-space: nowrap;
+  overflow: visible;
+  min-width: 0;
+}
+
+.qty-ctrl { 
+  display: flex; 
+  align-items: center; 
+  justify-content: flex-start;
+  gap: 8px; 
+  padding-left: 8px; /* gap between name column and − button */
+}
+
+.qty-btn { 
+  width: 26px; 
+  height: 26px; 
+  background: var(--surface); 
+  border: 1px solid var(--border); 
+  border-radius: 7px; 
+  color: var(--muted); 
+  font-size: 15px; 
+  font-weight: 700; 
+  cursor: pointer; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  transition: all 0.2s; 
+}
+
+.qty-btn:hover { 
+  background: rgba(230,57,70,0.15); 
+  border-color: rgba(230,57,70,0.4); 
+  color: white; 
+}
+
+.qty-num { 
+  font-size: 15px; 
+  font-weight: 700; 
+  color: white; 
+  min-width: 20px; 
+  text-align: center; 
+}
+
+.prod-price { 
+  font-size: 15px; 
+  font-weight: 700; 
+  color: rgba(255,255,255,0.8); 
+  text-align: right; 
+  white-space: nowrap; 
+}
+
+.inputs-block { 
+  padding: 0 32px 32px; 
+  display: flex; 
+  flex-direction: column; 
+  gap: 12px; 
+}
+
+.field { 
+  position: relative; 
+}
+
+.field i.fi { 
+  position: absolute; 
+  left: 16px; 
+  top: 50%; 
+  transform: translateY(-50%); 
+  font-size: 14px; 
+  color: var(--muted); 
+  pointer-events: none; 
+  z-index: 2; 
+}
+
+.field input {
+  width: 100%; 
+  background: var(--surface); 
+  border: 1px solid var(--border);
+  border-radius: 12px; 
+  padding: 14px 16px 14px 44px;
+  font-size: 14px; 
+  font-weight: 400; 
+  font-family: var(--sans); 
+  color: white; 
+  outline: none; 
+  transition: all 0.25s;
+}
+
+.field input::placeholder { 
+  color: rgba(255,255,255,0.3); 
+}
+
+.field input:focus { 
+  border-color: rgba(230,57,70,0.5); 
+  background: rgba(255,255,255,0.06); 
+  box-shadow: 0 0 0 3px rgba(230,57,70,0.1);
+}
+
+.field input.err { 
+  border-color: var(--red); 
+  animation: shake 0.3s ease;
+}
+
+@keyframes shake { 
+  0%, 100% { transform: translateX(0); } 
+  25% { transform: translateX(-6px); } 
+  75% { transform: translateX(6px); } 
+}
+
+/* Custom select */
+.custom-select-wrap { 
+  position: relative; 
+}
+
+.custom-select-wrap i.fi { 
+  position: absolute; 
+  left: 16px; 
+  top: 50%; 
+  transform: translateY(-50%); 
+  font-size: 14px; 
+  color: var(--muted); 
+  pointer-events: none; 
+  z-index: 2; 
+}
+
+.custom-select-wrap .sel-arrow { 
+  position: absolute; 
+  right: 16px; 
+  top: 50%; 
+  transform: translateY(-50%); 
+  font-size: 11px; 
+  color: var(--muted); 
+  pointer-events: none; 
+  z-index: 2; 
+  transition: transform 0.25s; 
+}
+
+.custom-select-wrap.open .sel-arrow { 
+  transform: translateY(-50%) rotate(180deg); 
+}
+
+.sel-trigger {
+  width: 100%; 
+  background: var(--surface); 
+  border: 1px solid var(--border);
+  border-radius: 12px; 
+  padding: 14px 44px 14px 44px;
+  font-size: 14px; 
+  font-weight: 400; 
+  font-family: var(--sans);
+  color: rgba(255,255,255,0.3);
+  cursor: pointer; 
+  transition: all 0.25s; 
+  text-align: left;
+  user-select: none;
+}
+
+.sel-trigger.has-value { 
+  color: white; 
+}
+
+.sel-trigger:hover, .custom-select-wrap.open .sel-trigger {
+  border-color: rgba(230,57,70,0.5);
+  background: rgba(255,255,255,0.06);
+}
+
+.custom-select-wrap.err .sel-trigger { 
+  border-color: var(--red); 
+  animation: shake 0.3s ease;
+}
+
+.sel-dropdown {
+  position: absolute; 
+  top: calc(100% + 8px); 
+  left: 0; 
+  right: 0; 
+  z-index: 999;
+  background: rgba(15,8,8,0.96);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border-h);
+  border-radius: 14px; 
+  padding: 8px;
+  max-height: 260px; 
+  overflow-y: auto;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.8);
+  display: none;
+  animation: dropIn 0.2s ease;
+}
+
+@keyframes dropIn { 
+  from { opacity: 0; transform: translateY(-8px); } 
+  to { opacity: 1; transform: translateY(0); } 
+}
+
+.custom-select-wrap.open .sel-dropdown { 
+  display: block; 
+}
+
+.sel-dropdown::-webkit-scrollbar { 
+  width: 4px; 
+}
+
+.sel-dropdown::-webkit-scrollbar-thumb { 
+  background: rgba(230,57,70,0.3); 
+  border-radius: 10px; 
+}
+
+.sel-option {
+  padding: 11px 16px; 
+  border-radius: 10px;
+  font-size: 13px; 
+  font-weight: 400; 
+  color: rgba(255,255,255,0.75);
+  cursor: pointer; 
+  transition: all 0.18s;
+}
+
+.sel-option:hover { 
+  background: rgba(255,255,255,0.08); 
+  color: white; 
+}
+
+.sel-option.selected { 
+  background: rgba(230,57,70,0.18); 
+  color: white; 
+  font-weight: 600; 
+}
+
+#classe { 
+  display: none; 
+}
+
+/* ── CHECKOUT ── */
+.checkout {
+  width: 100%; 
+  max-width: 600px;
+  background: rgba(10,5,5,0.9); 
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border); 
+  border-top: 1px solid rgba(230,57,70,0.2);
+  border-radius: 0 0 24px 24px; 
+  margin-top: -1px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  animation: rise 0.7s 0.2s ease both;
+}
+
+.checkout-total { 
+  display: flex; 
+  align-items: center; 
+  padding: 24px 32px 18px; 
+  gap: 20px; 
+}
+
+.total-label-col { 
+  flex: 1; 
+}
+
+.tl { 
+  font-size: 9px; 
+  font-weight: 700; 
+  letter-spacing: 4px; 
+  text-transform: uppercase; 
+  color: var(--muted); 
+  margin-bottom: 6px; 
+}
+
+.ta { 
+  font-family: var(--serif); 
+  font-size: 42px; 
+  font-weight: 700; 
+  font-style: italic; 
+  color: white; 
+  letter-spacing: -1px; 
+  line-height: 1; 
+}
+
+.ta .cur { 
+  font-size: 20px; 
+  font-style: normal; 
+  color: var(--muted); 
+  margin-right: 2px; 
+  vertical-align: super; 
+}
+
+.trash-btn { 
+  width: 44px; 
+  height: 44px; 
+  flex-shrink: 0; 
+  border-radius: 12px; 
+  background: var(--surface); 
+  border: 1px solid var(--border); 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  cursor: pointer; 
+  transition: all 0.25s; 
+  color: var(--muted); 
+}
+
+.trash-btn:hover { 
+  background: rgba(230,57,70,0.15); 
+  border-color: rgba(230,57,70,0.4); 
+  color: #ff8080; 
+  transform: translateY(-2px);
+}
+
+.trash-btn svg { 
+  width: 17px; 
+  height: 17px; 
+  stroke: currentColor; 
+  fill: none; 
+  stroke-width: 2; 
+  stroke-linecap: round; 
+  stroke-linejoin: round; 
+}
+
+.checkout-form { 
+  padding: 0 32px 32px; 
+  display: flex; 
+  flex-direction: column; 
+  gap: 12px; 
+}
+
+.name-row { 
+  display: grid; 
+  grid-template-columns: 1fr 1fr; 
+  gap: 12px; 
+}
+
+.submit-btn { 
+  width: 100%; 
+  background: linear-gradient(135deg, #b22222, #e63946); 
+  color: white; 
+  border: none; 
+  padding: 18px 32px; 
+  font-size: 12px; 
+  font-weight: 800; 
+  letter-spacing: 3px; 
+  text-transform: uppercase; 
+  border-radius: 14px; 
+  cursor: pointer; 
+  transition: all 0.3s ease; 
+  font-family: var(--sans); 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  gap: 12px; 
+  box-shadow: 0 6px 28px rgba(230,57,70,0.4); 
+  position: relative;
+  overflow: hidden;
+}
+
+.submit-btn::before {
+  content: "";
   position: absolute;
-  top: 10px;
-  right: 15px;
-  font-size: 20px;
-  color: #e63946;
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-.nav-buttons .nav-btn:hover {
-    background:white;
-    color:black;
-}
-#popup-allergeni-ingrediente {
-    width: 250px;
-    background: rgba(0,0,0,0.92);
-    padding: 24px;
-    border-radius: 22px;
-    display: none;
-    flex-direction: column;
-    gap: 15px;
-    font-weight:400;
-    font-size:14px;
-    font-family: 'Montserrat', sans-serif;
-    color: white;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(.7);
-    transition: .25s ease;
-    z-index: 30;
-    font-size:15px;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
 }
 
-#popup-allergeni-ingrediente.active {
-    display: flex;
-    transform: translate(-50%, -50%) scale(1);
+.submit-btn:hover::before {
+  opacity: 1;
 }
 
-/* RESPONSIVE DESIGN - Solo riduzione dimensioni, layout identico */
-@media (max-width: 768px) {
-    body { padding: 20px; }
-    .card {
-        width: 395px;
-        padding: 21px;
-        margin-bottom: 18px;
-    }
-    .total-card {
-        width: 410px;
-        padding: 16px;
-        margin-top: -15px;
-    }
-    .header-row, .product-row {
-        grid-template-columns: 140px 140px 80px;
-        font-size: 15px;
-    }
-    .header-row { font-size: 18px; }
-    .product-name { font-size: 15px; }
-    .price { font-size: 16px; }
-    .note-input, .info-input {
-        width: 360px;
-        font-size: 15px;
-        padding: 0.8em;
-    }
-    .qty-box { gap: 7px; margin-right: 24px; }
-    .qty-btn { padding: 4px 12px; font-size: 17px; }
-    .checkout-btn { padding: 10px 26px; font-size: 16px; }
-    .total-price { font-size: 24px; }
-    #ingredient-card { width: 300px; }
-    #popup-ingredienti { width: 300px; }
-    #popup-extra-ingredienti { width: 300px; }
-    #popup-allergeni-ingrediente { width: 300px; }
+.submit-btn:hover { 
+  transform: translateY(-3px); 
+  box-shadow: 0 10px 36px rgba(230,57,70,0.55); 
 }
 
-@media (max-width: 480px) {
-    body { padding: 18px; }
-    .card {
-        width: 390px;
-        padding: 21px;
-        margin-bottom: 17px;
-    }
-    .total-card {
-        width: 405px;
-        padding: 16px;
-        margin-top: -14px;
-    }
-    h2 { font-size: 29px; }
-    .header-row, .product-row {
-        grid-template-columns: 140px 140px 80px;
-        font-size: 14px;
-    }
-    .product-name { font-size: 14px; }
-    .divider { margin: 19px 0 16px; }
-    .price { font-size: 16px; padding-right: 8px; }
-    .note-input, .info-input {
-        width: 355px;
-        font-size: 14px;
-        padding: 0.7em;
-    }
-    .qty-btn { padding: 4px 12px; font-size: 17px; }
-    .qty-box { gap: 7px; margin-right: 22px; }
-    .clear-btn { width: 42px; height: 42px; margin-right: 12px; }
-    .clear-btn svg { width: 26px; height: 26px; }
-    .total-price { font-size: 25px; text-align: center; }
-    .checkout-btn { 
-        padding: 10px 26px;
-        font-size: 16px;
-        width: auto;
-        flex-shrink: 0;
-    }
-    #ingredient-card { width: 300px; padding: 24px; }
-    #popup-ingredienti { width: 300px; }
-    #popup-extra-ingredienti { width: 300px; }
-    #popup-allergeni-ingrediente { width: 300px; }
-    #ingredient-card .title { font-size: 24px; }
-    #ingredient-card .btn { width: 115px; font-size: 16px; padding: 14px; }
-    #error-box { width: 330px; font-size: 18px; }
-    .back-btn { padding: 10px 20px; font-size: 16px; top: 170px; left: 50px; }
-}
-/* ============================= */
-/* ALLERGENI – CERCHIO TIPO RADIO */
-/* ============================= */
-
-/* ============================= */
-/* ALLERGENI – STILE OPTION CARD */
-/* ============================= */
-
-.allergene-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    cursor: pointer;
+/* ── OVERLAY & POPUPS ── */
+.overlay { 
+  position: fixed; 
+  inset: 0; 
+  background: rgba(0,0,0,0.7); 
+  backdrop-filter: blur(8px); 
+  z-index: 2000; 
+  opacity: 0; 
+  display: none; 
+  transition: opacity 0.3s; 
 }
 
-/* checkbox mascherato come radio */
-.allergene-radio {
-    appearance: none;
-    -webkit-appearance: none;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    border: 2px solid white;
-    background: transparent;
-    position: relative;
-    cursor: pointer;
-    background-color: rgb(236, 236, 236);
+.overlay.active { 
+  display: block; 
+  opacity: 1; 
 }
 
-/* pallino interno (IDENTICO al radio) */
-.allergene-radio::after {
-    content: "";
-    width: 12px;
-    height: 12px;
-    background: #e63946;
-    border-radius: 50%;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(0);
-    transition: 0.15s ease;
-    border-color: #e63946;
-   
+.popup { 
+  position: fixed; 
+  top: 50%; 
+  left: 50%; 
+  transform: translate(-50%, -50%) scale(0.9); 
+  transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), opacity 0.28s; 
+  opacity: 0; 
+  display: none; 
+  z-index: 3000; 
+  width: 380px; 
+  max-width: 92vw; 
+  background: rgba(10,5,5,0.96); 
+  backdrop-filter: blur(24px);
+  border: 1px solid var(--border); 
+  border-radius: 22px; 
+  box-shadow: 0 32px 80px rgba(0,0,0,0.8); 
+  overflow: hidden; 
+  font-family: var(--sans); 
 }
 
-/* selezionato */
-.allergene-radio:checked::after {
-    transform: translate(-50%, -50%) scale(1);
-}
-.allergene-row span {
-    display: inline-block;
-}
-.allergene-icon {
-    transform: translateY(-8px);
-}
-.allergene-label {
-    transform: translateY(-8px);
-}
-.note-top-buttons {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 12px;
+.popup.active { 
+  display: block; 
+  transform: translate(-50%, -50%) scale(1); 
+  opacity: 1; 
 }
 
-.note-action-btn {
-    background: #e63946;
-    border: 2px solid white;
-    color: white;
-    padding: 8px 18px;
-    border-radius: 20px;
-    font-weight: 800;
-    cursor: pointer;
-    transition: 0.2s;
-    font-size: 14px;
+.popup-top-line { 
+  height: 2px; 
+  background: linear-gradient(90deg, transparent, var(--red), transparent); 
+  opacity: 0.7; 
 }
 
-.note-action-btn:hover {
-    background: white;
-    color: black;
-}
-#popup-ingredienti .divider {
-    margin-top: 0px;     /* avvicina al blocco bottoni */
-    margin-bottom: -4px;  /* niente spazio sotto */
-}
-#popup-extra-ingredienti {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(0,0,0,0.92);
-    padding: 20px;
-    border-radius: 15px;
-    z-index: 1001;
-    width: 300px;
-    color: white;
+.popup-body { 
+  padding: 32px 30px; 
 }
 
-#popup-extra-ingredienti.active {
-    display: flex;
-    flex-direction: column;
+.popup-title { 
+  font-family: var(--serif); 
+  font-size: 24px; 
+  font-style: italic; 
+  font-weight: 700; 
+  color: white; 
+  margin-bottom: 8px; 
 }
 
-#extra-ingredienti-container label {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-.ingredient-row {
-    margin-top: 10px; /* distanza sopra ogni ingrediente */
-}
-#popup-allergeni-ingrediente input[type="checkbox"] {
-    appearance: none;
-    -webkit-appearance: none;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    border: 2px solid white;
-    background-color: transparent;
-    cursor: pointer;
-    position: relative;
+.popup-sub { 
+  font-size: 13px; 
+  color: var(--muted); 
+  line-height: 1.7; 
 }
 
-#popup-allergeni-ingrediente input[type="checkbox"]:checked::after {
-    content: "";
-    width: 16px;
-    height: 16px;
-    background: #e63946;
-    border-radius: 50%;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-/* ==========================
-   Checkbox extra stile card
-========================== */
-
-.extra-card-label input[type="checkbox"] {
-    appearance: none;
-    -webkit-appearance: none;
-    width: 20px;
-    height: 20px;
-    border: 2px solid #d9d4cc;
-    border-radius: 50%;
-    display: inline-block;
-    position: relative;
-    cursor: pointer;
-    transition: background 0.2s, border 0.2s;
+.ing-list { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 8px; 
+  margin-top: 20px; 
 }
 
-.extra-card-label input[type="checkbox"]:checked {
-    background-color: #e63946; /* colore rosso come allergeni */
-   
+.ing-item { 
+  padding: 12px 16px; 
+  background: var(--surface); 
+  border: 1px solid var(--border); 
+  border-radius: 10px; 
+  font-size: 13px; 
+  color: rgba(255,255,255,0.8); 
 }
 
-.extra-card-label input[type="checkbox"]:checked::after {
-    content: '';
-    position: absolute;
-    top: 4px;
-    left: 4px;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background:transparent;
+.popup-close-btn { 
+  display: block; 
+  width: 100%; 
+  margin-top: 20px; 
+  padding: 14px; 
+  background: transparent; 
+  border: 1px solid var(--border); 
+  border-radius: 12px; 
+  color: var(--muted); 
+  font-size: 11px; 
+  font-weight: 700; 
+  letter-spacing: 2px; 
+  text-transform: uppercase; 
+  cursor: pointer; 
+  transition: all 0.25s; 
+  font-family: var(--sans); 
 }
 
-.extra-card-label span {
-    font-size: 16px;
-    color:white;
-}
-.back-btn {
-    position: absolute;
-    top: 170px;
-    left: 50px;
-    background-color: #e63946;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 25px;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 16px;
-    transition: 0.3s ease;
-    z-index: 11;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-top:525px;
-}
-.back-btn:hover {
-    background-color: white;
-    color: black;
+.popup-close-btn:hover { 
+  border-color: var(--border-h); 
+  color: white; 
+  background: rgba(255,255,255,0.04);
 }
 
+#success-popup .success-icon { 
+  width: 64px; 
+  height: 64px; 
+  margin: 6px auto 18px; 
+  border-radius: 50%; 
+  background: rgba(34,197,94,0.1); 
+  border: 1px solid rgba(34,197,94,0.25); 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+}
+
+#success-popup .success-icon svg { 
+  width: 30px; 
+  height: 30px; 
+  stroke: #4ade80; 
+  fill: none; 
+  stroke-width: 2.5; 
+  stroke-linecap: round; 
+  stroke-linejoin: round; 
+}
+
+#success-popup .popup-body { 
+  text-align: center; 
+}
+
+.popup-actions { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 10px; 
+  margin-top: 24px; 
+}
+
+.btn-danger { 
+  width: 100%; 
+  padding: 15px; 
+  background: linear-gradient(135deg, #b22222, #e63946); 
+  color: white; 
+  border: none; 
+  border-radius: 12px; 
+  font-size: 12px; 
+  font-weight: 700; 
+  letter-spacing: 2.5px; 
+  text-transform: uppercase; 
+  cursor: pointer; 
+  font-family: var(--sans); 
+  transition: all 0.25s; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  gap: 10px; 
+  box-shadow: 0 4px 20px rgba(230,57,70,0.4);
+}
+
+.btn-danger:hover { 
+  transform: translateY(-2px); 
+  box-shadow: 0 8px 28px rgba(230,57,70,0.55); 
+}
+.popup-close-btn{
+  display: none;
+  
+}
+.btn-ghost { 
+  width: 100%; 
+  padding: 13px; 
+  background: transparent; 
+  border: 1px solid var(--border); 
+  border-radius: 12px; 
+  color: var(--muted); 
+  font-size: 11px; 
+  font-weight: 700; 
+  letter-spacing: 2px; 
+  text-transform: uppercase; 
+  cursor: pointer; 
+  font-family: var(--sans); 
+  transition: all 0.25s; 
+}
+
+.btn-ghost:hover { 
+  border-color: var(--border-h); 
+  color: white; 
+  background: rgba(255,255,255,0.04);
+}
+
+@keyframes rise { 
+  from { opacity: 0; transform: translateY(24px); } 
+  to { opacity: 1; transform: translateY(0); } 
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width:768px) {
+  .navbar { 
+    height: 80px; 
+    padding: 0 20px; 
+  }
+  
+  .logo-left img { 
+    width: 48px; 
+    height: 48px; 
+  }
+  
+  .logo-brand .brand-sub { 
+    display: none; 
+  }
+  
+  .logo-brand .brand-main { 
+    font-size: 12px; 
+  }
+  
+  .nav-links { 
+    display: none; 
+  }
+  
+  .nav-links.active { 
+    display: flex; 
+    flex-direction: column; 
+    position: absolute; 
+    top: 80px; 
+    left: 0; 
+    right: 0; 
+    background: rgba(6,2,2,0.99); 
+    border-bottom: 1px solid rgba(230,57,70,0.12); 
+    z-index: 999;
+  }
+  
+  .nav-links.active a { 
+    padding: 14px 24px; 
+    border-bottom: 1px solid rgba(255,255,255,0.05); 
+  }
+  
+  .social-icons { 
+    display: none; 
+  }
+  
+  .menu-toggle { 
+    display: block; 
+  }
+  
+  .page { 
+    padding-top: 110px; 
+  }
+  
+  .card-inner { 
+    padding: 24px 20px 22px; 
+  }
+  
+  .inputs-block { 
+    padding: 0 20px 24px; 
+  }
+  
+  .checkout-form { 
+    padding: 0 20px 26px; 
+  }
+  
+  .checkout-total { 
+    padding: 20px 20px 14px; 
+  }
+  
+  .name-row { 
+    grid-template-columns: 1fr; 
+  }
+}
+
+@media (max-width:480px) {
+  .navbar { 
+    height: 70px; 
+  }
+  
+  .logo-left img { 
+    width: 42px; 
+    height: 42px; 
+  }
+  
+  .ta { 
+    font-size: 34px; 
+  }
+  
+  .prod-list { 
+    max-height: 280px; 
+  }
+
+  /* Griglia più stretta: nome prende tutto, qty e prezzo fissi e compatti */
+  .col-head,
+  .prod-row {
+    grid-template-columns: 1fr 88px 62px;
+    column-gap: 10px; /* mantieni spazio tra QUANTITÀ e PREZZO */
+  }
+
+  /* Font nome ridotto così sta su una riga senza tagliarsi */
+  .prod-name {
+    font-size: 11.5px;
+  }
+
+  .prod-note-btn {
+    width: 24px;
+    height: 24px;
+  }
+
+  .qty-ctrl {
+    gap: 4px;
+    padding-left: 26px; /* sposta i bottoni quantità a destra su mobile */
+  }
+
+  .qty-btn {
+    width: 24px;
+    height: 24px;
+    font-size: 13px;
+  }
+
+  .qty-num {
+    font-size: 13px;
+    min-width: 14px;
+  }
+
+  .prod-price {
+    font-size: 13px;
+  }
+}
+
+/* additional small device tweaks */
+@media (max-width:420px) {
+  .page { padding: 110px 12px 70px; }
+  .card-inner { padding: 20px 16px 18px; }
+  .inputs-block { padding: 0 16px 20px; }
+  .checkout-form { padding: 0 16px 22px; }
+  .checkout-total { padding: 18px 16px 12px; }
+  .name-row { grid-template-columns: 1fr; }
+  .submit-btn { padding: 16px 28px; font-size: 11px; }
+  .prod-list { max-height: 240px; }
+
+  .col-head,
+  .prod-row {
+    grid-template-columns: 1fr 84px 58px;
+    column-gap: 8px; /* spazio minimo tra QUANTITÀ e PREZZO */
+    padding: 11px 10px;
+  }
+
+  .prod-name {
+    font-size: 11px;
+  }
+
+  .prod-note-btn {
+    width: 22px;
+    height: 22px;
+  }
+
+  .qty-btn {
+    width: 22px;
+    height: 22px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width:375px) {
+  .col-head,
+  .prod-row {
+    grid-template-columns: 1fr 78px 54px;
+    column-gap: 7px; /* spazio minimo anche sui telefoni piccoli */
+  }
+
+  .prod-name {
+    font-size: 10.5px;
+  }
+
+  .prod-price {
+    font-size: 12px;
+  }
+}
+
+@media (orientation:landscape) and (max-width:768px) {
+  /* keep more content visible when device rotated */
+  .page { padding-top: 100px; }
+  .card { max-width: 90%; }
+  .checkout { max-width: 90%; }
+  .prod-list { max-height: 300px; }
+}
 </style>
 </head>
-
 <body>
-    <form action="{{url_for('orders.new_order')}}" method="POST">
-    <div class="card">
-        <h2 style="font-size:30px;font-weight:800;font-family:verdana;">ORDINA</h2>
-        <div class="divider"></div>
 
-        <div class="header-row">
-            <div style="text-align:left;padding-left:8px;">Prodotto</div>
-            <div style="margin-right:30px;">Quantità</div>
-            <div style="text-align:right;">Prezzo</div>
-        </div>
+<header class="navbar" id="navbar">
+  <div class="logo-left">
+    <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo Scuola Borsa" onerror="this.style.visibility='hidden'">
+    <div class="logo-left-divider"></div>
+    <div class="logo-brand">
+      <span class="brand-sub">Sala &amp; Bar</span>
+      <span class="brand-main">Scuola Borsa</span>
+    </div>
+  </div>
 
-        <div id="product-container"></div>
-        <input type="hidden" id="prodottiSelezionati" name="prodottiSelezionati">
+  <button class="menu-toggle" id="menu-toggle">☰</button>
 
-        <div class="divider"></div>
+  <ul class="nav-links" id="nav-links">
+    <li><a href="/">Home</a></li>
+    <li><a href="/#chi-siamo">Chi siamo</a></li>
+    <li><a href="/#gallery">Galleria</a></li>
+    <li><a href="/#contatti">Contatti</a></li>
+    <li><a href="#">Login</a></li>
+  </ul>
 
-        <h2 style="margin-top:60px;">NOTE GENERALI</h2>
-        <div class="divider"></div>
-        <input type="text" class="note-input" placeholder="Note Generali" name="noteGenerali"/>
+  <div class="social-icons">
+    <a href="https://www.facebook.com/aziendaspecialediformazionescuolapaoloborsa/" target="_blank"><i class="fab fa-facebook-f"></i></a>
+    <a href="https://www.instagram.com/scuola_borsa/" target="_blank"><i class="fab fa-instagram"></i></a>
+    <a href="https://www.youtube.com/@ScuolaPaoloBorsaMonza" target="_blank"><i class="fab fa-youtube"></i></a>
+  </div>
+</header>
 
-        <h3 style="margin-top:40px;text-align: center;font-size: 23px;margin-right: 19px;">INFO</h3>
-        <div class="divider"></div>
+<form action="{{ url_for('orders.new_order') }}" method="POST" id="order-form">
+<div class="page">
 
-        <input id="nome" type="text" class="note-input" placeholder="Nome" name="nome"/>
-        <input id="cognome" type="text" class="note-input" placeholder="Cognome" name="cognome"/>
-        <input id="classe" type="text" class="note-input" placeholder="Classe" list="lista-classi" name="classe"/>
-        <datalist id="lista-classi">
-            <option value="1D Operatore Informatica">
-            <option value="2D Operatore Informatica">
-            <option value="3D Operatore Informatica">
-            <option value="1D Bar&Cucina">
-            <option value="2D Bar&Cucina">
-            <option value="3D Bar&Cucina">
-            <option value="1D Agricoltura">
-            <option value="2D Agricoltura">
-            <option value="3D Agricoltura">
+  <div class="page-head">
+    <div class="section-eyebrow">Riepilogo</div>
+    <h1>Il tuo ordine</h1>
+    <p class="sub">Controlla e conferma</p>
+  </div>
+
+  <div class="card">
+    <div class="card-inner">
+      <div class="s-head"><span class="s-label">Prodotti</span></div>
+      <div class="col-head">
+        <span>Prodotto</span>
+        <span class="c-qty">Quantità</span>
+        <span class="c-price">Prezzo</span>
+      </div>
+      <div class="prod-list" id="product-container"></div>
+      <input type="hidden" id="prodottiSelezionati" name="prodottiSelezionati">
+    </div>
+
+    <div class="inputs-block">
+      <div class="s-head" style="margin-bottom:12px;"><span class="s-label">Note</span></div>
+      <div class="field">
+        <i class="fi fas fa-pen"></i>
+        <input id="noteGenerali" type="text" name="noteGenerali" placeholder="Note aggiuntive (opzionale)" list="lista-note-generali" autocomplete="off"/>
+        <datalist id="lista-note-generali">
+          {% for gruppo in general_notes %}
+            {% for nota in gruppo.note %}
+              <option value="{{ nota.nome }}">
+            {% endfor %}
+          {% endfor %}
         </datalist>
+      </div>
+    </div>
+  </div>
+
+  <div class="checkout">
+    <div class="checkout-total">
+      <div class="total-label-col">
+        <div class="tl">Totale ordine</div>
+        <div class="ta"><span class="cur">€</span><span id="total-num">0,00</span></div>
+      </div>
+      <button class="trash-btn" id="clearCartBtn" type="button" title="Svuota carrello">
+        <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+      </button>
     </div>
 
-    <div class="total-card">
-
-        <!-- 🔥 BOTTONE CESTINO -->
-        <button id="clearCartBtn" class="clear-btn" type="button">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none"
-                stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="3 6 5 6 21 6"></polyline>
-                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
-                <path d="M10 11v6"></path>
-                <path d="M14 11v6"></path>
-                <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path>
-            </svg>
-        </button>
-
-        <div class="total-price" id="total">€0,00</div>
-        <!-- cambia a type="button" per gestire invio JS dopo validazione -->
-        <button class="checkout-btn" id="invia" type="button" style="border: 1px solid white;">INVIA</button>
-
-    </div>
-
-    <!-- overlay -->
-    <div class="overlay" id="overlay"></div>
-
-    <!-- popup selezione ingredienti -->
-    <div id="ingredient-card">
-        <h1 class="title">AGGIUNGI NOTE</h1>
-        <div class="divider1" style="width:100px;margin-left:100px;margin-bottom:20px;"></div>
-        <div class="controls" style="justify-content:center;">
-            <button class="btn" id="apriIngredienti">NOTE</button>
+    <div class="checkout-form">
+      <div class="name-row">
+        <div class="field">
+          <i class="fi fas fa-user"></i>
+          <input id="nome" type="text" name="nome" placeholder="Nome" required/>
         </div>
-    </div>
-
-    <!-- POPUP Note prodotti -->
-    <div id="popup-ingredienti">
-        <h2 style="color:white;font-weight:800;font-family:verdana;font-size:20px;text-align:center;">
-            Note Prodotti
-        </h2>
-
-        <div class="note-top-buttons">
-            <button class="note-action-btn" id="aggiungi-ingrediente">Aggiungi</button>
-            <button class="note-action-btn" id="open-allergeni-top">Allergeni</button>
+        <div class="field">
+          <i class="fi fas fa-user"></i>
+          <input id="cognome" type="text" name="cognome" placeholder="Cognome" required/>
         </div>
+      </div>
 
-        <div class="divider"></div>
-
-        <!-- 🔥 QUESTO SERVE -->
-        <div id="ingredient-container"></div>
-
-        <div class="nav-buttons">
-            <button class="nav-btn" id="back" style="margin-left: 113px;">Chiudi</button>
+      <div class="custom-select-wrap" id="classe-wrap">
+        <i class="fi fas fa-graduation-cap"></i>
+        <div class="sel-trigger" id="sel-trigger">Seleziona classe o tavolo…</div>
+        <span class="sel-arrow"><i class="fas fa-chevron-down"></i></span>
+        <div class="sel-dropdown" id="sel-dropdown">
+          {% for c in listClass %}
+            <div class="sel-option" data-value="{{ c.nome }}">{{ c.nome }}</div>
+          {% endfor %}
         </div>
+      </div>
+      <select id="classe" name="classe" required>
+        <option value="" disabled selected></option>
+        {% for c in listClass %}
+          <option value="{{ c.nome }}">{{ c.nome }}</option>
+        {% endfor %}
+      </select>
+
+      <input type="hidden" id="totalInput" name="total" value="0">
+
+      <button class="submit-btn" id="invia" type="button">
+        <i class="fas fa-paper-plane"></i> Conferma ordine
+      </button>
     </div>
+  </div>
 
-    <!-- POPUP EXTRA INGREDIENTI -->
-    <div id="popup-extra-ingredienti">
-        <h2 style="text-align:center; color:white; font-family:verdana; font-weight:800;">Aggiungi Extra</h2>
-        <div class="divider"></div>
-        <div id="extra-ingredienti-container" style="display:flex; flex-direction:column; gap:10px; padding: 10px;"></div>
-        <button id="popup-extra-save" style="
-            background:#e63946;  
-            border:none; 
-            padding:12px; 
-            color:white; 
-            font-weight:700; 
-            border-radius:25px; 
-            cursor:pointer; 
-            margin-top:15px;">Salva</button>
-    </div>
-
-    <!-- POPUP ALLERGENI -->
-    <div id="popup-allergeni-ingrediente">
-        <h2 style="text-align:center; color:white; font-family:verdana; font-weight:800; margin-bottom:1px;">Seleziona Allergeni</h2>
-        <div class="divider"></div>
-        <div id="allergeni-container" style="display:flex; flex-direction:column; gap:10px;"></div>
-        <button id="popup-allergeni-save" style="
-            background:#e63946; 
-            border:none; 
-            padding:12px; 
-            color:white; 
-            font-weight:700; 
-            border-radius:25px; 
-            cursor:pointer; 
-            margin-top:15px;">Salva</button>
-    </div>
-
-    <!-- POPUP SUCCESSO ORDINE -->
-    <div id="success-popup">
-        <button id="success-close">✕</button>
-
-        <div class="icon-circle">
-            <svg fill="none" stroke-width="2" stroke="green" stroke-linecap="round"
-                stroke-linejoin="round" viewBox="0 0 24 24">
-                <path d="M20 6L9 17l-5-5"></path>
-            </svg>
-        </div>
-
-        <h2>Ordine convalidato</h2>
-        <p>grazie per aver ordinato da noi<br> il tuo ordine ti sarà consegnato al più presto</p>
-    </div>
-    <div id="error-box">
-    <strong style="font-family: verdana;font-weight:800;font-size: 17px;">Attenzione!</strong><br>
-    <p style="font-weight: 600;font-size: 15px;">Vuoi cancellare tutti gli ordini?</p>
-
-    <button class="confirm-btn">SÌ</button>
-
-    <button class="close-btn" aria-label="Close Error">&times;</button>
-    </div>
-    <button class="back-btn" type="button" onclick="window.history.back()">
-    <i></i>Indietro
-    </button>
+</div>
 </form>
-</body>
 
-</body>
+<div class="overlay" id="overlay"></div>
+
+<div class="popup" id="note-popup">
+  <div class="popup-top-line"></div>
+  <div class="popup-body">
+    <div class="popup-title">Note prodotto</div>
+    <div class="popup-sub">Ingredienti e varianti</div>
+    <div class="ing-list" id="ingredient-container"></div>
+    <button class="popup-close-btn" id="back">Chiudi</button>
+  </div>
+</div>
+
+<div class="popup" id="success-popup">
+  <div class="popup-top-line" style="background:linear-gradient(90deg,transparent,#22c55e,transparent);"></div>
+  <div class="popup-body">
+    <div class="success-icon">
+      <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+    </div>
+    <div class="popup-title">Ordine inviato!</div>
+    <div class="popup-sub">Grazie per aver ordinato.<br>Sarà pronto al più presto.</div>
+    <button class="popup-close-btn" id="success-close" style="margin-top:24px;">Chiudi</button>
+  </div>
+</div>
+
+<div class="popup" id="clear-popup">
+  <div class="popup-top-line"></div>
+  <div class="popup-body">
+    <div style="font-size:32px;margin-bottom:14px;">🗑</div>
+    <div class="popup-title">Svuota carrello</div>
+    <div class="popup-sub">Vuoi rimuovere tutti i prodotti? L'operazione è irreversibile.</div>
+    <div class="popup-actions">
+      <button class="btn-danger" id="clear-confirm"><i class="fas fa-trash-alt"></i> Sì, svuota</button>
+      <button class="btn-ghost" id="clear-cancel">Annulla</button>
+    </div>
+  </div>
+</div>
+
 <script>
-
 document.addEventListener("DOMContentLoaded", function () {
+  let sent = false;
+  let products = JSON.parse(localStorage.getItem("orderedItems") || "[]").filter(p => p.name && !isNaN(p.price));
 
-    let products = JSON.parse(localStorage.getItem("orderedItems")) || [];
-    products = products.filter(p => p.name && !isNaN(p.price));
+  const container = document.getElementById("product-container");
+  const overlay = document.getElementById("overlay");
+  const notePopup = document.getElementById("note-popup");
+  const ingBox = document.getElementById("ingredient-container");
+  const successPop = document.getElementById("success-popup");
+  const clearPop = document.getElementById("clear-popup");
+  let currentIdx = null;
 
-    const productContainer = document.getElementById("product-container");
-    const totalPriceEl = document.getElementById("total");
+  // Mobile nav
+  const toggle = document.getElementById("menu-toggle");
+  const navLinks = document.getElementById("nav-links");
+  if (toggle) {
+    toggle.addEventListener("click", () => navLinks.classList.toggle("active"));
+    document.addEventListener("click", e => {
+      if (!document.getElementById("navbar").contains(e.target)) navLinks.classList.remove("active");
+    });
+  }
 
-    // ======= LISTA ALLERGENI Aggiunta =======
-    const allergenOptions = [
-        { key: "Glutine", label: "Glutine Free", icon: "🌾" },
-        { key: "Lattosio", label: "Lattosio Free", icon: "🥛" },
-        { key: "Uova", label: "Uova Free", icon: "🥚" },
-        { key: "FruttaSecca", label: "Frutta Secca Free", icon: "🥜" },
-        { key: "Soia", label: "Soia Free", icon: "🌱" },
-        { key: "Pesce", label: "Pesce Free", icon: "🐟" },
-        { key: "Crostacei", label: "Crostacei Free", icon: "🦐" },
-        { key: "Sesamo", label: "Sesamo Free", icon: "🌻" }
-    ];
-    // ======= FINE LISTA ALLERGENI =======
+  // Navbar hide on scroll
+  let lastY = 0;
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    document.getElementById('navbar').classList.toggle('hidden', y > lastY && y > 150);
+    lastY = y;
+  }, { passive: true });
 
-    //salvare i prodotti ordinati//
-    function saveOrderedItems() {
-        localStorage.setItem("orderedItems", JSON.stringify(products));
-        window.orderedProducts = products;
-        updateHiddenInput();
+  // Custom select
+  const wrap = document.getElementById("classe-wrap");
+  const trigger = document.getElementById("sel-trigger");
+  const dropdown = document.getElementById("sel-dropdown");
+  const realSelect = document.getElementById("classe");
+  let selectedVal = "";
+
+  trigger.addEventListener("click", e => {
+    e.stopPropagation();
+    wrap.classList.toggle("open");
+  });
+
+  dropdown.querySelectorAll(".sel-option").forEach(opt => {
+    opt.addEventListener("click", () => {
+      selectedVal = opt.dataset.value;
+      trigger.textContent = opt.textContent;
+      trigger.classList.add("has-value");
+      realSelect.value = selectedVal;
+      dropdown.querySelectorAll(".sel-option").forEach(o => o.classList.remove("selected"));
+      opt.classList.add("selected");
+      wrap.classList.remove("open");
+      wrap.classList.remove("err");
+    });
+  });
+
+  document.addEventListener("click", e => {
+    if (!wrap.contains(e.target)) wrap.classList.remove("open");
+  });
+
+  // Helpers
+  function save() {
+    localStorage.setItem("orderedItems", JSON.stringify(products));
+    document.getElementById("prodottiSelezionati").value = JSON.stringify(products);
+  }
+
+  function fmt(n) {
+    return n.toLocaleString("it-IT", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  // Render
+  function render() {
+    container.innerHTML = "";
+    let total = 0;
+    products.forEach((p, i) => {
+      const qty = p.qty || 1;
+      const row = document.createElement("div");
+      row.className = "prod-row";
+      row.innerHTML = `
+        <div class="prod-info">
+          <button class="prod-note-btn" data-i="${i}" type="button">
+            <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
+          </button>
+          <span class="prod-name" title="${p.name}">${p.name}</span>
+        </div>
+        <div class="qty-ctrl">
+          <button class="qty-btn" data-i="${i}" data-a="−" type="button">−</button>
+          <span class="qty-num">${qty}</span>
+          <button class="qty-btn" data-i="${i}" data-a="+" type="button">+</button>
+        </div>
+        <div class="prod-price">€${fmt(p.price * qty)}</div>
+      `;
+      container.appendChild(row);
+      total += p.price * qty;
+    });
+    document.getElementById("total-num").textContent = fmt(total);
+    document.getElementById("totalInput").value = total.toFixed(2);
+    document.getElementById("prodottiSelezionati").value = JSON.stringify(products);
+  }
+
+  container.addEventListener("click", e => {
+    const qb = e.target.closest(".qty-btn");
+    if (qb) {
+      const i = parseInt(qb.dataset.i), a = qb.dataset.a;
+      if (a === "+") products[i].qty = Math.min(10, (products[i].qty || 1) + 1);
+      else products[i].qty = Math.max(1, (products[i].qty || 1) - 1);
+      save();
+      render();
+      return;
+    }
+    const nb = e.target.closest(".prod-note-btn");
+    if (nb) {
+      currentIdx = parseInt(nb.dataset.i);
+      openNotePopup();
+    }
+  });
+
+  // Note popup
+  function openNotePopup() {
+    ingBox.innerHTML = "";
+    const prod = products[currentIdx];
+    const ings = (prod && prod.ingredients && prod.ingredients.length) ? prod.ingredients : [prod ? prod.name : "—"];
+    ings.forEach(ing => {
+      const d = document.createElement("div");
+      d.className = "ing-item";
+      d.textContent = ing;
+      ingBox.appendChild(d);
+    });
+    openPopup(notePopup);
+  }
+  document.getElementById("back").addEventListener("click", () => closePopup(notePopup));
+
+  // Success
+  document.getElementById("success-close").addEventListener("click", () => {
+    closePopup(successPop);
+    localStorage.removeItem("orderedItems");
+    products = [];
+    render();
+    ["nome", "cognome", "noteGenerali"].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = "";
+    });
+    trigger.textContent = "Seleziona classe o tavolo…";
+    trigger.classList.remove("has-value");
+    realSelect.value = "";
+    selectedVal = "";
+  });
+
+  // Clear
+  document.getElementById("clearCartBtn").addEventListener("click", () => openPopup(clearPop));
+  document.getElementById("clear-cancel").addEventListener("click", () => closePopup(clearPop));
+  document.getElementById("clear-confirm").addEventListener("click", () => {
+    localStorage.removeItem("orderedItems");
+    location.reload();
+  });
+
+  // Popup utils
+  function openPopup(p) {
+    overlay.classList.add("active");
+    p.classList.add("active");
+  }
+  function closePopup(p) {
+    overlay.classList.remove("active");
+    p.classList.remove("active");
+  }
+  overlay.addEventListener("click", () => {
+    [notePopup, successPop, clearPop].forEach(p => p.classList.remove("active"));
+    overlay.classList.remove("active");
+  });
+
+  // Validation + submit
+  document.getElementById("invia").addEventListener("click", () => {
+    if (sent) return;
+    let ok = true;
+    const nome = document.getElementById("nome");
+    const cognome = document.getElementById("cognome");
+
+    function checkField(el, regex) {
+      el.classList.remove("err");
+      if (!regex.test(el.value.trim())) {
+        el.classList.add("err");
+        ok = false;
+      }
+    }
+    checkField(nome, /^[A-Za-zÀ-öø-ÿ\s]{2,}$/);
+    checkField(cognome, /^[A-Za-zÀ-öø-ÿ\s]{2,}$/);
+
+    if (!selectedVal) {
+      wrap.classList.add("err");
+      ok = false;
+    }
+    if (!ok) {
+      nome.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+    if (!products.length) {
+      alert("Seleziona almeno un prodotto dal menu.");
+      return;
     }
 
-    function updateHiddenInput() {
-        const hidden = document.getElementById("prodottiSelezionati");
-        // salva una copia pulita dei prodotti (con qty, extra, allergeni) come JSON
-        try {
-            hidden.value = JSON.stringify(products);
-        } catch (err) {
-            hidden.value = "";
-            console.error("Errore serializzazione prodotti:", err);
-        }
-    }
+    document.getElementById("prodottiSelezionati").value = JSON.stringify(products);
+    sent = true;
+    openPopup(successPop);
+    setTimeout(() => document.getElementById("order-form").submit(), 2800);
+  });
 
-    window.orderedProducts = products;
-
-    const ingredientiProdotto = {
-        "Focaccia": ["Pane", "Pomodoro", "Mozzarella"],
-        "Cup Cake": ["Farina", "Zucchero", "Burro", "Uova", "Vaniglia"],
-        "Pizzette": ["Pomodoro", "Mozzarella", "Basilico"],
-        "Panino": ["Pane", "Prosciutto", "Formaggio", "Insalata"],
-    };
-
-    function defaultIngredienti(nome) {
-        return [`${nome} Base`, "Sale", "Olio", "Ingrediente Standard"];
-    }
-
-    products.forEach(prod => {
-        if (!prod.ingredients || prod.ingredients.length === 0) {
-            prod.ingredients = ingredientiProdotto[prod.name] || defaultIngredienti(prod.name);
-            prod.extra = prod.extra || [];
-            prod.allergeni = prod.allergeni || []; 
-        }
-    });
-
-    saveOrderedItems();
-
-    let currentProductIndex = null;
-    let currentProdExtra = null;
-
-    /* ================================
-       RENDER LISTA PRODOTTI
-    ================================= */
-    function renderProducts() {
-        productContainer.innerHTML = "";
-        let total = 0;
-
-        products.forEach((p, i) => {
-            let extraHTML = "";
-            if (p.extra?.length) {
-                extraHTML += `<div class="ingredient-list">${p.extra.join(", ")}</div>`;
-            }
-
-            if (p.allergeni?.length) {
-                let allergyText = p.allergeni.map(k => {
-                    const o = allergenOptions.find(a => a.key === k || a.label === k);
-                    return o ? o.label : k;
-                }).join(", ");
-                extraHTML += `<div class="ingredient-list allergeni-list">${allergyText}</div>`;
-            }
-
-            let row = document.createElement("div");
-            row.className = "product-row";
-
-            row.innerHTML = `
-                <div class="product-name">
-                    <div style="display:flex; align-items:center; gap:10px;">
-                        <button class="note-btn" data-index="${i}"
-                            style="width:42px;height:42px;border-radius:50%; background:#f5f0e7;border:2px solid #d9d4cc; display:flex;justify-content:center;align-items:center;cursor:pointer;">
-                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
-                                stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M12 20h9"/>
-                                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/>
-                            </svg>
-                        </button>
-                        <span>${p.name}</span>
-                    </div>
-                    ${extraHTML}
-                </div>
-
-                <div class="qty-box">
-                    <button class="qty-btn" data-index="${i}" data-action="minus">-</button>
-                    <span class="qty">${p.qty || 1}</span>
-                    <button class="qty-btn" data-index="${i}" data-action="plus">+</button>
-                </div>
-
-                <div class="price">€${(p.price * (p.qty || 1)).toLocaleString('it-IT', {minimumFractionDigits: 0, maximumFractionDigits: 2})}</div>
-            `;
-
-            productContainer.appendChild(row);
-            total += p.price * (p.qty || 1);
-        });
-
-        totalPriceEl.textContent = `€${total.toLocaleString('it-IT', {minimumFractionDigits: 0, maximumFractionDigits: 2})}`;
-        // aggiorna l'input hidden dopo il rendering
-        updateHiddenInput();
-    }
-
-    /* ================================
-       QUANTITÀ + / −
-    ================================= */
-    productContainer.addEventListener("click", function (e) {
-        if (e.target.classList.contains("qty-btn")) {
-            const index = e.target.dataset.index;
-            const action = e.target.dataset.action;
-
-            if (action === "plus") {
-                if ((products[index].qty || 1) < 10) {
-                    products[index].qty = (products[index].qty || 1) + 1;
-                }
-            } else {
-                products[index].qty = Math.max(1, (products[index].qty || 1) - 1);
-            }
-
-            saveOrderedItems();
-            renderProducts();
-            return;
-        }
-
-        const noteBtn = e.target.closest(".note-btn");
-        if (noteBtn) {
-            currentProductIndex = noteBtn.dataset.index;
-            showIngredientCard();
-        }
-    });
-
-    /* ================================
-       POPUP INGREDIENTI
-    ================================= */
-    const overlay = document.getElementById("overlay");
-    const ingredientCard = document.getElementById("ingredient-card");
-    const popupIngredienti = document.getElementById("popup-ingredienti");
-    const ingredientContainer = document.getElementById("ingredient-container");
-
-    function showIngredientCard() {
-        ingredientCard.style.display = "flex";
-        overlay.classList.add("active");
-    }
-
-    function hideIngredientCard() {
-        ingredientCard.style.display = "none";
-    }
-
-    document.getElementById("apriIngredienti").addEventListener("click", () => {
-        hideIngredientCard();
-        showPopupIngredienti();
-    });
-
-    /* ================================
-       NOTE PRODOTTI
-    ================================= */
-    function showPopupIngredienti() {
-        popupIngredienti.classList.add("active");
-        overlay.classList.add("active");
-
-        ingredientContainer.innerHTML = "";
-        const prod = products[currentProductIndex];
-
-        prod.ingredients.forEach(ing => {
-            let row = document.createElement("div");
-            row.className = "ingredient-row";
-            row.innerHTML = `<span>${ing}</span>`;
-            ingredientContainer.appendChild(row);
-        });
-    }
-
-    /* ================================
-       POPUP ALLERGENI (aggiornata)
-    ================================= */
-    const popupAllergeni = document.getElementById("popup-allergeni-ingrediente");
-    const allergeniContainer = document.getElementById("allergeni-container");
-
-    function openPopupAllergeni(prod) {
-        allergeniContainer.innerHTML = "";
-        prod.allergeni = prod.allergeni || [];
-
-        allergenOptions.forEach(opt => {
-            const row = document.createElement("div");
-            row.className = "allergene-row";
-            row.innerHTML = `
-                <label>
-                    <input type="checkbox" value="${opt.label}" ${prod.allergeni.includes(opt.key) || prod.allergeni.includes(opt.label) ? "checked" : ""}>
-                    <span class="allergene-icon" style="font-size:18px; margin-right:6px;">${opt.icon}</span>
-                    <span class="allergene-label">${opt.label}</span>
-                </label>
-            `;
-            allergeniContainer.appendChild(row);
-        });
-
-        popupAllergeni.classList.add("active");
-        overlay.classList.add("active");
-    }
-
-    document.getElementById("popup-allergeni-save").addEventListener("click", () => {
-        const prod = products[currentProductIndex];
-        prod.allergeni = Array.from(allergeniContainer.querySelectorAll("input:checked"))
-            .map(cb => cb.value);
-
-        saveOrderedItems();
-        popupAllergeni.classList.remove("active");
-        overlay.classList.remove("active");
-        renderProducts();
-    });
-
-    /* ================================
-       BOTTONI IN ALTO NOTE PRODOTTI + EXTRA
-    ================================= */
-    const popupExtra = document.getElementById("popup-extra-ingredienti");
-    const extraContainer = document.getElementById("extra-ingredienti-container");
-
-    document.getElementById("aggiungi-ingrediente").addEventListener("click", () => {
-        const prod = products[currentProductIndex];
-        currentProdExtra = prod;
-
-        extraContainer.innerHTML = "";
-
-        // Checkbox extra nello stesso stile degli allergeni
-        prod.ingredients.forEach(ing => {
-            const label = document.createElement("label");
-            label.className = "extra-card-label";
-            label.innerHTML = `
-                <input type="checkbox" value="${ing}" ${prod.extra.includes(`+ ${ing}`) ? "checked" : ""}>
-                <span>+ ${ing}</span>
-            `;
-            extraContainer.appendChild(label);
-        });
-
-        popupExtra.classList.add("active");
-        overlay.classList.add("active");
-    });
-
-    document.getElementById("popup-extra-save").addEventListener("click", () => {
-        const prod = currentProdExtra;
-        const checkboxes = extraContainer.querySelectorAll("input[type='checkbox']");
-
-        prod.extra = [];
-        checkboxes.forEach(cb => {
-            if (cb.checked) prod.extra.push(`+ ${cb.value}`);
-        });
-
-        saveOrderedItems();
-        renderProducts();
-
-        popupExtra.classList.remove("active");
-        overlay.classList.remove("active");
-    });
-
-    document.getElementById("open-allergeni-top").addEventListener("click", () => {
-        const prod = products[currentProductIndex];
-        openPopupAllergeni(prod);
-    });
-
-    document.getElementById("back").addEventListener("click", () => {
-        popupIngredienti.classList.remove("active");
-        overlay.classList.remove("active");
-    });
-
-    /* ================================
-       VALIDAZIONE E INVIO ORDINE
-    ================================= */
-    const btnInvia = document.getElementById("invia");
-    const nomeInput = document.getElementById("nome");
-    const cognomeInput = document.getElementById("cognome");
-    const classeInput = document.getElementById("classe");
-    const successPopup = document.getElementById("success-popup");
-    const overlayGlobal = document.getElementById("overlay");
-
-    btnInvia.addEventListener("click", () => {
-        let valid = true;
-
-        function checkNameField(input, label) {
-            let value = input.value.trim();
-            let validName = /^[A-Za-zÀ-ÖØ-öø-ÿ]{3,}$/;
-
-            input.classList.remove("input-error");
-            if (!validName.test(value)) {
-                valid = false;
-                input.classList.add("input-error");
-                input.value = "";
-                input.placeholder = `⚠ Scrivi il ${label}`;
-                input.style.setProperty("--placeholder-color", "#e63946");
-            }
-        }
-
-        function checkClasseField(input) {
-            let value = input.value.trim();
-            let opzioni = Array.from(document.querySelectorAll("#lista-classi option")).map(o => o.value);
-
-            if (!opzioni.includes(value)) {
-                input.classList.add("input-error");
-                input.value = "";
-                input.placeholder = "⚠ Scrivi la classe";
-                input.style.setProperty("--placeholder-color", "#e63946");
-                return false;
-            }
-            return true;
-        }
-
-        checkNameField(nomeInput, "nome");
-        checkNameField(cognomeInput, "cognome");
-        if (!checkClasseField(classeInput)) valid = false;
-
-        if (!valid) {
-            nomeInput.scrollIntoView({ behavior: "smooth", block: "center" });
-            return;
-        }
-
-        if (!products.length) {
-            alert("Devi ordinare almeno un prodotto!");
-            return;
-        }
-
-        // aggiorna l'input hidden con l'ultima versione dei prodotti
-        updateHiddenInput();
-
-        // invia il form al server (orders.new_order)
-        const form = document.querySelector("form");
-        form.submit();
-    });
-
-    /* ================================
-       CHIUSURA SUCCESS + RESET ORDINE
-    ================================= */
-    document.getElementById("success-close").addEventListener("click", () => {
-        localStorage.removeItem("orderedItems");
-        location.reload();
-    });
-
-    /* ================================
-       SVUOTA ORDINE (CESTINO)
-    ================================= */
-    const errorBox = document.getElementById("error-box");
-    const clearBtn = document.getElementById("clearCartBtn");
-    const confirmClearBtn = errorBox.querySelector(".confirm-btn");
-    const closeErrorBtn = errorBox.querySelector(".close-btn");
-
-    clearBtn.addEventListener("click", () => {
-        errorBox.classList.add("show");
-    });
-
-    closeErrorBtn.addEventListener("click", () => {
-        errorBox.classList.remove("show");
-    });
-
-    confirmClearBtn.addEventListener("click", () => {
-        localStorage.removeItem("orderedItems");
-        location.reload();
-    });
-
-    /* ================================
-       START
-    ================================= */
-    renderProducts();
-
+  render();
 });
-
 </script>
-
+</body>
 </html>

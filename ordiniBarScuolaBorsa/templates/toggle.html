@@ -1,97 +1,346 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="it">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Stato bar</title>
-
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Stato Bar — Scuola Borsa</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,800&display=swap" rel="stylesheet"/>
 <style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --red:   #e63946;
+  --green: #22c55e;
+  --dark:  #080404;
+  --sans:  'Montserrat', sans-serif;
+  --serif: 'Playfair Display', Georgia, serif;
+}
+
 body {
-  font-family: 'Montserrat', sans-serif;
-  margin: 0;
-  height: 100vh;
-  display: flex;
+  font-family: var(--sans);
+  background: var(--dark);
+  color: white;
+  min-height: 100vh;
+  display: flex; 
+  align-items: center; 
   justify-content: center;
+  position: relative; 
+  overflow: hidden;
+}
+
+/* Background image */
+.bg {
+  position: fixed; 
+  inset: 0; 
+  z-index: 0;
+  background: url('{{ url_for("static", filename="hero.jpg") }}') center/cover no-repeat;
+  filter: brightness(0.18) saturate(0.5);
+  transform: scale(1.04);
+}
+
+/* Gradient vignette */
+.bg-vignette {
+  position: fixed; 
+  inset: 0; 
+  z-index: 1;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(230,57,70,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse at 50% 100%, rgba(0,0,0,0.8) 0%, transparent 60%);
+}
+
+/* Grid texture */
+.bg-grid {
+  position: fixed; 
+  inset: 0; 
+  z-index: 2; 
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+}
+
+/* Content */
+.content {
+  position: relative; 
+  z-index: 3;
+  display: flex; 
+  flex-direction: column; 
   align-items: center;
+  padding: 28px; 
+  width: 100%; 
+  max-width: 460px;
+  animation: rise 0.8s cubic-bezier(0.22,1,0.36,1) both;
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(36px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Logo area */
+.logo-area {
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  gap: 10px;
+  margin-bottom: 56px;
+}
+
+.logo-area img {
+  width: 68px; 
+  height: 68px; 
+  object-fit: contain;
+  filter: drop-shadow(0 0 20px rgba(230,57,70,0.45));
+}
+
+.logo-eyebrow {
+  font-size: 9px; 
+  font-weight: 600; 
+  letter-spacing: 5px;
+  text-transform: uppercase; 
+  color: rgba(255,255,255,0.3);
+}
+
+.logo-name {
+  font-family: var(--serif); 
+  font-size: 24px; 
+  font-style: italic;
+  color: rgba(255,255,255,0.9); 
+  font-weight: 700;
+}
+
+/* Card */
+.card {
+  width: 100%;
+  background: rgba(12,5,5,0.85);
+  backdrop-filter: blur(32px);
+  border-radius: 26px;
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 32px 80px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05);
+  overflow: hidden;
   position: relative;
 }
 
-/* sfondo */
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background: url('https://raw.githubusercontent.com/profnicotra/ordini-bar-scuola-borsa/main/ordiniBarScuolaBorsa/static/open%20o%20close.jpg') center/cover no-repeat;
-  filter: brightness(0.5);
-  z-index: -1;
+/* Top accent line */
+.card-line {
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--line-color, #e63946), transparent);
+  opacity: 0.7;
 }
 
-/* contenitore */
-.content {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-  backdrop-filter: blur(4px);
-  background: rgba(30, 30, 30, 0.488);
-  padding: 20px;
-  background: rgba(30, 30, 30, 0.553);
+.card-body {
+  padding: 48px 44px 44px;
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  text-align: center;
+  gap: 0;
 }
 
-/* bottone */
-.big-button {
-  width: 270px;
-  height:65px;
-  padding: 1rem;
-  font-size: 18px;
+/* Status pill */
+.pill {
+  display: inline-flex; 
+  align-items: center; 
+  gap: 9px;
+  padding: 9px 20px; 
+  border-radius: 50px;
+  font-size: 10px; 
+  font-weight: 700; 
+  letter-spacing: 4px;
+  text-transform: uppercase; 
+  margin-bottom: 34px;
+}
+
+.pill.open { 
+  background: rgba(34,197,94,0.12); 
+  border: 1px solid rgba(34,197,94,0.28); 
+  color: #4ade80; 
+}
+
+.pill.closed { 
+  background: rgba(230,57,70,0.12); 
+  border: 1px solid rgba(230,57,70,0.28); 
+  color: #ff8080; 
+}
+
+.pill-dot { 
+  width: 7px; 
+  height: 7px; 
+  border-radius: 50%; 
+  flex-shrink: 0; 
+  animation: pulse 2s infinite; 
+}
+
+.pill.open .pill-dot { 
+  background: #4ade80; 
+  box-shadow: 0 0 10px rgba(74,222,128,0.9); 
+}
+
+.pill.closed .pill-dot { 
+  background: #ff8080; 
+  box-shadow: 0 0 10px rgba(230,57,70,0.9); 
+}
+
+@keyframes pulse { 
+  0%, 100% { opacity: 1; transform: scale(1); } 
+  50% { opacity: 0.6; transform: scale(1.4); } 
+}
+
+/* Title */
+.card-title {
+  font-family: var(--serif);
+  font-size: clamp(48px, 11vw, 68px);
+  font-style: italic; 
   font-weight: 800;
-  font-family: Verdana;
-  letter-spacing: 2px;
-  background-color: #e63946;
-  color: white;
-  border-radius: 20px;
-  border: 2px solid white;
+  color: white; 
+  line-height: 1; 
+  margin-bottom: 16px;
+}
+
+.card-sub {
+  font-size: 13px; 
+  color: rgba(255,255,255,0.38);
+  line-height: 1.8; 
+  margin-bottom: 48px;
+  font-weight: 300;
+}
+
+/* Toggle button */
+.toggle-btn {
+  width: 100%; 
+  padding: 21px 32px;
+  border: none; 
+  border-radius: 16px; 
   cursor: pointer;
-  transition: 0.3s ease;
+  font-family: var(--sans); 
+  font-size: 12px; 
+  font-weight: 800;
+  letter-spacing: 3.5px; 
+  text-transform: uppercase; 
+  color: white;
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  gap: 13px;
+  transition: all 0.35s cubic-bezier(0.22,1,0.36,1);
+  position: relative; 
+  overflow: hidden;
 }
 
-.big-button:hover {
-  background-color: white;
-  color: black;
+.toggle-btn::before {
+  content:""; 
+  position: absolute; 
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, transparent 60%);
+  opacity: 0; 
+  transition: opacity 0.3s;
 }
 
-/* RESPONSIVE DESIGN */
-@media (max-width: 768px) {
-  .big-button {
-    width: 220px;
-    height: 60px;
-    font-size: 16px;
-    letter-spacing: 1px;
-    padding: 0.8rem;
+.toggle-btn:hover::before { 
+  opacity: 1; 
+}
+
+.toggle-btn:hover { 
+  transform: translateY(-3px); 
+}
+
+.toggle-btn.close-bar {
+  background: linear-gradient(135deg, #7f1010, #e63946);
+  box-shadow: 0 8px 36px rgba(230,57,70,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+}
+
+.toggle-btn.close-bar:hover { 
+  box-shadow: 0 14px 48px rgba(230,57,70,0.7); 
+}
+
+.toggle-btn.open-bar {
+  background: linear-gradient(135deg, #064e35, #22c55e);
+  box-shadow: 0 8px 36px rgba(34,197,94,0.45), inset 0 1px 0 rgba(255,255,255,0.1);
+}
+
+.toggle-btn.open-bar:hover { 
+  box-shadow: 0 14px 48px rgba(34,197,94,0.65); 
+}
+
+.btn-icon { 
+  font-size: 19px; 
+}
+
+/* Footer note */
+.card-footer-note {
+  margin-top: 22px;
+  font-size: 11px; 
+  color: rgba(255,255,255,0.18);
+  letter-spacing: 1px; 
+  text-align: center;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width:480px) {
+  .card-body { 
+    padding: 38px 28px 34px; 
   }
-}
-
-@media (max-width: 480px) {
-  .big-button {
-    width: 85%;
-    max-width: 250px;
-    height: 55px;
-    font-size: 14px;
-    letter-spacing: 1px;
-    padding: 0.7rem;
+  
+  .logo-area { 
+    margin-bottom: 40px; 
+  }
+  
+  .logo-area img {
+    width: 56px;
+    height: 56px;
+  }
+  
+  .pill {
+    padding: 8px 18px;
   }
 }
 </style>
 </head>
-
 <body>
+
+<div class="bg"></div>
+<div class="bg-vignette"></div>
+<div class="bg-grid"></div>
+
 <div class="content">
-  <form method="post" action="{{ url_for('toggle.changeBarStatus') }}">
-    <button type="submit" class="big-button">
-      APERTO / CHIUSO
-    </button>
-  </form>
+  <div class="logo-area">
+    <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" onerror="this.style.visibility='hidden'">
+    <span class="logo-eyebrow">Sala &amp; Bar</span>
+    <span class="logo-name">Scuola Borsa</span>
+  </div>
+
+  <div class="card">
+    {% if data.open == 'true' %}
+    <div class="card-line" style="--line-color:#22c55e;"></div>
+    <div class="card-body">
+      <div class="pill open"><div class="pill-dot"></div>Bar aperto</div>
+      <div class="card-title">Siamo<br>aperti</div>
+      <p class="card-sub">Il servizio è attivo.<br>Gli studenti possono ordinare online.</p>
+      <form method="post" action="{{ url_for('toggle.changeBarStatus') }}" style="width:100%;">
+        <button type="submit" class="toggle-btn close-bar">
+          <span class="btn-icon">⏻</span> Chiudi il bar
+        </button>
+      </form>
+    </div>
+    {% else %}
+    <div class="card-line" style="--line-color:#e63946;"></div>
+    <div class="card-body">
+      <div class="pill closed"><div class="pill-dot"></div>Bar chiuso</div>
+      <div class="card-title">Siamo<br>chiusi</div>
+      <p class="card-sub">Il servizio è sospeso.<br>Premi per riaprire il bar.</p>
+      <form method="post" action="{{ url_for('toggle.changeBarStatus') }}" style="width:100%;">
+        <button type="submit" class="toggle-btn open-bar">
+          <span class="btn-icon">⏻</span> Apri il bar
+        </button>
+      </form>
+    </div>
+    {% endif %}
+  </div>
+
+  <p class="card-footer-note">Pannello di controllo — accesso riservato</p>
 </div>
+
 </body>
 </html>
