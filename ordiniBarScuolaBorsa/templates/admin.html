@@ -1,19 +1,217 @@
-<html>
-    <head>
-        <title>Admin</title>
-    </head>
-    <body>
-        <h1>Pagina admin</h1>
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestione Tabella Completa</title>
+    <style>
+        body {
+            background-color: #8b0000;
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px;
+            margin: 0;
+        }
+
+        .table-container {
+            background-color: black;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            width: 90%;
+            max-width: 1000px;
+        }
+
+        table {
+            border-collapse: collapse;
+            color: white;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        th {
+            color: #ff0000;
+            padding: 15px;
+            text-transform: uppercase;
+            font-size: 0.8em;
+            border-bottom: 2px solid #222;
+        }
+
+        td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #111;
+            font-size: 0.9em;
+        }
+
+        /* Stile Input in basso (come immagine 2) */
+        .add-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding-top: 20px;
+            border-top: 1px solid #333;
+        }
+
+        input {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            flex: 1;
+            min-width: 100px;
+        }
+
+        .btn-add {
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 5px;
+            text-transform: uppercase;
+        }
+
+        .btn-action {
+            background: transparent;
+            border: 1px solid #ff0000;
+            color: #ff0000;
+            padding: 4px 10px;
+            cursor: pointer;
+            margin: 0 2px;
+            border-radius: 4px;
+        }
+
+        /* Finestra Modifica */
+        #modalOverlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 999;
+        }
+
+        #editBox {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #000;
+            padding: 25px;
+            border: 2px solid #ff0000;
+            border-radius: 15px;
+            z-index: 1000;
+            width: 300px;
+        }
+
+        #editBox input { width: 100%; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="table-container">
+    <table id="mainTable">
+        <thead>
+            <tr>
+                <th>NOME</th>
+                <th>COSTO</th>
+                <th>PREZZO EURO</th>
+                <th>PREZZO INTERNI</th>
+                <th>MARGINE</th>
+                <th>ATTIVO</th>
+                <th>CATEGORIA</th>
+                <th>AZIONI</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>cappuccino</td><td>1</td><td>1,5</td><td>1</td><td>0,5</td><td>si</td><td>bevanda</td>
+                <td>
+                    <button class="btn-action" onclick="apriModifica(this)">MODIFICA</button>
+                    <button class="btn-action" onclick="this.closest('tr').remove()" style="color:#555; border-color:#555;">X</button>
+                </td>
+            </tr>
+            </tbody>
+    </table>
+
+    <div class="add-controls">
+        <input type="text" id="inNome" placeholder="Nome">
+        <input type="text" id="inCosto" placeholder="Costo">
+        <input type="text" id="inPrezzo" placeholder="Prezzo €">
+        <input type="text" id="inInterni" placeholder="Interni">
+        <input type="text" id="inMargine" placeholder="Margine">
+        <input type="text" id="inAttivo" placeholder="Attivo">
+        <input type="text" id="inCat" placeholder="Categoria">
+        <button class="btn-add" onclick="aggiungiRiga()">AGGIUNGI</button>
+    </div>
+</div>
+
+<div id="modalOverlay" onclick="chiudiModifica()"></div>
+<div id="editBox">
+    <h3 style="color: #ff0000; margin-top: 0;">MODIFICA</h3>
+    <input type="text" id="mNome">
+    <input type="text" id="mCosto">
+    <input type="text" id="mPrezzo">
+    <input type="text" id="mInterni">
+    <input type="text" id="mMargine">
+    <input type="text" id="mAttivo">
+    <input type="text" id="mCat">
+    <button class="btn-add" onclick="salvaModifica()">SALVA</button>
+</div>
+
+<script>
+    let rigaCorrente = null;
+
+    function aggiungiRiga() {
+        const tbody = document.querySelector("#mainTable tbody");
+        const riga = tbody.insertRow();
+        const campi = ['inNome', 'inCosto', 'inPrezzo', 'inInterni', 'inMargine', 'inAttivo', 'inCat'];
         
+        campi.forEach((id, i) => {
+            const cella = riga.insertCell(i);
+            cella.innerText = document.getElementById(id).value;
+            document.getElementById(id).value = ''; 
+        });
+
+        const azioni = riga.insertCell(7);
+        azioni.innerHTML = `
+            <button class="btn-action" onclick="apriModifica(this)">MODIFICA</button>
+            <button class="btn-action" onclick="this.closest('tr').remove()" style="color:#555; border-color:#555;">X</button>
+        `;
+    }
+
+    function apriModifica(btn) {
+        rigaCorrente = btn.closest('tr');
+        const celle = rigaCorrente.cells;
+        const ids = ['mNome', 'mCosto', 'mPrezzo', 'mInterni', 'mMargine', 'mAttivo', 'mCat'];
         
-        <form action="{{ url_for('admin.add_product') }}" method="POST">
-            <input type="number" method="POST" name="id" placeholder="ID"><br>
-            <input type="text" method="POST" name="nome_prodotto" placeholder="Nome prodotto"><br>
-            <input type="number" method="POST" name="prezzo" placeholder="Prezzo"><br>
-            <input type="number" method="POST" name="margine" placeholder="Margine"><br>
-            <input type="number" method="POST" name="prezzo_interno" placeholder="Prezzo interno"><br>
-            <button type="submit">Aggiungi prodotto</button>
-        </form>
+        ids.forEach((id, i) => {
+            document.getElementById(id).value = celle[i].innerText;
+        });
+
+        document.getElementById('editBox').style.display = 'block';
+        document.getElementById('modalOverlay').style.display = 'block';
+    }
+
+    function chiudiModifica() {
+        document.getElementById('editBox').style.display = 'none';
+        document.getElementById('modalOverlay').style.display = 'none';
+    }
+
+    function salvaModifica() {
+        const celle = rigaCorrente.cells;
+        const ids = ['mNome', 'mCosto', 'mPrezzo', 'mInterni', 'mMargine', 'mAttivo', 'mCat'];
         
-    </body>
+        ids.forEach((id, i) => {
+            celle[i].innerText = document.getElementById(id).value;
+        });
+        chiudiModifica();
+    }
+</script>
+
+</body>
 </html>
