@@ -2,13 +2,16 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
 <title>Menu — Bar Scuola Borsa</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,800&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 <script id="prodotti-data" type="application/json">{{ data_json | safe }}</script>
 
 <style>
+/* ══════════════════════════════════════════
+   RESET & ROOT
+   ══════════════════════════════════════════ */
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
 :root {
@@ -20,8 +23,26 @@
   --border:  rgba(255,255,255,0.08);
   --text:    rgba(255,255,255,0.88);
   --muted:   rgba(255,255,255,0.38);
+
+  /* Responsive spacing tokens */
+  --nav-h:       88px;
+  --side-pad:    52px;
+  --hero-pt:     120px;
+  --hero-pb:     130px;
+  --title-size:  clamp(72px, 13vw, 124px);
+  --card-pad:    15px 18px;
+  --card-gap:    7px;
+  --tab-pad:     13px 30px;
+  --tab-fs:      11px;
+  --subcat-fs:   19px;
+  --prod-name-fs:13.5px;
+  --prod-price-fs:14.5px;
+  --cta-pad:     17px 46px;
+  --cta-fs:      10.5px;
+  --cta-bottom:  28px;
 }
 
+/* ── Scrollbar ── */
 ::-webkit-scrollbar { width: 3px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: rgba(230,57,70,0.3); border-radius: 2px; }
@@ -34,6 +55,9 @@ body {
   color: var(--text);
   min-height: 100vh;
   overflow-x: hidden;
+  /* Safe areas for modern phones with notch/home bar */
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
 }
 
 /* ── DOT GRID ── */
@@ -56,12 +80,13 @@ body::after {
   100% { opacity:1;  transform:scale(1.06) translate(8px,-12px); }
 }
 
-/* ═══════════════════════════════════════
+/* ══════════════════════════════════════════
    NAVBAR
-   ═══════════════════════════════════════ */
+   ══════════════════════════════════════════ */
 .navbar {
   position:fixed; top:0; left:0; right:0; z-index:1000;
-  height:88px; padding:0 52px;
+  height: var(--nav-h);
+  padding: 0 var(--side-pad);
   display:flex; align-items:center; justify-content:space-between;
   background:rgba(7,3,4,0.92);
   backdrop-filter: blur(32px) saturate(1.5);
@@ -69,9 +94,12 @@ body::after {
   box-shadow:0 1px 0 rgba(255,255,255,0.04), 0 8px 48px rgba(0,0,0,0.6);
   transition: top 0.45s cubic-bezier(0.4,0,0.2,1), opacity 0.3s ease;
   will-change: top;
+  /* Safe area for notched phones */
+  padding-left: max(var(--side-pad), env(safe-area-inset-left));
+  padding-right: max(var(--side-pad), env(safe-area-inset-right));
 }
-.navbar.hidden { top: -88px; }
-/* animated underline */
+.navbar.hidden { top: calc(-1 * var(--nav-h)); }
+
 .navbar::after {
   content:""; position:absolute; bottom:0; left:0; right:0; height:1px;
   background:linear-gradient(90deg, transparent 0%, rgba(230,57,70,0) 15%, rgba(230,57,70,0.55) 40%, rgba(255,120,120,0.8) 50%, rgba(230,57,70,0.55) 60%, rgba(230,57,70,0) 85%, transparent 100%);
@@ -79,13 +107,14 @@ body::after {
 }
 @keyframes navLine { 0%{opacity:.5} 100%{opacity:1} }
 
-.nav-logo { display:flex; align-items:center; gap:13px; text-decoration:none; }
+.nav-logo { display:flex; align-items:center; gap:13px; text-decoration:none; flex-shrink:0; }
 .nav-logo img { width:60px; height:60px; object-fit:contain; filter:drop-shadow(0 0 8px rgba(230,57,70,0.3)); transition:filter .4s ease; }
 .nav-logo:hover img { filter:drop-shadow(0 0 16px rgba(230,57,70,0.55)); }
 .nav-logo-divider { width:1px; height:28px; background:rgba(255,255,255,0.12); }
 .nav-logo-text { display:flex; flex-direction:column; line-height:1.2; }
 .nav-logo-text .s { font-size:9.5px; font-weight:400; letter-spacing:4px; text-transform:uppercase; color:var(--muted); }
 .nav-logo-text .m { font-size:13.5px; font-weight:800; letter-spacing:2.5px; text-transform:uppercase; color:white; }
+
 .nav-links { display:flex; gap:2px; list-style:none; }
 .nav-links a {
   font-size:11.5px; font-weight:600; letter-spacing:1.8px; text-transform:uppercase;
@@ -99,6 +128,7 @@ body::after {
   background:rgba(230,57,70,0.07); padding:8px 18px; border-radius:20px;
 }
 .nav-links li:last-child a:hover { background:rgba(230,57,70,0.18); border-color:rgba(230,57,70,0.55); color:white; }
+
 .nav-social { display:flex; gap:8px; }
 .nav-social a {
   width:34px; height:34px; display:flex; align-items:center; justify-content:center;
@@ -107,19 +137,55 @@ body::after {
   transition:all .3s ease;
 }
 .nav-social a:hover { border-color:rgba(230,57,70,0.4); color:#ff8080; background:rgba(230,57,70,0.12); transform:translateY(-2px); }
-.menu-toggle { display:none; background:none; border:none; color:white; font-size:24px; cursor:pointer; padding:4px; }
 
-/* ═══════════════════════════════════════
-   HERO — cinematic entrance
-   ═══════════════════════════════════════ */
+.menu-toggle {
+  display:none; background:none; border:none; color:white;
+  font-size:22px; cursor:pointer; padding:8px;
+  border-radius:8px; transition:background .25s ease;
+  /* Bigger tap target for mobile */
+  min-width:44px; min-height:44px;
+  align-items:center; justify-content:center;
+}
+.menu-toggle:hover { background:rgba(255,255,255,0.08); }
+
+/* Mobile nav drawer */
+.nav-links.open {
+  display:flex !important; flex-direction:column;
+  position:fixed; top: var(--nav-h); left:0; right:0;
+  background:rgba(6,2,3,.99);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(230,57,70,.1);
+  padding:8px 0;
+  z-index:999;
+  animation:drawerIn .3s ease;
+  /* Safe area */
+  padding-bottom: max(8px, env(safe-area-inset-bottom));
+}
+@keyframes drawerIn {
+  from { opacity:0; transform:translateY(-10px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+.nav-links.open li { width:100%; }
+.nav-links.open a {
+  display:block; padding:16px 24px;
+  border-radius:0; border-bottom:1px solid rgba(255,255,255,.05);
+  font-size:13px; letter-spacing:2px;
+}
+.nav-links.open li:last-child a {
+  margin:8px 18px 4px; border-radius:12px; border-bottom:none;
+  text-align:center;
+}
+
+/* ══════════════════════════════════════════
+   HERO
+   ══════════════════════════════════════════ */
 .hero {
   min-height:100vh;
   display:flex; flex-direction:column; justify-content:center; align-items:center;
-  padding:110px 24px 120px;
+  padding: var(--hero-pt) 24px var(--hero-pb);
   position:relative; z-index:1; text-align:center;
 }
 
-/* Staggered entrance — each child waits for the previous */
 .hero-eyebrow {
   opacity:0;
   animation: heroLine 0.7s cubic-bezier(0.22,1,0.36,1) 0.1s forwards;
@@ -142,7 +208,7 @@ body::after {
   100% { opacity:1; transform:translateY(0); }
 }
 @keyframes heroTitle {
-  0%   { opacity:0; transform:translateY(44px) scaleY(0.9); filter:blur(12px); letter-spacing:0px; }
+  0%   { opacity:0; transform:translateY(44px) scaleY(0.9); filter:blur(12px); }
   60%  { filter:blur(0); }
   100% { opacity:1; transform:translateY(0) scaleY(1); filter:blur(0); letter-spacing:-3px; }
 }
@@ -163,11 +229,10 @@ body::after {
 .hero-title {
   position:relative;
   font-family:var(--serif);
-  font-size:clamp(72px, 13vw, 124px);
+  font-size: var(--title-size);
   font-weight:800; font-style:italic;
   color:white; line-height:1; letter-spacing:-3px; margin-bottom:20px;
 }
-/* Red ghost glow behind */
 .hero-title::before {
   content:attr(data-text); position:absolute; inset:0;
   background:linear-gradient(135deg, #e63946, #ff8080, #e63946);
@@ -179,7 +244,6 @@ body::after {
   0%   { filter:blur(22px); opacity:.38; }
   100% { filter:blur(14px); opacity:.58; }
 }
-/* animated underline */
 .hero-title::after {
   content:""; position:absolute; bottom:-16px; left:50%; transform:translateX(-50%);
   height:2px; background:linear-gradient(90deg, transparent, var(--red), transparent);
@@ -199,20 +263,24 @@ body::after {
   text-transform:uppercase; color:var(--muted); margin-bottom:52px;
 }
 
-/* ═══════════════════════════════════════
+/* ══════════════════════════════════════════
    TABS
-   ═══════════════════════════════════════ */
+   ══════════════════════════════════════════ */
 .tabs {
-  display:flex; gap:4px;
-  background:rgba(12,5,8,0.88);
-  border:1px solid rgba(255,255,255,0.09);
-  border-radius:60px; padding:6px; margin-bottom:58px;
-  backdrop-filter:blur(20px);
-  box-shadow:0 8px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.04);
-  position:sticky; top:96px; z-index:100; max-width:100%;
+  display: inline-flex; /* ← shrink to content, never stretches full width */
+  gap: 3px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 60px;
+  padding: 6px;
+  margin-bottom: 56px;
+  position: relative;
+  backdrop-filter: blur(10px);
+  /* Safety: never overflow viewport */
+  max-width: calc(100vw - 32px);
+  overflow-x: visible; /* tabs stay compact, no forced scroll */
 }
 
-/* Gliding pill background */
 .tab-pill {
   position:absolute; border-radius:50px; z-index:0; pointer-events:none;
   background:linear-gradient(135deg, #c0392b 0%, #e63946 100%);
@@ -226,12 +294,15 @@ body::after {
 
 .tab {
   display:flex; align-items:center; gap:9px;
-  padding:13px 30px; border-radius:50px; border:none;
-  font-family:var(--sans); font-size:11px; font-weight:700;
+  padding: var(--tab-pad);
+  border-radius:50px; border:none;
+  font-family:var(--sans); font-size: var(--tab-fs); font-weight:700;
   letter-spacing:2.5px; text-transform:uppercase;
   color:rgba(255,255,255,0.4); background:transparent;
   cursor:pointer; position:relative; z-index:1; white-space:nowrap;
   transition:color .3s ease;
+  /* Minimum tap target */
+  min-height:44px;
 }
 .tab i {
   font-size:12.5px; opacity:.65;
@@ -242,14 +313,13 @@ body::after {
 .tab.active { color:white; }
 .tab.active i { opacity:1; transform:scale(1.12); }
 
-/* ═══════════════════════════════════════
-   PRODUCT CONTAINER & TRANSITIONS
-   ═══════════════════════════════════════ */
+/* ══════════════════════════════════════════
+   PRODUCT CONTAINER
+   ══════════════════════════════════════════ */
 #product-container {
   width:100%; max-width:1200px;
   display:flex; flex-direction:column; align-items:center;
   min-height:400px; position:relative; padding:0 16px;
-  /* smooth crossfade between categories */
   transition:opacity .2s ease, transform .2s cubic-bezier(0.4,0,0.2,1);
 }
 
@@ -275,7 +345,7 @@ body::after {
 @keyframes barSlide { to{width:64px} }
 
 .subcat-header h3 {
-  font-family:var(--serif); font-size:19px; font-weight:700;
+  font-family:var(--serif); font-size: var(--subcat-fs); font-weight:700;
   font-style:italic; letter-spacing:-.5px; color:rgba(255,255,255,0.88); margin:0;
 }
 .subcat-count {
@@ -288,33 +358,33 @@ body::after {
 .product-grid {
   width:100%; max-width:1200px; display:none;
   grid-template-columns:repeat(auto-fit, minmax(300px,1fr));
-  gap:7px; margin-bottom:22px;
+  gap: var(--card-gap); margin-bottom:22px;
 }
 .product-grid.visible { display:grid; }
 
-/* ═══════════════════════════════════════
-   PRODUCT ITEM — refined card
-   ═══════════════════════════════════════ */
+/* ══════════════════════════════════════════
+   PRODUCT ITEM
+   ══════════════════════════════════════════ */
 .prod-item {
-  display:flex; align-items:center; gap:0;
+  display:flex; align-items:center;
   background:rgba(255,255,255,0.027);
   border:1px solid rgba(255,255,255,0.065);
   border-radius:13px; cursor:pointer;
   position:relative; overflow:hidden;
   opacity:0; animation:cardIn .5s cubic-bezier(0.22,1,0.36,1) forwards;
-  /* smooth state transitions */
   transition:
     background .25s ease,
     border-color .25s ease,
     box-shadow .25s ease,
     transform .32s cubic-bezier(0.34,1.3,0.64,1);
+  /* Larger tap target */
+  min-height:56px;
 }
 @keyframes cardIn {
   from { opacity:0; transform:translateY(16px) scale(0.98); }
   to   { opacity:1; transform:translateY(0)   scale(1); }
 }
 
-/* Hover: shimmer sweep */
 .prod-item::before {
   content:""; position:absolute; top:0; left:-110%; width:75%; height:100%;
   background:linear-gradient(100deg, transparent, rgba(255,255,255,0.048), transparent);
@@ -322,7 +392,6 @@ body::after {
 }
 .prod-item:hover::before { left:140%; }
 
-/* Selected: left-edge bar */
 .prod-item::after {
   content:""; position:absolute; left:0; top:16%; bottom:16%;
   width:3px; border-radius:0 2px 2px 0; background:var(--red);
@@ -345,11 +414,9 @@ body::after {
   box-shadow:0 4px 18px rgba(230,57,70,0.14);
 }
 
-/* Inner layout */
 .prod-inner {
   display:flex; align-items:center; gap:14px;
-  padding:15px 18px; width:100%;
-  transition:padding .3s ease;
+  padding: var(--card-pad); width:100%;
 }
 
 /* ── CHECKBOX ── */
@@ -358,11 +425,11 @@ body::after {
   border:1.5px solid rgba(255,255,255,0.2); background:transparent;
   display:flex; align-items:center; justify-content:center;
   position:relative;
-  transition:background .3s cubic-bezier(0.34,1.56,0.64,1),
-             border-color .3s ease,
-             transform .3s cubic-bezier(0.34,1.56,0.64,1);
+  transition:
+    background .3s cubic-bezier(0.34,1.56,0.64,1),
+    border-color .3s ease,
+    transform .3s cubic-bezier(0.34,1.56,0.64,1);
 }
-/* pulse ring */
 .prod-check::before {
   content:""; position:absolute; inset:-5px; border-radius:50%;
   border:1px solid rgba(230,57,70,0.45);
@@ -377,12 +444,10 @@ body::after {
   0%,100%{opacity:.5;transform:scale(1)}
   50%{opacity:0;transform:scale(1.7)}
 }
-/* checkmark */
 .prod-check::after {
   content:"✓"; font-size:12.5px; font-weight:800; color:white; line-height:1;
   opacity:0; transform:scale(.1) rotate(-40deg);
-  transition:opacity .3s cubic-bezier(0.34,1.56,0.64,1),
-             transform .3s cubic-bezier(0.34,1.56,0.64,1);
+  transition:opacity .3s cubic-bezier(0.34,1.56,0.64,1), transform .3s cubic-bezier(0.34,1.56,0.64,1);
 }
 .prod-item.selected .prod-check {
   background:var(--red); border-color:var(--red); transform:scale(1.08);
@@ -392,7 +457,7 @@ body::after {
 
 /* ── NAME & PRICE ── */
 .prod-name {
-  flex:1; font-size:13.5px; font-weight:600;
+  flex:1; font-size: var(--prod-name-fs); font-weight:600;
   color:rgba(255,255,255,0.78); line-height:1.35;
   transition:color .22s ease, transform .28s ease;
   word-break:break-word;
@@ -402,7 +467,7 @@ body::after {
 
 .prod-price {
   flex-shrink:0; display:flex; align-items:baseline; gap:1px;
-  font-size:14.5px; font-weight:700; color:rgba(255,255,255,0.65);
+  font-size: var(--prod-price-fs); font-weight:700; color:rgba(255,255,255,0.65);
   white-space:nowrap;
   transition:color .25s ease, transform .28s cubic-bezier(0.34,1.56,0.64,1);
 }
@@ -410,6 +475,53 @@ body::after {
 .prod-item:hover .prod-price { color:rgba(255,255,255,0.9); transform:scale(1.04); }
 .prod-item.selected .prod-price { color:#ff9090; transform:scale(1.04); }
 .prod-item.selected .prod-price .cur { color:rgba(255,144,144,0.55); }
+
+/* ── QTY CONTROLS (inside menu card) ── */
+.prod-qty {
+  flex-shrink:0;
+  display:flex; align-items:center; gap:6px;
+  opacity:0; transform:scale(0.7);
+  transition:opacity .3s cubic-bezier(0.34,1.56,0.64,1),
+             transform .3s cubic-bezier(0.34,1.56,0.64,1);
+  pointer-events:none;
+}
+.prod-item.selected .prod-qty {
+  opacity:1; transform:scale(1);
+  pointer-events:all;
+}
+.prod-item.selected .prod-check {
+  /* when selected, hide check ring animation — qty takes over */
+}
+.pq-btn {
+  width:26px; height:26px; border-radius:7px;
+  background:rgba(255,255,255,0.07);
+  border:1px solid rgba(255,255,255,0.15);
+  color:rgba(255,255,255,0.7);
+  font-size:15px; font-weight:700;
+  cursor:pointer; display:flex; align-items:center; justify-content:center;
+  transition:all .2s ease;
+  /* Stop click from propagating to card toggle */
+  position:relative; z-index:2;
+}
+.pq-btn:hover {
+  background:rgba(230,57,70,0.18);
+  border-color:rgba(230,57,70,0.45);
+  color:white;
+}
+.prod-item.selected .pq-btn {
+  background:rgba(230,57,70,0.12);
+  border-color:rgba(230,57,70,0.3);
+}
+.pq-num {
+  font-size:13px; font-weight:800; color:white;
+  min-width:18px; text-align:center;
+  pointer-events:none;
+}
+
+/* On small screens make buttons a touch bigger */
+@media (hover:none) and (pointer:coarse) {
+  .pq-btn { width:30px; height:30px; font-size:16px; }
+}
 
 /* ── RIPPLE ── */
 .ripple {
@@ -429,15 +541,17 @@ body::after {
 @keyframes bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
 .empty-cat p { font-size:14px; color:var(--muted); }
 
-/* ═══════════════════════════════════════
+/* ══════════════════════════════════════════
    CTA — fixed bottom pill
-   ═══════════════════════════════════════ */
+   ══════════════════════════════════════════ */
 .cta-wrap {
-  position:fixed; bottom:28px; left:50%;
+  position:fixed; bottom: var(--cta-bottom); left:50%;
   transform:translateX(-50%);
   z-index:500; pointer-events:none;
   opacity:0;
   animation:ctaEntrance .85s cubic-bezier(0.34,1.56,0.64,1) 1.2s forwards;
+  /* Account for safe area (home bar on iPhone) */
+  padding-bottom: env(safe-area-inset-bottom);
 }
 @keyframes ctaEntrance {
   from{opacity:0;transform:translateX(-50%) translateY(34px) scale(.88)}
@@ -446,25 +560,22 @@ body::after {
 
 .cta-btn {
   display:flex; align-items:center; gap:12px;
-  padding:17px 46px;
+  padding: var(--cta-pad);
   background:rgba(16,8,10,0.92);
   color:rgba(255,255,255,0.5);
   border:1px solid rgba(255,255,255,0.11);
-  font-family:var(--sans); font-size:10.5px; font-weight:700;
+  font-family:var(--sans); font-size: var(--cta-fs); font-weight:700;
   letter-spacing:3px; text-transform:uppercase;
   border-radius:50px; cursor:pointer;
   backdrop-filter:blur(20px);
   box-shadow:0 8px 32px rgba(0,0,0,0.45);
   position:relative; overflow:hidden; pointer-events:all; white-space:nowrap;
-  /* NO transition on button itself — handle states via class */
   transition:
-    background .4s ease,
-    border-color .4s ease,
-    color .4s ease,
-    transform .35s cubic-bezier(0.34,1.56,0.64,1),
-    box-shadow .4s ease;
+    background .4s ease, border-color .4s ease, color .4s ease,
+    transform .35s cubic-bezier(0.34,1.56,0.64,1), box-shadow .4s ease;
+  /* Min tap target */
+  min-height:50px;
 }
-/* Radial glow reveal on hover */
 .cta-btn::before {
   content:""; position:absolute; top:50%; left:50%;
   width:0; height:0; border-radius:50%;
@@ -483,7 +594,6 @@ body::after {
 }
 .cta-btn:hover i { opacity:.92; transform:translateX(-4px) scale(1.12); }
 
-/* Active selection state */
 .cta-btn.on {
   background:linear-gradient(135deg, #b41e1e 0%, #e63946 60%, #ff5a5a 100%);
   background-size:200% 200%;
@@ -505,7 +615,6 @@ body::after {
 .cta-btn.on:hover { transform:translateY(-4px) scale(1.025); animation:none; box-shadow:0 16px 48px rgba(230,57,70,0.65); }
 .cta-btn.on:hover i { animation:none; transform:translateX(-4px) scale(1.16); }
 
-/* Badge */
 .cta-badge {
   display:none; align-items:center; justify-content:center;
   width:21px; height:21px; border-radius:50%;
@@ -514,129 +623,470 @@ body::after {
 }
 .cta-btn.on .cta-badge { display:flex; }
 
-/* ═══════════════════════════════════════
+/* ══════════════════════════════════════════
    OVERLAY & MODALS
-   ═══════════════════════════════════════ */
-.overlay { position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(8px);z-index:2000;opacity:0;display:none;transition:opacity .4s ease; }
-.overlay.active { display:block;opacity:1; }
+   ══════════════════════════════════════════ */
+.overlay {
+  position:fixed; inset:0; background:rgba(0,0,0,.75);
+  backdrop-filter:blur(8px); z-index:2000;
+  opacity:0; display:none; transition:opacity .4s ease;
+}
+.overlay.active { display:block; opacity:1; }
 
 /* TOAST */
 .toast {
-  position:fixed;top:-110px;left:50%;transform:translateX(-50%);
+  position:fixed; top:-110px; left:50%; transform:translateX(-50%);
   z-index:9999;
   transition:top .5s cubic-bezier(0.34,1.4,0.64,1), opacity .4s ease;
-  opacity:0;width:360px;max-width:92vw;
-  background:rgba(8,3,4,0.97);backdrop-filter:blur(24px);
-  border:1px solid rgba(230,57,70,0.28);border-radius:18px;
-  overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.8);
+  opacity:0; width:360px; max-width:calc(100vw - 28px);
+  background:rgba(8,3,4,0.97); backdrop-filter:blur(24px);
+  border:1px solid rgba(230,57,70,0.28); border-radius:18px;
+  overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,.8);
 }
-.toast.show { top:106px;opacity:1; }
-.toast-bar { height:2px;background:linear-gradient(90deg,transparent,var(--red),transparent);animation:navLine 2s ease-in-out infinite; }
-.toast-body { display:flex;align-items:center;gap:15px;padding:16px 44px 16px 18px; }
-.toast-icon { width:38px;height:38px;border-radius:11px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:19px;background:rgba(230,57,70,0.1);border:1px solid rgba(230,57,70,0.22); }
-.toast-text strong { display:block;font-size:13.5px;font-weight:800;color:white;margin-bottom:3px; }
-.toast-text p { font-size:11.5px;color:var(--muted);margin:0; }
-.toast-x { position:absolute;right:13px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;font-size:15px;font-weight:700;padding:4px;transition:all .3s ease; }
-.toast-x:hover { color:white;transform:translateY(-50%) rotate(90deg); }
+.toast.show { top:calc(var(--nav-h) + 18px); opacity:1; }
+.toast-bar { height:2px; background:linear-gradient(90deg,transparent,var(--red),transparent); animation:navLine 2s ease-in-out infinite; }
+.toast-body { display:flex; align-items:center; gap:15px; padding:16px 44px 16px 18px; }
+.toast-icon { width:38px; height:38px; border-radius:11px; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:19px; background:rgba(230,57,70,0.1); border:1px solid rgba(230,57,70,0.22); }
+.toast-text strong { display:block; font-size:13.5px; font-weight:800; color:white; margin-bottom:3px; }
+.toast-text p { font-size:11.5px; color:var(--muted); margin:0; }
+.toast-x { position:absolute; right:13px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--muted); cursor:pointer; font-size:15px; font-weight:700; padding:8px; transition:all .3s ease; }
+.toast-x:hover { color:white; transform:translateY(-50%) rotate(90deg); }
 
 /* CLOSED POPUP */
-#closed-overlay { display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(12px);z-index:9999;justify-content:center;align-items:center; }
+#closed-overlay {
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,.85); backdrop-filter:blur(12px);
+  z-index:9999; justify-content:center; align-items:center;
+  padding:16px;
+}
 #closed-overlay.active { display:flex; }
-#closed-popup { width:370px;max-width:90vw;background:rgba(8,3,4,0.97);backdrop-filter:blur(28px);border:1px solid rgba(230,57,70,0.2);border-radius:26px;padding:46px 36px;text-align:center;box-shadow:0 36px 90px rgba(0,0,0,.9);animation:modalPop .55s cubic-bezier(0.34,1.56,0.64,1); }
+#closed-popup {
+  width:370px; max-width:100%;
+  background:rgba(8,3,4,0.97); backdrop-filter:blur(28px);
+  border:1px solid rgba(230,57,70,0.2); border-radius:26px;
+  padding:46px 36px; text-align:center;
+  box-shadow:0 36px 90px rgba(0,0,0,.9);
+  animation:modalPop .55s cubic-bezier(0.34,1.56,0.64,1);
+}
 @keyframes modalPop { from{opacity:0;transform:scale(.8) translateY(20px)} to{opacity:1;transform:scale(1) translateY(0)} }
-#closed-popup .cp-icon { font-size:38px;margin-bottom:18px;animation:bob 2s ease-in-out infinite; }
-#closed-popup .cp-title { font-family:var(--serif);font-size:32px;font-style:italic;font-weight:800;color:white;margin-bottom:12px; }
-#closed-popup .cp-desc { font-size:13px;color:var(--muted);line-height:1.85;margin-bottom:32px; }
-#closed-popup .cp-btn { padding:15px 40px;background:linear-gradient(135deg,#b22222,#e63946);color:white;border:none;border-radius:50px;font-family:var(--sans);font-weight:800;font-size:11px;letter-spacing:3px;text-transform:uppercase;cursor:pointer;transition:all .35s ease;box-shadow:0 8px 24px rgba(230,57,70,.45); }
-#closed-popup .cp-btn:hover { transform:translateY(-3px) scale(1.02);box-shadow:0 12px 32px rgba(230,57,70,.62); }
+#closed-popup .cp-icon { font-size:38px; margin-bottom:18px; animation:bob 2s ease-in-out infinite; }
+#closed-popup .cp-title { font-family:var(--serif); font-size:32px; font-style:italic; font-weight:800; color:white; margin-bottom:12px; }
+#closed-popup .cp-desc { font-size:13px; color:var(--muted); line-height:1.85; margin-bottom:32px; }
+#closed-popup .cp-btn { padding:15px 40px; background:linear-gradient(135deg,#b22222,#e63946); color:white; border:none; border-radius:50px; font-family:var(--sans); font-weight:800; font-size:11px; letter-spacing:3px; text-transform:uppercase; cursor:pointer; transition:all .35s ease; box-shadow:0 8px 24px rgba(230,57,70,.45); }
+#closed-popup .cp-btn:hover { transform:translateY(-3px) scale(1.02); box-shadow:0 12px 32px rgba(230,57,70,.62); }
 
 /* LOGIN MODAL */
-#login-modal { display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);backdrop-filter:blur(12px);z-index:10000;justify-content:center;align-items:center;opacity:0;transition:opacity .3s ease;padding:16px; }
-#login-modal.active { display:flex;opacity:1; }
-.lm-card { width:420px;max-width:100%;background:rgba(8,3,4,0.98);backdrop-filter:blur(32px);border:1px solid var(--border);border-radius:26px;overflow:hidden;box-shadow:0 48px 120px rgba(0,0,0,.9);position:relative;animation:modalPop .55s cubic-bezier(0.34,1.56,0.64,1); }
-.lm-stripe { height:2px;background:linear-gradient(90deg,transparent,var(--red),transparent);animation:navLine 2.5s ease-in-out infinite; }
+#login-modal {
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,.82); backdrop-filter:blur(12px);
+  z-index:10000; justify-content:center; align-items:center;
+  opacity:0; transition:opacity .3s ease;
+  padding:16px;
+  /* Scroll inside for very small screens */
+  overflow-y:auto;
+}
+#login-modal.active { display:flex; opacity:1; }
+.lm-card {
+  width:420px; max-width:100%;
+  background:rgba(8,3,4,0.98); backdrop-filter:blur(32px);
+  border:1px solid var(--border); border-radius:26px; overflow:hidden;
+  box-shadow:0 48px 120px rgba(0,0,0,.9); position:relative;
+  animation:modalPop .55s cubic-bezier(0.34,1.56,0.64,1);
+  /* Don't get cut off on small screens */
+  margin:auto;
+}
+.lm-stripe { height:2px; background:linear-gradient(90deg,transparent,var(--red),transparent); animation:navLine 2.5s ease-in-out infinite; }
 .lm-body { padding:38px 36px 32px; }
-.lm-tabs { display:flex;gap:4px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px;padding:4px;margin-bottom:26px; }
-.lm-tab { flex:1;padding:11px;border-radius:9px;border:none;font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);background:transparent;cursor:pointer;transition:all .3s ease; }
-.lm-tab.active { background:linear-gradient(135deg,#b22222,#e63946);color:white;box-shadow:0 4px 14px rgba(230,57,70,.4); }
-.lm-title { font-family:var(--serif);font-size:25px;font-style:italic;font-weight:800;color:white;margin-bottom:6px; }
-.lm-sub { font-size:12px;color:var(--muted);margin-bottom:22px; }
-.lm-x { position:absolute;top:16px;right:16px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--surface);border:1px solid var(--border);cursor:pointer;color:var(--muted);font-size:14px;font-weight:700;transition:all .3s ease;z-index:2; }
-.lm-x:hover { color:white;background:rgba(255,255,255,.1);transform:rotate(90deg); }
-.lm-field { margin-bottom:13px;position:relative; }
-.lm-field i { position:absolute;left:15px;top:50%;transform:translateY(-50%);font-size:13.5px;color:var(--muted);pointer-events:none;transition:all .3s ease; }
-.lm-field input { width:100%;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:13px 16px 13px 43px;font-size:13.5px;font-family:var(--sans);color:white;outline:none;transition:all .3s ease; }
+.lm-tabs { display:flex; gap:4px; background:rgba(255,255,255,.03); border:1px solid var(--border); border-radius:12px; padding:4px; margin-bottom:26px; }
+.lm-tab { flex:1; padding:11px; border-radius:9px; border:none; font-family:var(--sans); font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--muted); background:transparent; cursor:pointer; transition:all .3s ease; min-height:40px; }
+.lm-tab.active { background:linear-gradient(135deg,#b22222,#e63946); color:white; box-shadow:0 4px 14px rgba(230,57,70,.4); }
+.lm-title { font-family:var(--serif); font-size:25px; font-style:italic; font-weight:800; color:white; margin-bottom:6px; }
+.lm-sub { font-size:12px; color:var(--muted); margin-bottom:22px; }
+.lm-x { position:absolute; top:16px; right:16px; width:36px; height:36px; display:flex; align-items:center; justify-content:center; border-radius:50%; background:var(--surface); border:1px solid var(--border); cursor:pointer; color:var(--muted); font-size:14px; font-weight:700; transition:all .3s ease; z-index:2; }
+.lm-x:hover { color:white; background:rgba(255,255,255,.1); transform:rotate(90deg); }
+.lm-field { margin-bottom:13px; position:relative; }
+.lm-field i { position:absolute; left:15px; top:50%; transform:translateY(-50%); font-size:13.5px; color:var(--muted); pointer-events:none; transition:all .3s ease; }
+.lm-field input {
+  width:100%; background:var(--surface); border:1px solid var(--border);
+  border-radius:12px; padding:14px 16px 14px 43px;
+  font-size:16px; /* 16px prevents iOS auto-zoom */
+  font-family:var(--sans); color:white; outline:none; transition:all .3s ease;
+}
 .lm-field input::placeholder { color:rgba(255,255,255,.24); }
-.lm-field input:focus { border-color:rgba(230,57,70,.5);background:rgba(255,255,255,.06);transform:translateY(-1px); }
-.lm-field:has(input:focus) i { color:var(--red);transform:translateY(-50%) scale(1.1); }
-.lm-field .eye-btn { position:absolute;right:13px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;font-size:13.5px;transition:all .3s ease; }
+.lm-field input:focus { border-color:rgba(230,57,70,.5); background:rgba(255,255,255,.06); transform:translateY(-1px); }
+.lm-field:has(input:focus) i { color:var(--red); transform:translateY(-50%) scale(1.1); }
+.lm-field .eye-btn { position:absolute; right:13px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--muted); cursor:pointer; font-size:13.5px; transition:all .3s ease; padding:8px; }
 .lm-field .eye-btn:hover { color:white; }
-.lm-field.icon-right input { padding-right:40px; }
-.lm-name-row { display:grid;grid-template-columns:1fr 1fr;gap:11px; }
-.lm-forgot { text-align:right;margin:-4px 0 11px; }
-.lm-forgot a { font-size:11px;color:var(--muted);text-decoration:none;transition:color .25s ease; }
-.lm-forgot a:hover { color:#ff8080;text-decoration:underline; }
-.lm-divider { display:flex;align-items:center;gap:13px;margin:16px 0; }
-.lm-divider .dl { flex:1;height:1px;background:var(--border); }
-.lm-divider span { font-size:10px;color:rgba(255,255,255,.2);letter-spacing:1.5px; }
-.btn-google { display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:13px;border-radius:12px;text-decoration:none;background:var(--surface);border:1px solid var(--border);color:rgba(255,255,255,.72);font-family:var(--sans);font-size:13px;font-weight:600;transition:all .3s ease;margin-bottom:6px; }
-.btn-google:hover { background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.14);color:white;transform:translateY(-2px); }
-.lm-submit { width:100%;padding:15px;margin-top:8px;background:linear-gradient(135deg,#b22222,#e63946);color:white;border:none;border-radius:12px;font-family:var(--sans);font-size:11.5px;font-weight:800;letter-spacing:3px;text-transform:uppercase;cursor:pointer;transition:all .38s ease;box-shadow:0 6px 22px rgba(230,57,70,.42);display:flex;align-items:center;justify-content:center;gap:10px; }
-.lm-submit:hover { transform:translateY(-3px) scale(1.01);box-shadow:0 10px 30px rgba(230,57,70,.6); }
+.lm-field.icon-right input { padding-right:44px; }
+.lm-name-row { display:grid; grid-template-columns:1fr 1fr; gap:11px; }
+.lm-forgot { text-align:right; margin:-4px 0 11px; }
+.lm-forgot a { font-size:11px; color:var(--muted); text-decoration:none; transition:color .25s ease; padding:8px 0; display:inline-block; }
+.lm-forgot a:hover { color:#ff8080; text-decoration:underline; }
+.lm-divider { display:flex; align-items:center; gap:13px; margin:16px 0; }
+.lm-divider .dl { flex:1; height:1px; background:var(--border); }
+.lm-divider span { font-size:10px; color:rgba(255,255,255,.2); letter-spacing:1.5px; }
+.btn-google { display:flex; align-items:center; justify-content:center; gap:10px; width:100%; padding:14px; border-radius:12px; text-decoration:none; background:var(--surface); border:1px solid var(--border); color:rgba(255,255,255,.72); font-family:var(--sans); font-size:13px; font-weight:600; transition:all .3s ease; margin-bottom:6px; min-height:48px; }
+.btn-google:hover { background:rgba(255,255,255,.07); border-color:rgba(255,255,255,.14); color:white; transform:translateY(-2px); }
+.lm-submit { width:100%; padding:16px; margin-top:8px; background:linear-gradient(135deg,#b22222,#e63946); color:white; border:none; border-radius:12px; font-family:var(--sans); font-size:11.5px; font-weight:800; letter-spacing:3px; text-transform:uppercase; cursor:pointer; transition:all .38s ease; box-shadow:0 6px 22px rgba(230,57,70,.42); display:flex; align-items:center; justify-content:center; gap:10px; min-height:50px; }
+.lm-submit:hover { transform:translateY(-3px) scale(1.01); box-shadow:0 10px 30px rgba(230,57,70,.6); }
 #lm-panel-register { display:none; }
 
-/* ═══════════════════════════════════════
-   RESPONSIVE
-   ═══════════════════════════════════════ */
+/* ══════════════════════════════════════════
+   RESPONSIVE — BREAKPOINTS
+   ══════════════════════════════════════════
+
+   Breakpoints:
+   2560px+   → Large/ultrawide desktop monitors
+   1440px    → Standard desktop / large laptops
+   1280px    → Laptops (13"-15")
+   1024px    → Tablets landscape / small laptops
+   834px     → iPad Pro 11" portrait / iPad Air
+   768px     → iPad mini / tablet portrait
+   430px     → iPhone 15 Pro Max / large phones
+   390px     → iPhone 15 / standard large phones
+   375px     → iPhone SE size / older phones
+   360px     → Galaxy S / compact Android
+   320px     → Very small phones
+   ══════════════════════════════════════════ */
+
+/* ── 2560px+ Ultrawide ── */
+@media (min-width:2560px) {
+  :root {
+    --side-pad: 80px;
+    --nav-h: 96px;
+    --title-size: clamp(100px, 8vw, 156px);
+  }
+  #product-container { max-width:1600px; }
+  .product-grid { max-width:1600px; grid-template-columns:repeat(4, 1fr); }
+  .subcat-header { max-width:1600px; }
+  .nav-logo img { width:68px; height:68px; }
+  .nav-logo-text .m { font-size:15px; }
+  .nav-links a { font-size:13px; padding:10px 18px; }
+}
+
+/* ── 1440px Desktop ── */
+@media (max-width:1440px) {
+  :root { --side-pad: 48px; }
+  .product-grid { max-width:1200px; }
+}
+
+/* ── 1280px Laptop ── */
+@media (max-width:1280px) {
+  :root { --side-pad: 40px; }
+  .product-grid { grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); }
+}
+
+/* ── 1199px ── */
 @media (max-width:1199px) {
-  .navbar{padding:0 34px;}
-  .product-grid{max-width:950px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));}
-  #product-container{max-width:950px;}
+  :root { --side-pad: 34px; }
+  #product-container { max-width:950px; }
+  .product-grid { max-width:950px; grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); }
 }
-@media (max-width:1023px) {
-  .navbar{height:82px;padding:0 28px;}
-  .nav-logo img{width:54px;height:54px;} .nav-logo-text .m{font-size:13px;}
-  .nav-links a{font-size:11px;padding:8px 13px;} .nav-social a{width:32px;height:32px;}
-  .hero{padding:106px 20px 110px;} .hero-title{font-size:clamp(62px,12vw,98px);}
-  .tabs{max-width:90%;top:92px;} .tab{padding:13px 24px;font-size:10.5px;}
-  .product-grid{max-width:760px;gap:9px;}
-  .cta-btn{padding:15px 38px;} .cta-wrap{bottom:22px;}
+
+/* ── 1024px Tablets landscape / Small laptop ── */
+@media (max-width:1024px) {
+  :root {
+    --nav-h: 80px;
+    --side-pad: 28px;
+    --hero-pt: 108px;
+    --tab-pad: 13px 22px;
+    --tab-fs: 10.5px;
+  }
+  .nav-logo img { width:52px; height:52px; }
+  .nav-logo-text .m { font-size:13px; }
+  .nav-links a { font-size:11px; padding:8px 12px; letter-spacing:1.4px; }
+  .nav-social a { width:32px; height:32px; }
+  .hero-title { letter-spacing:-2px; }
+  .product-grid { grid-template-columns:repeat(auto-fit, minmax(260px,1fr)); }
+  .cta-wrap { bottom:22px; }
 }
-@media (max-width:767px) {
-  .navbar{height:72px;padding:0 18px;}
-  .nav-logo img{width:46px;height:46px;} .nav-logo-divider{display:none;} .nav-logo-text .s{display:none;} .nav-logo-text .m{font-size:12px;}
-  .nav-links,.nav-social{display:none;} .menu-toggle{display:block;}
-  .nav-links.open{display:flex;flex-direction:column;position:fixed;top:72px;left:0;right:0;background:rgba(6,2,3,.99);backdrop-filter:blur(20px);border-bottom:1px solid rgba(230,57,70,.1);padding:8px 0;z-index:999;animation:heroLine .3s ease;}
-  .nav-links.open a{padding:14px 22px;border-radius:0;border-bottom:1px solid rgba(255,255,255,.05);}
-  .nav-links.open li:last-child a{margin:4px 18px;border-radius:12px;}
-  .hero{padding:92px 16px 100px;min-height:auto;}
-  .hero-eyebrow{font-size:9px;letter-spacing:3.5px;} .hero-eyebrow::before,.hero-eyebrow::after{display:none;}
-  .hero-title{font-size:clamp(46px,14vw,68px);letter-spacing:-1.5px;} .hero-star{display:none;}
-  .hero-subtitle{font-size:10px;letter-spacing:3.5px;margin-bottom:38px;}
-  .tabs{width:calc(100% - 28px);top:82px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding:5px;}
-  .tabs::-webkit-scrollbar{display:none;} .tab{padding:12px 20px;font-size:10px;flex-shrink:0;letter-spacing:2px;}
-  #product-container{padding:0 10px;} .product-grid{grid-template-columns:1fr;max-width:500px;gap:7px;}
-  .subcat-header h3{font-size:17px;} .prod-inner{padding:13px 14px;gap:12px;}
-  .prod-name{font-size:12.5px;} .prod-price{font-size:13px;}
-  .cta-btn{padding:14px 30px;font-size:9.5px;letter-spacing:2.5px;} .cta-wrap{bottom:16px;}
-  .toast{width:calc(100% - 28px);} .toast.show{top:82px;}
-  .lm-card{width:calc(100% - 28px);} .lm-body{padding:32px 22px 28px;}
-  .lm-name-row{grid-template-columns:1fr;gap:10px;}
+
+/* ── 834px iPad Pro 11" portrait ── */
+@media (max-width:834px) {
+  :root {
+    --nav-h: 76px;
+    --side-pad: 24px;
+    --hero-pt: 100px;
+    --hero-pb: 110px;
+    --title-size: clamp(58px, 12vw, 92px);
+    --tab-pad: 13px 20px;
+    --subcat-fs: 18px;
+  }
+  .nav-links, .nav-social { display:none; }
+  .menu-toggle { display:flex; }
+  .product-grid { grid-template-columns:repeat(2, 1fr); }
+  #product-container { max-width:100%; }
+  .subcat-header { max-width:100%; }
+  .product-grid { max-width:100%; }
 }
-@media (max-width:479px) {
-  .navbar{height:66px;padding:0 14px;}
-  .hero{padding:82px 12px 90px;} .hero-title{font-size:clamp(38px,15vw,54px);}
-  .tabs{width:calc(100% - 20px);top:76px;} .tab{padding:11px 15px;font-size:9px;letter-spacing:1.5px;}
-  .cta-btn{padding:13px 26px;font-size:9px;} .cta-wrap{bottom:12px;}
+
+/* ── 768px Tablet portrait / iPad mini ── */
+@media (max-width:768px) {
+  :root {
+    --nav-h: 72px;
+    --side-pad: 20px;
+    --hero-pt: 96px;
+    --hero-pb: 100px;
+    --title-size: clamp(52px, 13vw, 82px);
+    --card-pad: 13px 15px;
+    --tab-pad: 12px 18px;
+    --tab-fs: 10.5px;
+    --subcat-fs: 17px;
+    --prod-name-fs: 13px;
+    --prod-price-fs: 13.5px;
+    --cta-pad: 15px 34px;
+    --cta-fs: 10px;
+    --cta-bottom: 20px;
+  }
+  .hero-subtitle { font-size:10.5px; letter-spacing:4px; margin-bottom:40px; }
+  .hero-eyebrow { font-size:9.5px; letter-spacing:4.5px; }
+  .hero-star { font-size:16px; top:-65px; }
+  .product-grid { grid-template-columns:repeat(2, 1fr); gap:6px; }
+  .toast.show { top:calc(var(--nav-h) + 16px); }
 }
+
+/* ── 600px Phablets / small tablets ── */
+@media (max-width:600px) {
+  :root {
+    --title-size: clamp(44px, 14vw, 68px);
+    --tab-pad: 12px 16px;
+    --tab-fs: 10px;
+    --cta-pad: 14px 30px;
+  }
+  .product-grid { grid-template-columns:1fr; max-width:480px; }
+  .hero-subtitle { letter-spacing:3.5px; margin-bottom:36px; }
+}
+
+/* ── 480px Large phones (Galaxy S series, Pixel, etc.) ── */
+@media (max-width:480px) {
+  :root {
+    --nav-h: 68px;
+    --side-pad: 16px;
+    --hero-pt: 90px;
+    --hero-pb: 90px;
+    --title-size: clamp(40px, 14.5vw, 62px);
+    --card-pad: 12px 14px;
+    --card-gap: 6px;
+    --tab-pad: 11px 14px;
+    --tab-fs: 9.5px;
+    --subcat-fs: 16px;
+    --prod-name-fs: 12.5px;
+    --prod-price-fs: 13px;
+    --cta-pad: 13px 26px;
+    --cta-fs: 9.5px;
+    --cta-bottom: 16px;
+  }
+  .hero-eyebrow { font-size:9px; letter-spacing:3.5px; gap:8px; }
+  .hero-eyebrow::before, .hero-eyebrow::after { display:none; }
+  .hero-title { letter-spacing:-1.5px; margin-bottom:16px; }
+  .hero-star { display:none; }
+  .hero-subtitle { font-size:10px; letter-spacing:3px; margin-bottom:32px; }
+  .tab { flex-shrink:0; letter-spacing:1.8px; }
+  .tab i { font-size:12px; }
+  .prod-check { width:22px; height:22px; }
+  .prod-inner { gap:11px; }
+  .product-grid { max-width:100%; }
+  #product-container { padding:0 8px; }
+}
+
+/* ── 430px iPhone 15 Pro Max ── */
+@media (max-width:430px) {
+  :root {
+    --title-size: clamp(38px, 15vw, 58px);
+    --nav-h: 66px;
+    --side-pad: 14px;
+  }
+  .nav-logo img { width:42px; height:42px; }
+  .nav-logo-text .s { display:none; }
+  .nav-logo-divider { display:none; }
+  .nav-logo-text .m { font-size:12px; letter-spacing:2px; }
+}
+
+/* ── 390px iPhone 15 / iPhone 14 ── */
+@media (max-width:390px) {
+  :root {
+    --nav-h: 64px;
+    --side-pad: 12px;
+    --title-size: clamp(36px, 15vw, 54px);
+    --tab-pad: 10px 12px;
+    --tab-fs: 9px;
+    --cta-pad: 13px 22px;
+    --cta-fs: 9px;
+    --cta-bottom: 14px;
+  }
+  .hero-eyebrow { margin-bottom:20px; }
+  .hero { min-height:auto; padding-bottom:80px; }
+  .prod-name { font-size:12px; }
+  .prod-price { font-size:12.5px; }
+  .tab i { display:none; } /* Hide icons on very narrow tabs */
+  .tab { gap:0; }
+}
+
+/* ── 375px iPhone SE ── */
+@media (max-width:375px) {
+  :root {
+    --title-size: clamp(34px, 15vw, 50px);
+    --nav-h: 60px;
+  }
+  .hero-subtitle { display:none; }
+}
+
+/* ── 360px Galaxy S compact ── */
+@media (max-width:360px) {
+  :root {
+    --side-pad: 10px;
+    --tab-pad: 10px 10px;
+    --title-size: clamp(32px, 15vw, 46px);
+  }
+  .prod-inner { padding:11px 11px; gap:9px; }
+}
+
+/* ── 320px Very small phones ── */
+@media (max-width:320px) {
+  :root {
+    --side-pad: 8px;
+    --tab-fs: 8.5px;
+    --cta-pad: 11px 18px;
+    --cta-fs: 8.5px;
+  }
+  .hero-title { letter-spacing:-1px; }
+  .hero-eyebrow { font-size:8px; }
+  .prod-check { width:20px; height:20px; }
+  .prod-check::after { font-size:10px; }
+}
+
+/* ══════════════════════════════════════════
+   GALAXY Z FOLD 5 — Foldable device support
+   Inner screen (unfolded): ~904×832
+   Outer screen (folded):   ~260×588
+   ══════════════════════════════════════════ */
+
+/* Folded outer screen */
+@media (max-width:280px) {
+  :root {
+    --side-pad: 6px;
+    --nav-h: 56px;
+    --tab-pad: 8px 8px;
+    --tab-fs: 8px;
+    --cta-pad: 10px 14px;
+    --cta-fs: 8px;
+    --title-size: clamp(26px, 16vw, 38px);
+    --prod-name-fs: 11px;
+    --prod-price-fs: 11.5px;
+  }
+  .tab span { display:none; }
+  .tab i { display:flex !important; font-size:14px; }
+  .tab { gap:0; justify-content:center; }
+  .tabs { gap:2px; }
+  .hero-eyebrow { display:none; }
+  .hero-subtitle { display:none; }
+  .prod-check { width:18px; height:18px; }
+  .prod-inner { padding:10px 10px; gap:8px; }
+  .nav-logo-text { display:none; }
+  .nav-logo-divider { display:none; }
+  .nav-logo img { width:36px; height:36px; }
+}
+
+/* Z Fold unfolded — use 2-column grid */
+@media (min-width:768px) and (max-width:920px) and (max-height:900px) {
+  .product-grid { grid-template-columns:repeat(2, 1fr); }
+}
+
+/* ══════════════════════════════════════════
+   SPECIAL DEVICE FEATURES
+   ══════════════════════════════════════════ */
+
+/* Touch devices — bigger tap targets, no hover effects */
 @media (hover:none) and (pointer:coarse) {
-  .prod-item{-webkit-tap-highlight-color:rgba(230,57,70,.1);}
-  .prod-check{width:24px;height:24px;}
-  .tab{padding:13px 18px;}
+  .prod-item { -webkit-tap-highlight-color:rgba(230,57,70,.1); }
+  .prod-check { width:24px; height:24px; }
+  .prod-item:hover { transform:none; box-shadow:none; background:rgba(255,255,255,0.027); border-color:rgba(255,255,255,0.065); }
+  .prod-item:hover::before { left:-110%; }
+  .prod-item:hover .prod-name { transform:none; }
+  .prod-item:hover .prod-price { transform:none; color:rgba(255,255,255,0.65); }
+  .tab:hover { color:rgba(255,255,255,0.4); }
+  .tab:hover i { transform:none; opacity:.65; }
+  .nav-social a:hover { transform:none; }
+  .cta-btn:hover { transform:none; box-shadow:0 8px 32px rgba(0,0,0,0.45); }
+  .cta-btn.on:hover { transform:none; }
+  /* Active states instead */
+  .prod-item:active { background:rgba(255,255,255,0.05); transform:scale(0.98); }
+  .cta-btn:active { transform:scale(0.97); }
 }
+
+/* High-res / Retina screens */
+@media (-webkit-min-device-pixel-ratio:2), (min-resolution:192dpi) {
+  .prod-item { border-width:0.5px; }
+  .navbar { border-bottom-width:0.5px; }
+}
+
+/* Landscape phones */
+@media (max-height:500px) and (orientation:landscape) {
+  :root {
+    --hero-pt: calc(var(--nav-h) + 16px);
+    --hero-pb: 70px;
+  }
+  .hero { min-height:auto; }
+  .hero-title { font-size:clamp(36px, 8vh, 60px); margin-bottom:12px; }
+  .hero-eyebrow { margin-bottom:14px; font-size:9px; }
+  .hero-subtitle { margin-bottom:26px; font-size:9px; }
+  .tabs { margin-bottom:30px; }
+  .hero-star { top:-50px; font-size:14px; }
+}
+
+/* Very short landscape (e.g. Galaxy Z Flip) */
+@media (max-height:380px) and (orientation:landscape) {
+  .hero-eyebrow { display:none; }
+  .hero-subtitle { display:none; }
+  .hero { padding-top:calc(var(--nav-h) + 8px); padding-bottom:50px; }
+  .hero-title { font-size:clamp(30px, 7vh, 48px); margin-bottom:8px; }
+  .tabs { margin-bottom:20px; }
+}
+
+/* Large tablets landscape (≥1024) — restore desktop nav */
+@media (min-width:1024px) {
+  .nav-links, .nav-social { display:flex !important; }
+  .menu-toggle { display:none !important; }
+}
+
+/* Login modal on small screens */
+@media (max-width:480px) {
+  #login-modal { align-items:flex-end; padding:0; }
+  .lm-card {
+    width:100%; border-radius:26px 26px 0 0;
+    max-height:92vh; overflow-y:auto;
+    padding-bottom: env(safe-area-inset-bottom);
+    animation:slideUp .4s cubic-bezier(0.34,1.2,0.64,1);
+  }
+  @keyframes slideUp {
+    from { transform:translateY(100%); }
+    to   { transform:translateY(0); }
+  }
+  .lm-body { padding:28px 20px 24px; }
+  .lm-name-row { grid-template-columns:1fr; gap:10px; }
+  .lm-title { font-size:22px; }
+  .lm-field input { font-size:16px; } /* Prevent iOS zoom */
+}
+
+/* ── Print ── */
 @media print {
-  .navbar,.tabs,.cta-wrap,.overlay,.toast,#closed-overlay,#login-modal{display:none!important;}
-  .product-grid{display:grid!important;} body::before,body::after{display:none;}
+  .navbar,.tabs,.cta-wrap,.overlay,.toast,
+  #closed-overlay,#login-modal { display:none !important; }
+  .product-grid { display:grid !important; }
+  body::before, body::after { display:none; }
+  .prod-item { break-inside:avoid; opacity:1 !important; animation:none; }
+  .hero { min-height:auto; padding-top:20px; }
+}
+
+/* ── Reduced motion accessibility ── */
+@media (prefers-reduced-motion:reduce) {
+  *, *::before, *::after {
+    animation-duration:.01ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.01ms !important;
+  }
+  body::after { animation:none; }
+  .hero-title { letter-spacing:-3px; }
 }
 </style>
 </head>
@@ -652,7 +1102,7 @@ body::after {
       <span class="m">Scuola Borsa</span>
     </div>
   </a>
-  <button class="menu-toggle" id="menu-toggle" aria-label="Menu">☰</button>
+  <button class="menu-toggle" id="menu-toggle" aria-label="Apri menu" aria-expanded="false">☰</button>
   <ul class="nav-links" id="nav-links">
     <li><a href="/">Home</a></li>
     <li><a href="/#chi-siamo">Chi siamo</a></li>
@@ -661,9 +1111,9 @@ body::after {
     <li><a href="#" id="login-btn">Login</a></li>
   </ul>
   <div class="nav-social">
-    <a href="https://www.facebook.com/aziendaspecialediformazionescuolapaoloborsa/" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-    <a href="https://www.instagram.com/scuola_borsa/" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-    <a href="https://www.youtube.com/@ScuolaPaoloBorsaMonza" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+    <a href="https://www.facebook.com/aziendaspecialediformazionescuolapaoloborsa/" target="_blank" rel="noopener" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+    <a href="https://www.instagram.com/scuola_borsa/" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+    <a href="https://www.youtube.com/@ScuolaPaoloBorsaMonza" target="_blank" rel="noopener" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
   </div>
 </header>
 
@@ -694,7 +1144,7 @@ body::after {
 <div class="overlay" id="overlay"></div>
 
 <!-- Toast -->
-<div class="toast" id="toast" role="alert">
+<div class="toast" id="toast" role="alert" aria-live="assertive">
   <div class="toast-bar"></div>
   <div class="toast-body">
     <div class="toast-icon">⚠️</div>
@@ -707,7 +1157,7 @@ body::after {
 </div>
 
 <!-- Bar chiuso -->
-<div id="closed-overlay" role="dialog" aria-modal="true">
+<div id="closed-overlay" role="dialog" aria-modal="true" aria-label="Bar chiuso">
   <div id="closed-popup">
     <div class="cp-icon">🔒</div>
     <div class="cp-title">Bar Chiuso</div>
@@ -717,32 +1167,32 @@ body::after {
 </div>
 
 <!-- Login -->
-<div id="login-modal" role="dialog" aria-modal="true">
+<div id="login-modal" role="dialog" aria-modal="true" aria-label="Accedi o registrati">
   <div class="lm-card">
     <div class="lm-stripe"></div>
-    <button class="lm-x" id="lm-close">✕</button>
+    <button class="lm-x" id="lm-close" aria-label="Chiudi">✕</button>
     <div class="lm-body">
       <div class="lm-tabs">
-        <button class="lm-tab active" onclick="lmPanel('login')">Accedi</button>
-        <button class="lm-tab" onclick="lmPanel('register')">Registrati</button>
+        <button class="lm-tab active" onclick="lmPanel('login')" aria-selected="true">Accedi</button>
+        <button class="lm-tab" onclick="lmPanel('register')" aria-selected="false">Registrati</button>
       </div>
       <div id="lm-panel-login">
         <div class="lm-title">Bentornato</div>
         <p class="lm-sub">Accedi per ordinare con i tuoi dati salvati.</p>
         <a href="{{ url_for('auth.login') }}" class="btn-google">
-          <svg width="17" height="17" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+          <svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
           Continua con Google
         </a>
         <div class="lm-divider"><div class="dl"></div><span>oppure</span><div class="dl"></div></div>
         <form action="/login" method="POST">
-          <div class="lm-field"><i class="fas fa-user"></i><input type="text" name="username" placeholder="Username" required/></div>
+          <div class="lm-field"><i class="fas fa-user" aria-hidden="true"></i><input type="text" name="username" placeholder="Username" required autocomplete="username"/></div>
           <div class="lm-field icon-right">
-            <i class="fas fa-lock"></i>
-            <input type="password" name="password" id="pw-login" placeholder="Password" required/>
-            <button type="button" class="eye-btn" onclick="toggleEye('pw-login',this)"><i class="fas fa-eye"></i></button>
+            <i class="fas fa-lock" aria-hidden="true"></i>
+            <input type="password" name="password" id="pw-login" placeholder="Password" required autocomplete="current-password"/>
+            <button type="button" class="eye-btn" onclick="toggleEye('pw-login',this)" aria-label="Mostra/nascondi password"><i class="fas fa-eye"></i></button>
           </div>
           <div class="lm-forgot"><a href="#">Password dimenticata?</a></div>
-          <button class="lm-submit" type="submit"><i class="fas fa-sign-in-alt"></i> Accedi</button>
+          <button class="lm-submit" type="submit"><i class="fas fa-sign-in-alt" aria-hidden="true"></i> Accedi</button>
         </form>
       </div>
       <div id="lm-panel-register" hidden>
@@ -750,21 +1200,21 @@ body::after {
         <p class="lm-sub">Registrati per un'esperienza personalizzata.</p>
         <form action="/register" method="POST">
           <div class="lm-name-row">
-            <div class="lm-field"><i class="fas fa-user"></i><input type="text" name="nome" placeholder="Nome" required/></div>
-            <div class="lm-field"><i class="fas fa-user"></i><input type="text" name="cognome" placeholder="Cognome" required/></div>
+            <div class="lm-field"><i class="fas fa-user" aria-hidden="true"></i><input type="text" name="nome" placeholder="Nome" required autocomplete="given-name"/></div>
+            <div class="lm-field"><i class="fas fa-user" aria-hidden="true"></i><input type="text" name="cognome" placeholder="Cognome" required autocomplete="family-name"/></div>
           </div>
-          <div class="lm-field"><i class="fas fa-envelope"></i><input type="email" name="email" placeholder="Email" required/></div>
+          <div class="lm-field"><i class="fas fa-envelope" aria-hidden="true"></i><input type="email" name="email" placeholder="Email" required autocomplete="email"/></div>
           <div class="lm-field icon-right">
-            <i class="fas fa-lock"></i>
-            <input type="password" name="password" id="pw-reg" placeholder="Password" required/>
-            <button type="button" class="eye-btn" onclick="toggleEye('pw-reg',this)"><i class="fas fa-eye"></i></button>
+            <i class="fas fa-lock" aria-hidden="true"></i>
+            <input type="password" name="password" id="pw-reg" placeholder="Password" required autocomplete="new-password"/>
+            <button type="button" class="eye-btn" onclick="toggleEye('pw-reg',this)" aria-label="Mostra/nascondi password"><i class="fas fa-eye"></i></button>
           </div>
           <div class="lm-field icon-right">
-            <i class="fas fa-lock"></i>
-            <input type="password" name="password2" id="pw-reg2" placeholder="Conferma password" required/>
-            <button type="button" class="eye-btn" onclick="toggleEye('pw-reg2',this)"><i class="fas fa-eye-slash"></i></button>
+            <i class="fas fa-lock" aria-hidden="true"></i>
+            <input type="password" name="password2" id="pw-reg2" placeholder="Conferma password" required autocomplete="new-password"/>
+            <button type="button" class="eye-btn" onclick="toggleEye('pw-reg2',this)" aria-label="Mostra/nascondi conferma password"><i class="fas fa-eye-slash"></i></button>
           </div>
-          <button class="lm-submit" type="submit"><i class="fas fa-user-plus"></i> Crea Account</button>
+          <button class="lm-submit" type="submit"><i class="fas fa-user-plus" aria-hidden="true"></i> Crea Account</button>
         </form>
       </div>
     </div>
@@ -797,62 +1247,85 @@ const dolciMap = {
   'Gelati':              ['gelato','coppa','cono','ghiacciolo']
 };
 function subcat(name, map, fb) {
-  const n=name.toLowerCase();
-  for (const [c,kws] of Object.entries(map)) if (kws.some(k=>n.includes(k))) return c;
+  const n = name.toLowerCase();
+  for (const [c, kws] of Object.entries(map)) if (kws.some(k => n.includes(k))) return c;
   return fb;
 }
-const cats={cibo:{},bevande:{},dolci:{}};
-listaItems.forEach(p=>{
-  const c=(p.categoria||'').toLowerCase().trim();
-  const entry={name:p.prodotto,price:p.prezzo_euro};
-  let g,s;
-  if(c==='bevande')    {g='bevande';s=subcat(p.prodotto,bevsMap,'Altre Bevande');}
-  else if(c==='dolci') {g='dolci';  s=subcat(p.prodotto,dolciMap,'Altri Dolci');}
-  else                 {g='cibo';   s=subcat(p.prodotto,foodMap,'Altri Cibi');}
-  if(!cats[g][s]) cats[g][s]=[];
+const cats = { cibo:{}, bevande:{}, dolci:{} };
+listaItems.forEach(p => {
+  const c = (p.categoria || '').toLowerCase().trim();
+  const entry = { name: p.prodotto, price: p.prezzo_euro };
+  let g, s;
+  if      (c === 'bevande') { g='bevande'; s=subcat(p.prodotto, bevsMap, 'Altre Bevande'); }
+  else if (c === 'dolci')   { g='dolci';   s=subcat(p.prodotto, dolciMap, 'Altri Dolci'); }
+  else                      { g='cibo';    s=subcat(p.prodotto, foodMap, 'Altri Cibi'); }
+  if (!cats[g][s]) cats[g][s] = [];
   cats[g][s].push(entry);
 });
 
 const ORDER = {
-  cibo:   ['Panini & Toast','Primi Piatti','Secondi','Insalate & Contorni','Snack & Spuntini','Altri Cibi'],
-  bevande:['Caffetteria','Bevande Calde','Bevande Fredde','Spirits & Cocktails','Altre Bevande'],
-  dolci:  ['Cornetti & Brioches','Torte & Crostate','Pasticcini','Gelati','Altri Dolci']
+  cibo:    ['Panini & Toast','Primi Piatti','Secondi','Insalate & Contorni','Snack & Spuntini','Altri Cibi'],
+  bevande: ['Caffetteria','Bevande Calde','Bevande Fredde','Spirits & Cocktails','Altre Bevande'],
+  dolci:   ['Cornetti & Brioches','Torte & Crostate','Pasticcini','Gelati','Altri Dolci']
 };
 
 /* ─── STATE ─── */
-let sel={}, currentCat='cibo', switching=false;
-try { const s=localStorage.getItem('sel'); if(s) sel=JSON.parse(s); } catch(_){}
+let sel = {}, currentCat = 'cibo', switching = false;
+try {
+  const s = localStorage.getItem('sel');
+  if (s) {
+    const raw = JSON.parse(s);
+    // Migrate old format (value was a plain price string) to new { price, qty }
+    Object.entries(raw).forEach(([k, v]) => {
+      sel[k] = (typeof v === 'object' && v !== null) ? v : { price: parseFloat(v), qty: 1 };
+    });
+  }
+} catch(_) {}
 
 /* ─── MOBILE NAV ─── */
-const navLinks=document.getElementById('nav-links');
-document.getElementById('menu-toggle').addEventListener('click', ()=>navLinks.classList.toggle('open'));
-document.addEventListener('click', e=>{ if(!document.getElementById('navbar').contains(e.target)) navLinks.classList.remove('open'); });
+const navLinks    = document.getElementById('nav-links');
+const menuToggle  = document.getElementById('menu-toggle');
+
+menuToggle.addEventListener('click', () => {
+  const open = navLinks.classList.toggle('open');
+  menuToggle.setAttribute('aria-expanded', open);
+  menuToggle.textContent = open ? '✕' : '☰';
+});
+document.addEventListener('click', e => {
+  if (!document.getElementById('navbar').contains(e.target)) {
+    navLinks.classList.remove('open');
+    menuToggle.setAttribute('aria-expanded', 'false');
+    menuToggle.textContent = '☰';
+  }
+});
 
 /* ─── NAVBAR HIDE ON SCROLL ─── */
-let prevY=0;
-window.addEventListener('scroll', ()=>{
-  const y=window.scrollY;
-  document.getElementById('navbar').classList.toggle('hidden', y>prevY && y>160);
-  prevY=y;
-},{passive:true});
+let prevY = 0;
+window.addEventListener('scroll', () => {
+  const y = window.scrollY;
+  document.getElementById('navbar').classList.toggle('hidden', y > prevY && y > 160);
+  prevY = y;
+}, { passive:true });
 
 /* ─── TABS — sliding pill ─── */
-const tabsEl=document.getElementById('tabs');
-tabsEl.style.position='relative';
-const pill=Object.assign(document.createElement('div'),{className:'tab-pill'});
+const tabsEl = document.getElementById('tabs');
+tabsEl.style.position = 'relative';
+const pill = Object.assign(document.createElement('div'), { className:'tab-pill' });
 tabsEl.appendChild(pill);
 
-function movePill(tab){
-  const tr=tabsEl.getBoundingClientRect(), br=tab.getBoundingClientRect();
-  Object.assign(pill.style,{
-    width:br.width+'px', height:br.height+'px',
-    top:(br.top-tr.top)+'px', left:(br.left-tr.left)+'px'
+function movePill(tab) {
+  const tr = tabsEl.getBoundingClientRect(), br = tab.getBoundingClientRect();
+  Object.assign(pill.style, {
+    width:  br.width  + 'px',
+    height: br.height + 'px',
+    top:    (br.top  - tr.top)  + 'px',
+    left:   (br.left - tr.left) + 'px'
   });
 }
 
-document.querySelectorAll('.tab').forEach(tab=>{
-  tab.addEventListener('click',()=>{
-    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     tab.classList.add('active');
     movePill(tab);
     renderCat(tab.dataset.cat);
@@ -860,173 +1333,263 @@ document.querySelectorAll('.tab').forEach(tab=>{
 });
 
 /* ─── RENDER ─── */
-const container=document.getElementById('product-container');
-const ctaBtn=document.getElementById('cta-btn');
-const ctaBadge=document.getElementById('cta-badge');
+const container = document.getElementById('product-container');
+const ctaBtn    = document.getElementById('cta-btn');
+const ctaBadge  = document.getElementById('cta-badge');
 
-function renderCat(cat){
-  if(switching) return;
-  switching=true; currentCat=cat;
-
-  container.style.opacity='0';
-  container.style.transform='translateY(10px)';
-
-  setTimeout(()=>{
-    container.innerHTML='';
+function renderCat(cat) {
+  if (switching) return;
+  switching = true; currentCat = cat;
+  container.style.opacity   = '0';
+  container.style.transform = 'translateY(10px)';
+  setTimeout(() => {
+    container.innerHTML = '';
     buildContent(cat);
-    requestAnimationFrame(()=>{
-      // Force reflow so transition fires
+    requestAnimationFrame(() => {
       container.getBoundingClientRect();
-      container.style.transition='opacity .28s ease, transform .28s cubic-bezier(0.22,1,0.36,1)';
-      container.style.opacity='1';
-      container.style.transform='translateY(0)';
-      setTimeout(()=>{ container.style.transition=''; switching=false; },300);
+      container.style.transition = 'opacity .28s ease, transform .28s cubic-bezier(0.22,1,0.36,1)';
+      container.style.opacity    = '1';
+      container.style.transform  = 'translateY(0)';
+      setTimeout(() => { container.style.transition = ''; switching = false; }, 300);
     });
-  },210);
+  }, 210);
 }
 
-function buildContent(cat){
-  const sorted=Object.keys(cats[cat]).sort((a,b)=>{
-    const ia=ORDER[cat].indexOf(a), ib=ORDER[cat].indexOf(b);
-    return (ia===-1?99:ia)-(ib===-1?99:ib);
+function buildContent(cat) {
+  const sorted = Object.keys(cats[cat]).sort((a, b) => {
+    const ia = ORDER[cat].indexOf(a), ib = ORDER[cat].indexOf(b);
+    return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib);
   });
-  if(!sorted.length){
-    const g=document.createElement('div'); g.className='product-grid visible';
-    g.innerHTML='<div class="empty-cat"><div class="ei">🍽️</div><p>Nessun prodotto in questa categoria.</p></div>';
+  if (!sorted.length) {
+    const g = document.createElement('div'); g.className = 'product-grid visible';
+    g.innerHTML = '<div class="empty-cat"><div class="ei">🍽️</div><p>Nessun prodotto in questa categoria.</p></div>';
     container.appendChild(g); return;
   }
-  sorted.forEach((sc,si)=>{
-    const items=cats[cat][sc]; if(!items?.length) return;
-    // Header
-    const h=document.createElement('div'); h.className='subcat-header';
-    h.style.animationDelay=si*.065+'s';
-    h.innerHTML=`<h3>${sc}</h3><span class="subcat-count">${items.length}&nbsp;prodott${items.length===1?'o':'i'}</span>`;
+  sorted.forEach((sc, si) => {
+    const items = cats[cat][sc]; if (!items?.length) return;
+    const h = document.createElement('div'); h.className = 'subcat-header';
+    h.style.animationDelay = si * .065 + 's';
+    h.innerHTML = `<h3>${sc}</h3><span class="subcat-count">${items.length}&nbsp;prodott${items.length === 1 ? 'o' : 'i'}</span>`;
     container.appendChild(h);
-    // Grid
-    const g=document.createElement('div'); g.className='product-grid visible';
-    g.innerHTML=items.map((p,i)=>`
-      <div class="prod-item ${sel[p.name]?'selected':''}"
+    const g = document.createElement('div'); g.className = 'product-grid visible';
+    g.innerHTML = items.map((p, i) => `
+      <div class="prod-item ${sel[p.name] ? 'selected' : ''}"
            data-name="${p.name}" data-price="${p.price}"
-           style="animation-delay:${si*.065+i*.038}s"
+           style="animation-delay:${si * .065 + i * .038}s"
            role="button" tabindex="0" aria-pressed="${!!sel[p.name]}">
         <div class="prod-inner">
-          <div class="prod-check"></div>
+          <div class="prod-check" aria-hidden="true"></div>
           <span class="prod-name">${p.name}</span>
+          <div class="prod-qty" aria-hidden="true">
+            <button class="pq-btn pq-minus" type="button" tabindex="-1">−</button>
+            <span class="pq-num">1</span>
+            <button class="pq-btn pq-plus"  type="button" tabindex="-1">+</button>
+          </div>
           <span class="prod-price"><span class="cur">€</span>${parseFloat(p.price).toFixed(2)}</span>
         </div>
       </div>`).join('');
     container.appendChild(g);
-    g.querySelectorAll('.prod-item').forEach(row=>{
-      row.addEventListener('click', e=>{ ripple(row,e); toggle(row); });
-      row.addEventListener('keypress', e=>{ if(e.key===' '||e.key==='Enter'){e.preventDefault();toggle(row);} });
+    // Restore qty display for already-selected items
+    g.querySelectorAll('.prod-item.selected').forEach(row => {
+      const entry = sel[row.dataset.name];
+      if (!entry) return;
+      const qty = entry.qty || 1;
+      const qn = row.querySelector('.pq-num');
+      if (qn && qty > 1) qn.textContent = qty;
+      if (qty > 1) updateRowPrice(row, parseFloat(row.dataset.price), qty);
+    });
+    g.querySelectorAll('.prod-item').forEach(row => {
+      row.addEventListener('click', e => {
+        // If a qty button was clicked, handle qty change — don't toggle selection
+        if (e.target.closest('.pq-minus')) { e.stopPropagation(); adjustQty(row, -1); return; }
+        if (e.target.closest('.pq-plus'))  { e.stopPropagation(); adjustQty(row, +1); return; }
+        ripple(row, e);
+        toggle(row);
+      });
+      row.addEventListener('keypress', e => {
+        if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); toggle(row); }
+      });
     });
   });
 }
 
 /* ─── RIPPLE ─── */
-function ripple(el,e){
-  const r=document.createElement('span'); r.className='ripple';
-  const rect=el.getBoundingClientRect(), sz=Math.max(rect.width,rect.height);
-  Object.assign(r.style,{width:sz+'px',height:sz+'px',left:(e.clientX-rect.left-sz/2)+'px',top:(e.clientY-rect.top-sz/2)+'px'});
+function ripple(el, e) {
+  const r = document.createElement('span'); r.className = 'ripple';
+  const rect = el.getBoundingClientRect(), sz = Math.max(rect.width, rect.height);
+  // Touch support
+  const cx = e.touches ? e.touches[0].clientX : e.clientX;
+  const cy = e.touches ? e.touches[0].clientY : e.clientY;
+  Object.assign(r.style, {
+    width:  sz + 'px', height: sz + 'px',
+    left:   (cx - rect.left - sz/2) + 'px',
+    top:    (cy - rect.top  - sz/2) + 'px'
+  });
   el.appendChild(r);
-  setTimeout(()=>r.remove(),650);
+  setTimeout(() => r.remove(), 650);
 }
 
 /* ─── TOGGLE ─── */
-function toggle(row){
-  const {name,price}=row.dataset;
-  if(sel[name]){
+function toggle(row) {
+  const { name, price } = row.dataset;
+  if (sel[name]) {
+    // Deselect
     delete sel[name];
     row.classList.remove('selected');
-    row.setAttribute('aria-pressed','false');
+    row.setAttribute('aria-pressed', 'false');
+    // Reset qty display
+    const qn = row.querySelector('.pq-num');
+    if (qn) qn.textContent = '1';
+    // Reset price display to base price
+    updateRowPrice(row, parseFloat(price), 1);
   } else {
-    sel[name]=price;
+    // Select with qty = 1
+    sel[name] = { price: parseFloat(price), qty: 1 };
     row.classList.add('selected');
-    row.setAttribute('aria-pressed','true');
-    // micro-bounce on checkbox
-    const ck=row.querySelector('.prod-check');
-    ck.style.animation='none';
-    requestAnimationFrame(()=>{ ck.style.animation='ckBounce .4s cubic-bezier(0.34,1.56,0.64,1)'; });
+    row.setAttribute('aria-pressed', 'true');
+    const ck = row.querySelector('.prod-check');
+    ck.style.animation = 'none';
+    requestAnimationFrame(() => { ck.style.animation = 'ckBounce .4s cubic-bezier(0.34,1.56,0.64,1)'; });
   }
-  localStorage.setItem('sel',JSON.stringify(sel));
+  try { localStorage.setItem('sel', JSON.stringify(sel)); } catch(_) {}
   updateCta();
 }
 
-/* ─── CTA ─── */
-function updateCta(){
-  const n=Object.keys(sel).length;
-  const was=ctaBtn.classList.contains('on');
-  ctaBtn.classList.toggle('on',n>0);
-  if(n>0&&!was){
-    // badge pop
-    ctaBadge.style.transform='scale(0)';
-    requestAnimationFrame(()=>{ ctaBadge.style.transition='transform .4s cubic-bezier(0.34,1.56,0.64,1)'; ctaBadge.style.transform='scale(1)'; });
-  }
-  tickCount(parseInt(ctaBadge.textContent)||0, n);
+/* ─── ADJUST QTY ─── */
+function adjustQty(row, delta) {
+  const { name, price } = row.dataset;
+  if (!sel[name]) return; // not selected
+  const current = sel[name].qty || 1;
+  const next = Math.max(1, Math.min(10, current + delta));
+  sel[name].qty = next;
+  // Update qty number shown
+  const qn = row.querySelector('.pq-num');
+  if (qn) qn.textContent = next;
+  // Update price shown on card
+  updateRowPrice(row, parseFloat(price), next);
+  try { localStorage.setItem('sel', JSON.stringify(sel)); } catch(_) {}
+  updateCta();
 }
 
-function tickCount(from,to){
-  if(from===to) return;
-  const step=to>from?1:-1, delay=Math.max(18, 55/Math.abs(to-from));
-  let c=from;
-  const go=()=>{ c+=step; ctaBadge.textContent=c; if(c!==to) setTimeout(go,delay); };
+/* Update the price label on a card */
+function updateRowPrice(row, unitPrice, qty) {
+  const priceEl = row.querySelector('.prod-price');
+  if (!priceEl) return;
+  const total = unitPrice * qty;
+  priceEl.innerHTML = '<span class="cur">€</span>' + total.toFixed(2);
+}
+
+/* ─── CTA ─── */
+function updateCta() {
+  // Count total pieces across all selected products
+  const n = Object.values(sel).reduce((sum, v) => sum + (v.qty || 1), 0);
+  const was = ctaBtn.classList.contains('on');
+  ctaBtn.classList.toggle('on', n > 0);
+  if (n > 0 && !was) {
+    ctaBadge.style.transform = 'scale(0)';
+    requestAnimationFrame(() => {
+      ctaBadge.style.transition = 'transform .4s cubic-bezier(0.34,1.56,0.64,1)';
+      ctaBadge.style.transform  = 'scale(1)';
+    });
+  }
+  tickCount(parseInt(ctaBadge.textContent) || 0, n);
+}
+
+function tickCount(from, to) {
+  if (from === to) return;
+  const step = to > from ? 1 : -1, delay = Math.max(18, 55 / Math.abs(to - from));
+  let c = from;
+  const go = () => { c += step; ctaBadge.textContent = c; if (c !== to) setTimeout(go, delay); };
   go();
 }
 
-ctaBtn.addEventListener('click',()=>{
-  if(!Object.keys(sel).length){ showToast(); return; }
-  const items=Object.entries(sel).map(([name,price])=>({name,price:parseFloat(price),qty:1}));
-  localStorage.setItem('orderedItems',JSON.stringify(items));
-  location.href='/orders';
+ctaBtn.addEventListener('click', () => {
+  if (!Object.keys(sel).length) { showToast(); return; }
+  const items = Object.entries(sel).map(([name, v]) => ({
+    name,
+    price: v.price,
+    qty:   v.qty || 1
+  }));
+  try { localStorage.setItem('orderedItems', JSON.stringify(items)); } catch(_) {}
+  location.href = '/orders';
 });
 
-updateCta(); // restore from localStorage
+updateCta();
 
 /* ─── TOAST ─── */
 let toastT;
-function showToast(){
-  const t=document.getElementById('toast');
+function showToast() {
+  const t = document.getElementById('toast');
   t.classList.add('show'); clearTimeout(toastT);
-  toastT=setTimeout(()=>t.classList.remove('show'),4200);
+  toastT = setTimeout(() => t.classList.remove('show'), 4200);
 }
-document.getElementById('toast-x').addEventListener('click',()=>document.getElementById('toast').classList.remove('show'));
+document.getElementById('toast-x').addEventListener('click', () =>
+  document.getElementById('toast').classList.remove('show'));
 
 /* ─── LOGIN ─── */
-document.getElementById('login-btn').addEventListener('click',e=>{
+document.getElementById('login-btn').addEventListener('click', e => {
   e.preventDefault();
   document.getElementById('login-modal').classList.add('active');
-  document.body.style.overflow='hidden';
+  document.body.style.overflow = 'hidden';
 });
-const closeLm=()=>{ document.getElementById('login-modal').classList.remove('active'); document.body.style.overflow=''; };
-document.getElementById('lm-close').addEventListener('click',closeLm);
-document.getElementById('login-modal').addEventListener('click',e=>{ if(e.target===document.getElementById('login-modal')) closeLm(); });
+const closeLm = () => {
+  document.getElementById('login-modal').classList.remove('active');
+  document.body.style.overflow = '';
+};
+document.getElementById('lm-close').addEventListener('click', closeLm);
+document.getElementById('login-modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('login-modal')) closeLm();
+});
+// Close modal on Escape
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeLm();
+    navLinks.classList.remove('open');
+    menuToggle.setAttribute('aria-expanded', 'false');
+    menuToggle.textContent = '☰';
+  }
+});
 
-function lmPanel(p){
-  document.getElementById('lm-panel-login').style.display=p==='login'?'block':'none';
-  document.getElementById('lm-panel-register').style.display=p==='register'?'block':'none';
-  document.getElementById('lm-panel-login').hidden=p!=='login';
-  document.getElementById('lm-panel-register').hidden=p!=='register';
-  document.querySelectorAll('.lm-tab').forEach((t,i)=>{
-    const a=(p==='login')===!i; t.classList.toggle('active',a); t.setAttribute('aria-selected',a);
+function lmPanel(p) {
+  document.getElementById('lm-panel-login').style.display    = p === 'login'    ? 'block' : 'none';
+  document.getElementById('lm-panel-register').style.display = p === 'register' ? 'block' : 'none';
+  document.getElementById('lm-panel-login').hidden    = p !== 'login';
+  document.getElementById('lm-panel-register').hidden = p !== 'register';
+  document.querySelectorAll('.lm-tab').forEach((t, i) => {
+    const a = (p === 'login') === !i;
+    t.classList.toggle('active', a);
+    t.setAttribute('aria-selected', a);
   });
 }
-function toggleEye(id,btn){
-  const el=document.getElementById(id), show=el.type==='password';
-  el.type=show?'text':'password';
-  btn.innerHTML=show?'<i class="fas fa-eye-slash"></i>':'<i class="fas fa-eye"></i>';
+
+function toggleEye(id, btn) {
+  const el   = document.getElementById(id);
+  const show = el.type === 'password';
+  el.type     = show ? 'text' : 'password';
+  btn.innerHTML = show ? '<i class="fas fa-eye-slash"></i>' : '<i class="fas fa-eye"></i>';
 }
 
 /* ─── INIT ─── */
-setTimeout(()=>{
-  const first=document.querySelector('.tab');
+setTimeout(() => {
+  const first = document.querySelector('.tab');
   first.classList.add('active');
   movePill(first);
   renderCat(first.dataset.cat);
-},16);
+}, 16);
 
-/* inject ckBounce keyframe at runtime */
-const sty=document.createElement('style');
-sty.textContent='@keyframes ckBounce{0%{transform:scale(1)}35%{transform:scale(1.45)}65%{transform:scale(.9)}100%{transform:scale(1.08)}}';
+// Re-position pill on resize (orientation change, fold/unfold)
+let resizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    const active = document.querySelector('.tab.active');
+    if (active) movePill(active);
+  }, 150);
+});
+
+/* ─── INJECT KEYFRAME ─── */
+const sty = document.createElement('style');
+sty.textContent = '@keyframes ckBounce{0%{transform:scale(1)}35%{transform:scale(1.45)}65%{transform:scale(.9)}100%{transform:scale(1.08)}}';
 document.head.appendChild(sty);
 </script>
 </body>
