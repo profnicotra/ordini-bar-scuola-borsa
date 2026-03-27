@@ -615,7 +615,7 @@ body::after {
 <main class="grid" id="orders-container">
   {% if queue %}
     {% for ordine in queue %}
-    <div class="order-card s-new" data-id="{{ ordine.id }}">
+    <div class="order-card s-{{ ordine.stato | lower | replace('_', '-') }}" data-id="{{ ordine.id }}">
       <div class="stripe"></div>
 
       <div class="card-top">
@@ -625,7 +625,12 @@ body::after {
           <div class="card-loc">📍 {{ ordine.posizione }}</div>
         </div>
         <div class="card-right">
-          <span class="status-tag t-new">Nuovo</span>
+          <span class="status-tag t-{{ ordine.stato | lower | replace('_', '-') }}">
+  {% if ordine.stato == 'NUOVO' %}Nuovo
+  {% elif ordine.stato == 'IN_PREPARAZIONE' %}In preparazione
+  {% elif ordine.stato == 'PRONTO' %}Pronto ✓
+  {% else %}{{ ordine.stato }}{% endif %}
+</span>
           <span class="card-time">{{ ordine.creato_il }}</span>
         </div>
       </div>
