@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Scuola Bar Borsa - Red & Black Edition</title>
+    <link rel="stylesheet" href="https://cloudflare.com">
+    <style>
+        /* Sfondo con sfumatura radiale Nero/Rosso Scuro */
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background: radial-gradient(circle at center, #1a0000 0%, #000000 100%); 
+            color: #ffffff; 
+            margin: 0; 
+            padding: 40px 20px; 
+            min-height: 100vh;
+        }
+
+        .container { max-width: 1400px; margin: auto; }
+
+        /* Header con sfumatura Rosso Intenso */
+        .header {
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(145deg, #330000 0%, #000000 100%);
+            border: 2px solid #00a6ff;
+            border-radius: 20px;
+            margin-bottom: 40px;
+            box-shadow: 0 0 25px rgba(0, 200, 255, 0.4);
+        }
+
+        h1 { 
+            color: #00c8ff; 
+            margin: 0; 
+            text-transform: uppercase; 
+            letter-spacing: 6px; 
+            font-size: 3em;
+            text-shadow: 2px 2px 15px rgba(3, 226, 255, 0.6);
+        }
+
+        .sub-header { color: #888; font-weight: 300; margin-top: 10px; letter-spacing: 3px; }
+
+        /* Navigazione */
+        .menu-nav { display: flex; justify-content: center; gap: 20px; margin-bottom: 40px; }
+        .nav-btn {
+            padding: 15px 40px; font-size: 1.1em; font-weight: bold; text-transform: uppercase;
+            background: transparent; border: 2px solid #00a6ff; color: #00a6ff; border-radius: 12px;
+            cursor: pointer; transition: 0.3s;
+        }
+        .nav-btn:hover, .nav-btn.active { 
+            background: #00a6ff; 
+            color: #000;
+            box-shadow: 0 0 15px #00a6ff; 
+        }
+
+        /* Tabelle */
+        .tabella-sezione { display: none; width: 100%; border-collapse: separate; border-spacing: 0 15px; }
+        .tabella-sezione.active { display: table; animation: fadeIn 0.4s; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        th { 
+            background: #00aaff; 
+            color: #000; 
+            padding: 18px; 
+            text-align: left; 
+            text-transform: uppercase; 
+            font-size: 0.85em;
+            font-weight: 900;
+        }
+
+        th:first-child { border-radius: 12px 0 0 12px; }
+        th:last-child { border-radius: 0 12px 12px 0; }
+
+        td { 
+            background: linear-gradient(90deg, #111 0%, #050505 100%);
+            padding: 20px; 
+            border-top: 1px solid #008cff;
+            border-bottom: 1px solid #00d0ff;
+            transition: all 0.3s ease;
+            vertical-align: middle;
+        }
+
+        td:first-child { border-left: 1px solid #0099ff; border-radius: 12px 0 0 12px; }
+        td:last-child { border-right: 1px solid #0095ff; border-radius: 0 12px 12px 0; }
+
+        .nome-prod { font-weight: bold; color: #0091ff; font-size: 1.3em; display: block; }
+        .ingr { font-size: 0.85em; color: #bbb; font-style: italic; margin-top: 5px; display: block; }
+        .val-euro { font-family: 'Monaco', monospace; color: #fff; font-weight: bold; font-size: 1.1em; }
+        .val-margine { color: #0099ff; font-weight: bold; font-size: 1.2em; text-shadow: 0 0 10px rgba(0, 200, 255, 0.5); }
+        
+        .badge-cat { 
+            background: transparent; color: #00ccff; padding: 5px 15px; border-radius: 5px; 
+            font-size: 0.8em; border: 1px solid #018cff1e; text-transform: uppercase;
+        }
+
+        .input-note { background: #000; border: 1px solid #04cdff; color: white; padding: 8px; border-radius: 5px; width: 95%; outline: none; }
+        .stato-attivo { color: #ffffff; font-weight: bold; text-shadow: 0 0 10px rgba(0, 170, 255, 0.8); }
+        .stato-esaurito { color: #444; font-weight: bold; text-decoration: line-through; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>SCUOLA <span style="color:#fff">BAR</span> BORSA</h1>
+        <div class="sub-header">PROFIT ANALYSIS & RECIPES</div>
+    </div>
+
+    <div class="menu-nav">
+        <button class="nav-btn active" onclick="mostraSezione('caffetteria', event)">Caffè & Drink</button>
+        <button class="nav-btn" onclick="mostraSezione('dolce', event)">Sezione Dolce</button>
+        <button class="nav-btn" onclick="mostraSezione('salato', event)">Sezione Salato</button>
+    </div>
+
+    <!-- CAFFÈ & DRINK -->
+    <table id="caffetteria" class="tabella-sezione active">
+        <thead>
+            <tr><th>PRODOTTO</th><th>NOTE</th><th>COSTO</th><th>PREZZO</th><th>INTERNO</th><th>MARGINE</th><th>CAT.</th><th>STATO</th></tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="nome-prod">Caffè Espresso Arabica</span><span class="ingr">7g Miscela, 25ml acqua</span></td>
+                <td>
+                    <select class="input-note">
+                        <option>Standard</option><option>Macchiato Freddo</option><option>Schiumato</option>
+                    </select>
+                </td>
+                <td class="val-euro">0.12 €</td><td class="val-euro">1.20 €</td><td class="val-euro">0.80 €</td><td class="val-margine">+1.08 €</td>
+                <td><span class="badge-cat">Caffè</span></td><td class="stato-attivo">DISPONIBILE</td>
+            </tr>
+            <tr>
+                <td><span class="nome-prod">Caffè al Ginseng</span><span class="ingr">Estratto di Ginseng, Latte</span></td>
+                <td><input type="text" class="input-note" placeholder="es: Tazza grande"></td>
+                <td class="val-euro">0.45 €</td><td class="val-euro">1.80 €</td><td class="val-euro">1.20 €</td><td class="val-margine">+1.35 €</td>
+                <td><span class="badge-cat">Caffè</span></td><td class="stato-attivo">DISPONIBILE</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- DOLCE -->
+    <table id="dolce" class="tabella-sezione">
+        <thead>
+            <tr><th>PRODOTTO</th><th>NOTE</th><th>COSTO</th><th>PREZZO</th><th>INTERNO</th><th>MARGINE</th><th>CAT.</th><th>STATO</th></tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="nome-prod">Cornetto Gran Crema</span><span class="ingr">Pasta brioche, crema</span></td>
+                <td><input type="text" class="input-note" placeholder="es: extra zucchero"></td>
+                <td class="val-euro">0.60 €</td><td class="val-euro">1.40 €</td><td class="val-euro">1.00 €</td><td class="val-margine">+0.80 €</td>
+                <td><span class="badge-cat">Pastry</span></td><td class="stato-esaurito">ESAURITO</td>
+            </tr>
+            <tr>
+                <td><span class="nome-prod">Cheesecake Bosco</span><span class="ingr">Formaggio fresco, frutti rossi</span></td>
+                <td><input type="text" class="input-note" placeholder="Note"></td>
+                <td class="val-euro">1.30 €</td><td class="val-euro">4.50 €</td><td class="val-euro">3.00 €</td><td class="val-margine">+3.20 €</td>
+                <td><span class="badge-cat">Pastry</span></td><td class="stato-attivo">DISPONIBILE</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- SALATO -->
+    <table id="salato" class="tabella-sezione">
+        <thead>
+            <tr><th>PRODOTTO</th><th>NOTE</th><th>COSTO</th><th>PREZZO</th><th>INTERNO</th><th>MARGINE</th><th>CAT.</th><th>STATO</th></tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="nome-prod">Focaccia Crudo</span><span class="ingr">Crudo di Parma, mozzarella</span></td>
+                <td><input type="text" class="input-note" placeholder="Scaldata"></td>
+                <td class="val-euro">1.80 €</td><td class="val-euro">5.50 €</td><td class="val-euro">4.00 €</td><td class="val-margine">+3.70 €</td>
+                <td><span class="badge-cat">Food</span></td><td class="stato-attivo">DISPONIBILE</td>
+            </tr>
+            <tr>
+                <td><span class="nome-prod">Pizzetta Sfoglia</span><span class="ingr">Pomodoro, capperi, origano</span></td>
+                <td><input type="text" class="input-note" placeholder="Note"></td>
+                <td class="val-euro">0.65 €</td><td class="val-euro">2.50 €</td><td class="val-euro">1.50 €</td><td class="val-margine">+1.85 €</td>
+                <td><span class="badge-cat">Food</span></td><td class="stato-attivo">DISPONIBILE</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function mostraSezione(idSezione, e) {
+        document.querySelectorAll('.tabella-sezione').forEach(t => t.classList.remove('active'));
+        document.getElementById(idSezione).classList.add('active');
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        e.currentTarget.classList.add('active');
+    }
+</script>
+
+</body>
+</html>

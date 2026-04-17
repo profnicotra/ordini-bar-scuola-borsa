@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scuola Bar Borsa - Progetto Gruppo 2</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: radial-gradient(circle at center, #1a0000 0%, #000000 100%); color: #ffffff; margin: 0; padding: 40px 20px; min-height: 100vh; }
+        .container { max-width: 1400px; margin: auto; }
+        .header { text-align: center; padding: 40px; background: linear-gradient(145deg, #ff0000 0%, #000000 100%); border: 2px solid #ff0000; border-radius: 20px; margin-bottom: 40px; box-shadow: 0 0 25px rgba(153, 35, 35, 0.5); }
+        h1 { color: #ff0000; text-transform: uppercase; letter-spacing: 6px; font-size: 3em; margin: 0; }
+        .menu-nav { display: flex; justify-content: center; gap: 20px; margin-bottom: 40px; }
+        .nav-btn { padding: 15px 40px; font-size: 1.1em; font-weight: bold; text-transform: uppercase; background: transparent; border: 2px solid #ff0000; color: #ff0000; border-radius: 12px; cursor: pointer; transition: 0.3s; }
+        .nav-btn.active { background: #ff0000; color: #000; box-shadow: 0 0 15px #ff0000; }
+        .tabella-sezione { display: none; width: 100%; border-collapse: separate; border-spacing: 0 15px; }
+        .tabella-sezione.active { display: table; animation: fadeIn 0.4s; }
+        th { background: #ff0000; color: #000; padding: 18px; text-align: left; text-transform: uppercase; border-radius: 12px; }
+        td { background: #111; padding: 20px; border: 1px solid #ff0000; border-radius: 12px; }
+        .input-note { background: #000; border: 1px solid #555; color: white; padding: 10px; border-radius: 5px; width: 80%; }
+        .btn-salva { background: #0099ff; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; margin-left: 5px; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>SCUOLA <span style="color:#fff">BAR</span> BORSA</h1>
+        <div style="color:#888; margin-top:10px;">GRUPPO 2 - GESTIONE NOTE DATABASE</div>
+    </div>
+
+    <!-- Navigazione Gruppi -->
+    <div class="menu-nav" id="menu-gruppi">
+        <!-- Generato da JS -->
+    </div>
+
+    <!-- Area Tabelle -->
+    <div id="tabelle-container">
+        <!-- Generato da JS -->
+    </div>
+</div>
+
+<script>
+    // 1. MODELLO DATI (Mockup per gestire i gruppi e le note)
+    const datiIniziali = {
+        "Caffetteria": [
+            { id: 1, nome: "Caffè Espresso", costo: "0.12 €", prezzo: "1.20 €" },
+            { id: 2, nome: "Caffè al Ginseng", costo: "0.45 €", prezzo: "1.80 €" }
+        ],
+        "Dolce": [
+            { id: 3, nome: "Cornetto Crema", costo: "0.60 €", prezzo: "1.40 €" }
+        ],
+        "Salato": [
+            { id: 4, nome: "Focaccia Crudo", costo: "1.80 €", prezzo: "5.50 €" }
+        ]
+    };
+
+    // 2. FUNZIONE PER FAR COMPARIRE I DATI REALI (Iniezione HTML)
+    function renderizzaPagina() {
+        const menu = document.getElementById('menu-gruppi');
+        const container = document.getElementById('tabelle-container');
+        
+        Object.keys(datiIniziali).forEach((gruppo, index) => {
+            // Crea Bottone Menu
+            const btn = document.createElement('button');
+            btn.className = `nav-btn ${index === 0 ? 'active' : ''}`;
+            btn.innerText = gruppo;
+            btn.onclick = (e) => cambiaTab(gruppo, e.target);
+            menu.appendChild(btn);
+
+            // Crea Tabella Gruppo
+            const table = document.createElement('table');
+            table.id = gruppo;
+            table.className = `tabella-sezione ${index === 0 ? 'active' : ''}`;
+            table.innerHTML = `
+                <thead><tr><th>Prodotto</th><th>Costo</th><th>Prezzo</th><th>Note (Database)</th></tr></thead>
+                <tbody>
+                    ${datiIniziali[gruppo].map(p => `
+                        <tr>
+                            <td><b>${p.nome}</b></td>
+                            <td>${p.costo}</td>
+                            <td>${p.prezzo}</td>
+                            <td>
+                                <input type="text" id="note-${p.id}" class="input-note" value="${localStorage.getItem('nota-'+p.id) || ''}" placeholder="Scrivi nota...">
+                                <button class="btn-salva" onclick="salvaNota(${p.id})">💾</button>
+                            </td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            `;
+            container.appendChild(table);
+        });
+    }
+
+    // 3. LOGICA DATABASE (Inserimento dati/salvataggio)
+    function salvaNota(id) {
+        const valore = document.getElementById('note-' + id).value;
+        localStorage.setItem('nota-' + id, valore); // Simula il salvataggio nel database
+        alert("Nota salvata nel database locale!");
+    }
+
+    function cambiaTab(idSezione, btn) {
+        document.querySelectorAll('.tabella-sezione').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(idSezione).classList.add('active');
+        btn.classList.add('active');
+    }
+
+    // Avvio
+    renderizzaPagina();
+</script>
+
+</body>
+</html>

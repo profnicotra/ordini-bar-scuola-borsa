@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Scuola Bar Borsa - Admin Panel</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background: radial-gradient(circle at center, #1a0000 0%, #000000 100%); 
+            color: #ffffff; 
+            margin: 0; padding: 40px 20px; min-height: 100vh;
+        }
+        .container { max-width: 1200px; margin: auto; }
+        
+        .header {
+            text-align: center; padding: 30px;
+            background: linear-gradient(145deg, #330000 0%, #000000 100%);
+            border: 2px solid #00a6ff; border-radius: 20px; margin-bottom: 30px;
+            box-shadow: 0 0 25px rgba(0, 200, 255, 0.4);
+        }
+        h1 { color: #00c8ff; text-transform: uppercase; letter-spacing: 6px; margin: 0; }
+
+        .controls { display: flex; justify-content: space-between; margin-bottom: 20px; }
+        
+        /* Bottoni */
+        .btn { 
+            padding: 12px 25px; border-radius: 10px; cursor: pointer; font-weight: bold; 
+            text-transform: uppercase; transition: 0.3s; border: 2px solid #00a6ff; font-size: 0.9em;
+        }
+        .btn-add { background: rgba(0, 166, 255, 0.1); color: #00a6ff; }
+        .btn-add:hover { background: #00a6ff; color: #000; box-shadow: 0 0 20px #00a6ff; }
+        .btn-del { background: rgba(255, 0, 0, 0.1); color: #ff4d4d; border-color: #ff4d4d; padding: 8px 15px; }
+        .btn-del:hover { background: #ff4d4d; color: #fff; box-shadow: 0 0 15px #ff4d4d; }
+
+        /* Tabella Estetica */
+        table { width: 100%; border-collapse: separate; border-spacing: 0 12px; }
+        th { background: #00aaff; color: #000; padding: 15px; text-align: left; text-transform: uppercase; font-weight: 900; }
+        td { background: #111; padding: 15px; border-top: 1px solid #008cff; border-bottom: 1px solid #00d0ff; }
+        td:first-child { border-left: 1px solid #008cff; border-radius: 12px 0 0 12px; }
+        td:last-child { border-right: 1px solid #008cff; border-radius: 0 12px 12px 0; }
+
+        /* Input che sembrano testo */
+        input { 
+            background: transparent; border: 1px solid #222; color: white; padding: 10px; 
+            border-radius: 6px; width: 90%; font-size: 1em; transition: 0.3s;
+        }
+        input:focus { border-color: #00a6ff; outline: none; background: rgba(255,255,255,0.05); }
+        
+        .val-margine { color: #00ff88; font-weight: bold; font-family: 'Monaco', monospace; font-size: 1.2em; text-shadow: 0 0 10px rgba(0, 255, 136, 0.3); }
+
+        .totale-box { 
+            background: linear-gradient(90deg, #111, #220000); padding: 25px; border-radius: 15px; 
+            border: 2px solid #00a6ff; text-align: right; font-size: 1.8em; margin-top: 30px;
+            box-shadow: 0 0 20px rgba(0, 166, 255, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>SCUOLA <span style="color:#fff">BAR</span> BORSA</h1>
+        <div style="color:#888; letter-spacing: 3px; font-size: 0.9em; margin-top: 10px;">GESTIONE DINAMICA PRODOTTI</div>
+    </div>
+
+    <div class="controls">
+        <button class="btn btn-add" onclick="aggiungiRiga()">+ Aggiungi Nuovo Prodotto</button>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Prodotto</th>
+                <th>Costo (€)</th>
+                <th>Prezzo Vendita (€)</th>
+                <th>Margine</th>
+                <th>Azione</th>
+            </tr>
+        </thead>
+        <tbody id="corpoTabella">
+            <!-- Riga Iniziale -->
+            <tr>
+                <td><input type="text" value="Caffè Espresso" placeholder="Nome..."></td>
+                <td><input type="number" step="0.01" value="0.12" oninput="calcolaRiga(this)"></td>
+                <td><input type="number" step="0.10" value="1.20" oninput="calcolaRiga(this)"></td>
+                <td><span class="val-margine">1.08 €</span></td>
+                <td><button class="btn btn-del" onclick="eliminaRiga(this)">Elimina</button></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="totale-box">
+        Margine Totale: <span id="margineTotale" style="color:#00ff88">1.08</span> €
+    </div>
+</div>
+
+<script>
+    // Funzione per calcolare il margine della singola riga e il totale
+    function calcolaRiga(el) {
+        const riga = el.closest('tr');
+        const inputs = riga.querySelectorAll('input[type="number"]');
+        const costo = parseFloat(inputs[0].value) || 0;
+        const prezzo = parseFloat(inputs[1].value) || 0;
+        
+        const margine = prezzo - costo;
+        riga.querySelector('.val-margine').innerText = margine.toFixed(2) + " €";
+        
+        aggiornaTotaleGenerale();
+    }
+
+    // Funzione per aggiungere una nuova riga vuota
+    function aggiungiRiga() {
+        const tabella = document.getElementById('corpoTabella');
+        const nuovaRiga = document.createElement('tr');
+        nuovaRiga.innerHTML = `
+            <td><input type="text" placeholder="Nuovo prodotto..."></td>
+            <td><input type="number" step="0.01" value="0.00" oninput="calcolaRiga(this)"></td>
+            <td><input type="number" step="0.10" value="0.00" oninput="calcolaRiga(this)"></td>
+            <td><span class="val-margine">0.00 €</span></td>
+            <td><button class="btn btn-del" onclick="eliminaRiga(this)">Elimina</button></td>
+        `;
+        tabella.appendChild(nuovaRiga);
+    }
+
+    // Funzione per eliminare una riga
+    function eliminaRiga(btn) {
+        btn.closest('tr').remove();
+        aggiornaTotaleGenerale();
+    }
+
+    // Funzione per aggiornare il margine totale in fondo
+    function aggiornaTotaleGenerale() {
+        let totale = 0;
+        document.querySelectorAll('.val-margine').forEach(span => {
+            totale += parseFloat(span.innerText) || 0;
+        });
+        document.getElementById('margineTotale').innerText = totale.toFixed(2);
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,28 @@
+cat <<EOF > admin.html
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Ordini Bar</title>
+    <style>
+        body { font-family: Arial; padding: 20px; background: #f4f4f4; }
+        table { width: 100%; border-collapse: collapse; background: white; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #007bff; color: white; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h1>Gestione Ordini Bar</h1>
+    <table>
+        <thead>
+            <tr><th>ID</th><th>Studente</th><th>Classe</th><th>Ordine</th><th>Stato</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>01</td><td>Mario Rossi</td><td>4A</td><td>Panino</td><td>In attesa</td></tr>
+            <tr><td>02</td><td>Luca Bianchi</td><td>5B</td><td>Pizzetta</td><td>Pronto</td></tr>
+        </tbody>
+    </table>
+</body>
+</html>
+EOF

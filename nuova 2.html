@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Scuola Bar Borsa - Gestione Gruppi Note</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com">
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: radial-gradient(circle at center, #1a0d00 0%, #000000 100%); color: #ffffff; margin: 0; padding: 20px; }
+        .layout { max-width: 1000px; margin: auto; }
+        
+        .header { text-align: center; padding: 20px; border: 2px solid #ff8800; border-radius: 15px; margin-bottom: 20px; background: #111; }
+        h1 { color: #ff8800; text-transform: uppercase; margin: 0; }
+
+        /* SELETTORE GRUPPI IN ALTO */
+        .group-filter { display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; }
+        .btn-group { 
+            background: transparent; border: 2px solid #ff8800; color: #ff8800; 
+            padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.3s;
+        }
+        .btn-group.active { background: #ff8800; color: #000; }
+        .btn-group:hover { background: rgba(255, 136, 0, 0.2); }
+
+        /* TABELLA ORIGINALE AGGIORNATA */
+        table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+        th { background: #ff8800; color: #000; padding: 12px; text-transform: uppercase; font-size: 0.8em; text-align: left; }
+        td { background: #111; padding: 15px; border-top: 1px solid #331a00; border-bottom: 1px solid #331a00; }
+
+        .nome-prod { font-weight: bold; color: #ff8800; }
+        .ingr { font-size: 0.8em; color: #666; display: block; }
+        
+        /* Badge per il gruppo nella tabella */
+        .badge { background: #333; color: #ff8800; padding: 4px 8px; border-radius: 4px; font-size: 0.7em; font-weight: bold; text-transform: uppercase; }
+
+        .btn-note { background: transparent; border: 1px solid #ff8800; color: #ff8800; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
+        .btn-note:hover { background: #ff8800; color: #000; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>SCUOLA <span style="color:#fff">BAR</span> BORSA</h1>
+</div>
+
+<div class="layout">
+    <!-- FILTRI PER GRUPPI -->
+    <div class="group-filter">
+        <button class="btn-group active" onclick="filtra('tutti', this)">MOSTRA TUTTO</button>
+        <button class="btn-group" onclick="filtra('breakfast', this)">BREAKFAST</button>
+        <button class="btn-group" onclick="filtra('trash', this)">TRASH FOOD</button>
+    </div>
+
+    <!-- TABELLA CON I GRUPPI INSERITI -->
+    <table>
+        <thead>
+            <tr>
+                <th>NOTA / PRODOTTO</th>
+                <th>GRUPPO</th>
+                <th>INFO</th>
+                <th>AZIONI</th>
+            </tr>
+        </thead>
+        <tbody id="tabella-corpo">
+            <tr data-cat="breakfast">
+                <td><span class="nome-prod">Cappuccino</span><span class="ingr">Latte, Caffè, Cacao</span></td>
+                <td><span class="badge">Breakfast</span></td>
+                <td style="color:#666">Ricetta standard</td>
+                <td><button class="btn-note" onclick="alert('Modifica nota')"><i class="fas fa-edit"></i></button></td>
+            </tr>
+            <tr data-cat="breakfast">
+                <td><span class="nome-prod">Cornetto Crema</span><span class="ingr">Frolla, Crema Pasticcera</span></td>
+                <td><span class="badge">Breakfast</span></td>
+                <td style="color:#666">Scongelare 5:30</td>
+                <td><button class="btn-note" onclick="alert('Modifica nota')"><i class="fas fa-edit"></i></button></td>
+            </tr>
+            <tr data-cat="trash">
+                <td><span class="nome-prod">Burger Trash</span><span class="ingr">Triplo Bacon, Cheddar</span></td>
+                <td><span class="badge">Trash Food</span></td>
+                <td style="color:#666">Salsa segreta obbligatoria</td>
+                <td><button class="btn-note" onclick="alert('Modifica nota')"><i class="fas fa-edit"></i></button></td>
+            </tr>
+            <tr data-cat="trash">
+                <td><span class="nome-prod">Patatine XXL</span><span class="ingr">Porzione Gigante</span></td>
+                <td><span class="badge">Trash Food</span></td>
+                <td style="color:#666">Friggere 4 min</td>
+                <td><button class="btn-note" onclick="alert('Modifica nota')"><i class="fas fa-edit"></i></button></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function filtra(categoria, btn) {
+        // Gestione pulsante attivo
+        document.querySelectorAll('.btn-group').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        // Filtro righe tabella
+        const righe = document.querySelectorAll('#tabella-corpo tr');
+        righe.forEach(riga => {
+            const cat = riga.getAttribute('data-cat');
+            if (categoria === 'tutti' || cat === categoria) {
+                riga.style.display = 'table-row';
+            } else {
+                riga.style.display = 'none';
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

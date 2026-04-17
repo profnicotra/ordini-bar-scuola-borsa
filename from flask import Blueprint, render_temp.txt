@@ -1,0 +1,45 @@
+from flask import Blueprint, render_template
+
+# Creazione del Blueprint per gestire la sezione shop
+shop_bp = Blueprint('shop', __name__)
+
+@shop_bp.route('/prodotti')
+def visualizza_catalogo():
+    # Struttura dati 'data' come da tue specifiche
+    data = {
+        "prodotti": [
+            {
+                "id": 1,
+                "nome_prodotto": "Smartphone Alpha",
+                "prezzo": 850.00,
+                "margine": 150.00,
+                "prezzo_interno": 700.00,
+                "categoria": "Elettronica"
+            },
+            {
+                "id": 2,
+                "nome_prodotto": "Tastiera Meccanica",
+                "prezzo": 120.00,
+                "margine": 30.00,
+                "prezzo_interno": 90.00,
+                "categoria": "Accessori"
+            }
+        ],
+        "gruppo_note": [
+            {
+                "nome": "Garanzia Estesa",
+                "obbligatorio": True,
+                "esclusivo": True,
+                "note": ["Base 24 mesi", "Premium 48 mesi", "Business 60 mesi"]
+            },
+            {
+                "nome": "Extra",
+                "obbligatorio": False,
+                "esclusivo": False,
+                "note": ["Confezione Regalo", "Assicurazione Furto"]
+            }
+        ]
+    }
+    
+    # Rendering della pagina passando l'oggetto 'data'
+    return render_template('prodotti.html', data=data)

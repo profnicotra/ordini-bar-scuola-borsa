@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Scuola Bar Borsa - Red & Black Edition</title>
+    <!-- Collegamento per le icone (Note, Cestino, ecc) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com">
+    <style>
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background: radial-gradient(circle at center, #1a0000 0%, #000000 100%); 
+            color: #ffffff; 
+            margin: 0; 
+            padding: 40px 20px; 
+            min-height: 100vh;
+        }
+
+        .container { max-width: 1200px; margin: auto; }
+
+        .header {
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(145deg, #330000 0%, #000000 100%);
+            border: 2px solid #ff0000;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.4);
+        }
+
+        h1 { 
+            color: #ff0000; 
+            margin: 0; 
+            text-transform: uppercase; 
+            letter-spacing: 6px; 
+            font-size: 3em;
+            text-shadow: 2px 2px 15px rgba(255, 0, 0, 0.6);
+        }
+
+        /* SELETTORE GRUPPI */
+        .group-nav {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .btn-group {
+            background: #000;
+            border: 1px solid #ff0000;
+            color: #ff0000;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+            text-transform: uppercase;
+        }
+        .btn-group.active, .btn-group:hover {
+            background: #ff0000;
+            color: #000;
+            box-shadow: 0 0 15px #ff0000;
+        }
+
+        /* TABELLA */
+        table { width: 100%; border-collapse: separate; border-spacing: 0 15px; }
+        th { 
+            background: #ff0000; color: #000; padding: 18px; 
+            text-align: left; text-transform: uppercase; font-size: 0.8em; font-weight: 900;
+        }
+        td { 
+            background: linear-gradient(90deg, #111 0%, #050505 100%);
+            padding: 20px; border-top: 1px solid #330000; border-bottom: 1px solid #330000;
+        }
+        
+        .nome-prod { font-weight: bold; color: #ff0000; font-size: 1.2em; display: block; }
+        .ingr { font-size: 0.85em; color: #bbb; font-style: italic; }
+        .val-margine { color: #ff3333; font-weight: bold; text-shadow: 0 0 10px rgba(255, 51, 51, 0.5); }
+
+        /* BOTTONE NOTE */
+        .btn-note {
+            background: transparent;
+            border: 1px solid #ff0000;
+            color: #ff0000;
+            width: 40px;
+            height: 40px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-note:hover {
+            background: #ff0000;
+            color: #000;
+            transform: scale(1.1);
+        }
+
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>SCUOLA <span style="color:#fff">BAR</span> BORSA</h1>
+    </div>
+
+    <!-- NAVIGAZIONE GRUPPI -->
+    <div class="group-nav">
+        <button class="btn-group active" onclick="filtra('tutti', this)">Tutti</button>
+        <button class="btn-group" onclick="filtra('Caffè', this)">Caffè</button>
+        <button class="btn-group" onclick="filtra('Pastry', this)">Pastry</button>
+        <button class="btn-group" onclick="filtra('Fresh', this)">Fresh</button>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>PRODOTTO & RICETTA</th>
+                <th>PREZZO</th>
+                <th>MARGINE</th>
+                <th>GRUPPO</th>
+                <th>NOTE</th>
+            </tr>
+        </thead>
+        <tbody id="tabella-prodotti">
+            <tr data-categoria="Caffè">
+                <td>
+                    <span class="nome-prod">Caffè Espresso</span>
+                    <span class="ingr">7g Miscela Arabica</span>
+                </td>
+                <td>1.20 €</td>
+                <td class="val-margine">+1.08 €</td>
+                <td>Caffè</td>
+                <td>
+                    <button class="btn-note" onclick="alert('Nota: Usare tazzine calde')">
+                        <i class="fas fa-sticky-note"></i>
+                    </button>
+                </td>
+            </tr>
+            <tr data-categoria="Pastry">
+                <td>
+                    <span class="nome-prod">Cornetto Crema</span>
+                    <span class="ingr">Crema pasticcera artigianale</span>
+                </td>
+                <td>1.40 €</td>
+                <td class="val-margine">+0.80 €</td>
+                <td>Pastry</td>
+                <td>
+                    <button class="btn-note" onclick="alert('Nota: Scongelare a temperatura ambiente')">
+                        <i class="fas fa-sticky-note"></i>
+                    </button>
+                </td>
+            </tr>
+            <tr data-categoria="Fresh">
+                <td>
+                    <span class="nome-prod">Spremuta Arancia</span>
+                    <span class="ingr">Arance Rosse di Sicilia</span>
+                </td>
+                <td>4.00 €</td>
+                <td class="val-margine">+3.15 €</td>
+                <td>Fresh</td>
+                <td>
+                    <button class="btn-note" onclick="alert('Nota: Filtrare bene i semi')">
+                        <i class="fas fa-sticky-note"></i>
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function filtra(categoria, btn) {
+        // Cambia colore bottoni
+        document.querySelectorAll('.btn-group').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        // Filtra righe
+        const righe = document.querySelectorAll('#tabella-prodotti tr');
+        righe.forEach(riga => {
+            const cat = riga.getAttribute('data-categoria');
+            if (categoria === 'tutti' || cat === categoria) {
+                riga.classList.remove('hidden');
+            } else {
+                riga.classList.add('hidden');
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
+<!-- Sostituisci il blocco <tbody> nel tuo codice con questo -->
+<tbody id="tabella-prodotti">
+    <!-- CAFFÈ -->
+    <tr data-categoria="Caffè">
+        <td>
+            <span class="nome-prod">Caffè Espresso</span>
+            <span class="ingr">7g Miscela Arabica</span>
+        </td>
+        <td>1.20 €</td>
+        <td class="val-margine">+1.08 €</td>
+        <td>Caffè</td>
+        <td>
+            <div class="testo-nota">Tazzine calde. Estrazione 25-30 secondi.</div>
+        </td>
+    </tr>
+    <tr data-categoria="Caffè">
+        <td>
+            <span class="nome-prod">Cappuccino</span>
+            <span class="ingr">Espresso + 125ml Latte Intero</span>
+        </td>
+        <td>1.50 €</td>
+        <td class="val-margine">+1.25 €</td>
+        <td>Caffè</td>
+        <td>
+            <div class="testo-nota">Crema lucida senza bolle. Servire a 65°C.</div>
+        </td>
+    </tr>
+
+    <!-- PASTRY -->
+    <tr data-categoria="Pastry">
+        <td>
+            <span class="nome-prod">Cornetto Crema</span>
+            <span class="ingr">Crema pasticcera artigianale</span>
+        </td>
+        <td>1.40 €</td>
+        <td class="val-margine">+0.80 €</td>
+        <td>Pastry</td>
+        <td>
+            <div class="testo-nota">Guarnire con zucchero a velo prima di servire.</div>
+        </td>
+    </tr>
+    <tr data-categoria="Pastry">
+        <td>
+            <span class="nome-prod">Muffin Cioccolato</span>
+            <span class="ingr">Impasto cacao e chunk fondenti</span>
+        </td>
+        <td>2.20 €</td>
+        <td class="val-margine">+1.40 €</td>
+        <td>Pastry</td>
+        <td>
+            <div class="testo-nota">Riscaldare 10 secondi in microonde se richiesto.</div>
+        </td>
+    </tr>
+
+    <!-- FRESH -->
+    <tr data-categoria="Fresh">
+        <td>
+            <span class="nome-prod">Spremuta Arancia</span>
+            <span class="ingr">Arance Rosse di Sicilia</span>
+        </td>
+        <td>4.00 €</td>
+        <td class="val-margine">+3.15 €</td>
+        <td>Fresh</td>
+        <td>
+            <div class="testo-nota">Filtrare bene. Servire con cannuccia biodegradabile.</div>
+        </td>
+    </tr>
+    <tr data-categoria="Fresh">
+        <td>
+            <span class="nome-prod">Smoothie Tropical</span>
+            <span class="ingr">Mango, Ananas e Passion Fruit</span>
+        </td>
+        <td>5.50 €</td>
+        <td class="val-margine">+4.10 €</td>
+        <td>Fresh</td>
+        <td>
+            <div class="testo-nota">Utilizzare frutta abbattuta. Frullare alla velocità 3.</div>
+        </td>
+    </tr>
+</tbody>

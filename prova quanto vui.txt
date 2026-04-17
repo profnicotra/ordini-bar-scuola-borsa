@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Scuola Bar Borsa - Red & Black Edition</title>
+    <link rel="stylesheet" href="https://cloudflare.com">
+    <style>
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background: radial-gradient(circle at center, #1a0000 0%, #000000 100%); 
+            color: #ffffff; 
+            margin: 0; 
+            padding: 20px; /* Ridotto un po' per visibilità */
+            min-height: 100vh;
+        }
+
+        .container { max-width: 1200px; margin: auto; }
+
+        .header {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(145deg, #0593ff 0%, #000000 100%);
+            border: 2px solid #ff0000;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.4);
+        }
+
+        h1 { 
+            color: #0091ff; 
+            margin: 0; 
+            text-transform: uppercase; 
+            letter-spacing: 6px; 
+            font-size: 2.5em;
+            text-shadow: 2px 2px 15px rgba(0, 140, 255, 0.6);
+        }
+
+        .sub-header { color: #888; font-weight: 300; margin-top: 10px; letter-spacing: 3px; }
+
+        table { 
+            width: 100%; 
+            border-collapse: separate; 
+            border-spacing: 0 10px; /* Spazio ridotto tra righe */
+        }
+
+        th { 
+            background: #007bff; 
+            color: #000; 
+            padding: 12px; /* Padding ridotto */
+            text-align: left; 
+            text-transform: uppercase; 
+            font-size: 0.85em;
+            font-weight: 900;
+        }
+
+        th:first-child { border-radius: 12px 0 0 12px; }
+        th:last-child { border-radius: 0 12px 12px 0; }
+
+        td { 
+            background: linear-gradient(90deg, #111 0%, #050505 100%);
+            padding: 12px 15px; /* Padding ridotto per far stare tutto */
+            border-top: 1px solid #330000;
+            border-bottom: 1px solid #0a89ff;
+            transition: all 0.3s ease;
+        }
+
+        tr:hover td {
+            background: linear-gradient(90deg, #220000 0%, #111 100%);
+            border-color: #0066ff;
+        }
+
+        td:first-child { border-left: 1px solid #330000; border-radius: 12px 0 0 12px; }
+        td:last-child { border-right: 1px solid #330000; border-radius: 0 12px 12px 0; }
+
+        .nome-prod { font-weight: bold; color: #00a2ff; font-size: 1.1em; display: block; }
+        .ingr { font-size: 0.75em; color: #bbb; font-style: italic; margin-top: 3px; display: block; }
+        
+        /* Stile Colonna Note */
+        .nota-testo { color: #ffcc00; font-size: 0.85em; font-weight: bold; }
+
+        .val-euro { font-family: 'Monaco', monospace; color: #fff; font-weight: bold; font-size: 1em; }
+        .val-margine { 
+            color: #33c9ff; 
+            font-weight: bold; 
+            font-size: 1.1em; 
+            text-shadow: 0 0 10px rgba(6, 155, 247, 0.5); 
+        }
+        
+        .badge-cat { 
+            color: #0080ff; 
+            padding: 3px 10px; 
+            border-radius: 5px; 
+            font-size: 0.75em; 
+            border: 1px solid #0080ff;
+            text-transform: uppercase;
+        }
+
+        .stato-attivo { 
+            color: #ffffff; 
+            font-size: 0.85em; 
+            font-weight: bold; 
+            text-shadow: 0 0 10px rgba(89, 0, 255, 0.8); 
+            display: flex; align-items: center; gap: 5px;
+        }
+
+        .stato-esaurito { 
+            color: #444; font-size: 0.85em; font-weight: bold; 
+            display: flex; align-items: center; gap: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>SCUOLA <span style="color:#fff">BAR</span> BORSA</h1>
+        <div class="sub-header">PROFIT ANALYSIS & RECIPES</div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>PRODOTTO & RICETTA</th>
+                <th>NOTE PRODOTTO</th> <!-- Nuova Colonna -->
+                <th>COSTO</th>
+                <th>PREZZO</th>
+                <th>MARGINE</th>
+                <th>CATEGORIA</th>
+                <th>STATO</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <span class="nome-prod">Caffè Espresso Arabica</span>
+                    <span class="ingr">7g Miscela, 25ml acqua, zucchero</span>
+                </td>
+                <td class="nota-testo">Senza schiuma</td>
+                <td class="val-euro">0.12 €</td>
+                <td class="val-euro">1.20 €</td>
+                <td class="val-margine">+1.08 €</td>
+                <td><span class="badge-cat">Caffè</span></td>
+                <td class="stato-attivo"><i class="fas fa-dot-circle"></i> DISPONIBILE</td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="nome-prod">Cappuccino Italiano</span>
+                    <span class="ingr">Espresso, 120ml Latte, cacao</span>
+                </td>
+                <td class="nota-testo">Molta schiuma</td>
+                <td class="val-euro">0.35 €</td>
+                <td class="val-euro">1.50 €</td>
+                <td class="val-margine">+1.15 €</td>
+                <td><span class="badge-cat">Caffè</span></td>
+                <td class="stato-attivo"><i class="fas fa-dot-circle"></i> DISPONIBILE</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

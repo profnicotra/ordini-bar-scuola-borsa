@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <style>
+    /* Classi richieste dall'esercizio */
+    .intestazione { 
+      color: #2c3e50; 
+      text-transform: uppercase; 
+      border-bottom: 2px solid #f39c12; 
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .sottotitolo { 
+      color: #e67e22; 
+      font-style: italic; 
+      font-weight: 300; 
+      margin-top: -10px;
+    }
+    
+    /* Stile Tabella Bar */
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th { background-color: #fdf2e9; padding: 12px; text-align: left; }
+    td { padding: 10px; border: 1px solid #eee; font-family: Arial; }
+  </style>
+</head>
+<body>
+
+  <!-- Titoli con le classi richieste -->
+  <h1 class="intestazione">Lista Forniture Bar</h1>
+  <h1 class="sottotitolo">Ingredienti e scorte di magazzino</h1>
+
+  <!-- Tabella ingredienti -->
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Ingrediente</th>
+        <th>Categoria</th>
+        <th>Quantità</th>
+        <th>Stato</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>B01</td><td>Gin Premium</td><td>Distillati</td><td>12 Bottiglie</td><td>In stock</td></tr>
+      <tr><td>B02</td><td>Tonica Bio</td><td>Soft Drink</td><td>24 Casse</td><td>In arrivo</td></tr>
+      <tr><td>B03</td><td>Lime Freschi</td><td>Frutta</td><td>5 Kg</td><td>Esaurito</td></tr>
+    </tbody>
+  </table>
+
+  <!-- 
+    SETUP GITHUB:
+    1. git config --global user.name "TuoNome"
+    2. git config --global user.email "tua@email.com"
+    3. git init -> git add . -> git commit -m "Lista Bar"
+    4. git remote add origin https://github.com
+    5. git push -u origin main
+  -->
+
+</body>
+</html>
+

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Scuola Bar Borsa - The Elite Edition</title>
+    <style>
+        @import url('https://googleapis.com');
+
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background: radial-gradient(circle at center, #3d0000 0%, #000000 100%); 
+            background-attachment: fixed;
+            color: #ffffff; 
+            margin: 0; 
+            padding: 40px 20px; 
+        }
+
+        .container { max-width: 1200px; margin: auto; }
+
+        .header {
+            text-align: center;
+            padding: 50px;
+            background: rgba(10, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            border-radius: 40px;
+            margin-bottom: 60px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 { 
+            font-family: 'Syncopate', sans-serif;
+            color: #ff0000; 
+            text-transform: uppercase; 
+            letter-spacing: 15px; 
+            font-size: 3em; 
+            margin: 0; 
+        }
+        
+        h1 span { color: #ffffff; }
+        .sub-header { color: #666; font-size: 0.8em; margin-top: 15px; letter-spacing: 6px; }
+
+        table { width: 100%; border-collapse: separate; border-spacing: 0 15px; }
+        
+        thead th { 
+            color: #888; 
+            text-transform: uppercase; 
+            padding: 10px 20px; 
+            font-size: 0.75em; 
+            letter-spacing: 4px;
+            text-align: left;
+        }
+
+        tr td { 
+            background: rgba(20, 20, 20, 0.7);
+            backdrop-filter: blur(15px);
+            padding: 20px; 
+            border-top: 1px solid rgba(255, 0, 0, 0.2);
+            transition: all 0.4s ease;
+            vertical-align: middle;
+        }
+
+        tr:hover td {
+            background: rgba(60, 0, 0, 0.3);
+            border-top-color: #ff0000;
+        }
+
+        td:first-child { border-left: 3px solid #ff0000; border-radius: 15px 0 0 15px; }
+        td:last-child { border-radius: 0 15px 15px 0; }
+
+        .nome-prod { font-weight: 800; color: #fff; font-size: 1.3em; display: block; }
+        .ingr { color: #555; font-size: 0.8em; text-transform: uppercase; }
+
+        .input-note {
+            background: #000;
+            border: 1px solid #333;
+            color: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.8em;
+            width: 100%;
+            max-width: 180px;
+            outline: none;
+        }
+
+        /* TUTTI I NUMERI IN BIANCO UGUALE */
+        .val-euro, .val-margine, .val-interno { 
+            font-family: 'JetBrains Mono', monospace; 
+            color: #ffffff !important; 
+            font-weight: 800;
+        }
+
+        .val-euro { font-size: 1em; opacity: 0.9; }
+        .val-margine { font-size: 1.4em; }
+        .val-interno { 
+            background: #440000; 
+            padding: 6px 12px; 
+            border-radius: 6px; 
+            border: 1px solid #ff0000;
+            font-size: 1.1em;
+        }
+
+        .badge-cat { padding: 4px 10px; border: 1px solid #ff0000; border-radius: 4px; font-size: 0.6em; color: #ff0000; font-weight: 900; text-transform: uppercase; }
+        .stato-ok { color: #ff3333; font-weight: bold; font-size: 0.7em; }
+        .stato-no { color: #333; font-weight: bold; font-size: 0.7em; text-decoration: line-through; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>SCUOLA <span>BAR</span> BORSA</h1>
+        <div class="sub-header">ELITE MENU • TOTAL WHITE NUMBERS</div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>PRODOTTO</th>
+                <th>OPZIONI / NOTE</th>
+                <th>COSTI</th>
+                <th>MARGINE</th>
+                <th>PREZZO INT.</th>
+                <th>CAT.</th>
+                <th>STATO</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="nome-prod">Espresso</span><span class="ingr">Arabica 100%</span></td>
+                <td><select class="input-note"><option>Standard</option></select></td>
+                <td><div class="val-euro">C: 0.12€</div><div class="val-euro">P: 1.20€</div></td>
+                <td><span class="val-margine">+1.08€</span></td>
+                <td><span class="val-interno">0.90€</span></td>
+                <td><span class="badge-cat">Caffè</span></td>
+                <td class="stato-ok">● DISPONIBILE</td>
+            </tr>
+            <tr>
+                <td><span class="nome-prod">Spritz Aperol</span><span class="ingr">Prosecco / Soda</span></td>
+                <td><select class="input-note"><option>Con Oliva</option></select></td>
+                <td><div class="val-euro">C: 1.50€</div><div class="val-euro">P: 6.00€</div></td>
+                <td><span class="val-margine">+4.50€</span></td>
+                <td><span class="val-interno">4.50€</span></td>
+                <td><span class="badge-cat">Drink</span></td>
+                <td class="stato-ok">● DISPONIBILE</td>
+            </tr>
+            <tr>
+                <td><span class="nome-prod">Toast Oro</span><span class="ingr">Cotto / Formaggio</span></td>
+                <td><input type="text" class="input-note" placeholder="Note..."></td>
+                <td><div class="val-euro">C: 1.20€</div><div class="val-euro">P: 4.50€</div></td>
+                <td><span class="val-margine">+3.30€</span></td>
+                <td><span class="val-interno">3.50€</span></td>
+                <td><span class="badge-cat">Food</span></td>
+                <td class="stato-ok">● DISPONIBILE</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

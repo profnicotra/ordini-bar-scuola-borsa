@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabella Progetto Scuola</title>
+    <style>
+        /* Stile Generale */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Stile Tabella */
+        .container-tabella {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 800px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 14px;
+        }
+
+        /* Colori per lo Stato */
+        .stato-completato {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        .stato-in-corso {
+            color: #f39c12;
+            font-weight: bold;
+        }
+        .stato-da-iniziare {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        /* Effetti Visivi */
+        tr:nth-child(even) {
+            background-color: #fafafa;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+            transition: 0.3s;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Monitoraggio Progetto Scolastico</h2>
+
+    <div class="container-tabella">
+        <table>
+            <thead>
+                <tr>
+                    <th>Materia</th>
+                    <th>Argomento</th>
+                    <th>Stato</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Informatica</td>
+                    <td>Tag HTML e Tabelle</td>
+                    <td><span class="stato-completato">Completato</span></td>
+                </tr>
+                <tr>
+                    <td>Storia</td>
+                    <td>La Rivoluzione Industriale</td>
+                    <td><span class="stato-in-corso">In corso</span></td>
+                </tr>
+                <tr>
+                    <td>Scienze</td>
+                    <td>Il Sistema Solare</td>
+                    <td><span class="stato-da-iniziare">Da iniziare</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>

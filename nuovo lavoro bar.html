@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scuola Bar Borsa - Listino</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com">
+    <style>
+        /* Sfondo con sfumatura radiale Nero/Blu Notte */
+        body { 
+            font-family: 'Segoe UI', Roboto, sans-serif; 
+            background: radial-gradient(circle at center, #001a33 0%, #000000 100%); 
+            color: white; 
+            margin: 0; 
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        /* Header con Sfumatura Blu Elettrico */
+        .header {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #003366 0%, #001220 100%);
+            border-bottom: 3px solid #3399ff;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        h1 { margin: 0; font-size: 2.5em; letter-spacing: 2px; color: #3399ff; text-shadow: 2px 2px 10px rgba(51, 153, 255, 0.5); }
+        .subtitle { color: #80bfff; font-weight: 300; }
+
+        /* Contatore Carrello Floating */
+        .cart-status {
+            background: rgba(0, 51, 102, 0.8);
+            padding: 10px 20px;
+            border-radius: 50px;
+            display: inline-block;
+            margin-top: 15px;
+            border: 1px solid #3399ff;
+        }
+
+        .container { max-width: 700px; margin: auto; }
+
+        /* Card Prodotto con Sfumatura al passaggio */
+        .prodotto-card {
+            display: flex; align-items: center; justify-content: space-between;
+            background: linear-gradient(90deg, #050505 0%, #0a1a2e 100%);
+            border-left: 5px solid #003366;
+            margin-bottom: 15px; 
+            padding: 20px; 
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .prodotto-card:hover { 
+            transform: translateX(10px); 
+            border-left-color: #3399ff;
+            background: linear-gradient(90deg, #0a1a2e 0%, #003366 100%);
+        }
+
+        .nome { font-weight: bold; font-size: 1.3em; color: #ffffff; margin-bottom: 5px; }
+        .tag { 
+            display: inline-block;
+            padding: 3px 10px; 
+            border-radius: 20px; 
+            font-size: 0.75em; 
+            background: #003366; 
+            color: #3399ff; 
+            margin-right: 5px;
+            text-transform: uppercase;
+        }
+
+        .prezzo-box { text-align: right; margin-right: 20px; }
+        .prezzo { font-size: 1.4em; font-weight: bold; color: #3399ff; }
+        .margine { font-size: 0.8em; color: #00ff88; } /* Verde per il profitto */
+
+        /* Pulsanti */
+        .btn-group { display: flex; gap: 10px; }
+        .btn { 
+            border: none; width: 45px; height: 45px; border-radius: 10px; 
+            cursor: pointer; font-size: 1.2em; transition: 0.3s;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .btn-add { background: #004d99; color: white; box-shadow: 0 4px 15px rgba(0, 77, 153, 0.4); }
+        .btn-add:hover { background: #3399ff; transform: scale(1.1); }
+
+        .btn-del { background: #1a1a1a; color: #666; border: 1px solid #333; }
+        .btn-del:hover { background: #ff4d4d; color: white; border-color: #ff4d4d; }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>SCUOLA BAR BORSA</h1>
+        <div class="subtitle">Gestione Listino & Margini Professionale</div>
+        <div class="cart-status">
+            <i class="fas fa-shopping-cart"></i> Carrello: <span id="count">0</span> prodotti
+        </div>
+    </div>
+
+    <!-- Prodotto 1 -->
+    <div class="prodotto-card">
+        <div class="info">
+            <div class="nome">Caffè Espresso</div>
+            <div>
+                <span class="tag">Caffetteria</span>
+                <span class="tag"><i class="fas fa-tint-slash"></i> No Vino</span>
+            </div>
+        </div>
+        <div class="prezzo-box">
+            <div class="prezzo">€1,20</div>
+            <div class="margine">Margine: €1,05</div>
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-add" onclick="add()"><i class="fas fa-cart-plus"></i></button>
+            <button class="btn btn-del" onclick="remove()"><i class="fas fa-trash-alt"></i></button>
+        </div>
+    </div>
+
+    <!-- Prodotto 2 -->
+    <div class="prodotto-card">
+        <div class="info">
+            <div class="nome">Calice Prosecco DOCG</div>
+            <div>
+                <span class="tag">Bollicine</span>
+                <span class="tag" style="background:#4d0000; color:#ff4d4d;"><i class="fas fa-wine-glass"></i> Vino</span>
+            </div>
+        </div>
+        <div class="prezzo-box">
+            <div class="prezzo">€5,00</div>
+            <div class="margine">Margine: €3,80</div>
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-add" onclick="add()"><i class="fas fa-cart-plus"></i></button>
+            <button class="btn btn-del" onclick="remove()"><i class="fas fa-trash-alt"></i></button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let count = 0;
+    function add() { count++; update(); }
+    function remove() { if(count > 0) count--; update(); }
+    function update() { document.getElementById('count').innerText = count; }
+</script>
+
+</body>
+</html>

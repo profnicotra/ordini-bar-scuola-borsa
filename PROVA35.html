@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Scuola Bar Borsa - Orange Order System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com">
+    <style>
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background: radial-gradient(circle at center, #1a0d00 0%, #000000 100%); 
+            color: #ffffff; margin: 0; padding: 20px; min-height: 100vh;
+        }
+
+        .layout { display: flex; gap: 20px; max-width: 1400px; margin: auto; flex-wrap: wrap; }
+        .main-content { flex: 3; min-width: 600px; }
+        
+        /* Sidebar Carrello */
+        .cart-panel { 
+            flex: 1; min-width: 300px; 
+            background: rgba(20, 20, 20, 0.9); 
+            border: 2px solid #ff8800; 
+            border-radius: 15px; padding: 20px;
+            height: fit-content; position: sticky; top: 20px;
+            box-shadow: 0 0 20px rgba(255, 136, 0, 0.2);
+        }
+
+        .header {
+            text-align: center; padding: 30px;
+            background: linear-gradient(145deg, #331a00 0%, #000000 100%);
+            border: 2px solid #ff8800; border-radius: 20px; margin-bottom: 30px;
+        }
+
+        h1 { color: #ff8800; text-transform: uppercase; letter-spacing: 4px; margin: 0; }
+
+        table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+        th { background: #ff8800; color: #000; padding: 15px; text-align: left; text-transform: uppercase; font-size: 0.8em; }
+        td { background: #111; padding: 15px; border-top: 1px solid #331a00; border-bottom: 1px solid #331a00; }
+
+        .nome-prod { font-weight: bold; color: #ff8800; display: block; }
+        .val-euro { font-family: 'Monaco', monospace; }
+
+        .btn-cart {
+            background: transparent; border: 2px solid #ff8800; color: #ff8800;
+            padding: 8px; border-radius: 5px; cursor: pointer; transition: 0.3s;
+        }
+        .btn-cart:hover { background: #ff8800; color: #000; }
+
+        /* Lista Ordine */
+        #lista-ordine { list-style: none; padding: 0; margin-top: 20px; }
+        .item-ordine { 
+            display: flex; justify-content: space-between; 
+            padding: 10px 0; border-bottom: 1px solid #333;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
+
+        .totale-box { 
+            margin-top: 20px; padding-top: 15px; 
+            border-top: 2px dashed #ff8800; 
+            font-size: 1.4em; color: #ff8800; text-align: right; 
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>SCUOLA <span style="color:#fff">BAR</span> BORSA</h1>
+</div>
+
+<div class="layout">
+    <!-- Tabella Classica -->
+    <div class="main-content">
+        <table>
+            <thead>
+                <tr>
+                    <th>PRODOTTO</th>
+                    <th>COSTO</th>
+                    <th>PREZZO</th>
+                    <th>MARGINE</th>
+                    <th>STATO</th>
+                    <th>ORDINA</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="nome-prod">Caffè Espresso</span></td>
+                    <td class="val-euro">0.12 €</td>
+                    <td class="val-euro">1.20 €</td>
+                    <td style="color:#ffaa33">+1.08 €</td>
+                    <td style="color:#ff8800; font-size: 0.8em;">DISPONIBILE</td>
+                    <td><button class="btn-cart" onclick="aggiungi('Caffè Espresso', 1.20)"><i class="fas fa-plus"></i></button></td>
+                </tr>
+                <tr>
+                    <td><span class="nome-prod">Spremuta Arancia</span></td>
+                    <td class="val-euro">0.85 €</td>
+                    <td class="val-euro">4.00 €</td>
+                    <td style="color:#ffaa33">+3.15 €</td>
+                    <td style="color:#ff8800; font-size: 0.8em;">DISPONIBILE</td>
+                    <td><button class="btn-cart" onclick="aggiungi('Spremuta Arancia', 4.00)"><i class="fas fa-plus"></i></button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Lista delle cose ordinate -->
+    <div class="cart-panel">
+        <h3 style="color: #ff8800; margin-top: 0;"><i class="fas fa-receipt"></i> RIEPILOGO ORDINE</h3>
+        <ul id="lista-ordine">
+            <li style="color: #666; font-style: italic;">Nessun prodotto selezionato</li>
+        </ul>
+        <div class="totale-box">
+            TOTALE: <span id="totale-prezzo">0.00</span> €
+        </div>
+        <button onclick="invioOrdine()" style="width: 100%; margin-top: 20px; background: #ff8800; border: none; padding: 15px; font-weight: bold; border-radius: 5px; cursor: pointer;">
+            CONFERMA ORDINE
+        </button>
+    </div>
+</div>
+
+<script>
+    let totale = 0;
+    const listaUl = document.getElementById('lista-ordine');
+    const totaleSpan = document.getElementById('totale-prezzo');
+
+    function aggiungi(nome, prezzo) {
+        if (totale === 0) listaUl.innerHTML = ''; // Rimuove testo "Nessun prodotto"
+        
+        const li = document.createElement('li');
+        li.className = 'item-ordine';
+        li.innerHTML = `<span>${nome}</span> <b>${prezzo.toFixed(2)} €</b>`;
+        listaUl.appendChild(li);
+        
+        totale += prezzo;
+        totaleSpan.innerText = totale.toFixed(2);
+    }
+
+    function invioOrdine() {
+        if (totale === 0) return alert("Il carrello è vuoto!");
+        alert("Ordine inviato con successo! Totale: " + totale.toFixed(2) + " €");
+        location.reload(); // Resetta tutto
+    }
+</script>
+
+</body>
+</html>

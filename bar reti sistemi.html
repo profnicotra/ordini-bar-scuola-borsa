@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <style>
+    /* Regole CSS richieste */
+    .intestazione { color: navy; text-transform: uppercase; text-align: center; }
+    .sottotitolo { color: darkred; font-style: italic; font-size: 18px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; font-family: sans-serif; }
+  </style>
+</head>
+<body>
+
+  <!-- Titoli con classi personalizzate -->
+  <h1 class="intestazione">Configurazione Server 2026</h1>
+  <h1 class="sottotitolo">Materiali Hardware Selezionati</h1>
+
+  <!-- Tabella materiali server -->
+  <table border="1" cellpadding="5">
+    <tr><th>ID</th><th>Componente</th><th>Modello</th><th>Q.tà</th><th>Stato</th></tr>
+    <tr><td>01</td><td>CPU</td><td>Intel Xeon Silver</td><td>1</td><td>OK</td></tr>
+    <tr><td>02</td><td>RAM</td><td>64GB DDR5 ECC</td><td>2</td><td>OK</td></tr>
+    <tr><td>03</td><td>SSD</td><td>NVMe 2TB Enterprise</td><td>4</td><td>In arrivo</td></tr>
+  </table>
+
+  <!-- NOTE PER SETUP GITHUB (da terminale):
+    git config --global user.name "TuoNome"
+    git config --global user.email "tua@email.com"
+    git init
+    git add .
+    git commit -m "Upload configurazione server"
+    git remote add origin https://github.com
+    git push -u origin main
+  -->
+
+</body>
+</html>

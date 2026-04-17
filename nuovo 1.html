@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scuola Bar Borsa - Gestione Ordini e Gruppi</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com">
+    <style>
+        /* TEMA E LAYOUT */
+        body { 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            background: radial-gradient(circle at center, #1a0d00 0%, #000000 100%); 
+            color: #ffffff; 
+            margin: 0; 
+            padding: 20px; 
+            min-height: 100vh;
+        }
+        .layout { 
+            display: flex; 
+            gap: 25px; 
+            max-width: 1400px; 
+            margin: auto; 
+            flex-wrap: wrap; 
+        }
+
+        /* HEADER */
+        .header { 
+            text-align: center; 
+            padding: 30px; 
+            border: 2px solid #ff8800; 
+            border-radius: 15px; 
+            margin-bottom: 30px; 
+            background: rgba(17, 17, 17, 0.9);
+            box-shadow: 0 10px 30px rgba(255, 136, 0, 0.1);
+        }
+        h1 { color: #ff8800; text-transform: uppercase; margin: 0; letter-spacing: 2px; }
+        
+        /* GESTIONE GRUPPI (NAVIGAZIONE) */
+        .group-nav {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            background: #111;
+            border: 2px solid #ff8800;
+            color: #ff8800;
+            padding: 12px 25px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .filter-btn:hover { background: #331a00; transform: translateY(-2px); }
+        .filter-btn.active {
+            background: #ff8800;
+            color: #000;
+            box-shadow: 0 0 15px rgba(255, 136, 0, 0.4);
+        }
+
+        /* CONTENUTO PRINCIPALE */
+        .main-content { flex: 3; min-width: 600px; }
+        
+        table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+        th { 
+            background: #ff8800; 
+            color: #000; 
+            padding: 15px; 
+            text-transform: uppercase; 
+            font-size: 0.85em; 
+            border-radius: 5px;
+        }
+        td { 
+            background: rgba(20, 20, 20, 0.8); 
+            padding: 15px; 
+            border-top: 1px solid #331a00; 
+            border-bottom: 1px solid #331a00;
+            transition: 0.2s;
+        }
+        tr:hover td { background: #1a1a1a; }
+
+        .nome-prod { font-weight: bold; color: #ff8800; font-size: 1.1em; }
+        .ingr { font-size: 0.8em; color: #888; display: block; margin-top: 4px; }
+        .badge-gruppo {
+            font-size: 0.7em;
+            padding: 2px 8px;
+            border-radius: 10px;
+            background: #333;
+            color: #bbb;
+            text-transform: uppercase;
+            margin-left: 10px;
+        }
+
+        /* BOTTONE AGGIUNGI */
+        .btn-add { 
+            background: transparent; 
+            border: 2px solid #ff8800; 
+            color: #ff8800; 
+            width: 40px; 
+            height: 40px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            transition: 0.3s; 
+        }
+        .btn-add:hover { background: #ff8800; color: #000; transform: scale(1.1); }
+
+        /* CARRELLO / ORDINE */
+        .cart-panel { 
+            flex: 1; 
+            min-width: 320px; 
+            background: #0a0a0a; 
+            border: 2px solid #ff8800; 
+            border-radius: 15px; 
+            padding: 20px; 
+            height: fit-content; 
+            position: sticky; 
+            top: 20px; 
+            box-shadow: 0 0 20px rgba(255, 136, 0, 0.2); 
+        }
+        #lista-ordine { list-style: none; padding: 0; margin-top: 15px; }
+        .item-ordine { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 12px; 
+            border-bottom: 1px solid #222; 
+            background: #151515; 
+            margin-bottom: 8px; 
+            border-radius: 8px;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
+        
+        .btn-delete { 
+            color: #ff4444; 
+            background: transparent; 
+            border: none; 
+            cursor: pointer; 
+            font-size: 1.1em; 
+            transition: 0.2s; 
+        }
+        .btn-delete:hover { color: #ff0000; transform: scale(1.2); }
+
+        .totale-box { 
+            margin-top: 20px; 
+            padding: 20px; 
+            border-top: 2px dashed #ff8800; 
+            font-size: 1.6em; 
+            color: #ff8800; 
+            text-align: center; 
+            font-weight: bold; 
+        }
+        .btn-paga {
+            width: 100%; 
+            padding: 18px; 
+            background: #ff8800; 
+            border: none; 
+            font-weight: bold; 
+            font-size: 1.1em;
+            cursor: pointer; 
+            border-radius: 8px; 
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+        .btn-paga:hover { background: #e67a00; letter-spacing: 1px; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>SCUOLA <span style="color:#fff">BAR</span> BORSA</h1>
+    <p style="color: #666; margin-top: 10px;">Gestione Categorie Colazione & Junk Food</p>
+</div>
+
+<div class="layout">
+    <div class="main-content">
+        
+        <!-- NAVIGAZIONE GRUPPI -->
+        <div class="group-nav">
+            <button class="filter-btn active" onclick="filtra('tutti', this)">
+                <i class="fas fa-th-list"></i> Tutti
+            </button>
+            <button class="filter-btn" onclick="filtra('breakfast', this)">
+                <i class="fas fa-croissant"></i> Breakfast
+            </button>
+            <button class="filter-btn" onclick="filtra('trash', this)">
+                <i class="fas fa-hamburger"></i> Trash Food
+            </button>
+            <button class="filter-btn" onclick="filtra('drinks', this)">
+                <i class="fas fa-glass-whiskey"></i> Drinks
+            </button>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>PRODOTTO</th>
+                    <th>PREZZO</th>
+                    <th>MARGINE</th>
+                    <th>AGGIUNGI</th>
+                </tr>
+            </thead>
+            <tbody id="corpo-tabella">
+                <!-- Gruppo Breakfast -->
+                <tr data-categoria="breakfast">
+                    <td>
+                        <span class="nome-prod">Cappuccino Gourmet</span><span class="badge-gruppo">Breakfast</span>
+                        <span class="ingr">Latte intero, Caffè Arabica, Cacao 70%</span>
+                    </td>
+                    <td>1.60 €</td>
+                    <td style="color:#00ff00">+1.22 €</td>
+                    <td><button class="btn-add" onclick="aggiungi('Cappuccino', 1.60)"><i class="fas fa-plus"></i></button></td>
+                </tr>
+                <tr data-categoria="breakfast">
+                    <td>
+                        <span class="nome-prod">Cornetto alla Crema</span><span class="badge-gruppo">Breakfast</span>
+                        <span class="ingr">Lievitazione 24h, Crema artigianale</span>
+                    </td>
+                    <td>1.50 €</td>
+                    <td style="color:#00ff00">+0.90 €</td>
+                    <td><button class="btn-add" onclick="aggiungi('Cornetto Crema', 1.50)"><i class="fas fa-plus"></i></button></td>
+                </tr>
+
+                <!-- Gruppo Trash -->
+                <tr data-categoria="trash">
+                    <td>
+                        <span class="nome-prod">Zozzo Burger</span><span class="badge-gruppo">Trash</span>
+                        <span class="ingr">Bacon croccante, Cheddar fuso, Cipolla caramellata</span>
+                    </td>
+                    <td>9.50 €</td>
+                    <td style="color:#00ff00">+6.10 €</td>
+                    <td><button class="btn-add" onclick="aggiungi('Zozzo Burger', 9.50)"><i class="fas fa-plus"></i></button></td>
+                </tr>
+                <tr data-categoria="trash">
+                    <td>
+                        <span class="nome-prod">Patatine "Bomba"</span><span class="badge-gruppo">Trash</span>
+                        <span class="ingr">Fritte nel lardo, Salsa BBQ piccante</span>
+                    </td>
+                    <td>5.00 €</td>
+                    <td style="color:#00ff00">+4.20 €</td>
+                    <td><button class="btn-add" onclick="aggiungi('Patatine Bomba', 5.00)"><i class="fas fa-plus"></i></button></td>
+                </tr>
+
+                <!-- Gruppo Drinks -->
+                <tr data-categoria="drinks">
+                    <td>
+                        <span class="nome-prod">Spremuta d'Arancia</span><span class="badge-gruppo">Drinks</span>
+                        <span class="ingr">3 Arance di Sicilia espresse</span>
+                    </td>
+                    <td>4.00 €</td>
+                    <td style="color:#00ff00">+3.15 €</td>
+                    <td><button class="btn-add" onclick="aggiungi('Spremuta', 4.00)"><i class="fas fa-plus"></i></button></td>
+                </tr>
+                <tr data-categoria="drinks">
+                    <td>
+                        <span class="nome-prod">Birra Media</span><span class="badge-gruppo">Drinks</span>
+                        <span class="ingr">Artigianale alla spina</span>
+                    </td>
+                    <td>5.50 €</td>
+                    <td style="color:#00ff00">+3.80 €</td>
+                    <td><button class="btn-add" onclick="aggiungi('Birra Media', 5.50)"><i class="fas fa-plus"></i></button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- CARRELLO -->
+    <div class="cart-panel">
+        <h3 style="color: #ff8800; margin: 0 0 15px 0; display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-shopping-cart"></i> IL TUO ORDINE
+        </h3>
+        <ul id="lista-ordine">
+            <!-- Messaggio vuoto iniziale -->
+            <li id="empty-msg" style="color: #444; text-align: center; padding: 20px;">Nessun prodotto selezionato</li>
+        </ul>
+        <div class="totale-box">
+            TOTALE: <span id="totale-prezzo">0.00</span> €
+        </div>
+        <button class="btn-paga" onclick="confermaOrdine()">
+            <i class="fas fa-check-circle"></i> INVIA ORDINE
+        </button>
+    </div>
+</div>
+
+<script>
+    let totale = 0;
+
+    // FUNZIONE FILTRAGGIO GRUPPI
+    function filtra(categoria, btn) {
+        // Cambia stato bottoni
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        // Filtra le righe
+        const righe = document.querySelectorAll('#corpo-tabella tr');
+        righe.forEach(riga => {
+            const catRiga = riga.getAttribute('data-categoria');
+            if (categoria === 'tutti' || catRiga === categoria) {
+                riga.style.display = 'table-row';
+            } else {
+                riga.style.display = 'none';
+            }
+        });
+    }
+
+    // FUNZIONE AGGIUNGI AL CARRELLO
+    function aggiungi(nome, prezzo) {
+        const lista = document.getElementById('lista-ordine');
+        const emptyMsg = document.getElementById('empty-msg');
+        
+        if (emptyMsg) emptyMsg.remove();
+
+        const li = document.createElement('li');
+        li.className = 'item-ordine';
+        li.innerHTML = `
+            <div>
+                <strong style="color: #ff8800">${nome}</strong><br>
+                <small>${prezzo.toFixed(2)} €</small>
+            </div>
+            <button class="btn-delete" onclick="rimuovi(this, ${prezzo})">
+                <i class="fas fa-trash"></i>
+            </button>
+        `;
+        
+        lista.appendChild(li);
+        totale += prezzo;
+        aggiornaTotale();
+    }
+
+    // FUNZIONE RIMUOVI
+    function rimuovi(btn, prezzo) {
+        btn.parentElement.remove();
+        totale -= prezzo;
+        if (totale < 0.01) {
+            totale = 0;
+            mostraVuoto();
+        }
+        aggiornaTotale();
+    }
+
+    function aggiornaTotale() {
+        document.getElementById('totale-prezzo').innerText = totale.toFixed(2);
+    }
+
+    function mostraVuoto() {
+        const lista = document.getElementById('lista-ordine');
+        lista.innerHTML = '<li id="empty-msg" style="color: #444; text-align: center; padding: 20px;">Nessun prodotto selezionato</li>';
+    }
+
+    function confermaOrdine() {
+        if (totale === 0) {
+            alert("Il carrello è vuoto!");
+        } else {
+            alert("✅ Ordine inviato in cucina!\nTotale: " + totale.toFixed(2) + " €");
+            location.reload(); // Reset dopo l'ordine
+        }
+    }
+</script>
+
+</body>
+</html>

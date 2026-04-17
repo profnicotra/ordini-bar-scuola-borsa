@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Scuola Bar Borsa - Red & Black Navigation</title>
+    <link rel="stylesheet" href="https://cloudflare.com">
+    <style>
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background: radial-gradient(circle at center, #1a0000 0%, #000000 100%); 
+            color: #ffffff; 
+            margin: 0; padding: 40px 20px; min-height: 100vh;
+        }
+        .container { max-width: 1400px; margin: auto; }
+        
+        /* Header */
+        .header {
+            text-align: center; padding: 30px;
+            background: linear-gradient(145deg, #330000 0%, #000000 100%);
+            border: 2px solid #00a6ff; border-radius: 20px; margin-bottom: 30px;
+        }
+        h1 { color: #00c8ff; text-transform: uppercase; letter-spacing: 5px; text-shadow: 0 0 15px #00a6ff; }
+
+        /* Navigazione - I Pulsanti che cerchi */
+        .menu-nav { display: flex; justify-content: center; gap: 20px; margin-bottom: 40px; }
+        .nav-btn {
+            padding: 15px 40px; font-size: 1.2em; font-weight: bold; text-transform: uppercase;
+            background: #000; border: 2px solid #00a6ff; color: #00a6ff; border-radius: 50px;
+            cursor: pointer; transition: 0.3s; box-shadow: 0 0 10px rgba(0, 166, 255, 0.2);
+        }
+        .nav-btn:hover { background: #00a6ff; color: #000; box-shadow: 0 0 20px #00a6ff; }
+        .nav-btn.active { background: #ff0000; border-color: #ff0000; color: #fff; box-shadow: 0 0 20px #ff0000; }
+
+        /* Tabelle (nascoste di default) */
+        .tabella-sezione { display: none; animation: fadeIn 0.5s; }
+        .tabella-sezione.active { display: table; width: 100%; border-collapse: separate; border-spacing: 0 15px; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Stili Tabella (Invariati) */
+        th { background: #00aaff; color: #000; padding: 18px; text-align: left; text-transform: uppercase; border-radius: 10px; }
+        td { background: linear-gradient(90deg, #111 0%, #050505 100%); padding: 18px; border-top: 1px solid #008cff; border-bottom: 1px solid #00d0ff; }
+        .nome-prod { font-weight: bold; color: #0091ff; font-size: 1.2em; display: block; }
+        .val-euro { font-family: monospace; color: #fff; font-weight: bold; }
+        .val-margine { color: #00ffcc; font-weight: bold; text-shadow: 0 0 8px #00ffcc; }
+        .badge-cat { padding: 4px 10px; border-radius: 5px; border: 1px solid; font-size: 0.8em; text-transform: uppercase; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>SCUOLA <span style="color:#fff">BAR</span> BORSA</h1>
+        <div style="color:#888">SELEZIONA CATEGORIA</div>
+    </div>
+
+    <!-- Navigazione: Clicca questi per aprire le pagine -->
+    <div class="menu-nav">
+        <button class="nav-btn" onclick="mostraSezione('caffetteria')">Caffè</button>
+        <button class="nav-btn" onclick="mostraSezione('dolce')">Dolci</button>
+        <button class="nav-btn" onclick="mostraSezione('salato')">Salati</button>
+    </div>
+
+    <!-- SEZIONE CAFFÈ -->
+    <table id="caffetteria" class="tabella-sezione active">
+        <thead>
+            <tr><th>Prodotto</th><th>Costo</th><th>Prezzo</th><th>Interno</th><th>Margine</th><th>Stato</th></tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="nome-prod">Caffè Espresso</span></td>
+                <td class="val-euro">0.12 €</td><td class="val-euro">1.20 €</td><td class="val-euro">0.80 €</td><td class="val-margine">+1.08 €</td>
+                <td><span class="badge-cat" style="border-color:#00a6ff; color:#00a6ff">Caffetteria</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- SEZIONE DOLCE -->
+    <table id="dolce" class="tabella-sezione">
+        <thead>
+            <tr><th>Prodotto</th><th>Costo</th><th>Prezzo</th><th>Interno</th><th>Margine</th><th>Stato</th></tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="nome-prod">Cheesecake ai Frutti di Bosco</span></td>
+                <td class="val-euro">1.20 €</td><td class="val-euro">4.50 €</td><td class="val-euro">3.00 €</td><td class="val-margine">+3.30 €</td>
+                <td><span class="badge-cat" style="border-color:#ff00ff; color:#ff00ff">Dolce</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- SEZIONE SALATO -->
+    <table id="salato" class="tabella-sezione">
+        <thead>
+            <tr><th>Prodotto</th><th>Costo</th><th>Prezzo</th><th>Interno</th><th>Margine</th><th>Stato</th></tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="nome-prod">Focaccia Crudo & Mozzarella</span></td>
+                <td class="val-euro">1.80 €</td><td class="val-euro">5.50 €</td><td class="val-euro">4.00 €</td><td class="val-margine">+3.70 €</td>
+                <td><span class="badge-cat" style="border-color:#ff8800; color:#ff8800">Salato</span></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function mostraSezione(idSezione) {
+        // Nasconde tutte le tabelle
+        document.querySelectorAll('.tabella-sezione').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        // Disattiva tutti i bottoni
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        // Mostra quella selezionata
+        document.getElementById(idSezione).classList.add('active');
+        // Attiva il bottone cliccato
+        event.currentTarget.classList.add('active');
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Scuola Bar Borsa - Red & Black Edition</title>
+    <style>
+        /* Sfondo con sfumatura radiale Nero/Rosso Scuro */
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background: radial-gradient(circle at center, #1a0000 0%, #000000 100%); 
+            color: #ffffff; 
+            margin: 0; 
+            padding: 40px 20px; 
+            min-height: 100vh;
+        }
+
+        .container { max-width: 1100px; margin: auto; }
+
+        /* Header con sfumatura Rosso Intenso */
+        .header {
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(145deg, #330000 0%, #000000 100%);
+            border: 2px solid #ff0000;
+            border-radius: 20px;
+            margin-bottom: 40px;
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.4);
+        }
+
+        h1 { 
+            color: #ff0000; 
+            margin: 0; 
+            text-transform: uppercase; 
+            letter-spacing: 6px; 
+            font-size: 3em;
+            text-shadow: 2px 2px 15px rgba(255, 0, 0, 0.6);
+        }
+
+        .sub-header { color: #888; font-weight: 300; margin-top: 10px; letter-spacing: 3px; }
+
+        /* Tabella con righe sfumate */
+        table { 
+            width: 100%; 
+            border-collapse: separate; 
+            border-spacing: 0 15px; 
+        }
+
+        th { 
+            background: #ff0000; 
+            color: #000; 
+            padding: 18px; 
+            text-align: left; 
+            text-transform: uppercase; 
+            font-size: 0.9em;
+            font-weight: 900;
+        }
+
+        th:first-child { border-radius: 12px 0 0 12px; }
+        th:last-child { border-radius: 0 12px 12px 0; }
+
+        /* Righe con sfumatura Nero/Rosso al passaggio */
+        td { 
+            background: linear-gradient(90deg, #111 0%, #050505 100%);
+            padding: 20px; 
+            border-top: 1px solid #330000;
+            border-bottom: 1px solid #330000;
+            transition: all 0.3s ease;
+        }
+
+        tr:hover td {
+            background: linear-gradient(90deg, #220000 0%, #111 100%);
+            border-color: #ff0000;
+        }
+
+        td:first-child { border-left: 1px solid #330000; border-radius: 12px 0 0 12px; }
+        td:last-child { border-right: 1px solid #330000; border-radius: 0 12px 12px 0; }
+
+        /* Testi e Valori */
+        .nome-prod { font-weight: bold; color: #ff0000; font-size: 1.3em; display: block; }
+        .ingr { font-size: 0.85em; color: #bbb; font-style: italic; margin-top: 5px; display: block; }
+        
+        .val-euro { font-family: 'Monaco', monospace; color: #fff; font-weight: bold; font-size: 1.1em; }
+        
+        /* Margine in Rosso Neon */
+        .val-margine { 
+            color: #ff3333; 
+            font-weight: bold; 
+            font-size: 1.2em; 
+            text-shadow: 0 0 10px rgba(255, 51, 51, 0.5); 
+        }
+        
+        .badge-cat { 
+            background: transparent; 
+            color: #ff0000; 
+            padding: 5px 15px; 
+            border-radius: 5px; 
+            font-size: 0.8em; 
+            border: 1px solid #ff0000;
+            text-transform: uppercase;
+        }
+
+        .stato-attivo { color: #ff0000; font-size: 0.9em; font-weight: bold; letter-spacing: 1px; }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>SCUOLA <span style="color:#fff">BAR</span> BORSA</h1>
+        <div class="sub-header">PROFIT ANALYSIS & RECIPES</div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>PRODOTTO & RICETTA</th>
+                <th>COSTO</th>
+                <th>PREZZO</th>
+                <th>INTERNO</th>
+                <th>MARGINE</th>
+                <th>CATEGORIA</th>
+                <th>STATO</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <span class="nome-prod">Caffè Espresso Arabica</span>
+                    <span class="ingr">7g Miscela, 25ml acqua, bustina zucchero</span>
+                </td>
+                <td class="val-euro">0.12 €</td>
+                <td class="val-euro">1.20 €</td>
+                <td class="val-euro">0.80 €</td>
+                <td class="val-margine">+1.08 €</td>
+                <td><span class="badge-cat">Caffè</span></td>
+                <td class="stato-attivo">ON AIR</td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="nome-prod">Cappuccino Italiano</span>
+                    <span class="ingr">Espresso, 120ml Latte intero, spolverata cacao</span>
+                </td>
+                <td class="val-euro">0.35 €</td>
+                <td class="val-euro">1.50 €</td>
+                <td class="val-euro">1.00 €</td>
+                <td class="val-margine">+1.15 €</td>
+                <td><span class="badge-cat">Caffè</span></td>
+                <td class="stato-attivo">ON AIR</td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="nome-prod">Cornetto Gran Crema</span>
+                    <span class="ingr">Pasta brioche sfogliata, crema pasticcera</span>
+                </td>
+                <td class="val-euro">0.60 €</td>
+                <td class="val-euro">1.40 €</td>
+                <td class="val-euro">1.00 €</td>
+                <td class="val-margine">+0.80 €</td>
+                <td><span class="badge-cat">Pastry</span></td>
+                <td class="stato-attivo">ON AIR</td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="nome-prod">Spremuta Arancia</span>
+                    <span class="ingr">3 Arance rosse di Sicilia spremute al momento</span>
+                </td>
+                <td class="val-euro">0.85 €</td>
+                <td class="val-euro">4.00 €</td>
+                <td class="val-euro">2.50 €</td>
+                <td class="val-margine">+3.15 €</td>
+                <td><span class="badge-cat">Fresh</span></td>
+                <td class="stato-attivo">ON AIR</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

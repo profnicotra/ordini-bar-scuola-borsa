@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Scuola Bar Borsa - Breakfast & Trash</title>
+    <!-- Libreria esterna per le icone (es. il cestino) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com">
+    
+    <style>
+        /* STILI GENERALI: Sfondo scuro e font moderno */
+        body { font-family: 'Segoe UI', sans-serif; background: radial-gradient(circle at center, #1a0d00 0%, #000000 100%); color: #ffffff; margin: 0; padding: 20px; }
+        
+        /* LAYOUT: Divide la pagina in tabella (sinistra) e carrello (destra) */
+        .layout { display: flex; gap: 20px; max-width: 1400px; margin: auto; flex-wrap: wrap; }
+        .main-content { flex: 3; min-width: 600px; }
+        
+        /* CARRELLO: Resta fisso in alto quando scorri la pagina (sticky) */
+        .cart-panel { flex: 1; min-width: 320px; background: #0a0a0a; border: 2px solid #ff8800; border-radius: 15px; padding: 20px; height: fit-content; position: sticky; top: 20px; }
+        
+        /* TABELLA PRODOTTI: Righe separate e colori arancio/nero */
+        table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+        th { background: #ff8800; color: #000; padding: 12px; text-transform: uppercase; }
+        td { background: #111; padding: 15px; border-top: 1px solid #331a00; border-bottom: 1px solid #331a00; }
+
+        /* BOTTONI: Effetti al passaggio del mouse */
+        .btn-add { background: transparent; border: 2px solid #ff8800; color: #ff8800; width: 35px; height: 35px; border-radius: 5px; cursor: pointer; transition: 0.3s; }
+        .btn-add:hover { background: #ff8800; color: #000; }
+        
+        .btn-delete { color: #ff4444; background: transparent; border: none; cursor: pointer; transition: 0.2s; }
+        .btn-delete:hover { color: #ff0000; transform: scale(1.2); }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>SCUOLA <span style="color:#fff">BAR</span> BORSA</h1>
+</div>
+
+<div class="layout">
+    <!-- SEZIONE SINISTRA: Menu con i prodotti -->
+    <div class="main-content">
+        <table>
+            <thead>
+                <tr>
+                    <th>PRODOTTO</th>
+                    <th>PREZZO</th>
+                    <th>MARGINE</th>
+                    <th>AGGIUNGI</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Ogni riga chiama la funzione 'aggiungi' passando nome e prezzo -->
+                <tr>
+                    <td><span class="nome-prod">Cappuccino</span><span class="ingr">Latte, Caffè, Cacao</span></td>
+                    <td>1.60 €</td>
+                    <td style="color:#666">+1.22 €</td>
+                    <td><button class="btn-add" onclick="aggiungi('Cappuccino', 1.60)"><i class="fas fa-plus"></i></button></td>
+                </tr>
+                <!-- Altri prodotti qui sotto... -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- SEZIONE DESTRA: Il Carrello Dinamico -->
+    <div class="cart-panel">
+        <h3 style="color: #ff8800; margin-bottom: 15px;">IL TUO ORDINE</h3>
+        <ul id="lista-ordine">
+            <!-- I prodotti appariranno qui tramite JavaScript -->
+        </ul>
+        <div class="totale-box" style="font-size: 1.5em; color: #ff8800; border-top: 2px solid #ff8800; padding-top: 10px;">
+            TOTALE: <span id="totale-prezzo">0.00</span> €
+        </div>
+        <button onclick="alert('Ordine confermato!')" style="width: 100%; padding: 15px; background: #ff8800; border: none; font-weight: bold; cursor: pointer; margin-top: 10px;">PAGA ORA</button>
+    </div>
+</div>
+
+<script>
+    // Variabile globale per tenere il conto dei soldi
+    let totale = 0;
+
+    /**
+     * Funzione per aggiungere un elemento al carrello
+     */
+    function aggiungi(nome, prezzo) {
+        const lista = document.getElementById('lista-ordine');
+        const li = document.createElement('li'); // Crea un nuovo elemento lista
+        li.style.display = "flex";
+        li.style.justifyContent = "space-between";
+        li.style.marginBottom = "5px";
+        
+        // Inserisce il testo del prodotto e il bottone per cancellarlo
+        li.innerHTML = `
+            <span>${nome} (${prezzo.toFixed(2)}€)</span>
+            <button class="btn-delete" onclick="rimuovi(this, ${prezzo})">
+                <i class="fas fa-trash-alt"></i>
+            </button>
+        `;
+        
+        lista.appendChild(li); // Aggiunge fisicamente l'elemento al carrello
+        totale += prezzo;      // Somma il prezzo al totale
+        aggiornaTotale();      // Aggiorna la scritta a video
+    }
+
+    /**
+     * Funzione per rimuovere un elemento specifico
+     */
+    function rimuovi(btn, prezzo) {
+        btn.parentElement.remove(); // Rimuove la riga dal carrello
+        totale -= prezzo;           // Sottrae il prezzo dal totale
+        if (totale < 0) totale = 0; // Evita numeri negativi per errori di arrotondamento
+        aggiornaTotale();
+    }
+
+    /**
+     * Funzione di servizio per mostrare il prezzo aggiornato con 2 decimali
+     */
+    function aggiornaTotale() {
+        document.getElementById('totale-prezzo').innerText = totale.toFixed(2);
+    }
+</script>
+
+</body>
+</html>

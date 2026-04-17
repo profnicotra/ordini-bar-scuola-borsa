@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Scuola Bar Borsa - Breakfast Edition</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com">
+    <style>
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background: radial-gradient(circle at center, #1a0d00 0%, #000000 100%); 
+            color: #ffffff; margin: 0; padding: 20px; min-height: 100vh;
+        }
+
+        .layout { display: flex; gap: 20px; max-width: 1400px; margin: auto; flex-wrap: wrap; }
+        .main-content { flex: 3; min-width: 600px; }
+        
+        .cart-panel { 
+            flex: 1; min-width: 320px; 
+            background: rgba(15, 15, 15, 0.95); 
+            border: 2px solid #ff8800; 
+            border-radius: 15px; padding: 20px;
+            height: fit-content; position: sticky; top: 20px;
+            box-shadow: 0 0 30px rgba(255, 136, 0, 0.15);
+        }
+
+        .header {
+            text-align: center; padding: 25px;
+            background: linear-gradient(145deg, #221100 0%, #000000 100%);
+            border: 2px solid #ff8800; border-radius: 15px; margin-bottom: 25px;
+        }
+
+        h1 { color: #ff8800; text-transform: uppercase; letter-spacing: 4px; margin: 0; font-size: 2.2em; }
+
+        table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+        th { background: #ff8800; color: #000; padding: 12px; text-align: left; text-transform: uppercase; font-size: 0.75em; }
+        td { background: #111; padding: 15px; border-top: 1px solid #331a00; border-bottom: 1px solid #331a00; }
+
+        .nome-prod { font-weight: bold; color: #ff8800; font-size: 1.1em; display: block; }
+        .ingr { font-size: 0.8em; color: #777; font-style: italic; display: block; margin-top: 3px; }
+        .val-euro { font-family: 'Monaco', monospace; font-weight: bold; }
+
+        .btn-add {
+            background: transparent; border: 2px solid #ff8800; color: #ff8800;
+            width: 40px; height: 40px; border-radius: 50%; cursor: pointer; transition: 0.3s;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .btn-add:hover { background: #ff8800; color: #000; transform: scale(1.1); }
+
+        /* Lista Carrello */
+        #lista-ordine { list-style: none; padding: 0; margin-top: 15px; }
+        .item-ordine { 
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 0; border-bottom: 1px solid #222;
+            animation: slideIn 0.2s ease-out;
+        }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+
+        .totale-box { 
+            margin-top: 20px; padding: 15px; 
+            background: #221100; border-radius: 10px;
+            font-size: 1.5em; color: #ff8800; text-align: center; font-weight: bold;
+            border: 1px solid #ff8800;
+        }
+
+        .btn-delete { color: #ff4444; cursor: pointer; margin-left: 10px; font-size: 0.8em; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>SCUOLA <span style="color:#fff">BAR</span> BORSA</h1>
+    <div style="color: #666; font-size: 0.8em; margin-top: 5px;">BREAKFAST & PROFIT MENU</div>
+</div>
+
+<div class="layout">
+    <div class="main-content">
+        <table>
+            <thead>
+                <tr>
+                    <th>PRODOTTO & INGREDIENTI</th>
+                    <th>COSTO</th>
+                    <th>PREZZO</th>
+                    <th>MARGINE</th>
+                    <th>ORDINA</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <span class="nome-prod">Cappuccino Crema Latte</span>
+                        <span class="ingr">Espresso Arabica, 120ml Latte Intero, Cacao</span>
+                    </td>
+                    <td class="val-euro">0.38 €</td>
+                    <td class="val-euro">1.60 €</td>
+                    <td style="color:#ffaa33">+1.22 €</td>
+                    <td><button class="btn-add" onclick="aggiungi('Cappuccino', 1.60)"><i class="fas fa-plus"></i></button></td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="nome-prod">Pasticciotto Leccese</span>
+                        <span class="ingr">Pasta Frolla allo strutto, Crema Pasticcera</span>
+                    </td>
+                    <td class="val-euro">0.75 €</td>
+                    <td class="val-euro">1.80 €</td>
+                    <td style="color:#ffaa33">+1.05 €</td>
+                    <td><button class="btn-add" onclick="aggiungi('Pasticciotto', 1.80)"><i class="fas fa-plus"></i></button></td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="nome-prod">Tramezzino Prosciutto & Mix</span>
+                        <span class="ingr">Pane bianco, Prosciutto Cotto, Maionese, Olive</span>
+                    </td>
+                    <td class="val-euro">1.10 €</td>
+                    <td class="val-euro">3.50 €</td>
+                    <td style="color:#ffaa33">+2.40 €</td>
+                    <td><button class="btn-add" onclick="aggiungi('Tramezzino', 3.50)"><i class="fas fa-plus"></i></button></td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="nome-prod">Succo di Frutta Bio</span>
+                        <span class="ingr">200ml Pera o Pesca 100% frutta</span>
+                    </td>
+                    <td class="val-euro">0.90 €</td>
+                    <td class="val-euro">3.00 €</td>
+                    <td style="color:#ffaa33">+2.10 €</td>
+                    <td><button class="btn-add" onclick="aggiungi('Succo Bio', 3.00)"><i class="fas fa-plus"></i></button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pannello Carrello -->
+    <div class="cart-panel">
+        <h3 style="color: #ff8800; margin-top: 0; text-align: center;"><i class="fas fa-shopping-basket"></i> IL TUO ORDINE</h3>
+        <ul id="lista-ordine">
+            <li id="vuoto-msg" style="color: #444; text-align: center; padding: 20px;">Il carrello è vuoto</li>
+        </ul>
+        <div class="totale-box">
+            <span style="font-size: 0.6em; color: #fff; display: block; text-transform: uppercase;">Totale da pagare</span>
+            <span id="totale-prezzo">0.00</span> €
+        </div>
+        <button onclick="conferma()" style="width: 100%; margin-top: 15px; background: #ff8800; border: none; padding: 15px; font-weight: bold; border-radius: 8px; cursor: pointer; color: #000; text-transform: uppercase;">
+            Invia in Cassa
+        </button>
+    </div>
+</div>
+
+<script>
+    let totale = 0;
+    const listaUl = document.getElementById('lista-ordine');
+    const totaleSpan = document.getElementById('totale-prezzo');
+    const vuotoMsg = document.getElementById('vuoto-msg');
+
+    function aggiungi(nome, prezzo) {
+        if (vuotoMsg) vuotoMsg.remove();
+        
+        const li = document.createElement('li');
+        li.className = 'item-ordine';
+        li.innerHTML = `
+            <div>
+                <span style="color: #fff;">${nome}</span>
+                <span style="color: #ff8800; margin-left: 10px;">${prezzo.toFixed(2)} €</span>
+            </div>
+            <i class="fas fa-trash-alt btn-delete" onclick="rimuovi(this, ${prezzo})"></i>
+        `;
+        listaUl.appendChild(li);
+        
+        totale += prezzo;
+        aggiornaTotale();
+    }
+
+    function rimuovi(el, prezzo) {
+        el.parentElement.remove();
+        totale -= prezzo;
+        if (totale < 0) totale = 0;
+        aggiornaTotale();
+    }
+
+    function aggiornaTotale() {
+        totaleSpan.innerText = totale.toFixed(2);
+    }
+
+    function conferma() {
+        if (totale === 0) return alert("Scegli qualcosa prima!");
+        alert("Ordine ricevuto! Iniziamo a preparare la tua colazione.");
+        location.reload();
+    }
+</script>
+
+</body>
+</html>

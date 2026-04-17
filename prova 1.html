@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SISTEMA GESTIONE BAR - COLAZIONE</title>
+    <style>
+        :root {
+            --marrone-scuro: #3e2723;
+            --marrone-medio: #5d4037;
+            --oro: #d4a373;
+            --verde: #2d6a4f;
+            --rosso: #c94c4c;
+            --grigio-chiaro: #f8f9fa;
+        }
+
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f0f0f0; margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 1300px; margin: auto; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
+        
+        header { text-align: center; border-bottom: 3px solid var(--marrone-scuro); margin-bottom: 25px; padding-bottom: 10px; }
+        h1 { color: var(--marrone-scuro); margin: 0; text-transform: uppercase; letter-spacing: 2px; }
+
+        /* Form di Inserimento */
+        .form-container { 
+            background: var(--grigio-chiaro); 
+            padding: 20px; 
+            border-radius: 10px; 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); 
+            gap: 15px; 
+            margin-bottom: 30px;
+            border: 1px solid #ddd;
+        }
+
+        .input-box { display: flex; flex-direction: column; }
+        .input-box label { font-weight: bold; font-size: 12px; margin-bottom: 5px; color: var(--marrone-medio); }
+        input, select { padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; }
+        
+        .btn-add { 
+            background: var(--marrone-scuro); color: white; border: none; 
+            padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; 
+            transition: 0.3s; align-self: flex-end; height: 40px;
+        }
+        .btn-add:hover { background: var(--oro); color: black; }
+
+        /* Tabella */
+        .table-scroll { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; background: white; margin-top: 10px; }
+        th { background: var(--marrone-medio); color: white; padding: 15px; text-align: left; font-size: 13px; }
+        td { padding: 12px; border-bottom: 1px solid #eee; font-size: 14px; }
+        tr:hover { background-color: #fffdfb; }
+
+        /* Indicatori */
+        .badge { padding: 5px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; text-transform: uppercase; }
+        .badge-disp { background: #d4edda; color: #155724; }
+        .badge-esaurito { background: #f8d7da; color: #721c24; }
+        
+        .margine-positivo { color: var(--verde); font-weight: bold; }
+        .margine-negativo { color: var(--rosso); font-weight: bold; }
+
+        .btn-delete { background: var(--rosso); color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; }
+        
+        .export-box { margin-top: 20px; text-align: right; }
+        .btn-export { background: #217346; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Gestione Listino Colazioni</h1>
+    </header>
+
+    <!-- FORM INSERIMENTO -->
+    <div class="form-container">
+        <div class="input-box">
+            <label>Prodotto</label>
+            <input type="text" id="nome" placeholder="es. Brioche Cioccolato">
+        </div>
+        <div class="input-box">
+            <label>Composizione (Ingredienti)</label>
+            <input type="text" id="composizione" placeholder="es. Farina, Burro, Nutella">
+        </div>
+        <div class="input-box">
+            <label>Prezzo Vendita (€)</label>
+            <input type="number" id="prezzo" step="0.01">
+        </div>
+        <div class="input-box">
+            <label>Costo Interno (€)</label>
+            <input type="number" id="costo" step="0.01">
+        </div>
+        <div class="input-box">
+            <label>Categoria</label>
+            <select id="categoria">
+                <option value="Caffetteria">Caffetteria</option>
+                <option value="Lievitati">Lievitati</option>
+                <option value="Pasticceria">Pasticceria</option>
+                <option value="Salato">Salato</option>
+                <option value="Bevande">Bevande</option>
+            </select>
+        </div>
+        <div class="input-box">
+            <label>Stato</label>
+            <select id="stato">
+                <option value="Disponibile">Disponibile</option>
+                <option value="Esaurito">Esaurito</option>
+            </select>
+        </div>
+        <div class="input-box">
+            <label>Note</label>
+            <input type="text" id="note" placeholder="es. Senza lattosio">
+        </div>
+        <button class="btn-add" onclick="aggiungiProdotto()">+ AGGIUNGI</button>
+    </div>
+
+    <!-- TABELLA DATI -->
+    <div class="table-scroll">
+        <table id="tabellaProdotti">
+            <thead>
+                <tr>
+                    <th>Prodotto</th>
+                    <th>Composizione</th>
+                    <th>Prezzo Vendita</th>
+                    <th>Costo Interno</th>
+                    <th>Margine (€)</th>
+                    <th>Categoria</th>
+                    <th>Stato</th>
+                    <th>Note</th>
+                    <th>Azioni</th>
+                </tr>
+            </thead>
+            <tbody id="corpoTabella">
+                <!-- Dati inseriti via JS -->
+            </tbody>
+        </table>
+    </div>
+
+    <div class="export-box">
+        <button class="btn-export" onclick="esportaCSV()">Scarica Backup (CSV)</button>
+    </div>
+</div>
+
+<script>
+    // Carica dati dal browser al caricamento
+    document.addEventListener('DOMContentLoaded', mostraProdotti);
+
+    function aggiungiProdotto() {
+        const nome = document.getElementById('nome').value;
+        const comp = document.getElementById('composizione').value;
+        const prezzo = parseFloat(document.getElementById('prezzo').value);
+        const costo = parseFloat(document.getElementById('costo').value);
+        const cat = document.getElementById('categoria').value;
+        const stato = document.getElementById('stato').value;
+        const note = document.getElementById('note').value || "-";
+
+        if (!nome || isNaN(prezzo) || isNaN(costo)) {
+            alert("Per favore, inserisci Nome, Prezzo e Costo correttamente.");
+            return;
+        }
+
+        const nuovoProdotto = {
+            id: Date.now(),
+            nome, comp, prezzo, costo, cat, stato, note
+        };
+
+        let archivio = JSON.parse(localStorage.getItem('archivioBar')) || [];
+        archivio.push(nuovoProdotto);
+        localStorage.setItem('archivioBar', JSON.stringify(archivio));
+
+        resetCampi();
+        mostraProdotti();
+    }
+
+    function mostraProdotti() {
+        const corpo = document.getElementById('corpoTabella');
+        const archivio = JSON.parse(localStorage.getItem('archivioBar')) || [];
+        corpo.innerHTML = "";
+
+        archivio.forEach(p => {
+            const margine = (p.prezzo - p.costo).toFixed(2);
+            const margineClasse = margine > 0 ? "margine-positivo" : "margine-negativo";
+            const statoClasse = p.stato === "Disponibile" ? "badge-disp" : "badge-esaurito";
+
+            corpo.innerHTML += `
+                <tr>
+                    <td><strong>${p.nome}</strong></td>
+                    <td><small>${p.comp}</small></td>
+                    <td>€ ${p.prezzo.toFixed(2)}</td>
+                    <td>€ ${p.costo.toFixed(2)}</td>
+                    <td class="${margineClasse}">€ ${margine}</td>
+                    <td>${p.cat}</td>
+                    <td><span class="badge ${statoClasse}">${p.stato}</span></td>
+                    <td><small>${p.note}</small></td>
+                    <td><button class="btn-delete" onclick="eliminaProdotto(${p.id})">Rimuovi</button></td>
+                </tr>
+            `;
+        });
+    }
+
+    function eliminaProdotto(id) {
+        let archivio = JSON.parse(localStorage.getItem('archivioBar')) || [];
+        archivio = archivio.filter(p => p.id !== id);
+        localStorage.setItem('archivioBar', JSON.stringify(archivio));
+        mostraProdotti();
+    }
+
+    function resetCampi() {
+        document.querySelectorAll('input').forEach(i => i.value = "");
+    }
+
+    function esportaCSV() {
+        let archivio = JSON.parse(localStorage.getItem('archivioBar')) || [];
+        if(archivio.length === 0) return alert("Nessun dato da esportare");
+
+        let csv = "Prodotto;Composizione;Prezzo;Costo;Categoria;Stato;Note\n";
+        archivio.forEach(p => {
+            csv += `${p.nome};${p.comp};${p.prezzo};${p.costo};${p.cat};${p.stato};${p.note}\n`;
+        });
+
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.setAttribute('href', url);
+        a.setAttribute('download', 'listino_bar.csv');
+        a.click();
+    }
+</script>
+
+</body>
+</html>

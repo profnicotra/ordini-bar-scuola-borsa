@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Scuola Bar Borsa - Management System</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background: radial-gradient(circle at center, #1a0000 0%, #000000 100%); 
+            color: #ffffff; margin: 0; padding: 40px 20px;
+        }
+        .header {
+            text-align: center; padding: 30px;
+            background: linear-gradient(145deg, #330000 0%, #000000 100%);
+            border: 2px solid #00a6ff; border-radius: 20px; margin-bottom: 40px;
+            box-shadow: 0 0 25px rgba(0, 200, 255, 0.4);
+        }
+        h1 { color: #00c8ff; text-transform: uppercase; letter-spacing: 6px; }
+        
+        table { width: 100%; border-collapse: separate; border-spacing: 0 15px; }
+        th { background: #00aaff; color: #000; padding: 15px; text-transform: uppercase; }
+        td { background: rgba(20, 20, 20, 0.9); padding: 20px; border-top: 1px solid #008cff; border-bottom: 1px solid #00d0ff; }
+        
+        .nome-prod { font-weight: bold; color: #0091ff; font-size: 1.2em; }
+        .val-euro { font-family: monospace; color: #fff; }
+        .val-margine { color: #00ffcc; font-weight: bold; }
+        .badge { background: #004466; padding: 5px 10px; border-radius: 5px; font-size: 0.8em; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>SCUOLA <span style="color:#fff">BAR</span> BORSA</h1>
+    <p>SISTEMA GESTIONALE DATI</p>
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <th>Prodotto</th>
+            <th>Prezzo</th>
+            <th>Interno</th>
+            <th>Margine</th>
+            <th>Categoria</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for p in data.prodotti %}
+        <tr>
+            <td>
+                <span class="nome-prod">{{ p.nome_prodotto }}</span><br>
+                <small style="color: #888;">{{ p.ingr }}</small>
+            </td>
+            <td class="val-euro">€ {{ "%.2f"|format(p.prezzo) }}</td>
+            <td class="val-euro">€ {{ "%.2f"|format(p.prezzo_interno) }}</td>
+            <td class="val-margine">+ € {{ "%.2f"|format(p.margine) }}</td>
+            <td><span class="badge">{{ p.categoria }}</span></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div style="margin-top: 50px;">
+    <h2 style="color: #00c8ff;">Configurazione Note</h2>
+    {% for gruppo in data.gruppo_note %}
+    <div style="border-left: 4px solid #00a6ff; padding-left: 20px; margin-bottom: 30px;">
+        <h3>{{ gruppo.nome }} {% if gruppo.obbligatorio %}(!){% endif %}</h3>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            {% for n in gruppo.note %}
+            <span style="border: 1px solid #00a6ff; padding: 5px 15px; border-radius: 20px;">{{ n }}</span>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+</body>
+</html>

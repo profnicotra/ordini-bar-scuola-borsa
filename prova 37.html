@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Scuola Bar Borsa - Breakfast & Trash</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com">
+    <style>
+        /* ... (Stili precedenti mantenuti per brevità) ... */
+        body { font-family: 'Segoe UI', sans-serif; background: radial-gradient(circle at center, #1a0d00 0%, #000000 100%); color: #ffffff; margin: 0; padding: 20px; }
+        .layout { display: flex; gap: 20px; max-width: 1400px; margin: auto; flex-wrap: wrap; }
+        .main-content { flex: 3; min-width: 600px; }
+        .cart-panel { flex: 1; min-width: 320px; background: #0a0a0a; border: 2px solid #ff8800; border-radius: 15px; padding: 20px; height: fit-content; position: sticky; top: 20px; box-shadow: 0 0 20px rgba(255, 136, 0, 0.2); }
+        .header { text-align: center; padding: 20px; border: 2px solid #ff8800; border-radius: 15px; margin-bottom: 20px; background: #111; }
+        h1 { color: #ff8800; text-transform: uppercase; margin: 0; }
+        
+        table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+        th { background: #ff8800; color: #000; padding: 12px; text-transform: uppercase; font-size: 0.8em; }
+        td { background: #111; padding: 15px; border-top: 1px solid #331a00; border-bottom: 1px solid #331a00; }
+
+        .nome-prod { font-weight: bold; color: #ff8800; }
+        .ingr { font-size: 0.8em; color: #666; display: block; }
+
+        /* Bottone Aggiungi */
+        .btn-add { background: transparent; border: 2px solid #ff8800; color: #ff8800; width: 35px; height: 35px; border-radius: 5px; cursor: pointer; transition: 0.3s; }
+        .btn-add:hover { background: #ff8800; color: #000; }
+
+        /* Elementi nel Carrello con CESTINO */
+        #lista-ordine { list-style: none; padding: 0; }
+        .item-ordine { 
+            display: flex; justify-content: space-between; align-items: center; 
+            padding: 10px; border-bottom: 1px solid #222; background: #151515; margin-bottom: 5px; border-radius: 5px;
+        }
+        
+        .btn-delete { 
+            color: #ff4444; background: transparent; border: none; cursor: pointer; 
+            font-size: 1.1em; transition: 0.2s; padding: 5px;
+        }
+        .btn-delete:hover { color: #ff0000; transform: scale(1.2); }
+
+        .totale-box { margin-top: 20px; padding: 15px; border-top: 2px solid #ff8800; font-size: 1.5em; color: #ff8800; text-align: center; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>SCUOLA <span style="color:#fff">BAR</span> BORSA</h1>
+</div>
+
+<div class="layout">
+    <div class="main-content">
+        <table>
+            <thead>
+                <tr>
+                    <th>PRODOTTO</th>
+                    <th>PREZZO</th>
+                    <th>MARGINE</th>
+                    <th>AGGIUNGI</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="nome-prod">Cappuccino</span><span class="ingr">Latte, Caffè, Cacao</span></td>
+                    <td>1.60 €</td>
+                    <td style="color:#666">+1.22 €</td>
+                    <td><button class="btn-add" onclick="aggiungi('Cappuccino', 1.60)"><i class="fas fa-cart-plus"></i></button></td>
+                </tr>
+                <tr>
+                    <td><span class="nome-prod">Cornetto Crema</span><span class="ingr">Frolla, Crema Pasticcera</span></td>
+                    <td>1.50 €</td>
+                    <td style="color:#666">+0.90 €</td>
+                    <td><button class="btn-add" onclick="aggiungi('Cornetto Crema', 1.50)"><i class="fas fa-cart-plus"></i></button></td>
+                </tr>
+                <tr>
+                    <td><span class="nome-prod">Spremuta</span><span class="ingr">3 Arance Rosse</span></td>
+                    <td>4.00 €</td>
+                    <td style="color:#666">+3.15 €</td>
+                    <td><button class="btn-add" onclick="aggiungi('Spremuta', 4.00)"><i class="fas fa-cart-plus"></i></button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- CARRELLO -->
+    <div class="cart-panel">
+        <h3 style="color: #ff8800; margin: 0 0 15px 0;"><i class="fas fa-shopping-basket"></i> IL TUO ORDINE</h3>
+        <ul id="lista-ordine">
+            <!-- Qui compaiono i prodotti -->
+        </ul>
+        <div class="totale-box">
+            TOTALE: <span id="totale-prezzo">0.00</span> €
+        </div>
+        <button onclick="alert('Ordine confermato!')" style="width: 100%; padding: 15px; background: #ff8800; border: none; font-weight: bold; cursor: pointer; border-radius: 5px; margin-top: 10px;">PAGA ORA</button>
+    </div>
+</div>
+
+<script>
+    let totale = 0;
+
+    function aggiungi(nome, prezzo) {
+        const lista = document.getElementById('lista-ordine');
+        const li = document.createElement('li');
+        li.className = 'item-ordine';
+        
+        li.innerHTML = `
+            <span>${nome} (${prezzo.toFixed(2)}€)</span>
+            <button class="btn-delete" onclick="rimuovi(this, ${prezzo})">
+                <i class="fas fa-trash-alt"></i>
+            </button>
+        `;
+        
+        lista.appendChild(li);
+        totale += prezzo;
+        aggiornaTotale();
+    }
+
+    function rimuovi(btn, prezzo) {
+        btn.parentElement.remove();
+        totale -= prezzo;
+        if (totale < 0) totale = 0;
+        aggiornaTotale();
+    }
+
+    function aggiornaTotale() {
+        document.getElementById('totale-prezzo').innerText = totale.toFixed(2);
+    }
+</script>
+
+</body>
+</html>

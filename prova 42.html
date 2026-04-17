@@ -1,0 +1,46 @@
+<!-- ... (Parte superiore del codice precedente uguale) ... -->
+
+        <tbody>
+            <!-- RIGA AGGIUNTA: LA TORRE -->
+            <tr>
+                <td>
+                    <span class="nome-prod">La Torre (Specialità)</span>
+                    <span class="ingr">Selezione di salumi, formaggi e focaccia calda</span>
+                    <!-- NOTA VISIBILE RICHIESTA -->
+                    <div style="color: #ff3333; font-size: 0.8em; margin-top: 5px; font-weight: bold; border-left: 2px solid #ff0000; padding-left: 8px;">
+                        <i class="fas fa-bread-slice"></i> Servito con 3 pezzi di pane
+                    </div>
+                </td>
+                <td class="val-euro">4.50 €</td>
+                <td class="val-euro">12.00 €</td>
+                <td class="val-euro">8.00 €</td>
+                <td class="val-margine">+7.50 €</td>
+                <td><span class="badge-cat">Food</span></td>
+                <td>
+                    <!-- BOTTONE CARRELLO -->
+                    <button class="btn-cart" onclick="aggiungi('La Torre', 12.00)">
+                        <i class="fas fa-shopping-cart"></i>
+                    </button>
+                </td>
+            </tr>
+
+            <!-- Altre righe (Caffè, Spremuta, ecc.) -->
+            <tr>
+                <td>
+                    <span class="nome-prod">Caffè Espresso</span>
+                    <span class="ingr">7g Miscela Arabica</span>
+                </td>
+                <td class="val-euro">0.12 €</td>
+                <td class="val-euro">1.20 €</td>
+                <td class="val-euro">0.80 €</td>
+                <td class="val-margine">+1.08 €</td>
+                <td><span class="badge-cat">Caffè</span></td>
+                <td>
+                    <button class="btn-cart" onclick="aggiungi('Caffè', 1.20)">
+                        <i class="fas fa-shopping-cart"></i>
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+
+<!-- ... (Il resto del codice con lo script rimane invariato) ... -->

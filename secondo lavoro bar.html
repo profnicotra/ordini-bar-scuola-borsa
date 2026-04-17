@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Scuola Bar Borsa - Dashboard & Carrello</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com">
+    <style>
+        body { font-family: 'Inter', sans-serif; background: #000814; color: #e0e0e0; margin: 0; padding: 20px; }
+        .container { max-width: 1000px; margin: auto; }
+        
+        .header {
+            background: linear-gradient(135deg, #001d3d 0%, #000814 100%);
+            border: 1px solid #003566; border-radius: 15px;
+            padding: 20px; text-align: center; margin-bottom: 20px;
+        }
+        h1 { color: #ffc300; margin: 0; letter-spacing: 2px; }
+        .blue-text { color: #0080ff; }
+
+        /* Tabella Prodotti */
+        table { width: 100%; border-collapse: collapse; background: #001122; border-radius: 12px; overflow: hidden; margin-bottom: 30px; }
+        th { background: #003566; color: #00bcff; padding: 12px; text-align: left; font-size: 0.8em; }
+        td { padding: 12px; border-bottom: 1px solid #001d3d; }
+        .nome-prod { font-weight: bold; color: white; }
+        .ingr { font-size: 0.7em; color: #80bfff; display: block; }
+        
+        /* Sezione Carrello / Cose Comprate */
+        .cart-section {
+            background: linear-gradient(145deg, #001a33, #000000);
+            border: 2px solid #0080ff; border-radius: 15px; padding: 20px;
+            box-shadow: 0 0 20px rgba(0, 128, 255, 0.2);
+        }
+        .cart-title { color: #0080ff; font-size: 1.5em; border-bottom: 1px solid #003566; padding-bottom: 10px; margin-bottom: 15px; }
+        
+        #lista-comprati { list-style: none; padding: 0; }
+        .item-comprato { 
+            display: flex; justify-content: space-between; 
+            padding: 8px 0; border-bottom: 1px dashed #003566; font-size: 0.9em;
+        }
+
+        .totale-box { 
+            margin-top: 20px; text-align: right; font-size: 1.2em; font-weight: bold; color: #ffc300; 
+        }
+        .margine-totale { font-size: 0.7em; color: #00ff88; display: block; }
+
+        /* Pulsanti */
+        .btn-add { background: #003566; color: white; border: 1px solid #0080ff; padding: 8px; border-radius: 5px; cursor: pointer; }
+        .btn-add:hover { background: #0080ff; color: black; }
+        .btn-clear { background: #330000; color: #ff4d4d; border: 1px solid #ff4d4d; padding: 5px 10px; border-radius: 5px; cursor: pointer; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>SCUOLA <span class="blue-text">BAR BORSA</span></h1>
+        <p>Dashboard Operativa Colazioni</p>
+    </div>
+
+    <!-- Tabella Listino -->
+    <table>
+        <thead>
+            <tr>
+                <th>Nome & Ingredienti</th>
+                <th>Costo (€)</th>
+                <th>Prezzo (€)</th>
+                <th>P. Interno (€)</th>
+                <th>Margine (€)</th>
+                <th>Aggiungi</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="nome-prod">Caffè Espresso</span><span class="ingr">7g Arabica, Acqua, Zucchero</span></td>
+                <td>0.12</td><td>1.20</td><td>0.80</td><td>1.08</td>
+                <td><button class="btn-add" onclick="aggiungi('Caffè Espresso', 1.20, 1.08)"><i class="fas fa-cart-plus"></i></button></td>
+            </tr>
+            <tr>
+                <td><span class="nome-prod">Cappuccino</span><span class="ingr">Espresso, 120ml Latte, Cacao</span></td>
+                <td>0.35</td><td>1.50</td><td>1.00</td><td>1.15</td>
+                <td><button class="btn-add" onclick="aggiungi('Cappuccino', 1.50, 1.15)"><i class="fas fa-cart-plus"></i></button></td>
+            </tr>
+            <tr>
+                <td><span class="nome-prod">Cornetto Crema</span><span class="ingr">Sfoglia, Crema, Zucchero a velo</span></td>
+                <td>0.55</td><td>1.30</td><td>0.90</td><td>0.75</td>
+                <td><button class="btn-add" onclick="aggiungi('Cornetto Crema', 1.30, 0.75)"><i class="fas fa-cart-plus"></i></button></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- SEZIONE COSE COMPRATE -->
+    <div class="cart-section">
+        <div class="cart-title"><i class="fas fa-shopping-bag"></i> Riepilogo Cose Comprate</div>
+        <ul id="lista-comprati">
+            <!-- Qui appariranno i prodotti cliccati -->
+            <li style="color: #666; font-style: italic;">Nessun prodotto selezionato...</li>
+        </ul>
+        
+        <div class="totale-box">
+            TOTALE: <span id="totale-euro">0.00</span> €
+            <span class="margine-totale">Guadagno Bar (Margine): <span id="totale-margine">0.00</span> €</span>
+        </div>
+        <button class="btn-clear" onclick="pulisci()">Svuota Lista</button>
+    </div>
+</div>
+
+<script>
+    let totale = 0;
+    let margineTot = 0;
+    let listaProdotti = [];
+
+    function aggiungi(nome, prezzo, margine) {
+        if (listaProdotti.length === 0) {
+            document.getElementById('lista-comprati').innerHTML = '';
+        }
+        
+        totale += prezzo;
+        margineTot += margine;
+        
+        const listaUI = document.getElementById('lista-comprati');
+        const riga = document.createElement('li');
+        riga.className = 'item-comprato';
+        riga.innerHTML = `<span>${nome}</span> <span>${prezzo.toFixed(2)} €</span>`;
+        listaUI.appendChild(riga);
+        
+        document.getElementById('totale-euro').innerText = totale.toFixed(2);
+        document.getElementById('totale-margine').innerText = margineTot.toFixed(2);
+        listaProdotti.push(nome);
+    }
+
+    function pulisci() {
+        totale = 0;
+        margineTot = 0;
+        listaProdotti = [];
+        document.getElementById('lista-comprati').innerHTML = '<li style="color: #666; font-style: italic;">Nessun prodotto selezionato...</li>';
+        document.getElementById('totale-euro').innerText = '0.00';
+        document.getElementById('totale-margine').innerText = '0.00';
+    }
+</script>
+
+</body>
+</html>

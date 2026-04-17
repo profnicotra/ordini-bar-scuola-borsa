@@ -1,0 +1,38 @@
+from flask import Blueprint, render_template
+
+bar_borsa_bp = Blueprint('bar_borsa', __name__)
+
+@bar_borsa_bp.route('/scuola-bar')
+def index():
+    # Dati estratti direttamente dal tuo progetto "Scuola Bar Borsa"
+    data = {
+        "prodotti": [
+            # CAFFETTERIA
+            {"id": 1, "nome_prodotto": "Caffè Espresso", "prezzo": 1.20, "margine": 1.08, "prezzo_interno": 0.80, "categoria": "Caffè & Drink", "ingr": "7g Arabica"},
+            {"id": 2, "nome_prodotto": "Caffè al Ginseng", "prezzo": 1.80, "margine": 1.35, "prezzo_interno": 1.20, "categoria": "Caffè & Drink", "ingr": "Tazza piccola"},
+            {"id": 3, "nome_prodotto": "Spritz Aperol/Campari", "prezzo": 5.00, "margine": 3.80, "prezzo_interno": 3.50, "categoria": "Caffè & Drink", "ingr": "Prosecco, soda, Aperol"},
+            
+            # DOLCE
+            {"id": 4, "nome_prodotto": "Cornetto Crema", "prezzo": 1.40, "margine": 0.80, "prezzo_interno": 1.00, "categoria": "Sezione Dolce", "ingr": "Pasta brioche, crema"},
+            {"id": 5, "nome_prodotto": "Crostata Albicocca", "prezzo": 3.00, "margine": 2.10, "prezzo_interno": 2.00, "categoria": "Sezione Dolce", "ingr": "Frolla burro, confettura"},
+            
+            # SALATO
+            {"id": 6, "nome_prodotto": "Focaccia Crudo", "prezzo": 5.50, "margine": 3.70, "prezzo_interno": 4.00, "categoria": "Sezione Salato", "ingr": "Parma, mozzarella"},
+            {"id": 7, "nome_prodotto": "Pizzetta Sfoglia", "prezzo": 2.50, "margine": 1.80, "prezzo_interno": 1.50, "categoria": "Sezione Salato", "ingr": "Pomodoro, origano"}
+        ],
+        "gruppo_note": [
+            {
+                "nome": "Personalizzazione Caffè",
+                "obbligatorio": False,
+                "esclusivo": True,
+                "note": ["Macchiato Freddo", "Macchiato Caldo", "Schiumato", "Zucchero di Canna"]
+            },
+            {
+                "nome": "Temperatura Salato",
+                "obbligatorio": True,
+                "esclusivo": True,
+                "note": ["Scaldato", "Temperatura Ambiente"]
+            }
+        ]
+    }
+    return render_template('bar_borsa.html', data=data)

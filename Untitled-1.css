@@ -1,0 +1,31 @@
+
+.container-tabella {
+  width: 100%;
+  max-width: 950px;
+  background: rgba(15, 0, 0, 0.7);
+  backdrop-filter: blur(20px);
+  border-radius: 30px;
+  padding: 25px;
+  border: 1px solid rgba(255, 0, 0, 0.25);
+  box-shadow: 0 0 50px rgba(0, 0, 0, 1);
+  /* NUOVE PROPRIETÀ */
+  animation: fadeInUp 1s ease-out both, float 6s ease-in-out infinite;
+}
+
+.prezzo-bianco { 
+  color: #ffffff; 
+  font-weight: 700;
+  /* NUOVA ANIMAZIONE */
+  animation: priceGlow 3s infinite;
+}
+
+/* Aggiungi un piccolo ritardo alle righe per un effetto a cascata */
+tr {
+  opacity: 0;
+  animation: fadeInUp 0.5s ease-out forwards;
+}
+
+tr:nth-child(1) { animation-delay: 0.2s; }
+tr:nth-child(2) { animation-delay: 0.4s; }
+tr:nth-child(3) { animation-delay: 0.6s; }
+tr:nth-child(4) { animation-delay: 0.8s; }

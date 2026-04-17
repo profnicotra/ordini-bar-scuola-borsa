@@ -1,0 +1,49 @@
+// Esempio di come strutturare i "Gruppi" e le "Note"
+const databaseNote = [
+  {
+    gruppo: "Caffetteria",
+    note: [
+      { prodotto: "Caffè Espresso", contenuto: "Macchiato caldo" },
+      { prodotto: "Spritz", contenuto: "Senza oliva" }
+    ]
+  },
+  {
+    gruppo: "Salato",
+    note: [
+      { prodotto: "Focaccia", contenuto: "Scaldata bene" }
+    ]
+  }
+];
+CREATE TABLE note_prodotti (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    prodotto_nome VARCHAR(255),
+    gruppo VARCHAR(50), -- es. 'Dolce', 'Salato'
+    contenuto_nota TEXT
+);
+                <td class="val-euro">2.50 €</td><td class="val-euro">1.50 €</td><td class="val-margine">+1.85 €</td>
+                <td class="stato-attivo"><i class="fas fa-check-circle"></i> DISPONIBILE</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function mostraSezione(idSezione) {
+        // Nasconde tutte le tabelle
+        const tabelle = document.querySelectorAll('.tabella-sezione');
+        tabelle.forEach(tab => tab.classList.remove('active'));
+
+        // Rimuove lo stato attivo da tutti i bottoni
+        const bottoni = document.querySelectorAll('.nav-btn');
+        bottoni.forEach(btn => btn.classList.remove('active'));
+
+        // Mostra la tabella selezionata
+        document.getElementById(idSezione).classList.add('active');
+
+        // Aggiunge lo stato attivo al bottone cliccato
+        event.currentTarget.classList.add('active');
+    }
+</script>
+
+</body>
+</html>

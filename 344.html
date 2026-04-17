@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Scuola Bar Borsa - Compact Edition</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background: radial-gradient(circle at center, #1a0000 0%, #000000 100%); 
+            color: #ffffff; 
+            margin: 0; 
+            padding: 20px; 
+        }
+
+        /* Container più stretto per rimpicciolire la visuale */
+        .container { max-width: 900px; margin: auto; }
+
+        .header {
+            text-align: center;
+            padding: 15px;
+            background: linear-gradient(145deg, #0256ff 0%, #000000 100%);
+            border: 1px solid #0059ff;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 15px rgba(0, 140, 255, 0.2);
+        }
+
+        h1 { color: #067eee; text-transform: uppercase; letter-spacing: 3px; font-size: 1.8em; margin: 0; }
+        .sub-header { color: #888; font-size: 0.75em; margin-top: 5px; letter-spacing: 1px; }
+
+        /* Tabella più compatta */
+        table { width: 100%; border-collapse: collapse; font-size: 0.85em; }
+        
+        thead th { 
+            color: #00c3ff; 
+            text-transform: uppercase; 
+            padding: 8px; 
+            font-size: 0.7em; 
+            letter-spacing: 1px;
+            text-align: left;
+            border-bottom: 2px solid #0059ff;
+        }
+
+        tr td { 
+            background: rgba(15, 15, 15, 0.9);
+            padding: 10px 8px; /* Padding ridotto */
+            border-bottom: 1px solid #222;
+            transition: 0.2s;
+            vertical-align: middle;
+        }
+
+        tr:hover td { background: #0a0a0a; border-color: #0073ff; }
+
+        .nome-prod { font-weight: 700; color: #fff; font-size: 1em; display: block; }
+        .ingr { color: #666; font-size: 0.75em; font-style: italic; }
+
+        .input-note {
+            background: #000;
+            border: 1px solid #333;
+            color: #0885f3;
+            padding: 4px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            width: 120px;
+            outline: none;
+        }
+
+        /* Stile Prezzi */
+        .val-euro { font-family: 'Courier New', monospace; font-size: 0.85em; line-height: 1.2; }
+        .prezzo-int { color: #ff9d00; font-weight: bold; } /* Prezzo Interno */
+        .prezzo-pub { color: #00c3ff; } /* Prezzo Pubblico */
+        
+        .val-margine { color: #00ff88; font-weight: 700; font-size: 0.9em; }
+
+        /* Badge Categorie */
+        .badge-cat { 
+            padding: 2px 6px; 
+            border-radius: 3px; 
+            font-size: 0.65em; 
+            text-transform: uppercase;
+            font-weight: bold;
+            display: inline-block;
+        }
+        .cat-caffetteria { background: #3d2b1f; color: #d7ccc8; border: 1px solid #5d4037; }
+        .cat-food { background: #1b5e20; color: #c8e6c9; border: 1px solid #2e7d32; }
+        .cat-drink { background: #0d47a1; color: #bbdefb; border: 1px solid #1565c0; }
+
+        .stato-ok { color: #00b3ff; font-weight: bold; font-size: 0.7em; }
+        .stato-no { color: #444; font-weight: bold; font-size: 0.7em; text-decoration: line-through; }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>SCUOLA <span style="color:#fff">BAR</span> BORSA</h1>
+        <div class="sub-header">GESTIONALE PREZZI & CATEGORIE</div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>PRODOTTO</th>
+                <th>CATEGORIA</th>
+                <th>PREZZI (INT/PUB)</th>
+                <th>MARGINE</th>
+                <th>NOTE/OPZIONI</th>
+                <th>STATO</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- ESEMPIO CAFFÈ -->
+            <tr>
+                <td>
+                    <span class="nome-prod">Caffè Espresso</span>
+                    <span class="ingr">Arabica Premium</span>
+                </td>
+                <td><span class="badge-cat cat-caffetteria">Caffetteria</span></td>
+                <td>
+                    <div class="val-euro prezzo-int">I: 0.80 €</div>
+                    <div class="val-euro prezzo-pub">P: 1.20 €</div>
+                </td>
+                <td><span class="val-margine">+0.40 €</span></td>
+                <td>
+                    <select class="input-note">
+                        <option>Standard</option>
+                        <option>Macchiato</option>
+                        <option>Decaffeinato</option>
+                    </select>
+                </td>
+                <td class="stato-ok">OK</td>
+            </tr>
+
+            <!-- ESEMPIO TOAST -->
+            <tr>
+                <td>
+                    <span class="nome-prod">Toast Farcito</span>
+                    <span class="ingr">Cotto e Fontina</span>
+                </td>
+                <td><span class="badge-cat cat-food">Food / Snack</span></td>
+                <td>
+                    <div class="val-euro prezzo-int">I: 2.50 €</div>
+                    <div class="val-euro prezzo-pub">P: 4.50 €</div>
+                </td>
+                <td><span class="val-margine">+2.00 €</span></td>
+                <td><input type="text" class="input-note" placeholder="Note..."></td>
+                <td class="stato-ok">OK</td>
+            </tr>
+
+            <!-- ESEMPIO SPRITZ -->
+            <tr>
+                <td>
+                    <span class="nome-prod">Spritz Aperol</span>
+                    <span class="ingr">Aperol/Prosecco/Soda</span>
+                </td>
+                <td><span class="badge-cat cat-drink">Aperitivo</span></td>
+                <td>
+                    <div class="val-euro prezzo-int">I: 3.50 €</div>
+                    <div class="val-euro prezzo-pub">P: 6.00 €</div>
+                </td>
+                <td><span class="val-margine">+2.50 €</span></td>
+                <td>
+                    <select class="input-note">
+                        <option>Ghiaccio</option>
+                        <option>No Ghiaccio</option>
+                        <option>Extra Olive</option>
+                    </select>
+                </td>
+                <td class="stato-ok">OK</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>
