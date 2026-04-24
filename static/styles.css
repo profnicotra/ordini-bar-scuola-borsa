@@ -37,7 +37,7 @@ body {
   font-weight: 600;
   text-decoration: none;
   font-size: 18px;
-  transition: 0.3s;
+  transition: 0.3s  ;
   cursor: pointer;
 }
 .nav-center a:hover { color:rgb(79, 79, 79); }

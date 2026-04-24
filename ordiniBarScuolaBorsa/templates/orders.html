@@ -1437,13 +1437,57 @@ document.addEventListener("DOMContentLoaded", function () {
   function openNotePopup() {
     ingBox.innerHTML = "";
     const prod = products[currentIdx];
-    const ings = (prod && prod.ingredients && prod.ingredients.length) ? prod.ingredients : [prod ? prod.name : "—"];
-    ings.forEach(ing => {
-      const d = document.createElement("div");
-      d.className = "ing-item";
-      d.textContent = ing;
-      ingBox.appendChild(d);
-    });
+    
+    if (!prod) {
+      ingBox.innerHTML = '<div class="ing-item">Nessun prodotto</div>';
+      openPopup(notePopup);
+      return;
+    }
+    
+    // Se ha note_gruppi, mostrali
+    const noteGruppi = prod.note_gruppi && prod.note_gruppi.length > 0 ? prod.note_gruppi : null;
+    
+    if (noteGruppi) {
+      // Visualizza i gruppi di note
+      noteGruppi.forEach(gruppo => {
+        // Intestazione del gruppo
+        const gruppoHeader = document.createElement("div");
+        gruppoHeader.style.cssText = "margin-bottom:12px; padding-bottom:8px; border-bottom:1px solid rgba(255,255,255,0.1);";
+        gruppoHeader.innerHTML = `<strong style="font-size:13px; color:rgba(255,255,255,0.88);">${gruppo.nome_gruppo}</strong>`;
+        ingBox.appendChild(gruppoHeader);
+        
+        // Note del gruppo
+        if (gruppo.note && gruppo.note.length > 0) {
+          gruppo.note.forEach(nota => {
+            const notaEl = document.createElement("div");
+            notaEl.className = "ing-item";
+            let notaText = nota.nome;
+            if (nota.price_delta_euro && nota.price_delta_euro !== 0) {
+              const sign = nota.price_delta_euro > 0 ? '+' : '';
+              notaText += ` (${sign}€${Math.abs(nota.price_delta_euro).toFixed(2)})`;
+            }
+            notaEl.textContent = notaText;
+            ingBox.appendChild(notaEl);
+          });
+        } else {
+          const emptyEl = document.createElement("div");
+          emptyEl.className = "ing-item";
+          emptyEl.textContent = "Nessuna opzione disponibile";
+          emptyEl.style.opacity = "0.6";
+          ingBox.appendChild(emptyEl);
+        }
+      });
+    } else {
+      // Se non ha note_gruppi, mostra il nome del prodotto o un messaggio
+      const ings = [prod ? prod.name : "—"];
+      ings.forEach(ing => {
+        const d = document.createElement("div");
+        d.className = "ing-item";
+        d.textContent = ing;
+        ingBox.appendChild(d);
+      });
+    }
+    
     openPopup(notePopup);
   }
   document.getElementById("back").addEventListener("click", () => closePopup(notePopup));

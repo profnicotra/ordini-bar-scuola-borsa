@@ -1253,7 +1253,7 @@ function subcat(name, map, fb) {
 const cats = { cibo:{}, bevande:{}, dolci:{} };
 listaItems.forEach(p => {
   const c = (p.categoria || '').toLowerCase().trim();
-  const entry = { name: p.prodotto, price: p.prezzo_euro };
+  const entry = { name: p.prodotto, price: p.prezzo_euro, note_gruppi: p.note_gruppi || [] };
   let g, s;
   if      (c === 'bevande') { g='bevande'; s=subcat(p.prodotto, bevsMap, 'Altre Bevande'); }
   else if (c === 'dolci')   { g='dolci';   s=subcat(p.prodotto, dolciMap, 'Altri Dolci'); }
@@ -1335,6 +1335,7 @@ document.querySelectorAll('.tab').forEach(tab => {
 const container = document.getElementById('product-container');
 const ctaBtn    = document.getElementById('cta-btn');
 const ctaBadge  = document.getElementById('cta-badge');
+const prodottiMap = {}; // Mappa nome -> {price, note_gruppi, ...}
 
 function renderCat(cat) {
   if (switching) return;
@@ -1388,6 +1389,10 @@ function buildContent(cat) {
         </div>
       </div>`).join('');
     container.appendChild(g);
+    // Salva i dati dei prodotti nella mappa per recuperarli dopo
+    items.forEach(p => {
+      prodottiMap[p.name] = p;
+    });
     // Restore qty display for already-selected items
     g.querySelectorAll('.prod-item.selected').forEach(row => {
       const entry = sel[row.dataset.name];
@@ -1507,7 +1512,8 @@ ctaBtn.addEventListener('click', () => {
   const items = Object.entries(sel).map(([name, v]) => ({
     name,
     price: v.price,
-    qty:   v.qty || 1
+    qty:   v.qty || 1,
+    note_gruppi: prodottiMap[name]?.note_gruppi || []
   }));
   try { localStorage.setItem('orderedItems', JSON.stringify(items)); } catch(_) {}
   location.href = '/orders';
