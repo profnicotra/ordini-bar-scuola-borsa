@@ -825,8 +825,23 @@ body::after {
   opacity: 0.7; 
 }
 
-.popup-body { 
-  padding: 32px 30px; 
+/* Trova la classe .popup-body e modificala così */
+.popup-body {
+     padding: 32px 30px;
+    max-height: 400px;           /* Altezza massima fissa (puoi aumentarla o diminuirla) */
+    overflow-y: auto;            /* Attiva lo scorrimento verticale se serve */
+    padding-right: 10px;         /* Spazio per la barra di scorrimento */
+    border-bottom: 1px solid #ddd;
+    border-top: 1px solid #ddd;
+}
+
+/* Opzionale: rende la scrollbar più bella su Chrome/Safari */
+.popup-body::-webkit-scrollbar {
+    width: 8px;
+}
+.popup-body::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px;
 }
 
 .popup-title { 
@@ -1531,7 +1546,7 @@ document.addEventListener("DOMContentLoaded", function () {
         ingBox.appendChild(d);
       });
     }
-    
+    gestisciDeselezioneRadio(); 
     openPopup(notePopup);
   }
   document.getElementById("back").addEventListener("click", () => closePopup(notePopup));
@@ -1612,6 +1627,27 @@ document.addEventListener("DOMContentLoaded", function () {
 
   render();
 });
+function gestisciDeselezioneRadio() {
+    // Seleziona tutti i radio button nel corpo del popup
+    const radios = document.querySelectorAll('.popup-body input[type="radio"]');
+
+    radios.forEach(radio => {
+        radio.onclick = function() {
+            // Se il radio era già cliccato in precedenza...
+            if (this.getAttribute('data-checked') === 'true') {
+                this.checked = false; // Lo deselezioniamo
+                this.setAttribute('data-checked', 'false');
+            } else {
+                // Altrimenti, resettiamo gli altri del gruppo e selezioniamo questo
+                const name = this.getAttribute('name');
+                document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
+                    r.setAttribute('data-checked', 'false');
+                });
+                this.setAttribute('data-checked', 'true');
+            }
+        };
+    });
+}
 </script>
 </body>
 </html>
