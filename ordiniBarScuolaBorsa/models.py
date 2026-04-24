@@ -260,6 +260,7 @@ def add_queue(posizione_id, righe, creato_da=None, totale_euro=None, stato='NUOV
     """
     Aggiunge un ordine alla coda
     COMPATIBILE con codice esistente + supporto autenticazione
+    Supporta anche note_selezionate per ogni riga
     """
     try:
         # Determina il tipo di prezzo
@@ -293,6 +294,34 @@ def add_queue(posizione_id, righe, creato_da=None, totale_euro=None, stato='NUOV
                     # Append to the parent collection so delete-orphan cascade
                     # does not treat the new row as an orphan before commit.
                     new_order.righe.append(ordine_riga)
+                    
+                    # Aggiungi le note selezionate per questa riga
+                    note_selezionate = riga.get('note_selezionate', {})
+                    if note_selezionate:
+                        # note_selezionate è un dict: {id_gruppo: nota_o_array_di_note}
+                        for gruppo_id, nota_data in note_selezionate.items():
+                            try:
+                                # nota_data può essere:
+                                # - Per radio: {'id': nota_id, 'nome': 'nome_nota'}
+                                # - Per checkbox: [{'id': nota_id, 'nome': 'nome_nota'}, ...]
+                                
+                                note_ids = []
+                                if isinstance(nota_data, dict) and 'id' in nota_data:
+                                    # Radio button - singola nota
+                                    note_ids = [nota_data['id']]
+                                elif isinstance(nota_data, list):
+                                    # Checkbox - array di note
+                                    note_ids = [n['id'] for n in nota_data if isinstance(n, dict) and 'id' in n]
+                                
+                                # Crea OrdineRigaNota per ogni nota selezionata
+                                for nota_id in note_ids:
+                                    ordine_riga_nota = OrdineRigaNota(
+                                        ordine_riga_id=None,  # sarà assegnato dopo il commit
+                                        nota_id=nota_id
+                                    )
+                                    ordine_riga.note_righe.append(ordine_riga_nota)
+                            except Exception as e:
+                                logging.warning(f"Errore nell'aggiunta della nota per gruppo {gruppo_id}: {e}")
 
         db.session.add(new_order)
         db.session.commit()

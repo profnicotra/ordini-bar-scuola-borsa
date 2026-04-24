@@ -68,13 +68,14 @@ def new_order():
             logger.warning("Nessun prodotto selezionato.")
             return redirect(url_for('orders.orders'))
 
-        # ── 2. Converti nomi → righe con prodotto_id ──
+        # ── 2. Converti nomi → righe con prodotto_id e note selezionate ──
         user  = current_user if current_user.is_authenticated else None
         righe = []
 
         for item in selected_products:
             nome_prodotto = str(item.get("name", "")).strip()
             qty = max(1, int(item.get("qty", 1)))
+            selected_notes = item.get("selectedNotes", {})  # Dict con gruppoid -> nota selezionata
 
             prodotto = db.session.query(Prodotto).filter(
                 db.func.lower(Prodotto.nome) == nome_prodotto.lower(),
@@ -82,7 +83,11 @@ def new_order():
             ).first()
 
             if prodotto:
-                righe.append({'prodotto_id': prodotto.id, 'quantita': qty})
+                righe.append({
+                    'prodotto_id': prodotto.id, 
+                    'quantita': qty,
+                    'note_selezionate': selected_notes  # Aggiungi le note selezionate
+                })
             else:
                 logger.warning(f"Prodotto non trovato nel DB: '{nome_prodotto}' — riga ignorata")
 
