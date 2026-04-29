@@ -32,7 +32,12 @@
             <input type="text" id="searchBar" placeholder="Cerca prodotto...">
             <button class="btn-sort">Ordina A-Z ↓</button>
         </div>
-        <div class="filter-bar" id="filtri"></div>
+        <div class="filter-bar" id="filtri">
+            <button class="filter-btn active">TUTTI</button>
+            <button class="filter-btn">Caffetteria</button>
+            <button class="filter-btn">Dolce</button>
+            <button class="filter-btn">Salato</button>
+        </div>
         <table>
             <thead>
                 <tr>
@@ -46,23 +51,15 @@
                 </tr>
             </thead>
             <tbody id="lista-menu">
-                {% for prodotto in prodotti %}
                 <tr class="info-row">
-                    <td>{{ prodotto.nome }}</td>
-                    <td>-</td>
-                    <td>€ {{ "%.2f"|format(prodotto.prezzo) }}</td>
-                    <td>-</td>
-                    <td><span class="badge">{{ prodotto.categoria }}</span></td>
-                    <td>
-                        {% if prodotto.disponibile %}
-                        <span class="badge stato-ok">DISPONIBILE</span>
-                        {% else %}
-                        <span class="badge stato-no">ESAURITO</span>
-                        {% endif %}
-                    </td>
+                    <td>Caffè Espresso</td>
+                    <td>0.12</td>
+                    <td>1.20</td>
+                    <td>1.00</td>
+                    <td><span class="badge">Caffetteria</span></td>
+                    <td><span class="badge stato-ok">DISPONIBILE</span></td>
                     <td><button class="btn-sort" style="line-height:20px; padding: 5px 10px;">INFO</button></td>
                 </tr>
-                {% endfor %}
             </tbody>
         </table>
     </div>
