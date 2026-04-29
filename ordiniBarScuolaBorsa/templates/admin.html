@@ -2,46 +2,49 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <title>Admin Bar</title>
+    <title>Gestione Sala - Scuola Borsa</title>
     <style>
-        body { font-family: sans-serif; padding: 20px; }
-        input { width: 100%; padding: 10px; margin-bottom: 20px; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
-        th { background: #007bff; color: white; cursor: pointer; }
-        tr:hover { background: #f1f1f1; }
+        body { font-family: 'Segoe UI', sans-serif; background: radial-gradient(circle at center, #1a0000 0%, #000000 100%); color: #ffffff; margin: 0; padding: 20px; }
+        .container { max-width: 1100px; margin: 0 auto; }
+        .header { text-align: center; padding: 20px; background: #000; border: 2px solid #00a6ff; border-radius: 20px; margin-bottom: 20px; }
+        .header h1 { color: #00c8ff; margin: 0; font-size: 2.2em; text-shadow: 0 0 10px #00a6ff; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
+        th { background: #00aaff; color: #000; padding: 12px; text-transform: uppercase; text-align: left; }
+        .info-row td { background: rgba(255,255,255,0.05); padding: 15px; border-top: 1px solid #00a6ff; }
+        .badge { padding: 4px 10px; border-radius: 4px; font-size: 0.7em; font-weight: bold; }
+        .stato-ok { color: #00ffaa; border: 1px solid #00ffaa; }
+        .stato-no { color: #ff4444; border: 1px solid #ff4444; }
     </style>
 </head>
 <body>
-    <h2>Gestione Prodotti Bar</h2>
-    <input type="text" id="cerca" onkeyup="filtra()" placeholder="Cerca prodotto...">
-    <table id="tabella">
+<div class="container">
+    <div class="header"><h1>SALA BAR</h1></div>
+    <table>
         <thead>
             <tr>
-                <th onclick="ordina(0)">Gruppo ↕</th>
-                <th onclick="ordina(1)">Nome ↕</th>
-                <th>Prezzo (€)</th>
+                <th>PRODOTTO</th>
+                <th>PREZZO</th>
+                <th>CATEGORIA</th>
+                <th>STATO</th>
             </tr>
         </thead>
-        <tbody id="corpo">
-            <tr><td>Caffetteria</td><td>Caffè</td><td>1.20</td></tr>
-            <tr><td>Bevande</td><td>Coca Cola</td><td>2.50</td></tr>
-            <tr><td>Dolci</td><td>Cornetto</td><td>1.30</td></tr>
+        <tbody>
+            {% for prodotto in prodotti %}
+            <tr class="info-row">
+                <td>{{ prodotto.nome }}</td>
+                <td>€ {{ "%.2f"|format(prodotto.prezzo) }}</td>
+                <td><span class="badge">{{ prodotto.categoria }}</span></td>
+                <td>
+                    {% if prodotto.disponibile %}
+                        <span class="badge stato-ok">DISPONIBILE</span>
+                    {% else %}
+                        <span class="badge stato-no">ESAURITO</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
         </tbody>
     </table>
-    <script>
-        function filtra() {
-            let f = document.getElementById("cerca").value.toUpperCase();
-            let tr = document.getElementById("corpo").rows;
-            for (let i=0; i<tr.length; i++) {
-                tr[i].style.display = tr[i].innerText.toUpperCase().includes(f) ? "" : "none";
-            }
-        }
-        function ordina(n) {
-            let t = document.getElementById("corpo");
-            let r = Array.from(t.rows).sort((a,b) => a.cells[n].innerText.localeCompare(b.cells[n].innerText));
-            r.forEach(row => t.appendChild(row));
-        }
-    </script>
+</div>
 </body>
 </html>
