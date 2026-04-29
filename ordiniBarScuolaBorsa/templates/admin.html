@@ -9,9 +9,13 @@
         .header { text-align: center; padding: 20px; background: #000; border: 2px solid #00a6ff; border-radius: 20px; margin-bottom: 20px; }
         .header h1 { color: #00c8ff; margin: 0; font-size: 2.2em; letter-spacing: 5px; text-shadow: 0 0 10px #00a6ff; }
         .search-container { margin-bottom: 20px; text-align: center; display: flex; justify-content: center; gap: 15px; }
-        #searchBar { width: 100%; max-width: 400px; padding: 12px 20px; background: rgba(0,0,0,0.5); border: 2px solid #00a6ff; border-radius: 30px; color: #fff; outline: none; }
+        #searchBar { width: 100%; max-width: 400px; padding: 12px 20px; background: rgba(0,0,0,0.5); border: 2px solid #00a6ff; border-radius: 30px; color: #fff; font-size: 1.1em; outline: none; }
+        .btn-sort { background: transparent; border: 2px solid #00a6ff; color: #00a6ff; padding: 0 25px; border-radius: 30px; font-weight: bold; cursor: pointer; line-height: 40px; }
+        .filter-bar { display: flex; gap: 10px; margin-bottom: 20px; justify-content: center; flex-wrap: wrap; }
+        .filter-btn { background: transparent; border: 1px solid #444; color: #aaa; padding: 5px 15px; border-radius: 20px; cursor: pointer; font-size: 0.8em; }
+        .filter-btn.active { border-color: #00a6ff; color: #00a6ff; }
         table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
-        th { background: #00aaff; color: #000; padding: 12px; text-transform: uppercase; text-align: left; }
+        th { background: #00aaff; color: #000; padding: 12px; font-size: 0.75em; text-transform: uppercase; text-align: left; }
         .info-row td { background: linear-gradient(90deg, #111 0%, #050505 100%); padding: 15px; border-top: 1px solid #00a6ff; }
         .badge { padding: 4px 10px; border-radius: 4px; font-size: 0.7em; font-weight: bold; text-transform: uppercase; }
         .stato-ok { color: #00ffaa; border: 1px solid #00ffaa; }
@@ -19,25 +23,48 @@
     </style>
 </head>
 <body>
-<div class="container">
-    <div class="header"><h1>SALA BAR</h1><div style="opacity: 0.7;">Professional Database</div></div>
-    <div class="search-container"><input type="text" id="searchBar" placeholder="Cerca prodotto..."></div>
-    <table>
-        <thead><tr><th>PRODOTTO</th><th>PREZZO</th><th>CATEGORIA</th><th>STATO</th></tr></thead>
-        <tbody>
-            {% for prodotto in prodotti %}
-            <tr class="info-row">
-                <td>{{ prodotto.nome }}</td>
-                <td>€ {{ "%.2f"|format(prodotto.prezzo) }}</td>
-                <td><span class="badge" style="border: 1px solid #00a6ff; color: #00a6ff;">{{ prodotto.categoria }}</span></td>
-                <td>
-                    {% if prodotto.disponibile %}<span class="badge stato-ok">DISPONIBILE</span>
-                    {% else %}<span class="badge stato-no">ESAURITO</span>{% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+    <div class="container">
+        <div class="header">
+            <h1>SALA BAR</h1>
+            <div style="opacity: 0.7; letter-spacing: 2px;">Professional Database</div>
+        </div>
+        <div class="search-container">
+            <input type="text" id="searchBar" placeholder="Cerca prodotto...">
+            <button class="btn-sort">Ordina A-Z ↓</button>
+        </div>
+        <div class="filter-bar" id="filtri"></div>
+        <table>
+            <thead>
+                <tr>
+                    <th>PRODOTTO</th>
+                    <th>COSTO</th>
+                    <th>PREZZO</th>
+                    <th>INTERNO</th>
+                    <th>CATEGORIA</th>
+                    <th>STATO</th>
+                    <th>AZIONI</th>
+                </tr>
+            </thead>
+            <tbody id="lista-menu">
+                {% for prodotto in prodotti %}
+                <tr class="info-row">
+                    <td>{{ prodotto.nome }}</td>
+                    <td>-</td>
+                    <td>€ {{ "%.2f"|format(prodotto.prezzo) }}</td>
+                    <td>-</td>
+                    <td><span class="badge">{{ prodotto.categoria }}</span></td>
+                    <td>
+                        {% if prodotto.disponibile %}
+                        <span class="badge stato-ok">DISPONIBILE</span>
+                        {% else %}
+                        <span class="badge stato-no">ESAURITO</span>
+                        {% endif %}
+                    </td>
+                    <td><button class="btn-sort" style="line-height:20px; padding: 5px 10px;">INFO</button></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </body>
 </html>
