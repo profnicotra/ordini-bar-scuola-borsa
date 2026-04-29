@@ -8,8 +8,10 @@
         .container { max-width: 1100px; margin: 0 auto; }
         .header { text-align: center; padding: 20px; background: #000; border: 2px solid #00a6ff; border-radius: 20px; margin-bottom: 20px; }
         .header h1 { color: #00c8ff; margin: 0; font-size: 2.2em; letter-spacing: 5px; text-shadow: 0 0 10px #00a6ff; }
+        .search-container { margin-bottom: 20px; text-align: center; display: flex; justify-content: center; gap: 15px; }
+        #searchBar { width: 100%; max-width: 400px; padding: 12px 20px; background: rgba(0,0,0,0.5); border: 2px solid #00a6ff; border-radius: 30px; color: #fff; outline: none; }
         table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
-        th { background: #00aaff; color: #000; padding: 12px; font-size: 0.75em; text-transform: uppercase; text-align: left; }
+        th { background: #00aaff; color: #000; padding: 12px; text-transform: uppercase; text-align: left; }
         .info-row td { background: linear-gradient(90deg, #111 0%, #050505 100%); padding: 15px; border-top: 1px solid #00a6ff; }
         .badge { padding: 4px 10px; border-radius: 4px; font-size: 0.7em; font-weight: bold; text-transform: uppercase; }
         .stato-ok { color: #00ffaa; border: 1px solid #00ffaa; }
@@ -18,16 +20,10 @@
 </head>
 <body>
 <div class="container">
-    <div class="header"><h1>SALA BAR</h1></div>
+    <div class="header"><h1>SALA BAR</h1><div style="opacity: 0.7;">Professional Database</div></div>
+    <div class="search-container"><input type="text" id="searchBar" placeholder="Cerca prodotto..."></div>
     <table>
-        <thead>
-            <tr>
-                <th>PRODOTTO</th>
-                <th>PREZZO</th>
-                <th>CATEGORIA</th>
-                <th>STATO</th>
-            </tr>
-        </thead>
+        <thead><tr><th>PRODOTTO</th><th>PREZZO</th><th>CATEGORIA</th><th>STATO</th></tr></thead>
         <tbody>
             {% for prodotto in prodotti %}
             <tr class="info-row">
@@ -35,11 +31,8 @@
                 <td>€ {{ "%.2f"|format(prodotto.prezzo) }}</td>
                 <td><span class="badge" style="border: 1px solid #00a6ff; color: #00a6ff;">{{ prodotto.categoria }}</span></td>
                 <td>
-                    {% if prodotto.disponibile %}
-                        <span class="badge stato-ok">DISPONIBILE</span>
-                    {% else %}
-                        <span class="badge stato-no">ESAURITO</span>
-                    {% endif %}
+                    {% if prodotto.disponibile %}<span class="badge stato-ok">DISPONIBILE</span>
+                    {% else %}<span class="badge stato-no">ESAURITO</span>{% endif %}
                 </td>
             </tr>
             {% endfor %}
