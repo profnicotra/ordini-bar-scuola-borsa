@@ -4,23 +4,28 @@
     <meta charset="UTF-8">
     <title>Gestione Sala - Scuola Borsa</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: radial-gradient(circle at center, #1a0000 0%, #000000 100%); color: #ffffff; margin: 0; padding: 20px; }
-        .container { max-width: 1100px; margin: 0 auto; text-align: center; }
-        .header { padding: 20px; background: #000; border: 2px solid #00a6ff; border-radius: 20px; }
-        .header h1 { color: #00c8ff; margin: 0; text-shadow: 0 0 10px #00a6ff; }
-        table { width: 100%; border-collapse: separate; border-spacing: 0 8px; margin-top: 20px; }
-        th { background: #00aaff; color: #000; padding: 12px; }
-        .info-row td { background: rgba(255,255,255,0.05); padding: 15px; border-top: 1px solid #00a6ff; }
+        body { font-family: 'Segoe UI', sans-serif; background: radial-gradient(circle at center, #1a0000 0%, #000000 100%); color: #ffffff; margin: 0; padding: 20px; min-height: 100vh; }
+        .container { max-width: 1100px; margin: 0 auto; }
+        .header { text-align: center; padding: 20px; background: #000; border: 2px solid #00a6ff; border-radius: 20px; margin-bottom: 20px; }
+        .header h1 { color: #00c8ff; margin: 0; font-size: 2.2em; letter-spacing: 5px; text-shadow: 0 0 10px #00a6ff; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
+        th { background: #00aaff; color: #000; padding: 12px; text-transform: uppercase; text-align: left; }
+        .info-row td { background: linear-gradient(90deg, #111 0%, #050505 100%); padding: 15px; border-top: 1px solid #00a6ff; }
+        .badge { padding: 4px 10px; border-radius: 4px; font-weight: bold; border: 1px solid #00a6ff; color: #00a6ff; }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header"><h1>SALA BAR - GRUPPO 2</h1></div>
         <table>
-            <thead><tr><th>PRODOTTO</th><th>PREZZO</th><th>CATEGORIA</th></tr></thead>
+            <thead><tr><th>PRODOTTO</th><th>PREZZO</th><th>CATEGORIA</th><th>STATO</th></tr></thead>
             <tbody>
-                <tr class="info-row"><td>Caffè Espresso</td><td>€ 1.20</td><td>CAFFETTERIA</td></tr>
-                <tr class="info-row"><td>Cornetto Crema</td><td>€ 1.50</td><td>DOLCE</td></tr>
+                <tr class="info-row">
+                    <td>Caffè Espresso</td><td>€ 1.20</td><td>Caffetteria</td><td><span class="badge" style="color:#00ffaa; border-color:#00ffaa">DISPONIBILE</span></td>
+                </tr>
+                <tr class="info-row">
+                    <td>Cornetto Crema</td><td>€ 1.50</td><td>Dolce</td><td><span class="badge" style="color:#00ffaa; border-color:#00ffaa">DISPONIBILE</span></td>
+                </tr>
             </tbody>
         </table>
     </div>
