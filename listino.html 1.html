@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>Bar Scuola - GESTORE</title>
+<style>
+    body { font-family: 'Segoe UI', sans-serif; background-color: #0f0f0f; color: white; padding: 20px; }
+    h1 { text-align: center; color: #e50914; }
+    .top-bar { display: flex; gap: 10px; margin-bottom: 15px; }
+    input { padding: 8px; border-radius: 8px; border: none; }
+    button { background-color: #e50914; color: white; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; }
+    table { width: 100%; border-collapse: collapse; background-color: #1a1a1a; border-radius: 10px; overflow: hidden; }
+    th, td { padding: 10px; text-align: center; border-bottom: 1px solid #333; }
+    th { background-color: #e50914; }
+    .action-btn { background: #333; font-size: 12px; }
+</style>
+</head>
+<body>
+
+<h1>PANNELLO GESTORE</h1>
+<div class="top-bar">
+    <input type="text" id="search" placeholder="Cerca..." onkeyup="searchProduct()">
+    <button onclick="addRow()">+ Aggiungi Prodotto</button>
+</div>
+
+<table id="table">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Costo</th>
+            <th>Prezzo €</th>
+            <th>Margine</th>
+            <th>Attivo</th>
+            <th>Azioni</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td contenteditable="true">Panino</td>
+            <td contenteditable="true">1.00</td>
+            <td contenteditable="true">2.50</td>
+            <td>1.50</td>
+            <td onclick="toggleAttivo(this)" style="cursor:pointer; color:limegreen">Sì</td>
+            <td><button class="action-btn" onclick="deleteRow(this)">🗑️</button></td>
+        </tr>
+    </tbody>
+</table>
+
+<script>
+// FUNZIONE PER IL COLLEGAMENTO
+function sincronizza() {
+    let prodotti = [];
+    document.querySelectorAll("tbody tr").forEach(row => {
+        prodotti.push({
+            nome: row.cells[0].innerText,
+            prezzo: row.cells[2].innerText,
+            attivo: row.cells[4].innerText
+        });
+    });
+    localStorage.setItem("datiBar", JSON.stringify(prodotti));
+}
+
+function calculateMargin(row) {
+    let costo = parseFloat(row.cells[1].innerText) || 0;
+    let prezzo = parseFloat(row.cells[2].innerText) || 0;
+    row.cells[3].innerText = (prezzo - costo).toFixed(2);
+    sincronizza(); // Invia i dati aggiornati
+}
+
+function toggleAttivo(cell) {
+    cell.innerText = cell.innerText === "Sì" ? "No" : "Sì";
+    cell.style.color = cell.innerText === "Sì" ? "limegreen" : "red";
+    sincronizza();
+}
+
+function addRow() {
+    let row = document.querySelector("tbody").insertRow();
+    row.innerHTML = `<td contenteditable="true">Nuovo</td><td contenteditable="true">0</td><td contenteditable="true">0</td><td>0</td><td onclick="toggleAttivo(this)" style="color:limegreen">Sì</td><td><button onclick="deleteRow(this)">🗑️</button></td>`;
+    addListeners(row);
+    sincronizza();
+}
+
+function deleteRow(btn) { btn.closest("tr").remove(); sincronizza(); }
+
+function addListeners(row) {
+    row.querySelectorAll("[contenteditable]").forEach(cell => {
+        cell.addEventListener("input", () => calculateMargin(row));
+    });
+}
+
+window.onload = () => {
+    document.querySelectorAll("tbody tr").forEach(row => addListeners(row));
+    sincronizza();
+};
+</script>
+</body>
+</html>

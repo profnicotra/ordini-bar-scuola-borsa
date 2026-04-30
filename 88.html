@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Ricerca Prodotti - Scuola Borsa</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background: radial-gradient(circle at center, #1a0000 0%, #000000 100%); 
+            color: #ffffff; margin: 0; padding: 20px; min-height: 100vh;
+        }
+
+        .container { max-width: 1000px; margin: 0 auto; }
+
+        .header {
+            text-align: center; padding: 20px; background: #000;
+            border: 2px solid #00a6ff; border-radius: 20px; margin-bottom: 20px;
+        }
+
+        .header h1 { color: #00c8ff; margin: 0; font-size: 2.2em; letter-spacing: 5px; text-shadow: 0 0 10px #00a6ff; }
+
+        /* Barra di Ricerca */
+        .search-container { margin-bottom: 20px; text-align: center; }
+        #searchBar {
+            width: 100%; max-width: 500px; padding: 12px 20px;
+            background: rgba(0,0,0,0.5); border: 2px solid #00a6ff;
+            border-radius: 30px; color: #fff; font-size: 1.1em;
+            outline: none; box-shadow: 0 0 10px rgba(0, 166, 255, 0.2);
+            transition: 0.3s;
+        }
+        #searchBar:focus { box-shadow: 0 0 20px #00a6ff; }
+
+        .filter-bar { display: flex; gap: 10px; margin-bottom: 20px; justify-content: center; flex-wrap: wrap; }
+        .filter-btn { 
+            background: transparent; border: 1px solid #00a6ff; color: #00a6ff; 
+            padding: 5px 15px; border-radius: 20px; cursor: pointer; font-size: 0.8em; transition: 0.3s;
+        }
+        .filter-btn.active { background: #00a6ff; color: #000; box-shadow: 0 0 10px #00a6ff; }
+
+        table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
+        th { background: #00aaff; color: #000; padding: 12px; font-size: 0.75em; text-transform: uppercase; text-align: left; }
+        
+        .info-row td { 
+            background: linear-gradient(90deg, #111 0%, #050505 100%);
+            padding: 15px; border-top: 1px solid #00a6ff;
+        }
+
+        .tooltip { position: relative; display: inline-block; }
+        .tooltip .tooltiptext {
+            visibility: hidden; width: 180px; background-color: #004466; color: #fff; text-align: center;
+            border: 1px solid #00a6ff; border-radius: 6px; padding: 8px; position: absolute;
+            z-index: 10; bottom: 125%; left: 50%; margin-left: -90px; opacity: 0; transition: opacity 0.3s;
+            font-size: 0.8em; pointer-events: none;
+        }
+        .tooltip:hover .tooltiptext { visibility: visible; opacity: 1; }
+
+        .btn-info { background: none; border: 1px solid #00c8ff; color: #00c8ff; padding: 6px 10px; border-radius: 5px; cursor: pointer; }
+        .btn-action-del { background: none; border: 1px solid #ff4444; color: #ff4444; padding: 6px 10px; border-radius: 5px; cursor: pointer; }
+
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.7em; font-weight: bold; text-transform: uppercase; }
+        .cat-badge { border: 1px solid #00a6ff; color: #00a6ff; }
+        .stato-ok { color: #00ffaa; border: 1px solid #00ffaa; }
+        .stato-no { color: #ff4444; border: 1px solid #ff4444; text-decoration: line-through; opacity: 0.5; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>SALA BAR</h1>
+        <div style="opacity: 0.7;">Scuola Borsa Management</div>
+    </div>
+
+    <div class="search-container">
+        <input type="text" id="searchBar" placeholder="Cerca prodotto per nome..." onkeyup="renderMenu()">
+    </div>
+
+    <div class="filter-bar" id="filtri"></div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>PRODOTTO</th>
+                <th>COSTO</th>
+                <th>PREZZO</th>
+                <th>INTERNO</th>
+                <th>CATEGORIA</th>
+                <th>STATO</th>
+                <th>DETTAGLI</th>
+            </tr>
+        </thead>
+        <tbody id="lista-menu"></tbody>
+    </table>
+</div>
+
+<script>
+    let prodotti = [
+        {n: "Caffè Espresso", d: "Miscela Arabica 100%", co: 0.15, pr: 1.20, pi: 1.00, c: "Caffetteria", st: "DISPONIBILE"},
+        {n: "Caffè al Ginseng", d: "Estratto naturale, tazza grande", co: 0.40, pr: 1.80, pi: 1.50, c: "Caffetteria", st: "DISPONIBILE"},
+        {n: "Cappuccino", d: "Latte Intero Alta Qualità", co: 0.35, pr: 1.80, pi: 1.50, c: "Caffetteria", st: "DISPONIBILE"},
+        {n: "Coca Cola", d: "Lattina 33cl", co: 0.60, pr: 2.50, pi: 2.00, c: "Bevande", st: "DISPONIBILE"},
+        {n: "Birra Ichnusa", d: "Non filtrata 33cl", co: 1.40, pr: 4.00, pi: 3.50, c: "Birre", st: "DISPONIBILE"},
+        {n: "Cornetto Crema", d: "Sfogliatura artigianale", co: 0.50, pr: 1.50, pi: 1.30, c: "Dolci", st: "DISPONIBILE"},
+        {n: "Panino Crudo", d: "Parma 24 mesi e mozzarella", co: 1.80, pr: 4.50, pi: 4.00, c: "Salato", st: "DISPONIBILE"},
+        {n: "Aperol Spritz", d: "Aperol, Prosecco, Soda", co: 1.50, pr: 5.00, pi: 4.50, c: "Aperitivi", st: "DISPONIBILE"}
+    ];
+
+    let filtroAttuale = "TUTTI";
+
+    function renderFiltri() {
+        const bar = document.getElementById('filtri');
+        const cats = ["TUTTI", ...new Set(prodotti.map(p => p.c))];
+        bar.innerHTML = cats.map(cat => `
+            <button class="filter-btn ${filtroAttuale === cat ? 'active' : ''}" onclick="filtra('${cat}')">${cat}</button>
+        `).join('');
+    }
+
+    function filtra(cat) { filtroAttuale = cat; renderMenu(); renderFiltri(); }
+
+    function renderMenu() {
+        const corpo = document.getElementById('lista-menu');
+        const searchVal = document.getElementById('searchBar').value.toLowerCase();
+        corpo.innerHTML = "";
+
+        prodotti.forEach((p, index) => {
+            const matchRicerca = p.n.toLowerCase().includes(searchVal);
+            const matchFiltro = (filtroAttuale === "TUTTI" || p.c === filtroAttuale);
+
+            if (matchRicerca && matchFiltro) {
+                const sClass = p.st === "DISPONIBILE" ? "stato-ok" : "stato-no";
+                const riga = document.createElement('tr');
+                riga.className = "info-row";
+                riga.innerHTML = `
+                    <td><b style="color:#00c8ff">${p.n}</b></td>
+                    <td style="color:#777">${p.co.toFixed(2)}€</td>
+                    <td style="font-weight:bold">${p.pr.toFixed(2)}€</td>
+                    <td style="color:#00a6ff">${p.pi.toFixed(2)}€</td>
+                    <td><span class="badge cat-badge">${p.c}</span></td>
+                    <td><span class="badge ${sClass}" ondblclick="cambiaStato(${index})">${p.st}</span></td>
+                    <td>
+                        <div class="tooltip">
+                            <button class="btn-info">ℹ️</button>
+                            <span class="tooltiptext"><b>Ingredienti:</b><br>${p.d}</span>
+                        </div>
+                        <button class="btn-action-del" onclick="eliminaDalMenu(${index})">🗑️</button>
+                    </td>
+                `;
+                corpo.appendChild(riga);
+            }
+        });
+    }
+
+    function cambiaStato(idx) { prodotti[idx].st = prodotti[idx].st === "DISPONIBILE" ? "ESAURITO" : "DISPONIBILE"; renderMenu(); }
+    function eliminaDalMenu(idx) { if(confirm("Eliminare dal sistema?")) { prodotti.splice(idx, 1); renderFiltri(); renderMenu(); } }
+
+    renderFiltri();
+    renderMenu();
+</script>
+</body>
+</html>

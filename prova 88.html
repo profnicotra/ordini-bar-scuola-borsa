@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Sala Bar - Scuola Borsa</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background: radial-gradient(circle at center, #1a0000 0%, #000000 100%); 
+            color: #ffffff; margin: 0; padding: 20px; min-height: 100vh;
+            display: flex; gap: 20px; flex-wrap: wrap;
+        }
+
+        .container { flex: 2; min-width: 600px; }
+        
+        .comanda-box { 
+            flex: 1; min-width: 350px; background: rgba(20, 0, 0, 0.9); 
+            border: 2px solid #ff4444; border-radius: 20px; padding: 20px;
+            box-shadow: 0 0 20px rgba(255, 68, 68, 0.2); height: fit-content;
+            position: sticky; top: 20px;
+        }
+
+        .header {
+            text-align: center; padding: 20px; background: #000;
+            border: 2px solid #00a6ff; border-radius: 20px; margin-bottom: 20px;
+        }
+
+        .header h1 { color: #00c8ff; margin: 0; font-size: 2em; letter-spacing: 4px; }
+        .header .sub-title { font-size: 0.9em; opacity: 0.7; }
+
+        table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
+        th { background: #00aaff; color: #000; padding: 10px; font-size: 0.7em; text-transform: uppercase; }
+        
+        .info-row td { 
+            background: #111; padding: 12px; border-top: 1px solid #00a6ff; cursor: pointer;
+            transition: 0.2s;
+        }
+        .info-row:hover td { background: #1a1a1a; border-color: #fff; }
+
+        .nome-prod { font-weight: bold; color: #00c8ff; }
+        
+        .order-item { 
+            background: #222; border: 1px solid #ff4444; border-radius: 10px; 
+            padding: 10px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 5px;
+        }
+        .order-top { display: flex; justify-content: space-between; align-items: center; }
+        .order-actions button { background: none; border: none; cursor: pointer; font-size: 1.2em; }
+        .edit-btn { color: #ffcc00; }
+        .del-btn { color: #ff4444; }
+
+        .allergy-text { 
+            background: transparent; border: none; border-bottom: 1px dashed #555; 
+            color: #ffaa00; font-size: 0.85em; width: 100%; outline: none; padding: 2px;
+        }
+
+        .add-box {
+            background: #000; padding: 15px; border-radius: 15px; border: 1px solid #333;
+            margin-bottom: 20px; display: flex; gap: 5px; flex-wrap: wrap;
+        }
+        .add-box input { background: #111; border: 1px solid #00a6ff; color: #fff; padding: 8px; border-radius: 5px; }
+
+        .stato-badge { padding: 4px 8px; border-radius: 4px; font-size: 0.7em; font-weight: bold; }
+        .stato-ok { color: #00ffaa; border: 1px solid #00ffaa; }
+        .stato-no { color: #ff4444; border: 1px solid #ff4444; text-decoration: line-through; pointer-events: none; opacity: 0.5; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>SALA BAR</h1>
+        <div class="sub-title">Scuola Borsa</div>
+    </div>
+
+    <div class="add-box">
+        <input type="text" id="n" placeholder="Nome">
+        <input type="text" id="c" placeholder="Cat.">
+        <input type="number" id="co" placeholder="Costo" step="0.01" style="width:70px">
+        <input type="number" id="pr" placeholder="Prezzo" step="0.01" style="width:70px">
+        <button onclick="aggiungiManuale()" style="background:#00a6ff; border:none; padding:8px 15px; border-radius:5px; font-weight:bold; cursor:pointer">AGGIUNGI +</button>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>PRODOTTO (Clicca per Ordinare)</th>
+                <th>COSTO</th>
+                <th>PREZZO</th>
+                <th>STATO</th>
+            </tr>
+        </thead>
+        <tbody id="lista-menu"></tbody>
+    </table>
+</div>
+
+<div class="comanda-box">
+    <h2 style="color:#ff4444; text-align:center; text-transform:uppercase; letter-spacing:2px">Ordine Attuale</h2>
+    <div id="lista-ordine"></div>
+    <div id="totale-ordine" style="text-align:right; font-weight:bold; border-top: 1px solid #ff4444; padding-top:10px; color:#fff; font-size: 1.4em;">
+        TOTALE: 0.00 €
+    </div>
+    <button onclick="pulisciOrdine()" style="width: 100%; margin-top: 15px; background: transparent; border: 1px solid #ff4444; color: #ff4444; padding: 10px; cursor: pointer; border-radius: 10px;">SVUOTA ORDINE</button>
+</div>
+
+<script>
+    const menuIniziale = [
+        // CAFFETTERIA
+        {n: "Caffè Espresso", c: "Caffetteria", co: 0.15, pr: 1.20, st: "DISPONIBILE"},
+        {n: "Cappuccino", c: "Caffetteria", co: 0.35, pr: 1.80, st: "DISPONIBILE"},
+        {n: "Caffè Decaffeinato", c: "Caffetteria", co: 0.18, pr: 1.40, st: "DISPONIBILE"},
+        {n: "Marocchino", c: "Caffetteria", co: 0.40, pr: 2.00, st: "DISPONIBILE"},
+        {n: "Latte Bianco", c: "Caffetteria", co: 0.30, pr: 1.50, st: "DISPONIBILE"},
+        
+        // BEVANDE
+        {n: "Acqua Naturale 50cl", c: "Bevande", co: 0.20, pr: 1.00, st: "DISPONIBILE"},
+        {n: "Coca Cola Lattina", c: "Bevande", co: 0.60, pr: 2.50, st: "DISPONIBILE"},
+        {n: "Spremuta Arancia", c: "Bevande", co: 0.80, pr: 3.50, st: "DISPONIBILE"},
+        {n: "The Freddo Limone", c: "Bevande", co: 0.50, pr: 2.50, st: "DISPONIBILE"},
+        
+        // PASTICCERIA / COLAZIONE
+        {n: "Cornetto Vuoto", c: "Pasticceria", co: 0.40, pr: 1.30, st: "DISPONIBILE"},
+        {n: "Cornetto Pistacchio", c: "Pasticceria", co: 0.60, pr: 1.60, st: "DISPONIBILE"},
+        {n: "Muffin Mirtilli", c: "Pasticceria", co: 0.70, pr: 2.20, st: "DISPONIBILE"},
+        {n: "Fetta di Torta", c: "Pasticceria", co: 1.00, pr: 3.50, st: "ESAURITO"},
+        
+        // SALATO
+        {n: "Tramezzino Crudo", c: "Salato", co: 1.20, pr: 4.00, st: "ESAURITO"},
+        {n: "Panino Cotto e Zola", c: "Salato", co: 1.50, pr: 5.00, st: "DISPONIBILE"},
+        {n: "Pizzetta Sfoglia", c: "Salato", co: 0.60, pr: 2.50, st: "DISPONIBILE"}
+    ];
+
+    let totale = 0;
+
+    function inserisciNelMenu(nome, cat, costo, prezzo, stato) {
+        const corpo = document.getElementById('lista-menu');
+        const sClass = stato === "DISPONIBILE" ? "stato-ok" : "stato-no";
+        
+        const riga = document.createElement('tr');
+        riga.className = "info-row";
+        riga.onclick = () => { if(stato === "DISPONIBILE") aggiungiAllOrdine(nome, prezzo); };
+        
+        riga.innerHTML = `
+            <td><span class="nome-prod">${nome}</span><br><small style="color:#555">${cat}</small></td>
+            <td style="color:#999">${costo.toFixed(2)} €</td>
+            <td style="color:#fff; font-weight:bold">${prezzo.toFixed(2)} €</td>
+            <td><span class="stato-badge ${sClass}">${stato}</span></td>
+        `;
+        corpo.appendChild(riga);
+    }
+
+    function aggiungiAllOrdine(nome, prezzo) {
+        const listaOrdine = document.getElementById('lista-ordine');
+        const itemId = 'item-' + Date.now();
+        
+        const div = document.createElement('div');
+        div.className = "order-item";
+        div.id = itemId;
+        div.innerHTML = `
+            <div class="order-top">
+                <span style="font-weight:bold; color:#00c8ff">${nome}</span>
+                <span style="font-family:monospace">${prezzo.toFixed(2)} €</span>
+                <div class="order-actions">
+                    <button class="edit-btn" onclick="focusNote('${itemId}')">✏️</button>
+                    <button class="del-btn" onclick="rimuoviDallOrdine('${itemId}', ${prezzo})">🗑️</button>
+                </div>
+            </div>
+            <input type="text" class="allergy-text" id="note-${itemId}" placeholder="Modifiche o allergie...">
+        `;
+        
+        listaOrdine.appendChild(div);
+        aggiornaTotale(prezzo);
+    }
+
+    function rimuoviDallOrdine(id, prezzo) {
+        document.getElementById(id).remove();
+        aggiornaTotale(-prezzo);
+    }
+
+    function pulisciOrdine() {
+        document.getElementById('lista-ordine').innerHTML = "";
+        totale = 0;
+        document.getElementById('totale-ordine').innerText = "TOTALE: 0.00 €";
+    }
+
+    function focusNote(id) {
+        document.getElementById('note-' + id).focus();
+    }
+
+    function aggiornaTotale(valore) {
+        totale += valore;
+        document.getElementById('totale-ordine').innerText = "TOTALE: " + Math.max(0, totale).toFixed(2) + " €";
+    }
+
+    function aggiungiManuale() {
+        const n = document.getElementById('n').value;
+        const c = document.getElementById('c').value;
+        const co = parseFloat(document.getElementById('co').value) || 0;
+        const pr = parseFloat(document.getElementById('pr').value) || 0;
+        if(!n) return;
+        inserisciNelMenu(n, c, co, pr, "DISPONIBILE");
+        document.getElementById('n').value = "";
+    }
+
+    window.onload = () => {
+        menuIniziale.forEach(p => inserisciNelMenu(p.n, p.c, p.co, p.pr, p.st));
+    }
+</script>
+
+</body>
+</html>

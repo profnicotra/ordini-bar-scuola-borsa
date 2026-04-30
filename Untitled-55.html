@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { 
+            margin: 0; padding: 40px; background: #fdfaf6; 
+            font-family: 'Montserrat', sans-serif;
+            display: flex; flex-direction: column; align-items: center;
+            min-height: 100vh;
+        }
+
+        h1 {
+            color: #4e342e; font-size: 50px; text-transform: uppercase;
+            letter-spacing: 5px; margin-bottom: 30px;
+            border-bottom: 5px solid #d3a27f; padding-bottom: 10px;
+        }
+
+        .add-box {
+            background: white; padding: 20px; border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            margin-bottom: 30px; display: flex; gap: 10px;
+            width: 90%; max-width: 1300px; justify-content: center;
+        }
+
+        .add-box input, .add-box select {
+            padding: 12px; border: 1px solid #ddd; border-radius: 10px;
+        }
+
+        .btn-add {
+            background: #27ae60; color: white; border: none;
+            padding: 10px 25px; border-radius: 10px; cursor: pointer;
+            font-weight: bold; transition: 0.3s;
+        }
+
+        .container { width: 90%; max-width: 1300px; animation: slideUp 1s ease-out; }
+
+        table {
+            width: 100%; border-collapse: separate; border-spacing: 0;
+            background: #ffffff; border-radius: 20px; overflow: hidden;
+            box-shadow: 0 25px 70px rgba(0,0,0,0.15);
+        }
+
+        th {
+            background: #4e342e; color: #ffffff; padding: 25px;
+            text-align: left; font-size: 14px; text-transform: uppercase;
+        }
+
+        td { padding: 20px 25px; border-bottom: 1px solid #f0f0f0; color: #333; font-size: 17px; }
+
+        tr:hover td { background: #fff3e0; transform: scale(1.01); transition: 0.3s; cursor: pointer; }
+
+        .btn-del {
+            background: #000; color: white; border: none;
+            padding: 8px 12px; border-radius: 8px; cursor: pointer;
+        }
+
+        .status { padding: 8px 16px; border-radius: 30px; font-weight: bold; font-size: 12px; }
+        .fresco { background: #e8f5e9; color: #2e7d32; }
+        .esaurito { background: #000; color: white; }
+
+        .margine { color: #d35400; font-weight: 900; font-size: 20px; }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>☕ BAR SCUOLA BORSA</h1>
+
+    <div class="add-box">
+        <input type="text" id="n" placeholder="Prodotto">
+        <input type="text" id="c" placeholder="Categoria">
+        <input type="number" id="co" placeholder="Costo €" step="0.01">
+        <input type="number" id="pr" placeholder="Prezzo €" step="0.01">
+        <select id="st">
+            <option value="DISPONIBILE">DISPONIBILE</option>
+            <option value="ESAURITO">ESAURITO</option>
+        </select>
+        <button class="btn-add" onclick="aggiungiManuale()">AGGIUNGI +</button>
+    </div>
+
+    <div class="container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Prodotto</th>
+                    <th>Categoria</th>
+                    <th>Costo</th>
+                    <th>Prezzo</th>
+                    <th>Margine</th>
+                    <th>Stato</th>
+                    <th>Azioni</th>
+                </tr>
+            </thead>
+            <tbody id="lista">
+                <!-- I prodotti vengono caricati dallo script -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        const prodottiIniziali = [
+            {n: "Cornetto Crema", c: "Lievitati", co: 0.45, pr: 1.50, st: "DISPONIBILE"},
+            {n: "Cappuccino Arabica", c: "Caffetteria", co: 0.30, pr: 1.80, st: "DISPONIBILE"},
+            {n: "Caffè Espresso", c: "Caffetteria", co: 0.15, pr: 1.20, st: "DISPONIBILE"},
+            {n: "Spremuta Arancia", c: "Bevande", co: 0.90, pr: 3.50, st: "ESAURITO"},
+            {n: "Muffin Cioccolato", c: "Dolci", co: 0.60, pr: 2.20, st: "DISPONIBILE"},
+            {n: "Tramezzino Tonno", c: "Salato", co: 1.10, pr: 3.50, st: "DISPONIBILE"},
+            {n: "Pasticciotto", c: "Dolci", co: 0.70, pr: 2.00, st: "DISPONIBILE"},
+            {n: "Te caldo Limone", c: "Bevande", co: 0.20, pr: 2.50, st: "DISPONIBILE"},
+            {n: "Focaccia Bianca", c: "Salato", co: 0.50, pr: 2.50, st: "DISPONIBILE"},
+            {n: "Succo di Frutta", c: "Bevande", co: 0.60, pr: 2.50, st: "DISPONIBILE"}
+        ];
+
+        function inserisciInTabella(nome, cat, costo, prezzo, stato) {
+            const marg = prezzo > 0 ? (((prezzo - costo) / prezzo) * 100).toFixed(0) : 0;
+            const sClass = stato === "DISPONIBILE" ? "fresco" : "esaurito";
+            
+            const riga = document.createElement('tr');
+            riga.innerHTML = `
+                <td><b>${nome}</b></td>
+                <td>${cat}</td>
+                <td>${costo.toFixed(2)} €</td>
+                <td>${prezzo.toFixed(2)} €</td>
+                <td class="margine">${marg}%</td>
+                <td><span class="status ${sClass}">${stato}</span></td>
+                <td><button class="btn-del" onclick="this.parentElement.parentElement.remove()">🗑️</button></td>
+            `;
+            document.getElementById('lista').appendChild(riga);
+        }
+
+        function aggiungiManuale() {
+            const nome = document.getElementById('n').value;
+            const cat = document.getElementById('c').value;
+            const costo = parseFloat(document.getElementById('co').value) || 0;
+            const prezzo = parseFloat(document.getElementById('pr').value) || 0;
+            const stato = document.getElementById('st').value;
+
+            if(!nome) return alert("Metti il nome!");
+            inserisciInTabella(nome, cat, costo, prezzo, stato);
+
+            document.getElementById('n').value = "";
+            document.getElementById('co').value = "";
+            document.getElementById('pr').value = "";
+        }
+
+        // Carica i 10 prodotti all'avvio
+        window.onload = () => {
+            prodottiIniziali.forEach(p => inserisciInTabella(p.n, p.c, p.co, p.pr, p.st));
+        };
+    </script>
+</body>
+</html>

@@ -1,114 +1,53 @@
-<!DOCTYPE html>
-<html lang="it">
-<head>
-    <meta charset="UTF-8">
-    <title>Pannello Admin - Gestione Bar</title>
-    <style>
-        body { font-family: sans-serif; padding: 20px; background-color: #f8f9fa; }
-        .container { max-width: 1000px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        
-        /* Stile Ricerca */
-        #cercaInput { width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
-        
-        /* Stile Tabella */
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { padding: 12px; border: 1px solid #ddd; text-align: left; }
-        th { background-color: #007bff; color: white; cursor: pointer; }
-        th:hover { background-color: #0056b3; }
-        tr:hover { background-color: #f1f1f1; }
-        
-        .margine-cell { font-weight: bold; color: #28a745; }
-        input[type="number"] { width: 80px; padding: 5px; }
-    </style>
-</head>
-<body>
+{% extends "admin/change_list.html" %}
+{% block content %}
+<style>
+    body { font-family: 'Segoe UI', sans-serif; background: #000; color: #fff; margin: 0; padding: 20px; }
+    .header { text-align: center; padding: 20px; background: #000; border: 2px solid #00a6ff; border-radius: 20px; margin-bottom: 20px; }
+    .header h1 { color: #00c8ff; letter-spacing: 5px; text-shadow: 0 0 10px #00a6ff; }
+    table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
+    th { background: #00aaff; color: #000; padding: 12px; text-align: left; }
+    td { background: #111; padding: 15px; border-top: 1px solid #00a6ff; }
+    .badge-ok { color: #00ffaa; border: 1px solid #00ffaa; padding: 5px; border-radius: 5px; }
+    .badge-no { color: #ff4444; border: 1px solid #ff4444; padding: 5px; border-radius: 5px; }
+</style>
 
-<div class="container">
-    <h2>Gestione Prodotti Bar</h2>
-    
-    <!-- 1. CASSETTA DI RICERCA -->
-    <input type="text" id="cercaInput" onkeyup="funzioneCerca()" placeholder="Cerca prodotto per nome o gruppo...">
-
-    <!-- 2. TABELLA -->
-    <table id="tabellaProdotti">
-        <thead>
-            <tr>
-                <th onclick="ordinaTabella(0)">Gruppo ↕</th>
-                <th onclick="ordinaTabella(1)">Nome Prodotto ↕</th>
-                <th>Costo (€)</th>
-                <th>Vendita (€)</th>
-                <th>Margine (€)</th>
-                <th>Azioni</th>
-            </tr>
-        </thead>
-        <tbody id="corpoTabella">
-            <tr>
-                <td>☕ Caffetteria</td>
-                <td>Caffè Espresso</td>
-                <td><td><input type="number" class="costo" value="0.20" oninput="calcolaMargine(this)"></td></td>
-                <td><td><input type="number" class="vendita" value="1.20" oninput="calcolaMargine(this)"></td></td>
-                <td class="margine-cell">1.00</td>
-                <td><button>Elimina</button></td>
-            </tr>
-            <tr>
-                <td>🥤 Bevande</td>
-                <td>Coca Cola 33cl</td>
-                <td><td><input type="number" class="costo" value="0.60" oninput="calcolaMargine(this)"></td></td>
-                <td><td><input type="number" class="vendita" value="2.50" oninput="calcolaMargine(this)"></td></td>
-                <td class="margine-cell">1.90</td>
-                <td><button>Elimina</button></td>
-            </tr>
-            <tr>
-                <td>🥐 Food</td>
-                <td>Cornetto crema</td>
-                <td><td><input type="number" class="costo" value="0.45" oninput="calcolaMargine(this)"></td></td>
-                <td><td><input type="number" class="vendita" value="1.30" oninput="calcolaMargine(this)"></td></td>
-                <td class="margine-cell">0.85</td>
-                <td><button>Elimina</button></td>
-            </tr>
-        </tbody>
-    </table>
+<div class="header">
+    <h1>SALA BAR - DATI REALI</h1>
 </div>
 
-<script>
-// FUNZIONE RICERCA
-function funzioneCerca() {
-    let input = document.getElementById("cercaInput").value.toUpperCase();
-    let tr = document.getElementById("corpoTabella").getElementsByTagName("tr");
+<table>
+    <thead>
+        <tr>
+            <th>PRODOTTO</th>
+            <th>COSTO</th>
+            <th>PREZZO</th>
+            <th>CATEGORIA</th>
+            <th>STATO</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for p in prodotti_reali %}
+        <tr>
+            <td style="color: #00c8ff;">{{ p.nome }}</td>
+            <td>€ {{ p.costo }}</td>
+            <td>€ {{ p.prezzo_esterno }}</td>
+            <td>{{ p.categoria }}</td>
+            <td>
+                {% if p.disponibile %}
+                <span class="badge-ok">DISPONIBILE</span>
+                {% else %}
+                <span class="badge-no">ESAURITO</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5" style="text-align: center;">Nessun prodotto trovato. Aggiungine uno qui sotto!</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
 
-    for (let i = 0; i < tr.length; i++) {
-        let testoRiga = tr[i].innerText.toUpperCase();
-        tr[i].style.display = testoRiga.indexOf(input) > -1 ? "" : "none";
-    }
-}
-
-// FUNZIONE ORDINAMENTO
-let direzione = true;
-function ordinaTabella(n) {
-    let table = document.getElementById("corpoTabella");
-    let rows = Array.from(table.rows);
-
-    rows.sort((a, b) => {
-        let valA = a.cells[n].innerText.toLowerCase();
-        let valB = b.cells[n].innerText.toLowerCase();
-        return direzione ? valA.localeCompare(valB) : valB.localeCompare(valA);
-    });
-
-    direzione = !direzione;
-    rows.forEach(row => table.appendChild(row));
-}
-
-// FUNZIONE MARGINE AUTOMATICO
-function calcolaMargine(el) {
-    let riga = el.closest("tr");
-    let costo = parseFloat(riga.querySelector(".costo").value) || 0;
-    let vendita = parseFloat(riga.querySelector(".vendita").value) || 0;
-    let cellaMargine = riga.querySelector(".margine-cell");
-    
-    let risultato = vendita - costo;
-    cellaMargine.innerText = risultato.toFixed(2);
-}
-</script>
-
-</body>
-</html>
+<!-- Questo fa apparire i tasti originali di Django per aggiungere prodotti -->
+<div style="margin-top: 30px; background: #222; padding: 10px; border-radius: 10px;">
+    {{ block.super }}
+</div>
+{% endblock %}

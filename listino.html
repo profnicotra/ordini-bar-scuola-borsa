@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Display Listino</title>
+    <style>
+        body { font-family: sans-serif; background: #0f0f0f; color: white; padding: 20px; }
+        .grid { display: flex; flex-wrap: wrap; gap: 15px; }
+        .card { background: #1a1a1a; padding: 20px; border-radius: 10px; border-bottom: 4px solid #e50914; width: 120px; text-align: center; }
+        .prezzo { font-size: 22px; color: #e50914; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>Listino Prezzi</h1>
+    <div id="display" class="grid"></div>
+
+    <script>
+        function aggiornaVista() {
+            const dati = JSON.parse(localStorage.getItem("datiBorsaBar") || "[]");
+            const container = document.getElementById("display");
+            container.innerHTML = ""; // Pulisce
+
+            dati.forEach(p => {
+                if(p.attivo.toLowerCase().includes("sì") || p.attivo.toLowerCase().includes("si")) {
+                    container.innerHTML += `
+                        <div class="card">
+                            <h3>${p.nome}</h3>
+                            <div class="prezzo">${p.prezzo} €</div>
+                            <small>${p.categoria}</small>
+                        </div>`;
+                }
+            });
+        }
+
+        // Questo "ascolta" le modifiche fatte nel primo file!
+        window.addEventListener('storage', aggiornaVista);
+        window.onload = aggiornaVista;
+    </script>
+</body>
+</html>

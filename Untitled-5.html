@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        /* Sfondo e centratura totale */
+        body { 
+            margin: 0; 
+            padding: 0; 
+            background: #fdfaf6; /* Colore carta paglia pulito */
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Centra orizzontalmente */
+            justify-content: center; /* Centra verticalmente */
+            min-height: 100vh;
+        }
+
+        /* Titolo Scenografico */
+        h1 {
+            color: #4e342e;
+            font-size: 50px;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            margin-bottom: 30px;
+            border-bottom: 5px solid #d3a27f;
+            padding-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Contenitore Tabella */
+        .container {
+            width: 90%;
+            max-width: 1300px;
+            animation: slideUp 1s ease-out;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: #ffffff;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 25px 70px rgba(0,0,0,0.15);
+        }
+
+        th {
+            background: #4e342e;
+            color: #ffffff;
+            padding: 25px;
+            text-align: left;
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 20px 25px;
+            border-bottom: 1px solid #f0f0f0;
+            color: #333;
+            font-size: 17px;
+        }
+
+        /* Effetto hover riga */
+        tr:hover td {
+            background: #fff3e0;
+            transform: scale(1.01);
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        /* Badge Stato */
+        .status {
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+        .fresco { background: #e8f5e9; color: #2e7d32; }
+        .esaurito { background: #ffebee; color: #c62828; }
+
+        .margine {
+            color: #d35400;
+            font-weight: 900;
+            font-size: 20px;
+        }
+
+        /* Animazione entrata */
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>☕ BAR SCUOLA BORSA</h1>
+
+    <div class="container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Prodotto</th>
+                    <th>Categoria</th>
+                    <th>Costo Materia</th>
+                    <th>Prezzo Vendita</th>
+                    <th>Margine</th>
+                    <th>Stato</th>
+                    <th>Note</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><b>Cornetto Artigianale</b></td>
+                    <td>Colazione</td>
+                    <td>0.50 €</td>
+                    <td>1.40 €</td>
+                    <td class="margine">+180%</td>
+                    <td><span class="status fresco">DISPONIBILE</span></td>
+                    <td>Fornitura del mattino ore 7:00</td>
+                </tr>
+                <tr>
+                    <td><b>Cappuccino XL</b></td>
+                    <td>Caffetteria</td>
+                    <td>0.35 €</td>
+                    <td>1.80 €</td>
+                    <td class="margine">+414%</td>
+                    <td><span class="status fresco">DISPONIBILE</span></td>
+                    <td>Latte fresco intero</td>
+                </tr>
+                <tr>
+                    <td><b>Spremuta di Arance</b></td>
+                    <td>Salute</td>
+                    <td>0.80 €</td>
+                    <td>3.50 €</td>
+                    <td class="margine">+337%</td>
+                    <td><span class="status esaurito">ESAURITO</span></td>
+                    <td>Arance in arrivo mercoledì</td>
+                </tr>
+                <tr>
+                    <td><b>Focaccia Farcita</b></td>
+                    <td>Salato</td>
+                    <td>1.20 €</td>
+                    <td>4.00 €</td>
+                    <td class="margine">+233%</td>
+                    <td><span class="status fresco">CALDA</span></td>
+                    <td>Prosciutto e Mozzarella</td>
+                </tr>
+                <tr>
+                    <td><b>Caffè Espresso</b></td>
+                    <td>Caffetteria</td>
+                    <td>0.18 €</td>
+                    <td>1.10 €</td>
+                    <td class="margine">+511%</td>
+                    <td><span class="status fresco">DISPONIBILE</span></td>
+                    <td>Miscela Arabica 100%</td>
+                </tr>
+                <tr>
+                    <td><b>Torta del Giorno</b></td>
+                    <td>Dolci</td>
+                    <td>1.00 €</td>
+                    <td>3.50 €</td>
+                    <td class="margine">+250%</td>
+                    <td><span class="status fresco">ULTIME FETTE</span></td>
+                    <td>Torta della nonna alle mele</td>
+                </tr>
+                <tr>
+                    <td><b>Muffin Cioccolato</b></td>
+                    <td>Dolci</td>
+                    <td>0.60 €</td>
+                    <td>2.00 €</td>
+                    <td class="margine">+233%</td>
+                    <td><span class="status fresco">DISPONIBILE</span></td>
+                    <td>Con gocce di fondente</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pannello Controllo Bar | Professional</title>
+    <link href="https://googleapis.com" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4f46e5; --primary-hover: #4338ca;
+            --success: #10b981; --danger: #ef4444;
+            --text-main: #1f2937; --bg-body: #f3f4f6;
+        }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-body); color: var(--text-main); margin: 0; padding: 40px 20px; }
+        .dashboard { max-width: 1200px; margin: auto; background: white; padding: 32px; border-radius: 16px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); }
+        
+        /* Header */
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .header h1 { font-size: 24px; font-weight: 600; margin: 0; color: #111827; }
+        
+        /* Search & Actions */
+        .actions-bar { display: flex; gap: 15px; margin-bottom: 25px; }
+        .search-wrapper { position: relative; flex-grow: 1; }
+        #searchBox { width: 100%; padding: 12px 16px; border: 1px solid #d1d5db; border-radius: 10px; font-size: 15px; transition: 0.2s; outline: none; }
+        #searchBox:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); }
+        
+        .btn { display: inline-flex; align-items: center; padding: 10px 20px; border-radius: 10px; font-weight: 600; cursor: pointer; transition: 0.2s; border: none; font-size: 14px; gap: 8px; }
+        .btn-add { background: var(--primary); color: white; }
+        .btn-add:hover { background: var(--primary-hover); transform: translateY(-1px); }
+
+        /* Table Style */
+        .table-container { overflow-x: auto; border-radius: 12px; border: 1px solid #e5e7eb; }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th { background: #f9fafb; padding: 16px; font-size: 13px; font-weight: 600; text-transform: uppercase; color: #6b7280; cursor: pointer; }
+        th:hover { color: var(--primary); }
+        td { padding: 16px; border-top: 1px solid #e5e7eb; font-size: 15px; }
+        tr:hover { background-color: #f8fafc; }
+
+        /* Status & Inputs */
+        .badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; background: #e0e7ff; color: #4338ca; }
+        input[type="number"] { border: 1px solid #d1d5db; padding: 8px; border-radius: 6px; width: 80px; font-size: 14px; }
+        .margin-tag { font-weight: 700; font-size: 15px; }
+        .positive { color: var(--success); }
+        .negative { color: var(--danger); }
+        .delete-icon { color: #9ca3af; cursor: pointer; transition: 0.2s; }
+        .delete-icon:hover { color: var(--danger); }
+
+        /* Modal */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); align-items: center; justify-content: center; }
+        .modal-content { background: white; padding: 30px; border-radius: 20px; width: 400px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+        .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 8px; box-sizing: border-box; }
+    </style>
+</head>
+<body>
+
+<div class="dashboard">
+    <div class="header">
+        <h1>📦 Gestione Magazzino Bar</h1>
+        <button class="btn btn-add" onclick="toggleModal(true)"><span>+</span> Nuovo Prodotto</button>
+    </div>
+
+    <div class="actions-bar">
+        <div class="search-wrapper">
+            <input type="text" id="searchBox" onkeyup="filterTable()" placeholder="Cerca tra i prodotti (es. Caffè, Bevande...)">
+        </div>
+    </div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th onclick="sortTable(0)">Categoria ↕</th>
+                    <th onclick="sortTable(1)">Prodotto ↕</th>
+                    <th>Costo Acquisto</th>
+                    <th>Prezzo Vendita</th>
+                    <th onclick="sortTable(4)">Margine ↕</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <tr>
+                    <td><span class="badge">Caffetteria</span></td>
+                    <td>Caffè Espresso</td>
+                    <td><input type="number" step="0.01" value="0.25" oninput="calcRow(this)"></td>
+                    <td><input type="number" step="0.01" value="1.20" oninput="calcRow(this)"></td>
+                    <td class="margin-tag positive">0.95 €</td>
+                    <td><span class="delete-icon" onclick="this.closest('tr').remove()">🗑️</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="addModal" class="modal">
+    <div class="modal-content">
+        <h2 style="margin-top:0">Nuovo Prodotto</h2>
+        <div class="form-group"><label>Categoria</label><select id="newCat"><option>Caffetteria</option><option>Bevande</option><option>Snack</option></select></div>
+        <div class="form-group"><label>Nome</label><input type="text" id="newName"></div>
+        <div class="form-group"><label>Costo (€)</label><input type="number" id="newCost" step="0.01"></div>
+        <div class="form-group"><label>Vendita (€)</label><input type="number" id="newSell" step="0.01"></div>
+        <div style="display:flex; gap:10px; margin-top:20px;">
+            <button class="btn btn-add" style="flex:1" onclick="addProduct()">Aggiungi</button>
+            <button class="btn" style="flex:1; background:#f3f4f6" onclick="toggleModal(false)">Annulla</button>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleModal(s) { document.getElementById('addModal').style.display = s ? 'flex' : 'none'; }
+function calcRow(el) {
+    let r = el.closest('tr');
+    let c = parseFloat(r.querySelectorAll('input')[0].value) || 0;
+    let v = parseFloat(r.querySelectorAll('input')[1].value) || 0;
+    let m = (v - c).toFixed(2);
+    let cell = r.cells[4];
+    cell.innerText = m + " €";
+    cell.className = "margin-tag " + (m >= 0 ? "positive" : "negative");
+}
+function addProduct() {
+    let n = document.getElementById('newName').value, c = document.getElementById('newCat').value;
+    let co = parseFloat(document.getElementById('newCost').value) || 0, ve = parseFloat(document.getElementById('newSell').value) || 0;
+    if(!n) return alert("Nome mancante");
+    let m = (ve-co).toFixed(2);
+    document.getElementById('tableBody').insertAdjacentHTML('beforeend', 
+        `<tr><td><span class="badge">${c}</span></td><td>${n}</td>
+        <td><input type="number" step="0.01" value="${co}" oninput="calcRow(this)"></td>
+        <td><input type="number" step="0.01" value="${ve}" oninput="calcRow(this)"></td>
+        <td class="margin-tag ${m>=0?'positive':'negative'}">${m} €</td>
+        <td><span class="delete-icon" onclick="this.closest('tr').remove()">🗑️</span></td></tr>`
+    );
+    toggleModal(false);
+}
+function filterTable() {
+    let f = document.getElementById('searchBox').value.toUpperCase();
+    for (let r of document.getElementById('tableBody').rows) r.style.display = r.innerText.toUpperCase().includes(f) ? "" : "none";
+}
+function sortTable(n) {
+    let b = document.getElementById('tableBody'), r = Array.from(b.rows);
+    r.sort((x,y) => x.cells[n].innerText.localeCompare(y.cells[n].innerText, undefined, {numeric:true}));
+    r.forEach(row => b.appendChild(row));
+}
+</script>
+</body>
+</html>
+

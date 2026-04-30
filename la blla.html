@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { 
+            margin: 0; 
+            padding: 30px; 
+            background: #2c1e1a; /* Colore caffè scuro */
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: #ffffff;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            animation: fadeInTable 1s ease-out;
+        }
+
+        th {
+            background: #6f4e37; /* Colore chicco di caffè */
+            color: #ffffff;
+            padding: 22px;
+            text-align: left;
+            text-transform: uppercase;
+            font-size: 13px;
+            letter-spacing: 1.5px;
+            border-bottom: 3px solid #5d4037;
+        }
+
+        td {
+            padding: 18px 22px;
+            border-bottom: 1px solid #f0f0f0;
+            color: #3e2723;
+            font-size: 16px;
+        }
+
+        tr:last-child td { border-bottom: none; }
+
+        /* Effetto Hover "Morbido" */
+        tr:hover td {
+            background: #fff8e1; /* Crema chiaro */
+            transform: scale(1.005);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        /* Badge Stato Prodotto */
+        .status {
+            padding: 6px 15px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 11px;
+            display: inline-block;
+        }
+        .fresco { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
+        .terminato { background: #ffebee; color: #c62828; border: 1px solid #ffcdd2; }
+
+        /* Stile Margine */
+        .margine {
+            color: #388e3c;
+            font-weight: 800;
+            font-family: monospace;
+            font-size: 18px;
+        }
+
+        .prezzo-int { font-style: italic; color: #757575; }
+
+        @keyframes fadeInTable {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Prodotto Colazione</th>
+                <th>Categoria</th>
+                <th>Costo Materia Prima</th>
+                <th>Prezzo al Pubblico</th>
+                <th>Margine Guadagno</th>
+                <th>Stato Dispensa</th>
+                <th>Note di Servizio</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><b>Cornetto Vuoto Ischia</b></td>
+                <td>Lievitati</td>
+                <td>0.45 €</td>
+                <td>1.30 €</td>
+                <td class="margine">+188%</td>
+                <td><span class="status fresco">FRESCO DI FORNO</span></td>
+                <td>Scaldare leggermente prima di servire</td>
+            </tr>
+            <tr>
+                <td><b>Cappuccino Arabica</b></td>
+                <td>Caffetteria</td>
+                <td>0.30 €</td>
+                <td>1.50 €</td>
+                <td class="margine">+400%</td>
+                <td><span class="status fresco">DISPONIBILE</span></td>
+                <td>Latte intero alta qualità</td>
+            </tr>
+            <tr>
+                <td><b>Saccottino al Cioccolato</b></td>
+                <td>Lievitati</td>
+                <td>0.55 €</td>
+                <td>1.50 €</td>
+                <td class="margine">+172%</td>
+                <td><span class="status fresco">FRESCO DI FORNO</span></td>
+                <td>Molto richiesto dai bambini</td>
+            </tr>
+            <tr>
+                <td><b>Spremuta d'Arancia</b></td>
+                <td>Bevande</td>
+                <td>0.80 €</td>
+                <td>3.50 €</td>
+                <td class="margine">+337%</td>
+                <td><span class="status terminato">ARANCE FINITE</span></td>
+                <td>Ordinare cassetta da mercato domani</td>
+            </tr>
+            <tr>
+                <td><b>Pasticciotto Leccese</b></td>
+                <td>Pasticceria</td>
+                <td>0.70 €</td>
+                <td>2.00 €</td>
+                <td class="margine">+185%</td>
+                <td><span class="status fresco">DISPONIBILE</span></td>
+                <td>Specialità del weekend</td>
+            </tr>
+            <tr>
+                <td><b>Tramezzino Prosciutto e Formaggio</b></td>
+                <td>Salato</td>
+                <td>0.90 €</td>
+                <td>3.00 €</td>
+                <td class="margine">+233%</td>
+                <td><span class="status fresco">DISPONIBILE</span></td>
+                <td>Preparati freschi ore 7:00</td>
+            </tr>
+            <tr>
+                <td><b>Yogurt Greco con Miele</b></td>
+                <td>Healthy</td>
+                <td>1.20 €</td>
+                <td>4.50 €</td>
+                <td class="margine">+275%</td>
+                <td><span class="status fresco">DISPONIBILE</span></td>
+                <td>Aggiungere noci fresche al momento</td>
+            </tr>
+            <tr>
+                <td><b>Caffè Espresso</b></td>
+                <td>Caffetteria</td>
+                <td>0.15 €</td>
+                <td>1.10 €</td>
+                <td class="margine">+633%</td>
+                <td><span class="status fresco">DISPONIBILE</span></td>
+                <td>Miscela 80/20</td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>

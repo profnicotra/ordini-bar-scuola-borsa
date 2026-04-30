@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Bar Scuola Borsa - Dashboard</title>
+    <style>
+        /* STILE GENERALE */
+        body { 
+            margin: 0; padding: 40px; background: #fdf6f0; 
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            display: flex; flex-direction: column; align-items: center;
+        }
+
+        h1 { 
+            color: #5d4037; font-size: 45px; letter-spacing: 2px; 
+            margin-bottom: 30px; text-shadow: 2px 2px 5px rgba(0,0,0,0.05);
+        }
+
+        /* MODULO AGGIUNGI (IL CARINO) */
+        .add-form {
+            background: white; padding: 25px; border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(93, 64, 55, 0.1);
+            margin-bottom: 40px; display: flex; gap: 15px; flex-wrap: wrap;
+            justify-content: center; width: 95%; max-width: 1100px;
+            border: 2px solid #efe0d5;
+        }
+
+        .add-form input, .add-form select {
+            padding: 12px 18px; border: 2px solid #f1ece9; border-radius: 15px;
+            outline: none; transition: 0.3s; font-size: 14px;
+        }
+
+        .add-form input:focus { border-color: #d3a27f; box-shadow: 0 0 8px rgba(211, 162, 127, 0.2); }
+
+        .btn-add {
+            background: #8d6e63; color: white; border: none; padding: 12px 25px;
+            border-radius: 15px; cursor: pointer; font-weight: bold; font-size: 15px;
+            transition: all 0.3s ease; box-shadow: 0 5px 15px rgba(141, 110, 99, 0.3);
+        }
+        .btn-add:hover { background: #6f4e37; transform: translateY(-3px); }
+
+        /* TABELLA SUPER BELLA */
+        .container { width: 95%; max-width: 1200px; animation: slideUp 1s ease; }
+        
+        table {
+            width: 100%; border-collapse: separate; border-spacing: 0;
+            background: white; border-radius: 30px; overflow: hidden;
+            box-shadow: 0 20px 60px rgba(93, 64, 55, 0.15);
+        }
+
+        th { 
+            background: #f8f3f0; color: #5d4037; padding: 25px; 
+            text-align: left; font-size: 13px; text-transform: uppercase;
+            letter-spacing: 1px; border-bottom: 2px solid #efe0d5;
+        }
+
+        td { padding: 20px 25px; border-bottom: 1px solid #f9f5f2; color: #4e342e; font-size: 16px; }
+
+        tr:last-child td { border-bottom: none; }
+
+        /* EFFETTO PASSAGGIO MOUSE */
+        tr:hover td { background: #fffcf9; transition: 0.3s; cursor: default; }
+
+        /* CESTINO E AZIONI */
+        .btn-delete {
+            background: #ffeded; color: #e74c3c; border: none; padding: 10px;
+            border-radius: 12px; cursor: pointer; transition: 0.3s; font-size: 18px;
+        }
+        .btn-delete:hover { background: #e74c3c; color: white; transform: rotate(10deg); }
+
+        /* STATO BADGE */
+        .status-pill {
+            padding: 6px 14px; border-radius: 12px; font-weight: bold; font-size: 11px;
+        }
+        .dispo { background: #e8f5e9; color: #2e7d32; }
+        .fine { background: #ffebee; color: #c62828; }
+
+        /* ANIMAZIONE */
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>☕ Bar Scuola Borsa</h1>
+
+    <!-- FORM AGGIUNGI -->
+    <div class="add-form">
+        <input type="text" id="nome" placeholder="Cosa aggiungiamo? (es. Muffin)">
+        <input type="text" id="cat" placeholder="Categoria (es. Dolci)">
+        <input type="number" id="costo" placeholder="Costo €" step="0.01">
+        <input type="number" id="prezzo" placeholder="Prezzo €" step="0.01">
+        <select id="stato">
+            <option value="DISPONIBILE">🟢 DISPONIBILE</option>
+            <option value="ESAURITO">🔴 ESAURITO</option>
+        </select>
+        <input type="text" id="note" placeholder="Note rapide...">
+        <button class="btn-add" onclick="nuovoProdotto()">Aggiungi ora ✨</button>
+    </div>
+
+    <!-- TABELLA -->
+    <div class="container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Prodotto</th>
+                    <th>Categoria</th>
+                    <th>Costo</th>
+                    <th>Prezzo</th>
+                    <th>Margine</th>
+                    <th>Stato</th>
+                    <th>Note</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="lista">
+                <!-- I prodotti appariranno qui -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function nuovoProdotto() {
+            const nome = document.getElementById('nome').value;
+            const cat = document.getElementById('cat').value;
+            const costo = parseFloat(document.getElementById('costo').value) || 0;
+            const prezzo = parseFloat(document.getElementById('prezzo').value) || 0;
+            const stato = document.getElementById('stato').value;
+            const note = document.getElementById('note').value;
+
+            if(!nome) return alert("Scrivi il nome del prodotto!");
+
+            const margVal = prezzo > 0 ? (((prezzo - costo) / prezzo) * 100).toFixed(0) : 0;
+            const colStato = stato === "DISPONIBILE" ? "dispo" : "fine";
+            
+            const riga = document.createElement('tr');
+            riga.innerHTML = `
+                <td><b>${nome}</b></td>
+                <td><span style="color:#a1887f">${cat}</span></td>
+                <td>${costo.toFixed(2)}€</td>
+                <td><b>${prezzo.toFixed(2)}€</b></td>
+                <td style="color:#2e7d32; font-weight:bold">${margVal}%</td>
+                <td><span class="status-pill ${colStato}">${stato}</span></td>
+                <td style="font-size:14px; color:#8d6e63">${note}</td>
+                <td><button class="btn-delete" onclick="this.parentElement.parentElement.remove()">🗑️</button></td>
+            `;
+            
+            document.getElementById('lista').appendChild(riga);
+
+            // Pulisci
+            document.querySelectorAll('.add-form input').forEach(i => i.value = "");
+        }
+
+        // Prodotto iniziale per bellezza
+        window.onload = () => {
+            document.getElementById('nome').value = "Cornetto al Pistacchio";
+            document.getElementById('cat').value = "Colazione";
+            document.getElementById('costo').value = "0.60";
+            document.getElementById('prezzo').value = "1.80";
+            document.getElementById('note').value = "Top quality";
+            nuovoProdotto();
+        }
+    </script>
+</body>
+</html>

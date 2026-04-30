@@ -1,0 +1,13 @@
+<!-- Cerca il <tbody> nel tuo codice e metti questo -->
+<tbody>
+    {% for p in prodotti_reali %}
+    <tr>
+        <td>{{ p.nome }}</td>
+        <td>{{ p.costo }}</td>
+        <td>{{ p.prezzo_esterno }}</td>
+        <td>{{ p.prezzo_interno }}</td>
+        <td>{{ p.categoria }}</td>
+        <td>{{ p.disponibile }}</td>
+    </tr>
+    {% endfor %}
+</tbody>

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Sala Bar - Scuola Paolo Borsa Professional</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), 
+                        url('https://gstatic.com'); 
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #ffffff; margin: 0; padding: 20px; min-height: 100vh;
+            display: flex; gap: 20px; flex-wrap: wrap;
+        }
+
+        .container { flex: 3; min-width: 850px; }
+        
+        .comanda-box { 
+            flex: 1; min-width: 300px; background: rgba(0, 0, 0, 0.9); 
+            border: 2px solid #00a6ff; border-radius: 20px; padding: 20px;
+            box-shadow: 0 0 30px rgba(0, 166, 255, 0.3); height: fit-content;
+            position: sticky; top: 20px;
+            backdrop-filter: blur(8px);
+        }
+
+        .header {
+            text-align: center; padding: 20px; background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #00a6ff; border-radius: 20px; margin-bottom: 20px;
+        }
+
+        .header h1 { color: #00c8ff; margin: 0; font-size: 2.2em; letter-spacing: 5px; text-shadow: 0 0 10px #00a6ff; }
+        .header .sub-title { font-size: 1.1em; color: #fff; margin-bottom: 5px; }
+
+        /* BOX PER SCRIVERE I PRODOTTI */
+        .config-box {
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #00a6ff;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .config-box input {
+            background: #111;
+            border: 1px solid #00a6ff;
+            color: white;
+            padding: 8px;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        .btn-add-menu {
+            background: #00a6ff;
+            color: black;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
+        th { background: rgba(0, 166, 255, 0.7); color: #000; padding: 12px; font-size: 0.8em; text-transform: uppercase; text-align: left; }
+        
+        .info-row td { 
+            background: rgba(0, 0, 0, 0.75);
+            padding: 12px 15px; border-top: 1px solid #00a6ff; cursor: pointer;
+        }
+
+        .btn-blu { 
+            background: #00a6ff; border: none; padding: 12px 20px; border-radius: 8px; 
+            font-weight: bold; cursor: pointer; color: black; text-transform: uppercase; 
+            transition: 0.3s; width: 100%; margin-top: 10px;
+        }
+
+        .order-item { background: rgba(255, 255, 255, 0.05); border-left: 4px solid #00a6ff; padding: 10px; margin-bottom: 10px; border-radius: 5px; }
+        .allergy-text { background: transparent; border: none; border-bottom: 1px solid #444; color: #00ffaa; font-size: 0.85em; width: 100%; outline: none; margin-top: 5px; }
+        .btn-del-row { background: none; border: 1px solid #ff4444; color: #ff4444; padding: 4px 8px; border-radius: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>SALA BAR</h1>
+        <div class="sub-title">Scuola Paolo Borsa</div>
+    </div>
+
+    <!-- BOX DOVE SCRIVI TU I PRODOTTI -->
+    <div class="config-box">
+        <input type="text" id="new_nome" placeholder="Nome Prodotto">
+        <input type="number" id="new_costo" placeholder="Costo €" step="0.01">
+        <input type="number" id="new_prezzo" placeholder="Prezzo €" step="0.01">
+        <input type="number" id="new_interno" placeholder="Prezzo Interno €" step="0.01">
+        <button class="btn-add-menu" onclick="aggiungiAlMenu()">Aggiungi al Menu +</button>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>PRODOTTO</th>
+                <th>COSTO</th>
+                <th>PREZZO</th>
+                <th>INTERNO</th>
+                <th>AZIONI</th>
+            </tr>
+        </thead>
+        <tbody id="lista-menu">
+            <!-- I prodotti appariranno qui -->
+        </tbody>
+    </table>
+</div>
+
+<div class="comanda-box">
+    <h2 style="color:#00a6ff; text-align:center; margin-top:0;">COMANDA</h2>
+    <div id="lista-ordine"></div>
+    <div id="totale-ordine" style="text-align:right; font-weight:bold; border-top: 2px solid #00a6ff; padding-top:15px; color:#fff; font-size: 1.5em;">0.00 €</div>
+    <button class="btn-blu" onclick="scaricaScontrino()">Salva Scontrino (.txt)</button>
+    <button class="btn-blu" style="background:#333; color:#fff;" onclick="svuotaComanda()">Svuota Tutto</button>
+</div>
+
+<script>
+    let totale = 0;
+
+    function aggiungiAlMenu() {
+        const nome = document.getElementById('new_nome').value;
+        const costo = parseFloat(document.getElementById('new_costo').value) || 0;
+        const prezzo = parseFloat(document.getElementById('new_prezzo').value) || 0;
+        const interno = parseFloat(document.getElementById('new_interno').value) || 0;
+
+        if (!nome) return alert("Inserisci il nome del prodotto!");
+
+        const corpo = document.getElementById('lista-menu');
+        const riga = document.createElement('tr');
+        riga.className = "info-row";
+        
+        // Al click sulla riga aggiunge alla comanda
+        riga.onclick = () => aggiungiAllOrdine(nome, prezzo);
+
+        riga.innerHTML = `
+            <td><b style="color:#00c8ff">${nome}</b></td>
+            <td>${costo.toFixed(2)}€</td>
+            <td style="font-weight:bold">${prezzo.toFixed(2)}€</td>
+            <td>${interno.toFixed(2)}€</td>
+            <td><button class="btn-del-row" onclick="event.stopPropagation(); this.parentElement.parentElement.remove()">🗑️</button></td>
+        `;
+        corpo.appendChild(riga);
+
+        // Pulisce i campi dopo l'aggiunta
+        document.getElementById('new_nome').value = "";
+        document.getElementById('new_costo').value = "";
+        document.getElementById('new_prezzo').value = "";
+        document.getElementById('new_interno').value = "";
+    }
+
+    function aggiungiAllOrdine(nome, prezzo) {
+        const lista = document.getElementById('lista-ordine');
+        const id = 'ord-' + Date.now();
+        const voce = document.createElement('div');
+        voce.className = "order-item";
+        voce.id = id;
+        voce.innerHTML = `
+            <div style="display:flex; justify-content:space-between">
+                <span>${nome}</span><b>${prezzo.toFixed(2)}€</b>
+                <button style="color:#ff4444; border:none; background:none; cursor:pointer" onclick="rimuoviDallOrdine('${id}', ${prezzo})">✕</button>
+            </div>
+            <input type="text" class="allergy-text" placeholder="Note (es. senza schiuma)">
+        `;
+        lista.appendChild(voce);
+        aggiornaTotale(prezzo);
+    }
+
+    function rimuoviDallOrdine(id, prezzo) {
+        document.getElementById(id).remove();
+        aggiornaTotale(-prezzo);
+    }
+
+    function aggiornaTotale(valore) {
+        totale += valore;
+        document.getElementById('totale-ordine').innerText = Math.abs(totale).toFixed(2) + " €";
+    }
+
+    function svuotaComanda() {
+        document.getElementById('lista-ordine').innerHTML = "";
+        totale = 0;
+        document.getElementById('totale-ordine').innerText = "0.00 €";
+    }
+
+    function scaricaScontrino() {
+        let testo = "SCUOLA PAOLO BORSA\n------------------\n";
+        const items = document.querySelectorAll('.order-item');
+        items.forEach(item => {
+            const nome = item.querySelector('span').innerText;
+            const prezzo = item.querySelector('b').innerText;
+            testo += `${nome}: ${prezzo}\n`;
+        });
+        testo += "------------------\nTOTALE: " + document.getElementById('totale-ordine').innerText;
+        const blob = new Blob([testo], { type: "text/plain" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "scontrino.txt";
+        a.click();
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Sala Bar - Scuola Borsa Professional</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background: radial-gradient(circle at center, #1a0000 0%, #000000 100%); 
+            color: #ffffff; margin: 0; padding: 20px; min-height: 100vh;
+            display: flex; gap: 20px; flex-wrap: wrap;
+        }
+
+        .container { flex: 3; min-width: 850px; }
+        
+        .comanda-box { 
+            flex: 1; min-width: 300px; background: rgba(20, 0, 0, 0.95); 
+            border: 2px solid #00a6ff; border-radius: 20px; padding: 20px;
+            box-shadow: 0 0 20px rgba(0, 166, 255, 0.3); height: fit-content;
+            position: sticky; top: 20px;
+        }
+
+        .header {
+            text-align: center; padding: 20px; background: #000;
+            border: 2px solid #00a6ff; border-radius: 20px; margin-bottom: 20px;
+        }
+
+        .header h1 { color: #00c8ff; margin: 0; font-size: 2.2em; letter-spacing: 5px; text-shadow: 0 0 10px #00a6ff; }
+        .header .sub-title { font-size: 1em; color: #fff; opacity: 0.8; }
+
+        .filter-bar { display: flex; gap: 10px; margin-bottom: 20px; justify-content: center; flex-wrap: wrap; }
+        .filter-btn { 
+            background: transparent; border: 1px solid #00a6ff; color: #00a6ff; 
+            padding: 5px 15px; border-radius: 20px; cursor: pointer; font-size: 0.8em; transition: 0.3s;
+        }
+        .filter-btn.active { background: #00a6ff; color: #000; box-shadow: 0 0 10px #00a6ff; }
+
+        .btn-blu { 
+            background: #00a6ff; 
+            border: none; padding: 12px 20px; border-radius: 8px; 
+            font-weight: bold; cursor: pointer; color: black; 
+            text-transform: uppercase; letter-spacing: 1px;
+            transition: 0.3s; width: 100%; margin-top: 20px;
+            box-shadow: 0 0 10px rgba(0, 166, 255, 0.4);
+        }
+        .btn-blu:hover { background: #00e1ff; box-shadow: 0 0 20px #00a6ff; transform: scale(1.02); }
+
+        table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
+        th { background: #00aaff; color: #000; padding: 12px; font-size: 0.75em; text-transform: uppercase; text-align: left; }
+        
+        .info-row td { 
+            background: linear-gradient(90deg, #111 0%, #050505 100%);
+            padding: 12px 15px; border-top: 1px solid #00a6ff; cursor: pointer; transition: 0.2s;
+        }
+        .info-row:hover td { background: #1a1a1a; border-color: #00e1ff; }
+
+        .order-item { background: #111; border-left: 4px solid #00a6ff; padding: 10px; margin-bottom: 10px; border-radius: 5px; }
+        .order-top { display: flex; justify-content: space-between; align-items: center; }
+        
+        .allergy-text { background: transparent; border: none; border-bottom: 1px solid #444; color: #00ffaa; font-size: 0.8em; width: 100%; outline: none; margin-top: 5px; }
+
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.7em; font-weight: bold; text-transform: uppercase; }
+        .cat-badge { border: 1px solid #00a6ff; color: #00a6ff; }
+        .stato-ok { color: #00ffaa; border: 1px solid #00ffaa; }
+        .stato-no { color: #ff4444; border: 1px solid #ff4444; text-decoration: line-through; opacity: 0.5; }
+
+        .btn-action-del { background: none; border: 1px solid #ff4444; color: #ff4444; padding: 4px 8px; border-radius: 5px; cursor: pointer; transition: 0.3s; }
+        .btn-action-del:hover { background: #ff4444; color: #fff; }
+
+        /* NUOVO BOTTONE INFO E TOOLTIP */
+        .btn-info { background: none; border: 1px solid #00c8ff; color: #00c8ff; padding: 4px 8px; border-radius: 5px; cursor: pointer; margin-right: 5px; }
+        .tooltip { position: relative; display: inline-block; }
+        .tooltip .tooltiptext {
+            visibility: hidden; width: 180px; background-color: #004466; color: #fff; text-align: center;
+            border: 1px solid #00a6ff; border-radius: 6px; padding: 8px; position: absolute;
+            z-index: 1; bottom: 125%; left: 50%; margin-left: -90px; opacity: 0; transition: opacity 0.3s;
+            font-size: 0.8em; pointer-events: none; box-shadow: 0 0 10px #00a6ff;
+        }
+        .tooltip:hover .tooltiptext { visibility: visible; opacity: 1; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>SALA BAR</h1>
+        <div class="sub-title">Scuola Borsa</div>
+    </div>
+
+    <div class="filter-bar" id="filtri"></div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>PRODOTTO</th>
+                <th>COSTO</th>
+                <th>PREZZO</th>
+                <th>INTERNO</th>
+                <th>CATEGORIA</th>
+                <th>STATO</th>
+                <th>AZIONI</th>
+            </tr>
+        </thead>
+        <tbody id="lista-menu"></tbody>
+    </table>
+</div>
+
+<div class="comanda-box">
+    <h2 style="color:#00a6ff; text-align:center; margin-top:0; letter-spacing: 2px;">COMANDA</h2>
+    <div id="lista-ordine"></div>
+    <div id="totale-ordine" style="text-align:right; font-weight:bold; border-top: 2px solid #00a6ff; padding-top:15px; color:#fff; font-size: 1.5em;">0.00 €</div>
+    <button class="btn-blu" onclick="svuotaComanda()">Cancella Ordine</button>
+</div>
+
+<script>
+    let prodotti = [
+        {n: "Caffè Espresso", d: "Miscela Arabica 100%", co: 0.15, pr: 1.20, pi: 1.00, c: "Caffetteria", st: "DISPONIBILE"},
+        {n: "Caffè Decaffeinato", d: "Lavazza Dek", co: 0.18, pr: 1.30, pi: 1.10, c: "Caffetteria", st: "DISPONIBILE"},
+        {n: "Cappuccino", d: "Latte Alta Qualità", co: 0.35, pr: 1.80, pi: 1.50, c: "Caffetteria", st: "DISPONIBILE"},
+        {n: "Coca Cola", d: "Lattina 33cl", co: 0.60, pr: 2.50, pi: 2.00, c: "Bevande", st: "DISPONIBILE"},
+        {n: "Cornetto Crema", d: "Sfogliatura artigianale", co: 0.50, pr: 1.50, pi: 1.30, c: "Dolci", st: "DISPONIBILE"},
+        {n: "Panino Crudo", d: "Parma e mozzarella", co: 1.80, pr: 4.50, pi: 4.00, c: "Salato", st: "DISPONIBILE"}
+    ];
+
+    let totale = 0;
+    let filtroAttuale = "TUTTI";
+
+    function renderFiltri() {
+        const bar = document.getElementById('filtri');
+        const cats = ["TUTTI", ...new Set(prodotti.map(p => p.c))];
+        bar.innerHTML = cats.map(cat => `
+            <button class="filter-btn ${filtroAttuale === cat ? 'active' : ''}" onclick="filtra('${cat}')">${cat}</button>
+        `).join('');
+    }
+
+    function filtra(cat) { filtroAttuale = cat; renderMenu(); renderFiltri(); }
+
+    function renderMenu() {
+        const corpo = document.getElementById('lista-menu');
+        corpo.innerHTML = "";
+        prodotti.forEach((p, index) => {
+            if (filtroAttuale !== "TUTTI" && p.c !== filtroAttuale) return;
+            const sClass = p.st === "DISPONIBILE" ? "stato-ok" : "stato-no";
+            const riga = document.createElement('tr');
+            riga.className = "info-row";
+            riga.onclick = () => { if(p.st === "DISPONIBILE") ordina(p.n, p.pr); };
+            riga.innerHTML = `
+                <td><b style="color:#00c8ff">${p.n}</b></td>
+                <td style="color:#777">${p.co.toFixed(2)}€</td>
+                <td style="font-weight:bold">${p.pr.toFixed(2)}€</td>
+                <td style="color:#00a6ff">${p.pi.toFixed(2)}€</td>
+                <td><span class="badge cat-badge">${p.c}</span></td>
+                <td><span class="badge ${sClass}" ondblclick="event.stopPropagation(); cambiaStato(${index})">${p.st}</span></td>
+                <td>
+                    <div class="tooltip" onclick="event.stopPropagation()">
+                        <button class="btn-info">ℹ️</button>
+                        <span class="tooltiptext"><b>Dettagli:</b><br>${p.d}</span>
+                    </div>
+                    <button class="btn-action-del" onclick="event.stopPropagation(); eliminaDalMenu(${index})">🗑️</button>
+                </td>
+            `;
+            corpo.appendChild(riga);
+        });
+    }
+
+    function ordina(nome, prezzo) {
+        const lista = document.getElementById('lista-ordine');
+        const id = 'ord-' + Date.now();
+        const voce = document.createElement('div');
+        voce.className = "order-item";
+        voce.id = id;
+        voce.innerHTML = `
+            <div class="order-top"><span>${nome}</span><b>${prezzo.toFixed(2)}€</b>
+                <div><button style="color:#ffcc00; background:none; border:none; cursor:pointer;" onclick="document.getElementById('note-${id}').focus()">✏️</button>
+                <button style="color:#ff4444; background:none; border:none; cursor:pointer;" onclick="rimuoviDallaComanda('${id}', ${prezzo})">🗑️</button></div>
+            </div><input type="text" id="note-${id}" class="allergy-text" placeholder="Istruzioni cliente...">`;
+        lista.appendChild(voce);
+        aggiornaCassa(prezzo);
+    }
+
+    function aggiornaCassa(valore) {
+        totale += valore;
+        document.getElementById('totale-ordine').innerText = totale.toFixed(2) + " €";
+    }
+
+    function rimuoviDallaComanda(id, prezzo) {
+        document.getElementById(id).remove();
+        aggiornaCassa(-prezzo);
+    }
+
+    function svuotaComanda() {
+        if(confirm("Svuotare l'ordine?")) {
+            document.getElementById('lista-ordine').innerHTML = "";
+            totale = 0;
+            document.getElementById('totale-ordine').innerText = "0.00 €";
+        }
+    }
+
+    function cambiaStato(idx) { prodotti[idx].st = prodotti[idx].st === "DISPONIBILE" ? "ESAURITO" : "DISPONIBILE"; renderMenu(); }
+    function eliminaDalMenu(idx) { if(confirm("Eliminare dal menu?")) { prodotti.splice(idx, 1); renderFiltri(); renderMenu(); } }
+
+    renderFiltri();
+    renderMenu();
+</script>
+</body>
+</html>
+    let prodotti = [
+        {n: "Caffè Espresso", d: "Miscela Arabica 100%", co: 0.15, pr: 1.20, pi: 1.00, c: "Caffetteria", st: "DISPONIBILE"},
+        {n: "Caffè Decaffeinato", d: "Lavazza Dek", co: 0.18, pr: 1.30, pi: 1.10, c: "Caffetteria", st: "DISPONIBILE"},
+        {n: "Caffè al Ginseng", d: "Estratto naturale, tazza grande", co: 0.40, pr: 1.80, pi: 1.50, c: "Caffetteria", st: "DISPONIBILE"},
+        {n: "Cappuccino", d: "Latte Intero Alta Qualità", co: 0.35, pr: 1.80, pi: 1.50, c: "Caffetteria", st: "DISPONIBILE"},
+        {n: "Coca Cola", d: "Lattina 33cl", co: 0.60, pr: 2.50, pi: 2.00, c: "Bevande", st: "DISPONIBILE"},
+        {n: "Acqua Naturale", d: "Bottiglia 50cl", co: 0.10, pr: 1.00, pi: 0.80, c: "Bevande", st: "DISPONIBILE"},
+        {n: "Cornetto Crema", d: "Sfogliatura artigianale", co: 0.50, pr: 1.50, pi: 1.30, c: "Dolci", st: "DISPONIBILE"},
+        {n: "Torta Sacher", d: "Cioccolato fondente e albicocca", co: 1.20, pr: 3.50, pi: 3.00, c: "Dolci", st: "DISPONIBILE"},
+        {n: "Panino Crudo", d: "Parma 24 mesi e mozzarella", co: 1.80, pr: 4.50, pi: 4.00, c: "Salato", st: "DISPONIBILE"},
+        {n: "Trancio Margherita", d: "Pizza a lievitazione 24h", co: 0.90, pr: 3.00, pi: 2.50, c: "Salato", st: "DISPONIBILE"},
+        {n: "Lasagna alla Bolognese", d: "Ragù di carne e besciamella", co: 2.50, pr: 8.50, pi: 7.50, c: "Tavola Calda", st: "DISPONIBILE"},
+        {n: "Aperol Spritz", d: "Aperol, Prosecco, Soda", co: 1.50, pr: 5.00, pi: 4.50, c: "Aperitivi", st: "DISPONIBILE"},
+        {n: "Gin Tonic", d: "Tanqueray e Tonica Schweppes", co: 2.20, pr: 7.00, pi: 6.00, c: "Aperitivi", st: "DISPONIBILE"}
+    ];

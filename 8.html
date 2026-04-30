@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Scuola Bar Borsa - Cyber Edition</title>
+    <style>
+        /* Sfondo radiale Nero/Rosso Scuro */
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background: radial-gradient(circle at center, #1a0000 0%, #000000 100%); 
+            color: #ffffff; 
+            margin: 0; 
+            padding: 40px 20px; 
+            min-height: 100vh;
+        }
+
+        .container { max-width: 1400px; margin: auto; }
+
+        /* Header stile Neon Azzurro */
+        .header {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(145deg, #1a0000 0%, #000000 100%);
+            border: 2px solid #00a6ff;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 0 20px rgba(0, 166, 255, 0.3);
+        }
+
+        h1 { 
+            color: #00c8ff; 
+            margin: 0; 
+            text-transform: uppercase; 
+            letter-spacing: 6px; 
+            font-size: 2.5em;
+            text-shadow: 0 0 15px rgba(0, 200, 255, 0.6);
+        }
+
+        /* Box per aggiungere prodotti stile Dark */
+        .add-box {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid #333;
+            margin-bottom: 30px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .add-box input, .add-box select {
+            background: #000;
+            border: 1px solid #00a6ff;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        .btn-add {
+            background: #00a6ff;
+            color: black;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-add:hover { background: #00e1ff; box-shadow: 0 0 15px #00a6ff; }
+
+        /* Tabella con righe staccate e sfumate */
+        table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+
+        th { 
+            background: #00aaff; 
+            color: #000; 
+            padding: 15px; 
+            text-align: left; 
+            text-transform: uppercase; 
+            font-size: 0.8em;
+            font-weight: 900;
+            border-radius: 5px;
+        }
+
+        td { 
+            background: linear-gradient(90deg, #111 0%, #050505 100%);
+            padding: 15px; 
+            border-top: 1px solid #00a6ff;
+            border-bottom: 1px solid #00a6ff;
+            transition: all 0.3s ease;
+        }
+
+        tr:hover td {
+            background: linear-gradient(90deg, #220000 0%, #111 100%);
+            border-color: #ff0000;
+        }
+
+        td:first-child { border-left: 1px solid #00a6ff; border-radius: 12px 0 0 12px; }
+        td:last-child { border-right: 1px solid #00a6ff; border-radius: 0 12px 12px 0; }
+
+        .nome-prod { font-weight: bold; color: #00c8ff; font-size: 1.1em; }
+        .val-euro { font-family: monospace; color: #fff; }
+        .val-margine { color: #00ffaa; font-weight: bold; text-shadow: 0 0 8px rgba(0,255,170,0.4); }
+        
+        .badge-cat { 
+            color: #00a6ff; 
+            border: 1px solid #00a6ff; 
+            padding: 3px 8px; 
+            font-size: 0.7em; 
+            border-radius: 4px;
+        }
+
+        .btn-del {
+            background: #000;
+            color: #ff4444;
+            border: 1px solid #ff4444;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .stato-ok { color: #00ffaa; font-weight: bold; font-size: 0.8em; }
+        .stato-no { color: #ff4444; text-decoration: line-through; font-size: 0.8em; }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>SCUOLA <span style="color:#fff">BAR</span> BORSA</h1>
+    </div>
+
+    <div class="add-box">
+        <input type="text" id="n" placeholder="Nome Prodotto">
+        <input type="text" id="c" placeholder="Categoria">
+        <input type="number" id="co" placeholder="Costo €" step="0.01">
+        <input type="number" id="pr" placeholder="Prezzo €" step="0.01">
+        <select id="st">
+            <option value="DISPONIBILE">DISPONIBILE</option>
+            <option value="ESAURITO">ESAURITO</option>
+        </select>
+        <button class="btn-add" onclick="aggiungiManuale()">AGGIUNGI & ORDINA +</button>
+    </div>
+
+    <table id="tabella">
+        <thead>
+            <tr>
+                <th>PRODOTTO</th>
+                <th>CATEGORIA</th>
+                <th>COSTO</th>
+                <th>PREZZO</th>
+                <th>MARGINE</th>
+                <th>STATO</th>
+                <th>AZIONI</th>
+            </tr>
+        </thead>
+        <tbody id="lista">
+        </tbody>
+    </table>
+</div>
+
+<script>
+    const menuIniziale = [
+        {n: "Caffè Espresso", c: "Caffetteria", co: 0.15, pr: 1.20, st: "DISPONIBILE"},
+        {n: "Cappuccino", c: "Caffetteria", co: 0.35, pr: 1.80, st: "DISPONIBILE"},
+        {n: "Cornetto Crema", c: "Colazione", co: 0.50, pr: 1.50, st: "DISPONIBILE"}
+    ];
+
+    function inserisciRow(nome, cat, costo, prezzo, stato) {
+        const marg = (prezzo - costo).toFixed(2);
+        const sClass = stato === "DISPONIBILE" ? "stato-ok" : "stato-no";
+        
+        const riga = document.createElement('tr');
+        riga.innerHTML = `
+            <td><span class="nome-prod">${nome}</span></td>
+            <td><span class="badge-cat">${cat}</span></td>
+            <td class="val-euro">${costo.toFixed(2)} €</td>
+            <td class="val-euro">${prezzo.toFixed(2)} €</td>
+            <td class="val-margine">+${marg} €</td>
+            <td class="${sClass}">${stato}</td>
+            <td><button class="btn-del" onclick="this.parentElement.parentElement.remove()">🗑️</button></td>
+        `;
+        document.getElementById('lista').appendChild(riga);
+    }
+
+    function aggiungiManuale() {
+        const nome = document.getElementById('n').value;
+        const cat = document.getElementById('c').value;
+        const costo = parseFloat(document.getElementById('co').value) || 0;
+        const prezzo = parseFloat(document.getElementById('pr').value) || 0;
+        const stato = document.getElementById('st').value;
+        
+        if(!nome) return;
+
+        // Aggiungi alla tabella
+        inserisciRow(nome, cat, costo, prezzo, stato);
+
+        // APRI SCHERMATA PREPARAZIONE
+        const kitchenWindow = window.open("", "_blank", "width=800,height=600");
+        kitchenWindow.document.write(`
+            <html>
+            <head>
+                <style>
+                    body { 
+                        font-family: 'Segoe UI', sans-serif; 
+                        background: radial-gradient(circle at center, #1a0000 0%, #000000 100%); 
+                        color: #ffffff; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0;
+                    }
+                    .order-card {
+                        text-align: center; border: 3px solid #00a6ff; padding: 50px; border-radius: 30px;
+                        background: rgba(0,0,0,0.8); box-shadow: 0 0 30px #00a6ff; animation: pulse 1.5s infinite;
+                    }
+                    h1 { color: #00c8ff; font-size: 3.5em; text-transform: uppercase; margin: 0; }
+                    h2 { font-size: 4.5em; margin: 20px 0; color: #fff; text-shadow: 0 0 20px #fff; }
+                    .status { font-size: 1.5em; color: #ffaa00; font-weight: bold; letter-spacing: 3px; }
+                    @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+                </style>
+            </head>
+            <body>
+                <div class="order-card">
+                    <h1>IN PREPARAZIONE</h1>
+                    <h2>${nome.toUpperCase()}</h2>
+                    <div class="status">>>> TRA POCO PRONTO <<<</div>
+                </div>
+                <script>setTimeout(() => { window.close(); }, 5000);<\/script>
+            </body>
+            </html>
+        `);
+
+        // Pulisci
+        document.getElementById('n').value = "";
+        document.getElementById('co').value = "";
+        document.getElementById('pr').value = "";
+    }
+
+    window.onload = () => {
+        menuIniziale.forEach(p => inserisciRow(p.n, p.c, p.co, p.pr, p.st));
+    }
+</script>
+</body>
+</html>
