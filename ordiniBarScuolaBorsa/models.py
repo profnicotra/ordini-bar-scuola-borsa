@@ -244,6 +244,7 @@ def get_queue():
 def add_queue(posizione_id, righe, creato_da=None, totale_euro=None, stato='NUOVO', user=None):
     """
     Aggiunge un ordine alla coda
+    
     COMPATIBILE con codice esistente + supporto autenticazione
     """
     try:
