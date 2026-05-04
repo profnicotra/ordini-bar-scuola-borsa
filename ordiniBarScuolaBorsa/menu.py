@@ -11,32 +11,36 @@ bp = Blueprint("menu", __name__, url_prefix="/menu")
 @bp.route("")
 def menu():
     try:
-        prodotti_raw = get_products()  # restituisce lista di DIZIONARI
+        prodotti_raw = get_products()  # restituisce lista di DIZIONARI con note_gruppi
+        print(prodotti_raw)  # Debug: stampa i dati grezzi
     except Exception as e:
         logger.error(f"Errore get_products(): {e}", exc_info=True)
         prodotti_raw = []
 
     prodotti_lista = []
-    visti = set()  # deduplicazione: get_products() fa JOIN con note → stesso prodotto appare N volte
+    visti = set()  # deduplicazione: ogni prodotto dovrebbe apparire una sola volta
 
     for p in prodotti_raw:
         try:
             # get_products() ritorna dizionari con chiavi:
-            # 'id', 'prodotto', 'prezzo_euro', 'prezzo_interni', 'categoria', 'nota', ...
+            # 'id', 'prodotto', 'prezzo_euro', 'prezzo_interni', 'categoria', 'note_gruppi', ...
             prod_id   = p.get('id')
             nome      = p.get('prodotto', '') or ''
-            prezzo    = p.get('prezzo_euro', 0) or 0
+            prezzo    = p.get('prezzo_mostrato', 0) or 0
             categoria = p.get('categoria', '') or ''
+            note_gruppi = p.get('note_gruppi', [])
 
-            # Salta se già visto (duplicato da JOIN con NoteGruppo/Note)
+            # Salta se già visto
             if prod_id in visti:
                 continue
             visti.add(prod_id)
 
             prodotti_lista.append({
-                "prodotto":    str(nome),
-                "prezzo_euro": f"{float(prezzo):.2f}",
-                "categoria":   str(categoria).lower().strip(),
+                "id":           prod_id,
+                "prodotto":     str(nome),
+                "prezzo_euro":  f"{float(prezzo):.2f}",
+                "categoria":    str(categoria).lower().strip(),
+                "note_gruppi":  note_gruppi  # Includi i gruppi di note
             })
         except Exception as e:
             logger.warning(f"Errore serializzazione prodotto {p}: {e}")

@@ -11,14 +11,14 @@ html { scroll-behavior: smooth; }
 
 :root {
   --red: #e63946;
-  --dark: #080404;
+  --dark: white;
   --font: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
 }
 
-body { font-family: var(--font); background: var(--dark); color: white; overflow-x: hidden; }
+body { font-family: var(--font); background: var(--dark); color: black; overflow-x: hidden; }
 
 /* ── NAVBAR ── */
-.navbar { display:flex; align-items:center; justify-content:center; gap:50px; padding:0 50px; background:linear-gradient(180deg,rgba(6,6,6,0.98),rgba(10,3,3,0.95)); backdrop-filter:blur(24px); border-bottom:1px solid rgba(230,57,70,0.15); box-shadow:0 8px 40px rgba(0,0,0,0.7); position:fixed; width:100%; top:0; height:90px; z-index:100; transition:top 0.5s ease; }
+.navbar { display:flex; align-items:center; justify-content:center; gap:50px; padding:0 50px; background:#9E1E2D; backdrop-filter:blur(24px); border-bottom:1px solid rgba(230,57,70,0.15); box-shadow:0 8px 40px rgba(0,0,0,0.7); position:fixed; width:100%; top:0; height:90px; z-index:100; transition:top 0.5s ease; }
 .navbar.hidden { top:-100px; }
 .navbar::before { content:""; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,#e63946 25%,#ff8080 50%,#e63946 75%,transparent); opacity:0.7; }
 .logo-left { position:absolute; left:50px; display:flex; align-items:center; gap:12px; }
@@ -46,9 +46,8 @@ body { font-family: var(--font); background: var(--dark); color: white; overflow
 
 /* ── HERO ── */
 .hero { height:100vh; min-height:680px; position:relative; display:flex; align-items:center; justify-content:center; text-align:center; overflow:hidden; }
-.hero-bg { position:absolute; inset:0; background-size:cover; background-position:center top; filter:brightness(0.28) saturate(0.55) contrast(1.1); transform:scale(1.04); transition:transform 8s ease; }
+.hero-bg { position:absolute; inset:0; background-size:cover; background-position:center top; filter:brightness(0.8) saturate(0.55) contrast(1.1); transform:scale(1.04); transition:transform 8s ease; }
 .hero:hover .hero-bg { transform:scale(1.0); }
-.hero-overlay { position:absolute; inset:0; z-index:1; background:radial-gradient(ellipse at 50% 100%,rgba(0,0,0,0.9) 0%,transparent 60%), linear-gradient(180deg,rgba(0,0,0,0.45) 0%,transparent 40%,rgba(0,0,0,0.55) 100%); }
 .hero-texture { position:absolute; inset:0; z-index:2; pointer-events:none; background-image:radial-gradient(circle at 1px 1px,rgba(255,255,255,0.02) 1px,transparent 0); background-size:28px 28px; }
 .hero-content { position:relative; z-index:3; display:flex; flex-direction:column; align-items:center; padding:0 20px; animation:fadeUp 1s ease both; }
 @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
@@ -56,9 +55,9 @@ body { font-family: var(--font); background: var(--dark); color: white; overflow
 .hero-badge .dot { width:7px; height:7px; background:#4ade80; border-radius:50%; box-shadow:0 0 8px rgba(74,222,128,0.9); animation:pulseDot 2s infinite; }
 @keyframes pulseDot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.6;transform:scale(1.4)} }
 .hero h1 { font-family:var(--font); font-size:clamp(62px,10vw,108px); font-weight:800; font-style:italic; line-height:1; color:white; text-shadow:0 2px 30px rgba(0,0,0,0.6); margin-bottom:10px; animation:fadeUp 1s 0.35s ease both; opacity:0; }
-.hero-school { font-size:clamp(11px,1.4vw,15px); font-weight:600; letter-spacing:5px; text-transform:uppercase; color:rgba(255,255,255,0.38); margin-bottom:40px; animation:fadeUp 1s 0.5s ease both; opacity:0; }
+.hero-school { font-size:clamp(11px,1.4vw,15px); font-weight:600; letter-spacing:5px; text-transform:uppercase; color:white; margin-bottom:40px; animation:fadeUp 1s 0.5s ease both; opacity:0; }
 .hero-tagline { background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:14px; padding:20px 36px; margin-bottom:48px; max-width:500px; animation:fadeUp 1s 0.65s ease both; opacity:0; backdrop-filter:blur(8px); }
-.hero-tagline p { font-size:15px; color:rgba(255,255,255,0.65); line-height:1.65; font-weight:400; }
+.hero-tagline p { font-size:15px; color:white; line-height:1.65; font-weight:400; }
 .hero-tagline strong { color:white; font-weight:700; }
 .hero-cta { display:flex; gap:16px; flex-wrap:wrap; justify-content:center; animation:fadeUp 1s 0.8s ease both; opacity:0; }
 .btn-primary { display:inline-flex; align-items:center; gap:10px; padding:18px 46px; background:linear-gradient(135deg,#b22222,#e63946); color:white; font-weight:800; font-size:14px; letter-spacing:2px; text-transform:uppercase; border-radius:50px; text-decoration:none; transition:all 0.3s ease; box-shadow:0 8px 32px rgba(230,57,70,0.5); border:1px solid rgba(255,255,255,0.08); }
