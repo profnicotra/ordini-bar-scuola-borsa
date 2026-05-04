@@ -1,0 +1,10 @@
+bisogna installare l'applicazione, in questo percorso utilizzare: 
+pip install -e .
+
+per farlo partire serve:
+
+flask --app ordiniBarScuolaBorsa run
+
+farlo partire con postgres:
+
+DATABASE_URL="postgresql+psycopg2://user:pass@host:5432/bar_db" flask --app ordiniBarScuolaBorsa run

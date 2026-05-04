@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Il Tuo Bar</title>
+    <style>
+        :root {
+            --bg: #1e1e1e;
+            --text: #ffffff;
+            --accent: #e60000; /* Rosso acceso */
+            --accent-hover: #ff4d4d; /* Rosso acceso con una sfumatura più chiara */
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --card-border: 1px solid rgba(255, 255, 255, 0.1);
+            --button-bg: #e60000; /* Rosso acceso */
+            --button-hover: #ff4d4d; /* Rosso acceso con una sfumatura più chiara */
+            --button-text: #fff;
+            --glass-blur: 12px;
+            --glass-opacity: 0.1;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg);
+            color: var(--text);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        header {
+            background-color: var(--accent);
+            color: var(--button-text);
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+            animation: fadeInDown 1s ease;
+        }
+
+        nav a {
+            color: var(--button-text);
+            margin: 0 15px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: #FFD700; /* Oro */
+        }
+
+        .hero {
+            background-image: url('https://example.com/your-bar-image.jpg'); /* Sostituisci con un'immagine reale */
+            height: 400px;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            animation: zoomIn 1.5s ease;
+        }
+
+        .hero h1 {
+            font-size: 3em;
+            margin: 0;
+        }
+
+        .content {
+            padding: 30px;
+            text-align: center;
+        }
+
+        .menu-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin: 20px auto;
+            overflow: hidden;
+            border-radius: 15px;
+            background: var(--card-bg);
+            box-shadow: var(--card-shadow);
+            border: var(--card-border);
+            backdrop-filter: blur(var(--glass-blur));
+            background: rgba(255, 255, 255, var(--glass-opacity));
+        }
+
+        .menu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01));
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .menu-header button {
+            background: var(--button-bg);
+            color: var(--button-text);
+            padding: 15px 30px;
+            border: none;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            font-size: 1.2em;
+        }
+
+        .menu-header button::before {
+            content: '🍹';
+            position: absolute;
+            left: 10px;
+            font-size: 1.2em;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+
+        .menu-header button::after {
+            content: '🍔';
+            position: absolute;
+            left: 10px;
+            font-size: 1.2em;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+
+        .menu-header button.show-drinks::before {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .menu-header button.show-food::after {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .menu-header button:hover::before {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .menu-header button:hover::after {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .menu-header button:hover {
+            background: var(--button-hover);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .menu-item {
+            background: var(--card-bg);
+            box-shadow: var(--card-shadow);
+            border: var(--card-border);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+            overflow: hidden;
+            position: relative;
+            backdrop-filter: blur(var(--glass-blur));
+            background: rgba(255, 255, 255, var(--glass-opacity));
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .menu-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .menu-item img {
+            width: 100%;
+            border-radius: 15px 15px 0 0;
+            margin-bottom: 10px;
+            transition: transform 0.3s ease;
+            display: block;
+        }
+
+        .menu-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .menu-item h3 {
+            color: var(--accent);
+            margin: 10px 0;
+            position: relative;
+            z-index: 1;
+            transition: color 0.3s ease;
+        }
+
+        .menu-item p {
+            margin: 10px 0;
+            position: relative;
+            z-index: 1;
+            color: #aaa;
+            transition: color 0.3s ease;
+        }
+
+        .menu-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            border-radius: 15px;
+        }
+
+        .menu-item:hover::before {
+            opacity: 1;
+        }
+
+        footer {
+            background-color: var(--accent);
+            color: var(--button-text);
+            text-align: center;
+            padding: 15px 0;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+            font-size: 0.9em;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 15px 30px;
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: var(--button-hover);
+        }
+
+        .translate-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--button-bg);
+            color: var(--button-text);
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+            font-size: 1.5em;
+        }
+
+        .translate-button:hover {
+            background: var(--button-hover);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Animazioni */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes zoomIn {
+            from {
+                transform: scale(0.9);
+                opacity: 0.7;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1 id="headerTitle">Il Tuo Bar</h1>
+        <nav>
+            <a href="#menu" id="menuLink">Menu</a>
+            <a href="#about" id="aboutLink">Chi Siamo</a>
+            <a href="#contact" id="contactLink">Contatti</a>
+        </nav>
+    </header>
+    <div class="hero">
+        <h1 id="heroTitle">Benvenuti nel Nostro Bar!</h1>
+    </div>
+    <div class="content">
+        <div class="menu-container">
+            <div class="menu-header">
+                <button id="toggleMenu" class="show-drinks">🍹 Bevande 🍹</button>
+            </div>
+            <div class="menu-grid" id="menuGrid">
+                <div class="menu-item">
+                    <img src="https://example.com/cappuccino.jpg" alt="Cappuccino"> <!-- Sostituisci con un'immagine reale -->
+                    <h3 id="cappuccinoTitle">Cappuccino</h3>
+                    <p id="cappuccinoDesc">Un classico cappuccino, perfetto per ogni momento.</p>
+                </div>
+                <div class="menu-item">
+                    <img src="https://example.com/latte-macchiato.jpg" alt="Latte Macchiato"> <!-- Sostituisci con un'immagine reale -->
+                    <h3 id="latteTitle">Latte Macchiato</h3>
+                    <p id="latteDesc">Crema e caffè perfettamente bilanciati.</p>
+                </div>
+                <div class="menu-item">
+                    <img src="https://example.com/tea.jpg" alt="Tè"> <!-- Sostituisci con un'immagine reale -->
+                    <h3 id="teaTitle">Tè</h3>
+                    <p id="teaDesc">Una vasta selezione di tè per tutti i gusti.</p>
+                </div>
+                <!-- Aggiungi altri elementi del menu qui -->
+            </div>
+        </div>
+    </div>
+    <footer>
+        <p id="footerText">&copy; 2025 Il Tuo Bar. Tutti i diritti riservati.</p>
+        <a href="#" class="button" id="orderButton">Ordina Ora</a>
+    </footer>
+    <button class="translate-button" id="translateButton">🇬🇧 Inglese</button>
+    <script>
+        const toggleMenuButton = document.getElementById('toggleMenu');
+        const menuGrid = document.getElementById('menuGrid');
+        const translateButton = document.getElementById('translateButton');
+
+        const italianContent = {
+            headerTitle: 'Il Tuo Bar',
+            menuLink: 'Menu',
+            aboutLink: 'Chi Siamo',
+            contactLink: 'Contatti',
+            heroTitle: 'Benvenuti nel Nostro Bar!',
+            cappuccinoTitle: 'Cappuccino',
+            cappuccinoDesc: 'Un classico cappuccino, perfetto per ogni momento.',
+            latteTitle: 'Latte Macchiato',
+            latteDesc: 'Crema e caffè perfettamente bilanciati.',
+            teaTitle: 'Tè',
+            teaDesc: 'Una vasta selezione di tè per tutti i gusti.',
+            footerText: '&copy; 2025 Il Tuo Bar. Tutti i diritti riservati.',
+            orderButton: 'Ordina Ora'
+        };
+
+        const englishContent = {
+            headerTitle: 'Your Bar',
+            menuLink: 'Menu',
+            aboutLink: 'About Us',
+            contactLink: 'Contact',
+            heroTitle: 'Welcome to Our Bar!',
+            cappuccinoTitle: 'Cappuccino',
+            cappuccinoDesc: 'A classic cappuccino, perfect for any moment.',
+            latteTitle: 'Latte Macchiato',
+            latteDesc: 'Perfectly balanced cream and coffee.',
+            teaTitle: 'Tea',
+            teaDesc: 'A wide selection of teas for all tastes.',
+            footerText: '&copy; 2025 Your Bar. All rights reserved.',
+            orderButton: 'Order Now'
+        };
+
+        function updateContent(language) {
+            const content = language === 'it' ? italianContent : englishContent;
+            document.getElementById('headerTitle').textContent = content.headerTitle;
+            document.getElementById('menuLink').textContent = content.menuLink;
+            document.getElementById('aboutLink').textContent = content.aboutLink;
+            document.getElementById('contactLink').textContent = content.contactLink;
+            document.getElementById('heroTitle').textContent = content.heroTitle;
+            document.getElementById('cappuccinoTitle').textContent = content.cappuccinoTitle;
+            document.getElementById('cappuccinoDesc').textContent = content.cappuccinoDesc;
+            document.getElementById('latteTitle').textContent = content.latteTitle;
+            document.getElementById('latteDesc').textContent = content.latteDesc;
+            document.getElementById('teaTitle').textContent = content.teaTitle;
+            document.getElementById('teaDesc').textContent = content.teaDesc;
+            document.getElementById('footerText').textContent = content.footerText;
+            document.getElementById('orderButton').textContent = content.orderButton;
+        }
+
+        translateButton.addEventListener('click', () => {
+            const isItalian = document.documentElement.lang === 'it';
+            document.documentElement.lang = isItalian ? 'en' : 'it';
+            translateButton.textContent = isItalian ? '🇺🇸 English' : '🇮🇹 Italiano';
+            updateContent(isItalian ? 'en' : 'it');
+        });
+
+        toggleMenuButton.addEventListener('click', () => {
+            if (toggleMenuButton.classList.contains('show-drinks')) {
+                toggleMenuButton.classList.remove('show-drinks');
+                toggleMenuButton.classList.add('show-food');
+                toggleMenuButton.textContent = '🍔 Cibo 🍔';
+                // Mostra il menu del cibo
+                menuGrid.innerHTML = `
+                    <div class="menu-item">
+                        <img src="https://example.com/sandwich.jpg" alt="Panino"> <!-- Sostituisci con un'immagine reale -->
+                        <h3 id="sandwichTitle">Panino</h3>
+                        <p id="sandwichDesc">Un delizioso panino farcito con ingredienti freschi.</p>
+                    </div>
+                    <div class="menu-item">
+                        <img src="https://example.com/pasta.jpg" alt="Pasta"> <!-- Sostituisci con un'immagine reale -->
+                        <h3 id="pastaTitle">Pasta</h3>
+                        <p id="pastaDesc">Pasta fresca fatta in casa.</p>
+                    </div>
+                    <div class="menu-item">
+                        <img src="https://example.com/salad.jpg" alt="Insalata"> <!-- Sostituisci con un'immagine reale -->
+                        <h3 id="saladTitle">Insalata</h3>
+                        <p id="saladDesc">Insalate fresche e gustose.</p>
+                    </div>
+                    <!-- Aggiungi altri elementi del menu qui -->
+                `;
+            } else {
+                toggleMenuButton.classList.remove('show-food');
+                toggleMenuButton.classList.add('show-drinks');
+                toggleMenuButton.textContent = '🍹 Bevande 🍹';
+                // Mostra il menu delle bevande
+                menuGrid.innerHTML = `
+                    <div class="menu-item">
+                        <img src="https://example.com/cappuccino.jpg" alt="Cappuccino"> <!-- Sostituisci con un'immagine reale -->
+                        <h3 id="cappuccinoTitle">Cappuccino</h3>
+                        <p id="cappuccinoDesc">Un classico cappuccino, perfetto per ogni momento.</p>
+                    </div>
+                    <div class="menu-item">
+                        <img src="https://example.com/latte-macchiato.jpg" alt="Latte Macchiato"> <!-- Sostituisci con un'immagine reale -->
+                        <h3 id="latteTitle">Latte Macchiato</h3>
+                        <p id="latteDesc">Crema e caffè perfettamente bilanciati.</p>
+                    </div>
+                    <div class="menu-item">
+                        <img src="https://example.com/tea.jpg" alt="Tè"> <!-- Sostituisci con un'immagine reale -->
+                        <h3 id="teaTitle">Tè</h3>
+                        <p id="teaDesc">Una vasta selezione di tè per tutti i gusti.</p>
+                    </div>
+                    <!-- Aggiungi altri elementi del menu qui -->
+                `;
+            }
+        });
+    </script>
+</body>
+</html>

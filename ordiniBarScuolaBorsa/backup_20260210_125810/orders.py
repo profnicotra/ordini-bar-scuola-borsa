@@ -1,0 +1,47 @@
+from flask import Blueprint, render_template, request, redirect
+from ordiniBarScuolaBorsa.models import get_products, is_bar_open, get_all_positions
+import json
+
+bp = Blueprint("orders", __name__, url_prefix="/orders")
+
+@bp.get("/")
+def orders():
+    # Recupera la lista di dizionari dal DB: [{'id': 1, 'nome': 'banco bar'}, ...]
+    posizioni = get_all_positions()
+    
+    data = {
+        "title": "Menu Bar Scuola Borsa",
+        "open": is_bar_open(),   
+        "items": [get_products()],
+        "classi": posizioni  # Questa variabile contiene ora tutti i tuoi tavoli/uffici/classi
+    }
+    positions = get_all_positions()
+    listClass = get_all_positions()
+    
+    return render_template('orders.html', data=data, positions=positions, listClass=listClass)
+
+@bp.route("/new_order", methods=["POST"])
+def new_order():
+    selected_products_raw = request.form.get("prodottiSelezionati")
+    if selected_products_raw:
+        try:
+            selectedProducts = json.loads(selected_products_raw)
+        except Exception as e:
+            selectedProducts = selected_products_raw
+    else:
+        selectedProducts = []
+
+    generalNote = request.form.get("noteGenerali")
+    customer_name = request.form.get("nome")
+    customer_surname = request.form.get("cognome")
+    
+    # Questo cattura l'ID (es: "35" per 1D, "1" per banco bar)
+    position_id = request.form.get("classe")
+    
+    # Log di verifica
+    print(f"--- DETTAGLI ORDINE ---")
+    print(f"ID Posizione/Tavolo: {position_id}") 
+    print(f"Cliente: {customer_name} {customer_surname}")
+    print(f"Prodotti: {selectedProducts}")
+
+    return redirect("/orders")
