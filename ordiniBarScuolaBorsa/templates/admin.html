@@ -11,6 +11,7 @@
         /* Form Aggiunta Prodotto */
         .add-product-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 10px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #444; }
         input, select { background: #222; border: 1px solid #444; color: white; padding: 8px; border-radius: 4px; box-sizing: border-box; width: 100%; }
+        input[readonly] { background: #333; color: #aaa; cursor: not-allowed; }
         label { font-size: 0.7em; color: #aaa; text-transform: uppercase; margin-bottom: 4px; display: block; }
         
         table { border-collapse: collapse; width: 100%; color: white; }
@@ -71,38 +72,47 @@
             <tbody id="tableBody"></tbody>
         </table>
 
-        <div class="add-product-form" style="margin-top: 20px; border-top: 1px solid #333; padding-top: 20px; border-bottom: none;">
+        <form class="add-product-form" style="margin-top: 20px; border-top: 1px solid #333; padding-top: 20px; border-bottom: none;" action="/admin/add_product" method="POST">
             <div>
-                <input type="text" id="newNome" placeholder="Nome">
-            </div>
-            <div>
-                <input type="number" id="newCosto" step="0.10" placeholder="Costo">
+                <label>Nome</label>
+                <input type="text" name="nome_prodotto" id="newNome" placeholder="Nome" required>
             </div>
             <div>
-                <input type="number" id="newPrezzo" step="0.10" placeholder="Prezzo €">
+                <label>Costo</label>
+                <input type="number" name="costo" id="newCosto" step="0.01" placeholder="Costo" oninput="calcolaMargineNuovo()" required>
             </div>
             <div>
-                <input type="number" id="newInterni" step="0.10" placeholder="Interni">
+                <label>Prezzo €</label>
+                <input type="number" name="prezzo_euro" id="newPrezzo" step="0.01" placeholder="Prezzo €" oninput="calcolaMargineNuovo()" required>
             </div>
             <div>
-                <input type="number" id="newMargine" step="0.10" placeholder="Margine">
+                <label>Interni</label>
+                <input type="number" name="prezzo_interni" id="newInterni" step="0.01" placeholder="Interni" required>
             </div>
             <div>
-                <input type="text" id="newAttivo" placeholder="Attivo" value="si">
+                <label>Margine (Auto)</label>
+                <input type="number" name="margine" id="newMargine" step="0.01" placeholder="Margine" readonly required>
             </div>
             <div>
-                <input type="text" id="newCategoria" placeholder="Categoria">
+                <label>Attivo</label>
+                <select name="attivo" id="newAttivo">
+                    <option value="si">Sì</option>
+                    <option value="no">No</option>
+                </select>
             </div>
-            <div style="display: flex; align-items: flex-start;">
-                <button class="btn btn-add" style="width: 100%; height: 35px;" onclick="aggiungiNuovoProdotto()">AGGIUNGI</button>
+            <div>
+                <label>Categoria</label>
+                <input type="text" name="categoria" id="newCategoria" placeholder="Categoria" required>
             </div>
-        </div>
-    </div>
-</div>
+            <div style="display: flex; align-items: flex-end;">
+                <button type="submit" class="btn btn-add" style="width: 100%; height: 35px;">AGGIUNGI</button>
+            </div>
+        </form>
 
 <div id="noteOverlay" class="overlay" onclick="chiudiNote()"></div>
 <div id="noteBox" class="modal-box">
     <div style="font-size: 0.9em; margin-bottom:20px; border-bottom: 1px solid #333; padding-bottom: 10px;">
+       
         GESTIONE VARIANTI PER: <span id="nTitoloNome" style="color:#2196F3; font-weight:bold;"></span>
     </div>
     
@@ -127,23 +137,26 @@
         </div>
         <div>
             <label>Costo</label>
-            <input type="number" id="editCosto" step="0.10">
+            <input type="number" id="editCosto" step="0.01" oninput="calcolaMargineModifica()">
         </div>
         <div>
             <label>Prezzo Euro</label>
-            <input type="number" id="editPrezzo" step="0.10">
+            <input type="number" id="editPrezzo" step="0.01" oninput="calcolaMargineModifica()">
         </div>
         <div>
             <label>Prezzo Interni</label>
-            <input type="number" id="editInterni" step="0.10">
+            <input type="number" id="editInterni" step="0.01">
         </div>
         <div>
-            <label>Margine</label>
-            <input type="number" id="editMargine" step="0.10">
+            <label>Margine (Auto)</label>
+            <input type="number" id="editMargine" step="0.01" readonly>
         </div>
         <div>
             <label>Attivo</label>
-            <input type="text" id="editAttivo">
+            <select id="editAttivo">
+                <option value="si">Sì</option>
+                <option value="no">No</option>
+            </select>
         </div>
         <div>
             <label>Categoria</label>
@@ -154,21 +167,45 @@
 </div>
 
 <script>
-    const initialData = [
-        { id: 9, n: "cappuccino", c: "1", p: "1.5", i: "1", m: "0.5", a: "si", g: "bevanda", v: { "PREPARAZIONE": ["chiaro", "scuro"], "TEMPERATURA": ["tiepido", "bollente"], "SCHIUMA": ["tanta", "poca", "no schiuma"], "EXTRA": ["cacao", "cannella"] } },
-        { id: 1, n: "espresso", c: "0.3", p: "1", i: "0.5", m: "0.7", a: "si", g: "bevanda", v: { "PREPARAZIONE": ["lungo", "ristretto"], "TEMPERATURA": ["bollente"], "SERVIZIO": ["in vetro"] } },
-        { id: 70, n: "toast", c: "1.0", p: "2.5", i: "1.5", m: "1.5", a: "si", g: "cibo", v: { "COTTURA": ["ben cotto", "poco cotto"], "MODIFICA": ["solo prosciutto", "solo formaggio"] } }
-    ];
+    // Carichiamo i dati inviati dal database tramite Jinja2
+    const listinoDalDatabase = {{ data['items'] | tojson | safe }};
 
-    let listino = JSON.parse(localStorage.getItem('listino_palmare_v4')) || initialData;
+    // Formattiamo i dati del database per adattarli alla nostra tabella
+    let listino = listinoDalDatabase.map(item => ({
+        id: item.id,
+        n: item.prodotto,           
+        c: item.costo || 0,         
+        p: item.prezzo_euro,        
+        i: item.prezzo_interni,     
+        m: item.margine || 0,       
+        a: item.attivo ? "si" : "no",
+        g: item.categoria,          
+        v: {} // Le varianti vuote per ora
+    }));
+
     let prodottoCorrente = null;
 
+    // Disabilita il localStorage in modo che non crei conflitti col Database
     function salvaDati() {
-        localStorage.setItem('listino_palmare_v4', JSON.stringify(listino));
+        console.log("Salvataggio locale disabilitato: i dati ora risiedono nel DB SQLite.");
     }
 
     function formatNumber(num) {
         return parseFloat(num || 0).toString().replace('.', ',');
+    }
+
+    function calcolaMargineNuovo() {
+        const costo = parseFloat(document.getElementById('newCosto').value) || 0;
+        const prezzo = parseFloat(document.getElementById('newPrezzo').value) || 0;
+        const margine = (prezzo - costo).toFixed(2);
+        document.getElementById('newMargine').value = margine;
+    }
+
+    function calcolaMargineModifica() {
+        const costo = parseFloat(document.getElementById('editCosto').value) || 0;
+        const prezzo = parseFloat(document.getElementById('editPrezzo').value) || 0;
+        const margine = (prezzo - costo).toFixed(2);
+        document.getElementById('editMargine').value = margine;
     }
 
     function renderTable() {
@@ -194,38 +231,8 @@
         });
     }
 
-    function aggiungiNuovoProdotto() {
-        const nome = document.getElementById('newNome').value;
-        const costo = document.getElementById('newCosto').value || "0";
-        const prezzo = document.getElementById('newPrezzo').value || "0";
-        const interni = document.getElementById('newInterni').value || "0";
-        const margine = document.getElementById('newMargine').value || "0";
-        const attivo = document.getElementById('newAttivo').value || "si";
-        const categoria = document.getElementById('newCategoria').value || "-";
-
-        if(!nome) { alert("Inserisci almeno il nome!"); return; }
-
-        const nuovo = {
-            id: Date.now(),
-            n: nome, c: costo, p: prezzo, i: interni, m: margine, a: attivo, g: categoria,
-            v: { "PREPARAZIONE": [], "TEMPERATURA": [], "EXTRA": [], "SERVIZIO": [] }
-        };
-
-        listino.push(nuovo);
-        salvaDati();
-        renderTable();
-        
-        document.querySelectorAll('.add-product-form input').forEach(input => {
-            if(input.id !== 'newAttivo') input.value = '';
-        });
-    }
-
     function eliminaProdotto(id) {
-        if(confirm("Eliminare definitivamente questo prodotto?")) {
-            listino = listino.filter(p => p.id !== id);
-            salvaDati();
-            renderTable();
-        }
+        alert("La funzione di eliminazione sarà collegata al database nel prossimo step!");
     }
 
     function apriModifica(id) {
@@ -244,18 +251,7 @@
     }
 
     function salvaModificheProdotto() {
-        if(!prodottoCorrente) return;
-
-        prodottoCorrente.n = document.getElementById('editNome').value;
-        prodottoCorrente.c = document.getElementById('editCosto').value || "0";
-        prodottoCorrente.p = document.getElementById('editPrezzo').value || "0";
-        prodottoCorrente.i = document.getElementById('editInterni').value || "0";
-        prodottoCorrente.m = document.getElementById('editMargine').value || "0";
-        prodottoCorrente.a = document.getElementById('editAttivo').value || "si";
-        prodottoCorrente.g = document.getElementById('editCategoria').value || "-";
-
-        salvaDati();
-        renderTable();
+        alert("La funzione di modifica sarà collegata al database nel prossimo step!");
         chiudiModifica();
     }
 
@@ -264,92 +260,8 @@
         document.getElementById('editBox').style.display = 'none';
     }
 
-    // --- LOGICA GESTIONE NOTE E CATEGORIE ---
     function apriNote(id) {
-        prodottoCorrente = listino.find(p => p.id === id);
-        document.getElementById('nTitoloNome').innerText = prodottoCorrente.n.toUpperCase();
-        document.getElementById('nuovaCategoriaInput').value = ''; 
-        aggiornaUINote();
-        document.getElementById('noteOverlay').style.display = 'block';
-        document.getElementById('noteBox').style.display = 'block';
-    }
-
-    function aggiornaUINote() {
-        const cont = document.getElementById('containerCategorie');
-        cont.innerHTML = '';
-
-        for (const [categoria, note] of Object.entries(prodottoCorrente.v)) {
-            const sezione = document.createElement('div');
-            sezione.className = 'cat-section';
-            
-            sezione.innerHTML = `
-                <div class="cat-name">
-                    <span>${categoria}</span>
-                    <span class="cat-delete-x" onclick="eliminaCategoria('${categoria}')" title="Elimina Categoria">&times;</span>
-                </div>
-                <div class="note-grid" id="grid-${categoria}"></div>
-                <div class="add-note-inline">
-                    <input type="text" id="input-${categoria}" placeholder="Nuova nota per ${categoria}...">
-                    <button class="btn btn-add" style="background-color:#4CAF50;" onclick="aggiungiNota('${categoria}')">+</button>
-                </div>
-            `;
-            cont.appendChild(sezione);
-
-            const grid = sezione.querySelector(`#grid-${categoria}`);
-            note.forEach(nota => {
-                const tag = document.createElement('div');
-                tag.className = 'note-btn';
-                tag.innerHTML = `
-                    <span>${nota.toUpperCase()}</span>
-                    <span class="note-delete-x" onclick="rimuoviNota('${categoria}', '${nota}')">&times;</span>
-                `;
-                grid.appendChild(tag);
-            });
-        }
-    }
-
-    function aggiungiCategoria() {
-        const input = document.getElementById('nuovaCategoriaInput');
-        let nomeCat = input.value.trim().toUpperCase();
-        
-        if(!nomeCat) return;
-
-        if(!prodottoCorrente.v[nomeCat]) {
-            prodottoCorrente.v[nomeCat] = [];
-            salvaDati();
-            aggiornaUINote();
-            input.value = ''; 
-        } else {
-            alert("Questa categoria esiste già per questo prodotto!");
-        }
-    }
-
-    // Funzione per eliminare l'intera categoria
-    function eliminaCategoria(cat) {
-        if(confirm(`Sei sicuro di voler eliminare l'intera categoria "${cat}" e tutte le sue note?`)) {
-            delete prodottoCorrente.v[cat]; // Rimuove la chiave dall'oggetto
-            salvaDati();
-            aggiornaUINote();
-        }
-    }
-
-    function aggiungiNota(cat) {
-        const input = document.getElementById(`input-${cat}`);
-        const valore = input.value.trim();
-        if(!valore) return;
-
-        if(!prodottoCorrente.v[cat].includes(valore)) {
-            prodottoCorrente.v[cat].push(valore);
-            salvaDati();
-            aggiornaUINote();
-        }
-        input.value = '';
-    }
-
-    function rimuoviNota(cat, nota) {
-        prodottoCorrente.v[cat] = prodottoCorrente.v[cat].filter(n => n !== nota);
-        salvaDati();
-        aggiornaUINote();
+        alert("La gestione delle varianti sarà collegata al database in futuro!");
     }
 
     function chiudiNote() {
@@ -357,7 +269,7 @@
         document.getElementById('noteBox').style.display = 'none';
     }
 
-    // Avvio
+    // Disegniamo la tabella quando la pagina si carica
     renderTable();
 </script>
 
