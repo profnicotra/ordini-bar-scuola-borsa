@@ -242,7 +242,7 @@
     <canvas id="sparks"></canvas>
 
     <div class="cyber-logo-container">
-        <img src="https://www.google.com/imgres?q=logo%20scuola%20borsa&imgurl=https%3A%2F%2Fstatic.wixstatic.com%2Fmedia%2Fa24994_7448096f4def4357bb63b2ad620c6934~mv2.png&imgrefurl=https%3A%2F%2Fwww.scuola-borsa.it%2F&docid=ve0p_YQBJEk1WM&tbnid=B9CpEjm7u6gt0M&vet=12ahUKEwjrs9Oj45WUAxVSgv0HHT4YI3cQnPAOegQIGxAB..i&w=225&h=225&hcb=2&ved=2ahUKEwjrs9Oj45WUAxVSgv0HHT4YI3cQnPAOegQIGxAB" alt="Logo" class="cyber-logo-img">
+        <img src="https://static.wixstatic.com/media/a24994_7448096f4def4357bb63b2ad620c6934~mv2.png" alt="Logo" class="cyber-logo-img">
     </div>
 
     <div class="container">z
@@ -540,7 +540,7 @@
       }
 
       function apriModale() {
-        editId = null; 
+        editId = null;
         document.getElementById("modal-error-msg").innerText = ""; 
         document.querySelectorAll("#modal input").forEach(i => { i.value = ""; i.classList.remove("input-error"); });
         document.querySelectorAll("#modal select").forEach(s => s.classList.remove("input-error"));
@@ -572,8 +572,25 @@
               localStorage.setItem('cyber_menu_v3', JSON.stringify(prodotti)); 
               render(); 
           }); 
-      } 
+      }
 
+      function duplica(id) {
+        const originale = prodotti.find(p => p.id === id);
+        if (!originale) return;
+
+        apriConferma("DUPLICARE QUESTO PRODOTTO?", function () {
+            const copia = {
+              ...originale,
+              id: Date.now(),
+              nome: originale.nome + " (Copia)"
+            };
+
+            prodotti.push(copia);
+            localStorage.setItem('cyber_menu_v3', JSON.stringify(prodotti));
+            render();
+        });
+      }
+       
       function autoDetectCategory() {
         const nome = document.getElementById("in-nome").value.toLowerCase(), catSelect = document.getElementById("in-categoria");
         const bevande = ["coca", "acqua", "birra", "vino", "the", "drink", "gin", "succo", "bibita"];
@@ -696,6 +713,7 @@
             <td>€${(p.interni || 0).toFixed(2)}</td>
             <td style="text-align: right;">
               <button class="btn" onclick="modifica(${p.id})">MOD</button>
+              <button class="btn" style="border-color:#00ffcc; color:#00ffcc" onclick="duplica(${p.id})">DUP</button>
               <button class="btn" style="border-color:#555; color:#888" onclick="elimina(${p.id})">X</button>
             </td>
           `;

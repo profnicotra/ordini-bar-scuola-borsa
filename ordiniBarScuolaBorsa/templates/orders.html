@@ -825,8 +825,23 @@ body::after {
   opacity: 0.7; 
 }
 
-.popup-body { 
-  padding: 32px 30px; 
+/* Trova la classe .popup-body e modificala così */
+.popup-body {
+     padding: 32px 30px;
+    max-height: 400px;           /* Altezza massima fissa (puoi aumentarla o diminuirla) */
+    overflow-y: auto;            /* Attiva lo scorrimento verticale se serve */
+    padding-right: 10px;         /* Spazio per la barra di scorrimento */
+    border-bottom: 1px solid #ddd;
+    border-top: 1px solid #ddd;
+}
+
+/* Opzionale: rende la scrollbar più bella su Chrome/Safari */
+.popup-body::-webkit-scrollbar {
+    width: 8px;
+}
+.popup-body::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px;
 }
 
 .popup-title { 
@@ -1437,13 +1452,101 @@ document.addEventListener("DOMContentLoaded", function () {
   function openNotePopup() {
     ingBox.innerHTML = "";
     const prod = products[currentIdx];
-    const ings = (prod && prod.ingredients && prod.ingredients.length) ? prod.ingredients : [prod ? prod.name : "—"];
-    ings.forEach(ing => {
-      const d = document.createElement("div");
-      d.className = "ing-item";
-      d.textContent = ing;
-      ingBox.appendChild(d);
-    });
+    
+    if (!prod) {
+      ingBox.innerHTML = '<div class="ing-item">Nessun prodotto</div>';
+      openPopup(notePopup);
+      return;
+    }
+    
+    // Inizializza selectedNotes se non esiste
+    if (!prod.selectedNotes) {
+      prod.selectedNotes = {};
+    }
+    
+    // Se ha note_gruppi, mostrali
+    const noteGruppi = prod.note_gruppi && prod.note_gruppi.length > 0 ? prod.note_gruppi : null;
+    
+    if (noteGruppi) {
+      // Visualizza i gruppi di note con checkbox/radio
+      noteGruppi.forEach(gruppo => {
+        // Intestazione del gruppo
+        const gruppoHeader = document.createElement("div");
+        gruppoHeader.style.cssText = "margin-bottom:12px; padding-top:8px; padding-bottom:8px; border-bottom:1px solid rgba(255,255,255,0.1);";
+        gruppoHeader.innerHTML = `<strong style="font-size:13px; color:rgba(255,255,255,0.88);">${gruppo.nome_gruppo}</strong>`;
+        ingBox.appendChild(gruppoHeader);
+        
+        // Note del gruppo
+        if (gruppo.note && gruppo.note.length > 0) {
+          const inputType = gruppo.esclusivo ? "radio" : "checkbox";
+          const groupName = `group_${gruppo.id}_${currentIdx}`;
+          
+          gruppo.note.forEach(nota => {
+            const notaContainer = document.createElement("div");
+            notaContainer.style.cssText = "display:flex; align-items:center; gap:10px; padding:8px; margin-bottom:6px; border-radius:8px; cursor:pointer; transition:background .2s;";
+            notaContainer.onmouseover = () => notaContainer.style.background = "rgba(255,255,255,0.05)";
+            notaContainer.onmouseout = () => notaContainer.style.background = "transparent";
+            
+            const inputId = `nota_${nota.id}_${currentIdx}`;
+            const isSelected = prod.selectedNotes[gruppo.id] && 
+                              (inputType === "radio" 
+                                ? prod.selectedNotes[gruppo.id].id === nota.id 
+                                : prod.selectedNotes[gruppo.id].includes(nota.id));
+            
+            let notaText = nota.nome;
+            if (nota.price_delta_euro && nota.price_delta_euro !== 0) {
+              const sign = nota.price_delta_euro > 0 ? '+' : '';
+              notaText += ` (${sign}€${Math.abs(nota.price_delta_euro).toFixed(2)})`;
+            }
+            
+            notaContainer.innerHTML = `
+              <input type="${inputType}" id="${inputId}" name="${groupName}" 
+                     value="${nota.id}" ${isSelected ? 'checked' : ''}
+                     style="cursor:pointer;"/>
+              <label for="${inputId}" style="cursor:pointer; flex:1; margin:0;">${notaText}</label>
+            `;
+            
+            notaContainer.querySelector('input').addEventListener('change', (e) => {
+              if (inputType === "radio") {
+                // Per radio, salva solo l'ID della nota selezionata
+                prod.selectedNotes[gruppo.id] = { id: nota.id, nome: nota.nome };
+              } else {
+                // Per checkbox, salva un array di note selezionate
+                if (!prod.selectedNotes[gruppo.id]) {
+                  prod.selectedNotes[gruppo.id] = [];
+                }
+                if (e.target.checked) {
+                  if (!prod.selectedNotes[gruppo.id].find(n => n.id === nota.id)) {
+                    prod.selectedNotes[gruppo.id].push({ id: nota.id, nome: nota.nome });
+                  }
+                } else {
+                  prod.selectedNotes[gruppo.id] = prod.selectedNotes[gruppo.id].filter(n => n.id !== nota.id);
+                }
+              }
+              save();
+            });
+            
+            ingBox.appendChild(notaContainer);
+          });
+        } else {
+          const emptyEl = document.createElement("div");
+          emptyEl.className = "ing-item";
+          emptyEl.textContent = "Nessuna opzione disponibile";
+          emptyEl.style.opacity = "0.6";
+          ingBox.appendChild(emptyEl);
+        }
+      });
+    } else {
+      // Se non ha note_gruppi, mostra il nome del prodotto o un messaggio
+      const ings = [prod ? prod.name : "—"];
+      ings.forEach(ing => {
+        const d = document.createElement("div");
+        d.className = "ing-item";
+        d.textContent = ing;
+        ingBox.appendChild(d);
+      });
+    }
+    gestisciDeselezioneRadio(); 
     openPopup(notePopup);
   }
   document.getElementById("back").addEventListener("click", () => closePopup(notePopup));
@@ -1524,6 +1627,27 @@ document.addEventListener("DOMContentLoaded", function () {
 
   render();
 });
+function gestisciDeselezioneRadio() {
+    // Seleziona tutti i radio button nel corpo del popup
+    const radios = document.querySelectorAll('.popup-body input[type="radio"]');
+
+    radios.forEach(radio => {
+        radio.onclick = function() {
+            // Se il radio era già cliccato in precedenza...
+            if (this.getAttribute('data-checked') === 'true') {
+                this.checked = false; // Lo deselezioniamo
+                this.setAttribute('data-checked', 'false');
+            } else {
+                // Altrimenti, resettiamo gli altri del gruppo e selezioniamo questo
+                const name = this.getAttribute('name');
+                document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
+                    r.setAttribute('data-checked', 'false');
+                });
+                this.setAttribute('data-checked', 'true');
+            }
+        };
+    });
+}
 </script>
 </body>
 </html>
