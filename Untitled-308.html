@@ -64,6 +64,26 @@
         .opzioni-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
         .opzione-item { background: #222; padding: 10px; border-radius: 10px; cursor: pointer; border: 1px solid #444; text-align: left; font-size: 0.9em; }
         .nota-visibile { display: inline-block; background: #ffaa00; color: #000; padding: 2px 6px; border-radius: 5px; font-size: 0.75em; margin: 2px; font-weight: bold; }
+        /* Limita l'altezza della griglia e aggiunge lo scroll */
+.opzioni-grid { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 10px; 
+    margin: 20px 0; 
+    max-height: 300px; /* Altezza massima prima dello scroll */
+    overflow-y: auto;  /* Attiva lo scroll verticale */
+    padding-right: 5px;
+}
+
+/* Rendi la barra di scorrimento più bella (opzionale) */
+.opzioni-grid::-webkit-scrollbar {
+    width: 6px;
+}
+.opzioni-grid::-webkit-scrollbar-thumb {
+    background: #00a6ff;
+    border-radius: 10px;
+}
+
     </style>
 </head>
 <body>
@@ -109,11 +129,13 @@
 </div>
 
 <script>
-    const menuOpzioni = {
-        "Caffetteria": ["Lungo", "Ristretto", "Macchiato Freddo", "Macchiato Caldo", "Tazza Grande", "Vetro", "Senza Schiuma", "Decaffeinato"],
-        "Dolce": ["Scaldato", "Con Panna", "Senza Zucchero Velo", "Da Asporto", "Farcitura Extra"],
-        "Salato": ["Scaldato", "Senza Salse", "Diviso a metà", "Aggiunta Maionese", "Senza Insalata"]
-    };
+   const gruppiNote = {
+    "PREPARAZIONE": ["Lungo", "Ristretto", "Decaffeinato"],
+    "TEMPERATURA": ["Caldo", "Freddo"],
+    "SERVIZIO": ["Tazza Grande", "Vetro"],
+    "SCHIUMA": ["Senza Schiuma", "Tanta Schiuma"]
+};
+
 
     let prodotti = [
         {n: "Caffè Espresso", co: 0.12, pr: 1.20, pi: 1.00, c: "Caffetteria", st: "DISPONIBILE", note: []},
@@ -149,19 +171,31 @@
         renderMenu();
     }
 
-    function apriNote(index) {
-        indiceAttuale = index;
-        const p = prodotti[index];
-        const opzioni = menuOpzioni[p.c] || [];
-        document.getElementById('nomeProdottoNota').innerText = p.n;
-        const container = document.getElementById('contenitoreOpzioni');
-        container.innerHTML = opzioni.map(opt => `
-            <label class="opzione-item">
-                <input type="checkbox" value="${opt}" ${p.note.includes(opt) ? 'checked' : ''}> ${opt}
-            </label>
-        `).join('');
-        document.getElementById('modalNote').style.display = "block";
+  function apriNote(index) {
+    indiceAttuale = index;
+    const p = prodotti[index];
+    document.getElementById('nomeProdottoNota').innerText = p.n;
+    const container = document.getElementById('contenitoreOpzioni');
+    
+    let htmlModale = "";
+
+    // Cicla attraverso i nuovi gruppi
+    for (const [gruppo, opzioni] of Object.entries(gruppiNote)) {
+        htmlModale += `<div style="grid-column: span 2; text-align: left; margin-top: 10px; color: #ffaa00; font-size: 0.8em; border-bottom: 1px solid #333;">${gruppo}</div>`;
+        
+        opzioni.forEach(opt => {
+            htmlModale += `
+                <label class="opzione-item">
+                    <input type="checkbox" value="${opt}" ${p.note.includes(opt) ? 'checked' : ''}> ${opt}
+                </label>
+            `;
+        });
     }
+    
+    container.innerHTML = htmlModale;
+    document.getElementById('modalNote').style.display = "block";
+}
+
 
     function chiudiNote() { document.getElementById('modalNote').style.display = "none"; }
 

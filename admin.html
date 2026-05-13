@@ -1,53 +1,260 @@
-{% extends "admin/change_list.html" %}
-{% block content %}
-<style>
-    body { font-family: 'Segoe UI', sans-serif; background: #000; color: #fff; margin: 0; padding: 20px; }
-    .header { text-align: center; padding: 20px; background: #000; border: 2px solid #00a6ff; border-radius: 20px; margin-bottom: 20px; }
-    .header h1 { color: #00c8ff; letter-spacing: 5px; text-shadow: 0 0 10px #00a6ff; }
-    table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
-    th { background: #00aaff; color: #000; padding: 12px; text-align: left; }
-    td { background: #111; padding: 15px; border-top: 1px solid #00a6ff; }
-    .badge-ok { color: #00ffaa; border: 1px solid #00ffaa; padding: 5px; border-radius: 5px; }
-    .badge-no { color: #ff4444; border: 1px solid #ff4444; padding: 5px; border-radius: 5px; }
-</style>
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestione Sala - Scuola Borsa</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background: radial-gradient(circle at center, #1a0000 0%, #000000 100%); 
+            color: #ffffff; margin: 0; padding: 20px; min-height: 100vh;
+        }
 
-<div class="header">
-    <h1>SALA BAR - DATI REALI</h1>
+        .container { max-width: 1100px; margin: 0 auto; }
+
+        .header {
+            text-align: center; padding: 20px; background: #000;
+            border: 2px solid #00a6ff; border-radius: 20px; margin-bottom: 20px;
+        }
+
+        .header h1 { color: #00c8ff; margin: 0; font-size: 2.2em; letter-spacing: 5px; text-shadow: 0 0 10px #00a6ff; }
+
+        .search-container { margin-bottom: 20px; text-align: center; display: flex; justify-content: center; gap: 15px; }
+        
+        #searchBar {
+            width: 100%; max-width: 400px; padding: 12px 20px;
+            background: rgba(0,0,0,0.5); border: 2px solid #00a6ff;
+            border-radius: 30px; color: #fff; font-size: 1.1em;
+            outline: none; transition: 0.3s;
+        }
+
+        .btn-sort {
+            background: transparent; border: 2px solid #00a6ff; color: #00a6ff;
+            padding: 0 25px; border-radius: 30px; font-weight: bold;
+            cursor: pointer; transition: 0.3s; text-transform: uppercase;
+            font-size: 0.85em; letter-spacing: 1px; line-height: 40px;
+        }
+        .btn-sort:hover { background: #00a6ff; color: #000; box-shadow: 0 0 20px #00a6ff; }
+
+        .filter-bar { display: flex; gap: 10px; margin-bottom: 20px; justify-content: center; flex-wrap: wrap; }
+        .filter-btn { 
+            background: transparent; border: 1px solid #444; color: #aaa; 
+            padding: 5px 15px; border-radius: 20px; cursor: pointer; font-size: 0.8em; transition: 0.3s;
+        }
+        .filter-btn.active { border-color: #00a6ff; color: #00a6ff; box-shadow: 0 0 10px rgba(0, 166, 255, 0.4); }
+
+        table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
+        th { background: #00aaff; color: #000; padding: 12px; font-size: 0.75em; text-transform: uppercase; text-align: left; }
+        
+        .info-row td { background: linear-gradient(90deg, #111 0%, #050505 100%); padding: 15px; border-top: 1px solid #00a6ff; }
+
+        .btn-info { background: none; border: 1px solid #00c8ff; color: #00c8ff; padding: 6px 10px; border-radius: 5px; cursor: pointer; }
+        .btn-action-del { background: none; border: 1px solid #ff4444; color: #ff4444; padding: 6px 10px; border-radius: 5px; cursor: pointer; }
+
+        .badge { padding: 4px 10px; border-radius: 4px; font-size: 0.7em; font-weight: bold; text-transform: uppercase; cursor: pointer; transition: 0.2s; user-select: none; }
+        .cat-badge { border: 1px solid #00a6ff; color: #00a6ff; cursor: default; }
+        
+        .stato-ok { color: #00ffaa; border: 1px solid #00ffaa; }
+        .stato-ok:hover { background: #00ffaa; color: #000; }
+        .stato-no { color: #ff4444; border: 1px solid #ff4444; text-shadow: none; }
+        .stato-no:hover { background: #ff4444; color: #000; }
+
+        .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); }
+        .modal-content { background: #111; margin: 10% auto; padding: 25px; border: 2px solid #00a6ff; width: 90%; max-width: 450px; border-radius: 20px; text-align: center; }
+        .opzioni-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
+        .opzione-item { background: #222; padding: 10px; border-radius: 10px; cursor: pointer; border: 1px solid #444; text-align: left; font-size: 0.9em; }
+        .nota-visibile { display: inline-block; background: #ffaa00; color: #000; padding: 2px 6px; border-radius: 5px; font-size: 0.75em; margin: 2px; font-weight: bold; }
+        /* Limita l'altezza della griglia e aggiunge lo scroll */
+.opzioni-grid { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 10px; 
+    margin: 20px 0; 
+    max-height: 300px; /* Altezza massima prima dello scroll */
+    overflow-y: auto;  /* Attiva lo scroll verticale */
+    padding-right: 5px;
+}
+
+/* Rendi la barra di scorrimento più bella (opzionale) */
+.opzioni-grid::-webkit-scrollbar {
+    width: 6px;
+}
+.opzioni-grid::-webkit-scrollbar-thumb {
+    background: #00a6ff;
+    border-radius: 10px;
+}
+
+    </style>
+</head>
+<body>
+
+<div id="modalNote" class="modal">
+    <div class="modal-content">
+        <h2 id="nomeProdottoNota" style="color:#00c8ff; margin:0;">Personalizza</h2>
+        <div id="contenitoreOpzioni" class="opzioni-grid"></div>
+        <div style="display: flex; gap: 10px; justify-content: center;">
+            <button class="btn-sort" onclick="chiudiNote()">ANNULLA</button>
+            <button class="btn-sort" style="background:#00a6ff; color:#000;" onclick="salvaNota()">CONFERMA</button>
+        </div>
+    </div>
 </div>
 
-<table>
-    <thead>
-        <tr>
-            <th>PRODOTTO</th>
-            <th>COSTO</th>
-            <th>PREZZO</th>
-            <th>CATEGORIA</th>
-            <th>STATO</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for p in prodotti_reali %}
-        <tr>
-            <td style="color: #00c8ff;">{{ p.nome }}</td>
-            <td>€ {{ p.costo }}</td>
-            <td>€ {{ p.prezzo_esterno }}</td>
-            <td>{{ p.categoria }}</td>
-            <td>
-                {% if p.disponibile %}
-                <span class="badge-ok">DISPONIBILE</span>
-                {% else %}
-                <span class="badge-no">ESAURITO</span>
-                {% endif %}
-            </td>
-        </tr>
-        {% empty %}
-        <tr><td colspan="5" style="text-align: center;">Nessun prodotto trovato. Aggiungine uno qui sotto!</td></tr>
-        {% endfor %}
-    </tbody>
-</table>
+<div class="container">
+    <div class="header">
+        <h1>SALA BAR</h1>
+        <div style="opacity: 0.7; letter-spacing: 2px;">Professional Database</div>
+    </div>
 
-<!-- Questo fa apparire i tasti originali di Django per aggiungere prodotti -->
-<div style="margin-top: 30px; background: #222; padding: 10px; border-radius: 10px;">
-    {{ block.super }}
+    <div class="search-container">
+        <input type="text" id="searchBar" placeholder="Cerca prodotto..." onkeyup="renderMenu()">
+        <button class="btn-sort" onclick="ordinaAlfabetico()">Ordina A-Z ↓</button>
+    </div>
+
+    <div class="filter-bar" id="filtri"></div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>PRODOTTO</th>
+                <th>COSTO</th>
+                <th>PREZZO</th>
+                <th>INTERNO</th>
+                <th>CATEGORIA</th>
+                <th>STATO</th>
+                <th>AZIONI</th>
+            </tr>
+        </thead>
+        <tbody id="lista-menu">
+    {% for item in data.items %}
+    <tr>
+        <td>{{ item.prodotto }}</td>
+        <!-- Se vuoi aggiungere il costo, al momento get_products non lo estrae, 
+             ma possiamo visualizzare i prezzi che abbiamo -->
+        <td>-</td> 
+        <td>{{ item.prezzo_euro }} €</td>
+        <td>{{ item.prezzo_interni }} €</td>
+        <td><span class="badge cat-badge">{{ item.categoria if item.categoria else 'N/A' }}</span></td>
+        <td>
+            <span class="badge stato-ok">DISPONIBILE</span>
+        </td>
+        <td>
+            <button class="btn-info" onclick="apriNote({{ loop.index0 }})">INFO</button>
+            <button class="btn-action-del">ELIMINA</button>
+        </td>
+    </tr>
+    {% endfor %}
+</tbody>
+
+    </table>
 </div>
-{% endblock %}
+
+<script>
+   const gruppiNote = {
+    "PREPARAZIONE": ["Lungo", "Ristretto", "Decaffeinato"],
+    "TEMPERATURA": ["Caldo", "Freddo"],
+    "SERVIZIO": ["Tazza Grande", "Vetro"],
+    "SCHIUMA": ["Senza Schiuma", "Tanta Schiuma"]
+};
+
+
+    let prodotti = [
+        {n: "Caffè Espresso", co: 0.12, pr: 1.20, pi: 1.00, c: "Caffetteria", st: "DISPONIBILE", note: []},
+        {n: "Caffè Decaffeinato", co: 0.15, pr: 1.40, pi: 1.20, c: "Caffetteria", st: "DISPONIBILE", note: []},
+        {n: "Caffè Ginseng", co: 0.40, pr: 1.80, pi: 1.60, c: "Caffetteria", st: "DISPONIBILE", note: []},
+        {n: "Cappuccino", co: 0.35, pr: 1.80, pi: 1.50, c: "Caffetteria", st: "DISPONIBILE", note: []},
+        {n: "Cornetto Crema", co: 0.50, pr: 1.50, pi: 1.30, c: "Dolce", st: "DISPONIBILE", note: []},
+        {n: "Cornetto Pistacchio", co: 0.60, pr: 1.80, pi: 1.50, c: "Dolce", st: "DISPONIBILE", note: []},
+        {n: "Toast Classico", co: 0.85, pr: 4.00, pi: 3.50, c: "Salato", st: "DISPONIBILE", note: []},
+        {n: "Pizzetta Sfoglia", co: 0.60, pr: 2.50, pi: 2.20, c: "Salato", st: "DISPONIBILE", note: []}
+    ];
+
+    let filtroAttuale = "TUTTI";
+    let indiceAttuale = null;
+
+    function cambiaStato(index) {
+        prodotti[index].st = (prodotti[index].st === "DISPONIBILE") ? "ESAURITO" : "DISPONIBILE";
+        renderMenu();
+    }
+
+    function renderFiltri() {
+        const bar = document.getElementById('filtri');
+        const cats = ["TUTTI", "Caffetteria", "Dolce", "Salato"];
+        bar.innerHTML = cats.map(cat => `
+            <button class="filter-btn ${filtroAttuale === cat ? 'active' : ''}" onclick="filtra('${cat}')">${cat}</button>
+        `).join('');
+    }
+
+    function filtra(cat) { filtroAttuale = cat; renderMenu(); renderFiltri(); }
+
+    function ordinaAlfabetico() {
+        prodotti.sort((a, b) => a.n.localeCompare(b.n));
+        renderMenu();
+    }
+
+  function apriNote(index) {
+    indiceAttuale = index;
+    const p = prodotti[index];
+    document.getElementById('nomeProdottoNota').innerText = p.n;
+    const container = document.getElementById('contenitoreOpzioni');
+    
+    let htmlModale = "";
+
+    // Cicla attraverso i nuovi gruppi
+    for (const [gruppo, opzioni] of Object.entries(gruppiNote)) {
+        htmlModale += `<div style="grid-column: span 2; text-align: left; margin-top: 10px; color: #ffaa00; font-size: 0.8em; border-bottom: 1px solid #333;">${gruppo}</div>`;
+        
+        opzioni.forEach(opt => {
+            htmlModale += `
+                <label class="opzione-item">
+                    <input type="checkbox" value="${opt}" ${p.note.includes(opt) ? 'checked' : ''}> ${opt}
+                </label>
+            `;
+        });
+    }
+    
+    container.innerHTML = htmlModale;
+    document.getElementById('modalNote').style.display = "block";
+}
+
+
+    function chiudiNote() { document.getElementById('modalNote').style.display = "none"; }
+
+    function salvaNota() {
+        const boxes = document.querySelectorAll('#contenitoreOpzioni input:checked');
+        prodotti[indiceAttuale].note = Array.from(boxes).map(cb => cb.value);
+        renderMenu();
+        chiudiNote();
+    }
+
+    function renderMenu() {
+        const corpo = document.getElementById('lista-menu');
+        const searchVal = document.getElementById('searchBar').value.toLowerCase();
+        corpo.innerHTML = "";
+        prodotti.forEach((p, index) => {
+            if ((filtroAttuale === "TUTTI" || p.c === filtroAttuale) && p.n.toLowerCase().includes(searchVal)) {
+                const noteHtml = p.note.map(n => `<span class="nota-visibile">${n}</span>`).join("");
+                const sClass = p.st === "DISPONIBILE" ? "stato-ok" : "stato-no";
+                
+                const riga = document.createElement('tr');
+                riga.className = "info-row";
+                riga.innerHTML = `
+                    <td><b style="color:#00c8ff">${p.n}</b><br>${noteHtml}</td>
+                    <td style="color:#ff4444">€ ${p.co.toFixed(2)}</td>
+                    <td style="color:#00ffaa; font-weight:bold">€ ${p.pr.toFixed(2)}</td>
+                    <td style="color:#aaa">€ ${p.pi.toFixed(2)}</td>
+                    <td><span class="badge cat-badge">${p.c}</span></td>
+                    <td><span class="badge ${sClass}" onclick="cambiaStato(${index})">${p.st}</span></td>
+                    <td>
+                        <button class="btn-info" onclick="apriNote(${index})">📝</button>
+                        <button class="btn-action-del" onclick="if(confirm('Eliminare?')) {prodotti.splice(${index},1); renderMenu();}">🗑️</button>
+                    </td>
+                `;
+                corpo.appendChild(riga);
+            }
+        });
+    }
+
+    window.onload = () => { renderFiltri(); renderMenu(); };
+</script>
+</body>
+</html>

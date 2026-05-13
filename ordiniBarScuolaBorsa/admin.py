@@ -6,10 +6,16 @@ bp = Blueprint("admin", __name__, url_prefix="/admin")
 
 @bp.get("/")
 def admin():
-    data = {"title" : "Amministrazione Bar Scuola Borsa",
+    # Chiamiamo la funzione che hai appena postato
+    prodotti_db = get_products()
+    
+    data = {
+        "title": "Amministrazione Bar Scuola Borsa",
         "open": is_bar_open(),   
-        "items" : []}
+        "items": prodotti_db  # Qui passiamo i risultati della query
+    }
     return render_template("admin.html", data=data)
+
 
 @bp.route("/add_product", methods = ["POST"])
 def add_product():
