@@ -83,17 +83,17 @@ class Ordine(db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
     posizione_id = db.Column(db.Integer, db.ForeignKey('posizioni.id'), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)  # NUOVO
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
     stato = db.Column(db.String, default='NUOVO', nullable=False)
     creato_il = db.Column(db.DateTime, server_default=db.func.now(), nullable=False)
     creato_da = db.Column(db.String)
     totale_euro = db.Column(db.Numeric(10, 2), default=0)
-    tipo_prezzo = db.Column(db.String(20), default='pubblico')  # NUOVO
-    stato_pronto_da = db.Column(db.DateTime, nullable=True)  # Timestamp quando diventa PRONTO
+    tipo_prezzo = db.Column(db.String(20), default='pubblico')
+    stato_pronto_da = db.Column(db.DateTime, nullable=True) 
 
     posizione = db.relationship('Posizione', back_populates='ordini')
     righe = db.relationship('OrdineRiga', back_populates='ordine', cascade="all, delete-orphan")
-    user = db.relationship('User', back_populates='ordini', foreign_keys=[user_id])  # NUOVO
+    user = db.relationship('User', back_populates='ordini', foreign_keys=[user_id]) 
 
 class OrdineRiga(db.Model):
     __tablename__ = 'ordine_righe'
@@ -146,25 +146,34 @@ def toggle_bar_open():
         db.session.commit()
         return 'true'
 
-def get_products(user=None):
+def get_products(user=None, for_admin=False):
     """
-    Recupera i prodotti con i prezzi corretti in base all'utente
-    COMPATIBILE con codice esistente (user è opzionale)
+    Recupera i prodotti con i prezzi corretti in base all'utente.
+    Se for_admin=True, restituisce TUTTI i prodotti e anche costo/disponibilità, 
+    così l'HTML della dashboard ha i dati completi per popolare la tabella.
     """
     results = []
 
-    query = db.session.query(
+    # Iniziamo a costruire la query
+    q = db.session.query(
         Prodotto.id,
         Prodotto.nome.label('prodotto'),
+        Prodotto.costo,             # <- AGGIUNTO
         Prodotto.prezzo_euro,
         Prodotto.prezzo_interni,
         Prodotto.categoria,
+        Prodotto.attivo,            # <- AGGIUNTO
         NoteGruppo.esclusivo,
         NoteGruppo.obbligatorio_default,
         Note.nome.label('nota')    
     ).join(NoteGruppo, Prodotto.id == NoteGruppo.id_prodotto, isouter=True) \
-     .join(Note, NoteGruppo.id == Note.id_gruppo, isouter=True) \
-     .filter(Prodotto.attivo == True).all()
+     .join(Note, NoteGruppo.id == Note.id_gruppo, isouter=True)
+    
+    # Se NON siamo nel pannello admin, mostriamo SOLO i prodotti attivi
+    if not for_admin:
+        q = q.filter(Prodotto.attivo == True)
+        
+    query = q.all()
     
     for item in query:
         # Determina quale prezzo mostrare
@@ -176,10 +185,12 @@ def get_products(user=None):
         results.append({
             'id': item.id,
             'prodotto': item.prodotto,
-            'prezzo_euro': item.prezzo_euro,
-            'prezzo_interni': item.prezzo_interni,
-            'prezzo_mostrato': prezzo_da_mostrare,
+            'costo': float(item.costo) if item.costo else 0,
+            'prezzo_euro': float(item.prezzo_euro) if item.prezzo_euro else 0,
+            'prezzo_interni': float(item.prezzo_interni) if item.prezzo_interni else 0,
+            'prezzo_mostrato': float(prezzo_da_mostrare) if prezzo_da_mostrare else 0,
             'categoria': item.categoria,
+            'attivo': item.attivo, # Passa True/False all'HTML
             'esclusivo': item.esclusivo,
             'obbligatorio_default': item.obbligatorio_default,
             'nota': item.nota
