@@ -1,262 +1,1136 @@
 <!DOCTYPE html>
+
+
 <html lang="it">
+
+
 <head>
+
+
     <meta charset="UTF-8">
+
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
     <title>Dashboard Scuola Borsa - Pro Control V9</title>
-    <link href="httpAs://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700;900&display=swap" rel="stylesheet">
+
+
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700;900&display=swap" rel="stylesheet">
+
+
     <style>
+
+
         :root {
+
+
             --bg-deep: #050505;
+
+
             --accent-red: #ff3c3c;
+
+
             --accent-green: #00ffaa;
+
+
             --text-main: #ffffff;
+
+
             --border: rgba(255, 255, 255, 0.08);
+
+
             --glass: rgba(255, 255, 255, 0.05);
+
+
         }
+
+
+
+
+
 
         body {
+
+
             background-color: var(--bg-deep);
+
+
             background-image: radial-gradient(circle at top, #1a0808 0%, #050505 100%);
+
+
             color: var(--text-main);
+
+
             font-family: 'Montserrat', sans-serif;
+
+
             margin: 0; padding: 0;
+
+
             min-height: 100vh;
+
+
         }
+
+
+
+
+
 
         .scuola-borsa-bar {
+
+
             width: 100%; background: #000;
+
+
             border-top: 4px solid var(--accent-red);
+
+
             border-bottom: 1px solid #1a1a1a;
+
+
             padding: 20px 60px;
+
+
             display: flex; justify-content: space-between; align-items: center;
+
+
             box-sizing: border-box;
+
+
         }
 
+
+
+
+
+
         .brand-section { display: flex; align-items: center; gap: 25px; }
-        .logo-container { 
-            width: 90px; height: 90px; border-radius: 50%; 
+
+
+        .logo-container {
+
+
+            width: 90px; height: 90px; border-radius: 50%;
+
+
             border: 3px solid var(--accent-red); background: #111;
+
+
             display: flex; align-items: center; justify-content: center; overflow: hidden;
+
+
         }
+
+
         .logo-container img { width: 100%; height: 100%; object-fit: cover; }
+
+
+
+
+
 
         .brand-text .main { font-weight: 900; font-size: 1.8rem; letter-spacing: 3px; text-transform: uppercase; }
 
+
+
+
+
+
         .time-widget { display: flex; align-items: center; background: rgba(255,255,255,0.05); border: 1px solid #222; padding: 12px 30px; border-radius: 40px; gap: 25px; }
+
+
         .status-pill { padding: 10px 22px; border-radius: 20px; font-size: 0.8rem; font-weight: 900; cursor: pointer; text-transform: uppercase; border: 1px solid transparent; transition: 0.3s; }
+
+
         .status-open { background: rgba(0, 255, 170, 0.1); color: var(--accent-green); border-color: var(--accent-green); }
+
+
         .status-closed { background: rgba(255, 60, 60, 0.1); color: var(--accent-red); border-color: var(--accent-red); }
 
-        /* RIMOSSO IL BLOCCO 'is-closed' - ADESSO RESTA TUTTO NORMALE */
+
+
+
+
 
         .container { width: 100%; max-width: 1300px; padding: 40px 20px; margin: auto; box-sizing: border-box; }
+
+
         .nav-tabs { display: flex; gap: 12px; margin-bottom: 35px; }
+
+
         .tab-btn { flex: 1; padding: 18px; background: var(--glass); border: 1px solid var(--border); color: #666; font-weight: 700; cursor: pointer; border-radius: 12px; transition: 0.3s; }
+
+
         .tab-btn.active { background: var(--accent-red); color: white; border: none; box-shadow: 0 8px 20px rgba(255, 60, 60, 0.3); }
 
+
+
+
+
+
         .main-card { background: rgba(10, 10, 10, 0.95); border-radius: 20px; border: 1px solid var(--border); padding: 35px; }
-        
+
+
+       
+
+
         table { width: 100%; border-collapse: separate; border-spacing: 0 12px; }
+
+
         th { text-transform: uppercase; font-size: 0.7rem; color: #555; padding: 10px; letter-spacing: 2px; text-align: left; }
+
+
         td { background: rgba(255,255,255,0.02); padding: 18px; vertical-align: middle; }
 
+
+
+
+
+
         .editable-input { background: transparent; border: none; color: white; width: 100%; outline: none; font-family: inherit; }
-        
+
+
+       
+
+
         .row-actions { display: flex; gap: 12px; justify-content: flex-end; align-items: center; }
+
+
         .btn-dispo { padding: 8px 15px; border-radius: 6px; font-size: 0.7rem; font-weight: 900; cursor: pointer; border: none; text-transform: uppercase; min-width: 60px; }
+
+
         .dispo-si { background: var(--accent-green); color: #000; }
+
+
         .dispo-no { background: var(--accent-red); color: #fff; }
 
+
+
+
+
+
         .btn-circle { width: 40px; height: 40px; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+
+
         .btn-expand { background: #222; color: white; border: 1px solid #444; }
+
+
         .btn-delete { background: rgba(255, 60, 60, 0.1); color: var(--accent-red); border: 1px solid var(--accent-red); }
 
+
+
+
+
+
         .edit-row { display: none; background: #0a0a0a; padding: 30px; border-left: 5px solid var(--accent-red); border-radius: 0 0 15px 15px; margin-top: -12px; }
+
+
         .group-container { background: rgba(255,255,255,0.02); border: 1px solid #222; padding: 20px; border-radius: 12px; margin-bottom: 20px; }
-        
+
+
+       
+
+
         .gusti-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; }
+
+
         .gusto-item { background: #111; padding: 10px; border-radius: 8px; display: flex; align-items: center; gap: 10px; border: 1px solid #222; cursor: pointer; }
+
+
         .gusto-item.selected { border-color: var(--accent-green); background: rgba(0, 255, 170, 0.1); }
-        
+
+
+       
+
+
         .dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; cursor: pointer; }
+
+
         .dot-si { background: var(--accent-green); box-shadow: 0 0 10px var(--accent-green); }
+
+
         .dot-no { background: var(--accent-red); box-shadow: 0 0 10px var(--accent-red); }
 
+
+
+
+
+
         .btn-selected-long {
+
+
             width: 100%; padding: 20px; margin-top: 20px;
+
+
             background: linear-gradient(90deg, #ff3c3c, #990000);
+
+
             color: white; border: none; border-radius: 12px;
+
+
             font-weight: 900; font-size: 1.1rem; letter-spacing: 4px; cursor: pointer; text-transform: uppercase;
+
+
         }
+
+
+
+
+
 
         .btn-action-small { background: #222; color: white; border: 1px solid #444; padding: 6px 12px; border-radius: 6px; font-size: 0.7rem; cursor: pointer; }
+
+
     </style>
+
+
 </head>
+
+
 <body>
+
+
     <header class="scuola-borsa-bar">
+
+
         <div class="brand-section">
+
+
             <div class="logo-container"><img src="data:image/png;base64,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" alt="LOGO"></div>
+
+
             <div class="brand-text"><div class="main">SCUOLA BORSA</div></div>
+
+
         </div>
+
+
         <div class="time-widget">
+
+
             <div id="live-clock" style="font-size: 1.4rem; font-weight: 900; margin-right:15px">00:00</div>
-            <div id="shop-status" class="status-pill status-open" onclick="toggleShopStatus()">OPEN</div>
+
+
+            <div id="shop-status" class="status-pill {{ 'status-open' if open == 'true' else 'status-closed' }}" onclick="toggleShopStatus()">
+
+
+                {{ 'OPEN' if open == 'true' else 'CLOSED' }}
+
+
+            </div>
+
+
         </div>
+
+
     </header>
 
+
+
+
+
+
     <div class="container">
+
+
         <div class="nav-tabs">
+
+
             <button class="tab-btn active" onclick="changeTab('cibo', this)">MENU CIBO</button>
+
+
             <button class="tab-btn" onclick="changeTab('bevande', this)">BEVANDE</button>
+
+
             <button class="tab-btn" onclick="changeTab('dolci', this)">DOLCIARIA</button>
+
+
         </div>
+
+
+
+
+
 
         <div class="main-card">
+
+
             <div class="controls-header" style="display:flex; gap:20px; margin-bottom:30px">
+
+
                 <input type="text" id="new-nome" placeholder="NOME NUOVO PRODOTTO..." class="editable-input" style="background:#000; padding:15px; border-radius:10px; border:1px solid #222; flex:1">
+
+
                 <button onclick="aggiungiProdotto()" style="background:#fff; color:#000; border:none; padding:0 30px; border-radius:10px; font-weight:900; cursor:pointer;">AGGIUNGI +</button>
+
+
                 <input type="text" id="search-input" placeholder="CERCA..." class="editable-input" style="background:#000; padding:15px; border-radius:10px; border:1px solid #222; width:300px" oninput="renderTable()">
+
+
             </div>
+
+
             <table>
+
+
                 <thead>
+
+
                     <tr>
+
+
                         <th style="width: 30%;">Prodotto (A-Z)</th>
+
+
                         <th>Costo (€)</th>
+
+
                         <th>Prezzo (€)</th>
+
+
                         <th>P. Interni (€)</th>
+
+
                         <th>Margine (€)</th>
+
+
                         <th style="text-align: right;">Stato / Azioni</th>
+
+
                     </tr>
+
+
                 </thead>
+
+
                 <tbody id="table-body"></tbody>
+
+
             </table>
+
+
         </div>
+
+
     </div>
 
-    <script>
+
+
+
+
+
+ <script>
+
+
         let currentTab = 'cibo';
-        let database = { cibo: [], bevande: [], dolci: [] };
+
+
+        // Trasforma l'oggetto Python in JS
+
+
+        let database = {{ database | tojson }};
+
+
         let tempSelection = null;
 
+
+
+
+
+
+        // --- GESTIONE INTERFACCIA ---
+
+
         function toggleShopStatus() {
+
+
             const s = document.getElementById('shop-status');
+
+
             const isOpen = s.classList.contains('status-open');
+
+
             s.classList.toggle('status-open', !isOpen);
+
+
             s.classList.toggle('status-closed', isOpen);
+
+
             s.textContent = isOpen ? "CLOSED" : "OPEN";
-            // RIMOSSO: document.body.classList.toggle('is-closed', isOpen);
+
+
         }
+
+
+
+
+
+
+        function changeTab(t, b) {
+
+
+            currentTab = t;
+
+
+            document.querySelectorAll('.tab-btn').forEach(x => x.classList.remove('active'));
+
+
+            b.classList.add('active');
+
+
+            renderTable();
+
+
+        }
+
+
+
+
+
+
+        function toggleEdit(id, open) {
+
+
+            const p = document.getElementById(`panel-${id}`);
+
+
+            if(!open) {
+
+
+                const is = (p.style.display === 'block');
+
+
+                document.querySelectorAll('.edit-row').forEach(r => r.style.display = 'none');
+
+
+                p.style.display = is ? 'none' : 'block';
+
+
+            } else {
+
+
+                p.style.display = 'block';
+
+
+            }
+
+
+        }
+
+
+
+
+
+
+        // --- RENDERING TABELLA ---
+
 
         function renderTable() {
+
+
             const body = document.getElementById('table-body');
+
+
             const search = document.getElementById('search-input').value.toLowerCase();
+
+
             body.innerHTML = '';
-            
+
+
+           
+
+
             database[currentTab].sort((a,b) => a.nome.localeCompare(b.nome));
 
+
+
+
+
+
             database[currentTab].forEach(p => {
+
+
                 if(p.nome.toLowerCase().includes(search)) {
-                    const margine = (p.prezzo - p.costo).toFixed(2);
-                    
+
+
+                    const costoVal = p.costo || 0;
+
+
+                    const margine = (p.prezzo - costoVal).toFixed(2);
+
+
+                   
+
+
                     body.innerHTML += `
+
+
                         <tr>
+
+
                             <td><input type="text" class="editable-input" style="font-weight:700; color:var(--accent-red)" value="${p.nome}" onchange="updateVal(${p.id}, 'nome', this.value)"></td>
-                            <td><input type="number" step="0.01" class="editable-input" value="${p.costo}" onchange="updateVal(${p.id}, 'costo', this.value)"></td>
+
+
+                            <td><input type="number" step="0.01" class="editable-input" value="${costoVal}" onchange="updateVal(${p.id}, 'costo', this.value)"></td>
+
+
                             <td><input type="number" step="0.01" class="editable-input" value="${p.prezzo}" onchange="updateVal(${p.id}, 'prezzo', this.value)"></td>
+
+
                             <td><input type="number" step="0.01" class="editable-input" value="${p.interni}" onchange="updateVal(${p.id}, 'interni', this.value)"></td>
+
+
                             <td style="color:var(--accent-green); font-weight:900;">${margine}€</td>
+
+
                             <td class="row-actions">
+
+
                                 <button class="btn-dispo ${p.disponibile?'dispo-si':'dispo-no'}" onclick="toggleDispo(${p.id})">${p.disponibile?'SI':'NO'}</button>
+
+
                                 <button class="btn-circle btn-expand" onclick="toggleEdit(${p.id})">+</button>
+
+
                                 <button class="btn-circle btn-delete" onclick="eliminaProdotto(${p.id})">×</button>
+
+
                             </td>
+
+
                         </tr>
+
+
                         <tr><td colspan="6" style="padding:0; border:none"><div id="panel-${p.id}" class="edit-row">
+
+
                             <div style="display:flex; justify-content:space-between; margin-bottom:20px">
+
+
                                 <h3 style="margin:0">GRUPPI E GUSTI</h3>
+
+
                                 <button class="btn-action-small" onclick="aggiungiGruppo(${p.id})">+ GRUPPO</button>
+
+
                             </div>
+
+
                             <div id="groups-${p.id}">${renderGruppi(p)}</div>
-                            <button class="btn-selected-long" onclick="confermaSelezione(${p.id})">SELEZIONATO</button>
+
+
+                            <button class="btn-selected-long" onclick="toggleEdit(${p.id})">CHIUDI PANNELLO</button>
+
+
                         </div></td></tr>`;
+
+
                 }
+
+
             });
+
+
         }
+
+
+
+
+
 
         function renderGruppi(p) {
+
+
+            if(!p.gruppi || p.gruppi.length === 0) return '<p style="color:#666; padding:10px;">Nessun gruppo note.</p>';
+
+
             return p.gruppi.map((g, gi) => `
+
+
                 <div class="group-container">
+
+
                     <div style="display:flex; justify-content:space-between; margin-bottom:10px">
-                        <input type="text" class="editable-input" style="font-weight:700; width:50%" value="${g.nome}" onchange="editG(${p.id}, ${gi}, this.value)">
+
+
+                        <input type="text" class="editable-input" style="font-weight:700; width:50%" value="${g.nome}" onchange="editG(${p.id}, ${g.id}, this.value)">
+
+
                         <div>
-                            <button class="btn-action-small" onclick="addGusto(${p.id}, ${gi})">+ GUSTO</button>
-                            <button class="btn-action-small" style="color:red" onclick="delG(${p.id}, ${gi})">ELIMINA</button>
+
+
+                            <button class="btn-action-small" onclick="addGusto(${p.id}, ${gi}, ${g.id})">+ GUSTO</button>
+
+
+                            <button class="btn-action-small" style="color:red" onclick="delG(${p.id}, ${gi}, ${g.id})">ELIMINA</button>
+
+
                         </div>
+
+
                     </div>
+
+
                     <div class="gusti-grid">${g.gusti.map((v, vi) => `
-                        <div class="gusto-item ${tempSelection===v.id?'selected':''}" onclick="cliccaGusto(${p.id}, '${v.id}')">
-                            <span class="dot ${v.disponibile?'dot-si':'dot-no'}" onclick="event.stopPropagation(); toggleV(${p.id},${gi},${vi})"></span>
-                            <input type="text" class="editable-input" style="font-size:0.8rem; flex:1" value="${v.nome}" onchange="editV(${p.id},${gi},${vi},this.value)">
-                            <span onclick="event.stopPropagation(); delV(${p.id},${gi},${vi})">×</span>
+
+
+                        <div class="gusto-item">
+
+
+                            <span class="dot ${v.disponibile?'dot-si':'dot-no'}" onclick="toggleV(${p.id},${gi},${vi},${v.id})"></span>
+
+
+                            <input type="text" class="editable-input" style="font-size:0.8rem; flex:1" value="${v.nome}" onchange="editV(${p.id},${gi},${vi},${v.id},this.value)">
+
+
+                            <span onclick="delV(${p.id},${gi},${vi},${v.id})">×</span>
+
+
                         </div>`).join('')}</div>
+
+
                 </div>`).join('');
+
+
         }
 
-        function updateVal(id, field, val) {
+
+
+
+
+
+        // --- FUNZIONI DATABASE (AJAX) ---
+
+
+
+
+
+
+        // 1. PRODOTTI
+
+
+        async function aggiungiProdotto() {
+
+
+            const nomeInput = document.getElementById('new-nome');
+
+
+            const nome = nomeInput.value.trim().toUpperCase();
+
+
+            if (!nome) return alert("Inserisci un nome!");
+
+
+            try {
+
+
+                const response = await fetch('/admin/aggiungi_prodotto', {
+
+
+                    method: 'POST',
+
+
+                    headers: { 'Content-Type': 'application/json' },
+
+
+                    body: JSON.stringify({ nome: nome, categoria: currentTab })
+
+
+                });
+
+
+                const res = await response.json();
+
+
+                if (res.status === 'success') {
+
+
+                    database[currentTab].push({ id: res.id, nome: nome, costo: 0.01, prezzo: 0.01, interni: 0.01, disponibile: true, gruppi: [] });
+
+
+                    nomeInput.value = ''; renderTable();
+
+
+                }
+
+
+            } catch (e) { alert("Errore server"); }
+
+
+        }
+
+
+
+
+
+
+        async function updateVal(id, field, val) {
+
+
             const p = database[currentTab].find(x => x.id === id);
-            if(field === 'nome') {
-                p.nome = val.toUpperCase() || "NUOVO";
-            } else {
-                let n = parseFloat(val);
-                if(!n || n <= 0) { alert("Valore minimo 0.01!"); n = 0.01; }
-                if(field === 'costo' && n > p.prezzo) alert("ATTENZIONE: Il costo supera il prezzo!");
-                p[field] = n;
-            }
+
+
+            let newVal = field === 'nome' ? val.toUpperCase() : parseFloat(val);
+
+
+            p[field] = newVal;
+
+
+            if (field === 'prezzo' || field === 'costo') renderTable();
+
+
+            try {
+
+
+                await fetch('/admin/modifica_prodotto', {
+
+
+                    method: 'POST',
+
+
+                    headers: { 'Content-Type': 'application/json' },
+
+
+                    body: JSON.stringify({ id: id, campo: field, valore: newVal })
+
+
+                });
+
+
+            } catch (e) { console.error("Errore modifica"); }
+
+
+        }
+
+
+
+
+
+
+        async function toggleDispo(id) {
+
+
+            const p = database[currentTab].find(x => x.id === id);
+
+
+            p.disponibile = !p.disponibile;
+
+
             renderTable();
+
+
+            try {
+
+
+                await fetch('/admin/modifica_prodotto', {
+
+
+                    method: 'POST',
+
+
+                    headers: { 'Content-Type': 'application/json' },
+
+
+                    body: JSON.stringify({ id: id, campo: 'attivo', valore: p.disponibile })
+
+
+                });
+
+
+            } catch (e) { console.error("Errore dispo"); }
+
+
         }
 
-        function cliccaGusto(pid, vid) {
-            const p = database[currentTab].find(x => x.id === pid);
-            let vObj; p.gruppi.forEach(g => { const found = g.gusti.find(x => x.id === vid); if(found) vObj = found; });
-            if(vObj && !vObj.disponibile) { alert("SELEZIONE ERRATA: Opzione non disponibile!"); tempSelection = null; }
-            else tempSelection = vid;
+
+
+
+
+
+        async function eliminaProdotto(id) {
+
+
+            if(!confirm("Eliminare definitivamente il prodotto?")) return;
+
+
+            try {
+
+
+                const response = await fetch('/admin/elimina_prodotto', {
+
+
+                    method: 'POST',
+
+
+                    headers: { 'Content-Type': 'application/json' },
+
+
+                    body: JSON.stringify({ id: id })
+
+
+                });
+
+
+                if(response.ok) {
+
+
+                    database[currentTab] = database[currentTab].filter(x => x.id !== id);
+
+
+                    renderTable();
+
+
+                }
+
+
+            } catch (e) { alert("Errore"); }
+
+
+        }
+
+
+
+
+
+
+        // 2. GRUPPI
+
+
+        async function aggiungiGruppo(pid) {
+
+
+            const res = await fetch('/admin/aggiungi_gruppo', {
+
+
+                method: 'POST',
+
+
+                headers: {'Content-Type': 'application/json'},
+
+
+                body: JSON.stringify({prodotto_id: pid})
+
+
+            });
+
+
+            const data = await res.json();
+
+
+            if(data.status === 'success') {
+
+
+                database[currentTab].find(x=>x.id===pid).gruppi.push({id: data.id, nome:"NUOVO GRUPPO", gusti:[]});
+
+
+                renderTable(); toggleEdit(pid, true);
+
+
+            }
+
+
+        }
+
+
+
+
+
+
+        async function editG(pid, gid, val) {
+
+
+            await fetch('/admin/modifica_gruppo', {
+
+
+                method: 'POST',
+
+
+                headers: {'Content-Type': 'application/json'},
+
+
+                body: JSON.stringify({id: gid, nome: val})
+
+
+            });
+
+
+        }
+
+
+
+
+
+
+        async function delG(pid, gi, gid) {
+
+
+            if(!confirm("Elimina gruppo e gusti?")) return;
+
+
+            await fetch('/admin/elimina_gruppo', {
+
+
+                method: 'POST',
+
+
+                headers: {'Content-Type': 'application/json'},
+
+
+                body: JSON.stringify({id: gid})
+
+
+            });
+
+
+            database[currentTab].find(x=>x.id===pid).gruppi.splice(gi,1);
+
+
             renderTable(); toggleEdit(pid, true);
+
+
         }
 
-        function confermaSelezione(pid) {
-            if(!tempSelection) alert("SELEZIONE ERRATA: Scegli un gusto disponibile!");
-            else { alert("PRODOTTO SELEZIONATO!"); tempSelection = null; renderTable(); }
+
+
+
+
+
+        // 3. GUSTI / NOTE
+
+
+        async function addGusto(pid, gi, gid) {
+
+
+            const res = await fetch('/admin/aggiungi_nota', {
+
+
+                method: 'POST',
+
+
+                headers: {'Content-Type': 'application/json'},
+
+
+                body: JSON.stringify({gruppo_id: gid})
+
+
+            });
+
+
+            const data = await res.json();
+
+
+            if(data.status === 'success') {
+
+
+                database[currentTab].find(x=>x.id===pid).gruppi[gi].gusti.push({id: data.id, nome:"Gusto", disponibile:true});
+
+
+                renderTable(); toggleEdit(pid, true);
+
+
+            }
+
+
         }
 
-        function toggleDispo(id) { database[currentTab].find(x=>x.id===id).disponibile ^= 1; renderTable(); }
-        function toggleV(pid, gi, vi) { 
+
+
+
+
+
+        async function editV(pid, gi, vi, nid, val) {
+
+
+            await fetch('/admin/modifica_nota', {
+
+
+                method: 'POST',
+
+
+                headers: {'Content-Type': 'application/json'},
+
+
+                body: JSON.stringify({id: nid, nome: val})
+
+
+            });
+
+
+        }
+
+
+
+
+
+
+        async function toggleV(pid, gi, vi, nid) {
+
+
             const v = database[currentTab].find(x=>x.id===pid).gruppi[gi].gusti[vi];
-            v.disponibile ^= 1; if(!v.disponibile && tempSelection === v.id) tempSelection = null;
+
+
+            v.disponibile = !v.disponibile;
+
+
+            renderTable(); toggleEdit(pid, true);
+
+
+            await fetch('/admin/modifica_nota', {
+
+
+                method: 'POST',
+
+
+                headers: {'Content-Type': 'application/json'},
+
+
+                body: JSON.stringify({id: nid, disponibile: v.disponibile})
+
+
+            });
+
+
+        }
+
+
+
+
+
+
+       async function delV(pid, gi, vi, nid) {
+            await fetch('/admin/elimina_nota', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({id: nid})
+            });
+            database[currentTab].find(x=>x.id===pid).gruppi[gi].gusti.splice(vi,1);
             renderTable(); toggleEdit(pid, true);
         }
-        function aggiungiProdotto() {
-            const n = document.getElementById('new-nome').value.trim().toUpperCase();
-            if(!n) return;
-            database[currentTab].push({id:Date.now(), nome:n, costo:0.01, prezzo:0.01, interni:0.01, disponibile:true, gruppi:[]});
-            document.getElementById('new-nome').value = ''; renderTable();
+
+
+        // --- FUNZIONE OROLOGIO IN TEMPO REALE ---
+        function updateClock() {
+            const oraAttuale = new Date();
+            const ore = String(oraAttuale.getHours()).padStart(2, '0');
+            const minuti = String(oraAttuale.getMinutes()).padStart(2, '0');
+           
+            const clockElement = document.getElementById('live-clock');
+            if (clockElement) {
+                clockElement.textContent = `${ore}:${minuti}`;
+            }
         }
-        function aggiungiGruppo(pid) { database[currentTab].find(x=>x.id===pid).gruppi.push({nome:"NUOVO GRUPPO", gusti:[]}); renderTable(); toggleEdit(pid, true); }
-        function addGusto(pid, gi) { database[currentTab].find(x=>x.id===pid).gruppi[gi].gusti.push({id:"v"+Date.now(), nome:"Gusto", disponibile:true}); renderTable(); toggleEdit(pid, true); }
-        function delG(pid, gi) { database[currentTab].find(x=>x.id===pid).gruppi.splice(gi,1); renderTable(); toggleEdit(pid, true); }
-        function delV(pid, gi, vi) { database[currentTab].find(x=>x.id===pid).gruppi[gi].gusti.splice(vi,1); renderTable(); toggleEdit(pid, true); }
-        function editG(pid, gi, val) { database[currentTab].find(x=>x.id===pid).gruppi[gi].nome = val.toUpperCase(); }
-        function editV(pid, gi, vi, val) { database[currentTab].find(x=>x.id===pid).gruppi[gi].gusti[vi].nome = val; }
-        function eliminaProdotto(id) { if(confirm("Eliminare?")) { database[currentTab] = database[currentTab].filter(x=>x.id!==id); renderTable(); } }
-        
-        function toggleEdit(id, open) {
-            const p = document.getElementById(`panel-${id}`);
-            if(!open) { const is = p.style.display==='block'; document.querySelectorAll('.edit-row').forEach(r=>r.style.display='none'); p.style.display=is?'none':'block'; }
-            else p.style.display='block';
-        }
-        function changeTab(t, b) { currentTab=t; document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); renderTable(); }
-        setInterval(() => { document.getElementById('live-clock').textContent = new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'}); }, 1000);
-        window.onload = renderTable;
+
+
+        // Avvia l'aggiornamento automatico ogni secondo
+        setInterval(updateClock, 1000);
+       
+        // Esegue l'orologio e il rendering della tabella all'avvio
+        updateClock();
+        renderTable();
+
+
     </script>
 </body>
 </html>
