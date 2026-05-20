@@ -13,13 +13,11 @@
         --bg-deep: #030303;
         --error-color: #ff0040;
         
-        /* Glassmorphism Premium */
         --glass-panel: linear-gradient(135deg, rgba(20, 20, 20, 0.8) 0%, rgba(8, 8, 8, 0.9) 100%);
         --glass-frame: linear-gradient(135deg, rgba(30, 30, 30, 0.4) 0%, rgba(10, 10, 10, 0.6) 100%);
         --glass-border-top: rgba(255, 42, 42, 0.3);
         --glass-border-side: rgba(255, 255, 255, 0.03);
         --glass-blur-main: blur(20px) saturate(120%);
-        --glass-blur-frame: blur(12px) saturate(140%);
       }
 
       ::-webkit-scrollbar { width: 8px; height: 8px; }
@@ -28,20 +26,27 @@
       ::-webkit-scrollbar-thumb:hover { background: var(--neon-red); box-shadow: 0 0 10px var(--neon-red); }
 
       /* =========================================
-         ANIMAZIONI CORE E SLIDE PRODOTTI
+         ANIMAZIONI DI MORPHING (BOTTONE -> SCHEDA)
          ========================================= */
       @keyframes bootSequence { 0% { opacity: 0; transform: scale(1.02); } 100% { opacity: 1; transform: scale(1); } }
-      @keyframes modalEntrance { 0% { opacity: 0; transform: scale(0.9) translateY(15px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
-      @keyframes modalExit { 0% { opacity: 1; transform: scale(1) translateY(0); } 100% { opacity: 0; transform: scale(0.9) translateY(15px); } }
+      
+      /* Il frame nasce dalle esatte coordinate del bottone in basso a destra */
+      @keyframes morphEntrance { 
+        0% { opacity: 0; transform: translate(calc(50vw - 75px), calc(50vh - 75px)) scale(0); border-radius: 50%; } 
+        100% { opacity: 1; transform: translate(0, 0) scale(1); border-radius: 24px; } 
+      }
+      /* Il frame torna ad essere il bottone */
+      @keyframes morphExit { 
+        0% { opacity: 1; transform: translate(0, 0) scale(1); border-radius: 24px; } 
+        100% { opacity: 0; transform: translate(calc(50vw - 75px), calc(50vh - 75px)) scale(0); border-radius: 50%; } 
+      }
+      
       @keyframes blurIn { from { background: rgba(0, 0, 0, 0); backdrop-filter: blur(0px); } to { background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(15px); } }
       @keyframes blurOut { from { background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(15px); } to { background: rgba(0, 0, 0, 0); backdrop-filter: blur(0px); } }
+      
       @keyframes floatLogo { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
       @keyframes pulseGlow { 0% { box-shadow: 0 0 15px rgba(255,42,42,0.2); } 100% { box-shadow: 0 0 30px rgba(255,42,42,0.5); } }
-      
-      @keyframes slideInUp {
-        0% { opacity: 0; transform: translateY(40px); }
-        100% { opacity: 1; transform: translateY(0); }
-      }
+      @keyframes slideInUp { 0% { opacity: 0; transform: translateY(40px); } 100% { opacity: 1; transform: translateY(0); } }
 
       body { 
         font-family: "Rajdhani", sans-serif; 
@@ -65,14 +70,14 @@
       .cyber-logo-container:hover { transform: scale(1.1) rotate(-5deg); border-color: var(--neon-red); box-shadow: 0 0 40px var(--neon-glow); }
       .cyber-logo-img { width: 85%; height: 85%; border-radius: 50%; object-fit: contain; filter: drop-shadow(0 0 8px var(--neon-glow)); }
 
-      .container { width: 95%; max-width: 1200px; margin-top: 50px; z-index: 1; padding-bottom: 100px; }
+      .container { width: 95%; max-width: 1400px; margin-top: 50px; z-index: 1; padding-bottom: 100px; }
       h1 { font-family: "Orbitron"; font-weight: 700; text-align: center; letter-spacing: 12px; text-shadow: 0 0 25px var(--neon-glow); margin-bottom: 10px; color: #fff; font-size: 32px; text-transform: uppercase; }
 
       #debug-info { text-align: center; color: #00ff66; font-family: "Orbitron"; font-size: 14px; font-weight: bold; margin-bottom: 35px; text-shadow: 0 0 10px rgba(0, 255, 102, 0.5); letter-spacing: 2px; }
 
       .category-nav { display: flex; justify-content: center; gap: 20px; margin-bottom: 35px; flex-wrap: wrap;}
       .cat-btn { 
-        background: var(--glass-frame); backdrop-filter: var(--glass-blur-frame); -webkit-backdrop-filter: var(--glass-blur-frame);
+        background: rgba(20, 20, 20, 0.85); 
         border: 1px solid var(--glass-border-side); border-top: 1px solid rgba(255,255,255,0.1);
         color: #999; padding: 12px 30px; font-family: "Orbitron"; font-size: 12px; font-weight: 500; letter-spacing: 2px; cursor: pointer; 
         transition: all 0.3s ease; border-radius: 8px; box-shadow: 0 10px 20px rgba(0,0,0,0.5);
@@ -95,7 +100,6 @@
         border: 1px solid var(--glass-border-side); border-top: 1px solid var(--glass-border-top);
         border-radius: 20px; padding: 25px; margin-bottom: 50px; 
         box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255,255,255,0.05); 
-        overflow: hidden; 
       }
       
       table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
@@ -103,68 +107,39 @@
       .sortable-header:hover { color: #fff; text-shadow: 0 0 12px var(--neon-red); }
       th { font-family: "Orbitron"; color: var(--neon-red); font-size: 11px; font-weight: 500; letter-spacing: 1px; padding: 12px 20px; text-align: left; text-transform: uppercase; border-bottom: 1px solid rgba(255,42,42,0.2); }
       
-      tr.row-frame { 
-        opacity: 0; 
-        animation: slideInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
-        transition: transform 0.3s ease; 
-      }
-      tr.row-frame td { 
-        background: var(--glass-frame); backdrop-filter: var(--glass-blur-frame); -webkit-backdrop-filter: var(--glass-blur-frame);
-        border-top: 1px solid rgba(255,255,255,0.04); border-bottom: 1px solid rgba(0,0,0,0.6);
-        padding: 16px 20px; font-size: 16px; font-weight: 500; color: #ccc; transition: all 0.3s ease; 
-      }
+      th:nth-child(1) { width: 38%; } th:nth-child(2) { width: 10%; } th:nth-child(3) { width: 12%; }
+      th:nth-child(4) { width: 10%; } th:nth-child(5) { width: 12%; } th:nth-child(6) { width: 18%; text-align: right; }
+      
+      tr.row-frame { opacity: 0; animation: slideInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; transition: transform 0.3s ease; transform: translateZ(0); }
+      tr.row-frame td { background: rgba(20, 20, 20, 0.85); border-top: 1px solid rgba(255,255,255,0.04); border-bottom: 1px solid rgba(0,0,0,0.6); padding: 16px 20px; font-size: 16px; font-weight: 500; color: #ccc; transition: all 0.3s ease; }
       tr.row-frame td:first-child { border-left: 1px solid rgba(255,255,255,0.02); border-top-left-radius: 12px; border-bottom-left-radius: 12px; color: #fff; }
-      tr.row-frame td:last-child { border-right: 1px solid rgba(0,0,0,0.6); border-top-right-radius: 12px; border-bottom-right-radius: 12px; }
-      tr.row-frame:hover { transform: scale(1.01) translateY(-3px); }
-      tr.row-frame:hover td { background: rgba(45, 15, 15, 0.7); border-color: rgba(255,42,42,0.25); box-shadow: 0 8px 25px rgba(0,0,0,0.5); color: #fff; }
+      tr.row-frame td:last-child { border-right: 1px solid rgba(0,0,0,0.6); border-top-right-radius: 12px; border-bottom-right-radius: 12px; padding-right: 15px; }
+      tr.row-frame:hover { transform: scale(1.01) translateY(-3px) translateZ(0); }
+      tr.row-frame:hover td { background: rgba(45, 15, 15, 0.95); border-color: rgba(255,42,42,0.25); box-shadow: 0 8px 25px rgba(0,0,0,0.5); color: #fff; }
 
-      .badge-disponibile {
-        background: rgba(0, 255, 102, 0.1); border: 1px solid rgba(0, 255, 102, 0.4);
-        color: #00ff66; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 700;
-        letter-spacing: 1px; box-shadow: inset 0 0 8px rgba(0, 255, 102, 0.2), 0 0 10px rgba(0, 255, 102, 0.1);
-        font-family: 'Orbitron';
-      }
-      .badge-esaurito {
-        background: rgba(255, 0, 64, 0.1); border: 1px solid rgba(255, 0, 64, 0.4);
-        color: #ff0040; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 700;
-        letter-spacing: 1px; box-shadow: inset 0 0 8px rgba(255, 0, 64, 0.2), 0 0 10px rgba(255, 0, 64, 0.1);
-        font-family: 'Orbitron';
-      }
+      .badge-disponibile { background: rgba(0, 255, 102, 0.1); border: 1px solid rgba(0, 255, 102, 0.4); color: #00ff66; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; letter-spacing: 1px; box-shadow: inset 0 0 8px rgba(0, 255, 102, 0.2), 0 0 10px rgba(0, 255, 102, 0.1); font-family: 'Orbitron'; white-space: nowrap; display: inline-block; }
+      .badge-esaurito { background: rgba(255, 0, 64, 0.1); border: 1px solid rgba(255, 0, 64, 0.4); color: #ff0040; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; letter-spacing: 1px; box-shadow: inset 0 0 8px rgba(255, 0, 64, 0.2), 0 0 10px rgba(255, 0, 64, 0.1); font-family: 'Orbitron'; white-space: nowrap; display: inline-block; }
 
       .notes-section { padding-top: 20px; }
-      .note-card { 
-        background: var(--glass-panel); backdrop-filter: var(--glass-blur-main); -webkit-backdrop-filter: var(--glass-blur-main);
-        border: 1px solid var(--glass-border-side); border-top: 1px solid var(--glass-border-top);
-        border-left: 5px solid var(--neon-red); 
-        border-radius: 16px; padding: 25px; margin-bottom: 25px; 
-        opacity: 0; animation: slideInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        transition: all 0.4s ease; box-shadow: 0 15px 35px rgba(0,0,0,0.6);
-      }
-      .note-card:hover { background: linear-gradient(135deg, rgba(30, 5, 5, 0.8) 0%, rgba(10, 0, 0, 0.9) 100%); box-shadow: 0 20px 50px rgba(255,42,42,0.15); border-left-color: #fff; transform: translateY(-3px); }
+      .note-card { background: rgba(18, 18, 18, 0.95); border: 1px solid var(--glass-border-side); border-top: 1px solid var(--glass-border-top); border-left: 5px solid var(--neon-red); border-radius: 16px; padding: 25px; margin-bottom: 25px; opacity: 0; animation: slideInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; transition: all 0.4s ease; box-shadow: 0 15px 35px rgba(0,0,0,0.6); transform: translateZ(0); }
+      .note-card:hover { background: linear-gradient(135deg, rgba(30, 5, 5, 0.95) 0%, rgba(10, 0, 0, 1) 100%); box-shadow: 0 20px 50px rgba(255,42,42,0.15); border-left-color: #fff; transform: translateY(-3px) translateZ(0); }
       .note-header { width: 100%; display: flex; justify-content: space-between; margin-bottom: 20px; align-items: center; }
       
-      .note-list-container { 
-        width: 100%; background: var(--glass-frame); backdrop-filter: var(--glass-blur-frame); -webkit-backdrop-filter: var(--glass-blur-frame);
-        padding: 15px 20px; border-radius: 12px; box-sizing: border-box; 
-        border: 1px solid rgba(255,255,255,0.03); border-top: 1px solid rgba(255,255,255,0.08);
-        box-shadow: inset 0 5px 20px rgba(0,0,0,0.6);
-      }
-      .single-note { 
-        display: flex; justify-content: space-between; align-items: center; 
-        border-bottom: 1px solid rgba(255,255,255,0.04); 
-        padding: 12px 10px; font-size: 15px; color: #ddd; transition: all 0.3s ease; border-radius: 8px; margin-bottom: 4px;
-      }
+      .note-list-container { width: 100%; background: rgba(10, 10, 10, 0.8); padding: 15px 20px; border-radius: 12px; box-sizing: border-box; border: 1px solid rgba(255,255,255,0.03); border-top: 1px solid rgba(255,255,255,0.08); box-shadow: inset 0 5px 20px rgba(0,0,0,0.6); }
+      .single-note { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.04); padding: 12px 10px; font-size: 15px; color: #ddd; transition: all 0.3s ease; border-radius: 8px; margin-bottom: 4px; }
       .single-note:last-child { border-bottom: none; margin-bottom: 0; }
       .single-note:hover { background: rgba(255,42,42,0.08); border: 1px solid rgba(255,42,42,0.1); box-shadow: 0 5px 15px rgba(0,0,0,0.3); transform: translateX(6px); color: #fff; }
 
       .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; justify-content: center; align-items: center; }
       .modal.active { display: flex; animation: blurIn 0.4s ease forwards; } 
-      .modal.active .modal-content { animation: modalEntrance 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; } 
+      
+      /* Applichiamo il Morphing solo alla finestra della scheda */
+      .modal.active .modal-content { animation: morphEntrance 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards; } 
       .modal.closing { display: flex; animation: blurOut 0.4s ease forwards; }
-      .modal.closing .modal-content { animation: modalExit 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+      .modal.closing .modal-content { animation: morphExit 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
       
       .modal-content { 
-        background: linear-gradient(135deg, rgba(25, 5, 5, 0.85) 0%, rgba(10, 10, 10, 0.95) 100%); 
+        background: linear-gradient(135deg, rgba(25, 5, 5, 0.95) 0%, rgba(10, 10, 10, 0.98) 100%); 
         backdrop-filter: blur(30px) saturate(200%); -webkit-backdrop-filter: blur(30px) saturate(200%);
         border: 1px solid rgba(255,42,42,0.2); border-top: 1px solid rgba(255,42,42,0.5);
         padding: 40px; width: 440px; border-radius: 24px; position: relative; 
@@ -175,50 +150,47 @@
       .input-group { margin-bottom: 22px; } 
       label { font-family: "Orbitron"; font-size: 10px; color: var(--neon-red); margin-bottom: 8px; display: block; letter-spacing: 1.5px; font-weight: 500; }
       
-      input[type="text"], input[type="number"], select { 
-        width: 100%; background: rgba(0, 0, 0, 0.6); 
-        border: none; border-bottom: 2px solid #333;
-        color: #fff; padding: 12px 16px; font-family: "Rajdhani"; font-size: 17px; font-weight: 500;
-        border-radius: 8px 8px 0 0; outline: none; box-sizing: border-box; 
-        transition: all 0.3s ease; box-shadow: inset 0 2px 10px rgba(0,0,0,0.8);
-      }
-      input[type="text"]:focus, input[type="number"]:focus, select:focus {
-        border-bottom-color: var(--neon-red); background: rgba(20,5,5,0.8); box-shadow: inset 0 2px 10px rgba(0,0,0,0.8), 0 10px 20px rgba(255,42,42,0.1);
-      }
+      input[type="text"], input[type="number"] { width: 100%; background: rgba(0, 0, 0, 0.6); border: none; border-bottom: 2px solid #333; color: #fff; padding: 12px 16px; font-family: "Rajdhani"; font-size: 17px; font-weight: 500; border-radius: 8px 8px 0 0; outline: none; box-sizing: border-box; transition: all 0.3s ease; box-shadow: inset 0 2px 10px rgba(0,0,0,0.8); }
+      input[type="text"]:focus, input[type="number"]:focus { border-bottom-color: var(--neon-red); background: rgba(20,5,5,0.8); box-shadow: inset 0 2px 10px rgba(0,0,0,0.8), 0 10px 20px rgba(255,42,42,0.1); }
       
-      select {
-        appearance: none; -webkit-appearance: none;
-        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ff2a2a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-        background-repeat: no-repeat; background-position: right 16px center; background-size: 18px;
-        cursor: pointer;
-      }
-      select:hover { border-bottom-color: var(--neon-red); background-color: rgba(20,5,5,0.7); }
-      select option { background-color: var(--bg-deep); color: #fff; font-family: "Rajdhani"; font-weight: 600; padding: 10px; }
+      /* TENDINA CYBERPUNK */
+      .cyber-select { position: relative; width: 100%; user-select: none; }
+      .select-selected { background: rgba(0, 0, 0, 0.6); border-bottom: 2px solid #333; color: #fff; padding: 12px 16px; font-family: "Rajdhani"; font-size: 17px; font-weight: 600; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; box-shadow: inset 0 2px 10px rgba(0,0,0,0.8); position: relative; }
+      .select-selected::after { content: '▼'; position: absolute; right: 16px; top: 15px; color: var(--neon-red); font-size: 12px; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+      .select-selected:hover { border-bottom-color: var(--neon-red); background: rgba(20,5,5,0.8); }
+      .cyber-select.open .select-selected::after { transform: rotate(180deg); }
+      .select-items { position: absolute; top: 100%; left: 0; right: 0; z-index: 99; background: rgba(15, 5, 5, 0.98); border: 1px solid rgba(255,42,42,0.3); border-top: none; box-shadow: 0 15px 30px rgba(0,0,0,0.9); border-radius: 0 0 12px 12px; overflow: hidden; opacity: 0; transform: translateY(-10px); visibility: hidden; transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.25s; }
+      .select-items.open { opacity: 1; transform: translateY(0); visibility: visible; }
+      .select-items div { padding: 12px 16px; font-family: "Rajdhani"; font-size: 16px; font-weight: 600; color: #ccc; cursor: pointer; transition: 0.2s; border-bottom: 1px solid rgba(255,255,255,0.05); }
+      .select-items div:last-child { border-bottom: none; }
+      .select-items div:hover { background: rgba(255,42,42,0.2); color: #fff; padding-left: 24px; border-left: 4px solid var(--neon-red); }
 
       .checkbox-group { display: flex; gap: 20px; align-items: center; background: rgba(0,0,0,0.4); padding: 16px; border-radius: 8px; border-left: 3px solid #333; transition: 0.3s; } 
       .checkbox-group:hover { border-left-color: var(--neon-red); background: rgba(20,5,5,0.6); }
       .checkbox-group label { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #ccc; cursor: pointer; margin:0; font-family: "Rajdhani"; letter-spacing: 1px;} 
       .checkbox-group input { cursor: pointer; width: 16px; height: 16px; accent-color: var(--neon-red); }
 
+      /* ==============================================
+         BOTTONE + (Scompare quando la scheda si apre)
+         ============================================== */
       .btn-plus-fixed { 
-        background: linear-gradient(135deg, var(--neon-red) 0%, var(--neon-red-dark) 100%); 
-        color: white; font-size: 32px; font-weight: 300; width: 70px; height: 70px; 
-        border-radius: 50%; position: fixed; bottom: 40px; right: 40px; 
-        box-shadow: 0 15px 35px rgba(255,42,42,0.4), inset 0 2px 5px rgba(255,255,255,0.3); border: none; cursor: pointer; z-index: 100; 
-        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; justify-content: center; align-items: center;
+        background: linear-gradient(135deg, var(--neon-red) 0%, var(--neon-red-dark) 100%); color: white; font-size: 32px; font-weight: 300; width: 70px; height: 70px; 
+        border-radius: 50%; position: fixed; bottom: 40px; right: 40px; box-shadow: 0 15px 35px rgba(255,42,42,0.4), inset 0 2px 5px rgba(255,255,255,0.3); border: none; cursor: pointer; z-index: 100; 
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); display: flex; justify-content: center; align-items: center;
       }
       .btn-plus-fixed:hover { transform: scale(1.1) rotate(90deg); box-shadow: 0 20px 50px rgba(255,42,42,0.6); background: #fff; color: var(--neon-red); }
       
-      .btn { 
-        font-family: "Orbitron"; cursor: pointer; border: 1px solid rgba(255,42,42,0.5); 
-        background: rgba(255,42,42,0.05); color: var(--neon-red); padding: 10px 18px; font-size: 11px; font-weight: 500; border-radius: 8px; 
-        transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 1px;
+      /* Classe per nascondere il bottone e completare l'illusione ottica */
+      .btn-plus-fixed.hide-morph {
+        transform: scale(0);
+        opacity: 0;
+        pointer-events: none;
       }
-      .btn:hover { background: var(--neon-red); color: white; box-shadow: 0 8px 20px rgba(255,42,42,0.4); transform: translateY(-2px); letter-spacing: 2px; }
       
+      .btn { font-family: "Orbitron"; cursor: pointer; border: 1px solid rgba(255,42,42,0.5); background: rgba(255,42,42,0.05); color: var(--neon-red); padding: 10px 18px; font-size: 11px; font-weight: 500; border-radius: 8px; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 1px; }
+      .btn:hover { background: var(--neon-red); color: white; box-shadow: 0 8px 20px rgba(255,42,42,0.4); transform: translateY(-2px); letter-spacing: 2px; }
       .btn-blue { border-color: rgba(0,255,249,0.5); color: #00fff9; background: rgba(0,255,249,0.05); } 
       .btn-blue:hover { background: #00fff9; box-shadow: 0 8px 20px rgba(0,255,249,0.4); color: #000; letter-spacing: 2px; }
-      
       .btn-submit { background: linear-gradient(135deg, var(--neon-red-dark) 0%, var(--neon-red) 100%); border: none; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.5); box-shadow: 0 10px 25px rgba(255,42,42,0.3); transition: all 0.3s ease; }
       .btn-submit:hover { background: linear-gradient(135deg, #ff4d4d 0%, var(--neon-red) 100%); color: #fff; box-shadow: 0 15px 35px rgba(255,42,42,0.6); transform: translateY(-2px); }
 
@@ -304,19 +276,31 @@
           <div class="input-group" style="flex: 1"><label>MARGINE LORDO</label><input type="text" id="in-margine" readonly style="color: #00ff66; font-weight: bold; background: rgba(0,255,100,0.05); border-bottom-color: #00ff66;" /></div>
           <div class="input-group" style="flex: 1"><label>PREZZO STAFF (€)</label><input type="number" id="in-interni" step="0.01" min="0.01" /></div>
         </div>
+        
         <div style="display: flex; gap: 20px">
-          <div class="input-group" style="flex: 1"><label>CATEGORIA</label>
-            <select id="in-categoria">
-                <option value="CIBI">CIBI</option>
-                <option value="BEVANDE">BEVANDE</option>
-                <option value="DOLCI">DOLCI</option>
-            </select>
+          <div class="input-group" style="flex: 1">
+            <label>CATEGORIA</label>
+            <div class="cyber-select">
+                <div class="select-selected" id="disp-categoria" onclick="toggleDropdown('cat-options')">CIBI</div>
+                <div class="select-items" id="cat-options">
+                    <div onclick="setSelect('categoria', 'CIBI', 'CIBI', 'cat-options')">CIBI</div>
+                    <div onclick="setSelect('categoria', 'BEVANDE', 'BEVANDE', 'cat-options')">BEVANDE</div>
+                    <div onclick="setSelect('categoria', 'DOLCI', 'DOLCI', 'cat-options')">DOLCI</div>
+                </div>
+            </div>
+            <input type="hidden" id="in-categoria" value="CIBI">
           </div>
-          <div class="input-group" style="flex: 1"><label>STATO DISPONIBILITÀ</label>
-            <select id="in-attivo">
-                <option value="SI">DISPONIBILE</option>
-                <option value="NO">ESAURITO</option>
-            </select>
+          
+          <div class="input-group" style="flex: 1">
+            <label>STATO DISPONIBILITÀ</label>
+            <div class="cyber-select">
+                <div class="select-selected" id="disp-attivo" onclick="toggleDropdown('stato-options')">DISPONIBILE</div>
+                <div class="select-items" id="stato-options">
+                    <div onclick="setSelect('attivo', 'SI', 'DISPONIBILE', 'stato-options')">DISPONIBILE</div>
+                    <div onclick="setSelect('attivo', 'NO', 'ESAURITO', 'stato-options')">ESAURITO</div>
+                </div>
+            </div>
+            <input type="hidden" id="in-attivo" value="SI">
           </div>
         </div>
         
@@ -376,17 +360,50 @@
       for(let i=0; i<70; i++) particles.push(new Particle());
       function animate() { ctx.clearRect(0, 0, canvas.width, canvas.height); particles.forEach(p => { p.update(); p.draw(); }); requestAnimationFrame(animate); } animate();
 
-      // ESTREZIONE DATI SICURA CON TRY-CATCH
-      let rawBackendData = { items: [], note_groups: [] };
-      try {
-          const el = document.getElementById('backend-data');
-          if (el && el.textContent.trim() !== "") {
-              rawBackendData = JSON.parse(el.textContent);
-          }
-      } catch(e) {
-          console.error("ERRORE LETTURA DATI PYTHON:", e);
+      // Funzioni per nascondere il bottone durante il morphing
+      function nascondiBtn() {
+          const btn = document.querySelector('.btn-plus-fixed');
+          if (btn) btn.classList.add('hide-morph');
+      }
+      function mostraBtn() {
+          const btn = document.querySelector('.btn-plus-fixed');
+          if (btn) btn.classList.remove('hide-morph');
+      }
+
+      function toggleDropdown(id) {
+          const el = document.getElementById(id);
+          const parent = el.parentElement;
+          
+          document.querySelectorAll(".select-items").forEach(item => {
+              if(item.id !== id) {
+                  item.classList.remove("open");
+                  item.parentElement.classList.remove("open");
+              }
+          });
+          
+          el.classList.toggle("open");
+          parent.classList.toggle("open");
       }
       
+      function setSelect(inputId, value, text, dropdownId) {
+          document.getElementById("in-" + inputId).value = value;
+          document.getElementById("disp-" + inputId).innerText = text;
+          const el = document.getElementById(dropdownId);
+          el.classList.remove("open");
+          el.parentElement.classList.remove("open");
+      }
+      
+      document.addEventListener("click", function(e) {
+          if (!e.target.matches('.select-selected')) {
+              document.querySelectorAll(".select-items").forEach(el => {
+                  el.classList.remove("open");
+                  el.parentElement.classList.remove("open");
+              });
+          }
+      });
+
+      let rawBackendData = { items: [], note_groups: [] };
+      try { const el = document.getElementById('backend-data'); if (el && el.textContent.trim() !== "") rawBackendData = JSON.parse(el.textContent); } catch(e) { console.error(e); }
       let rawItems = rawBackendData.items || [];
       let rawNoteGroups = rawBackendData.note_groups || [];
 
@@ -402,64 +419,95 @@
                   else if(catString.includes("DOLC") || catString.includes("SPEC")) catCorretta = "DOLCI";
 
                   uniqueProdotti[item.id] = { 
-                      id: item.id, 
-                      nome: item.prodotto || item.nome || "Senza Nome", 
-                      costo: item.costo ? parseFloat(item.costo) : 0, 
-                      prezzo: item.prezzo_euro ? parseFloat(item.prezzo_euro) : 0, 
+                      id: item.id, nome: item.prodotto || item.nome || "Senza Nome", 
+                      costo: item.costo ? parseFloat(item.costo) : 0, prezzo: item.prezzo_euro ? parseFloat(item.prezzo_euro) : 0, 
                       interni: item.prezzo_interni ? parseFloat(item.prezzo_interni) : 0, 
-                      categoria: catCorretta, 
-                      attivo: item.attivo ? "SI" : "NO" 
+                      categoria: catCorretta, attivo: item.attivo ? "SI" : "NO" 
                   };
               }
           });
           prodotti = Object.values(uniqueProdotti);
       }
-
       document.getElementById('debug-info').innerText = "PRODOTTI TROVATI NEL DATABASE: " + prodotti.length;
 
       let gruppiNote = [];
       if (Array.isArray(rawNoteGroups)) {
           gruppiNote = rawNoteGroups.map(g => ({
-              id: g.id_gruppo, 
-              nome: g.nome_gruppo, 
-              esclusivo: g.esclusivo, 
-              obbligatorio: g.obbligatorio_default,
+              id: g.id_gruppo, nome: g.nome_gruppo, esclusivo: g.esclusivo, obbligatorio: g.obbligatorio_default,
               note: g.note ? g.note.map(n => ({ id: n.id, nome: n.nome, delta: n.price_delta_euro })) : []
           }));
       }
 
       let categoriaAttiva = "TUTTI", sortAsc = true, azioneConfermata = null; 
 
-      function chiudiModale(id) { const modale = document.getElementById(id); modale.classList.add('closing'); setTimeout(() => { modale.classList.remove('active', 'closing'); }, 380); }
-      function apriConferma(messaggio, callback) { document.getElementById("testo-conferma").innerText = messaggio; azioneConfermata = callback; document.getElementById("modal-conferma").classList.add("active"); }
+      function chiudiModale(id) { 
+          const modale = document.getElementById(id); 
+          modale.classList.add('closing'); 
+          setTimeout(() => { 
+              modale.classList.remove('active', 'closing'); 
+              mostraBtn(); // Riporta il bottone +
+          }, 380); 
+      }
+      
+      function apriConferma(messaggio, callback) { document.getElementById("testo-conferma").innerText = messaggio; azioneConfermata = callback; document.getElementById("modal-conferma").classList.add("active"); nascondiBtn(); }
       function eseguiConferma() { if (azioneConfermata) azioneConfermata(); chiudiModale('modal-conferma'); azioneConfermata = null; }
       function animazioneErrore(idBox) { const box = document.getElementById(idBox); box.style.boxShadow = "0 0 60px #ff0040, 0 25px 50px rgba(0,0,0,0.8)"; setTimeout(() => { box.style.boxShadow = "0 40px 80px rgba(0,0,0,0.9), inset 0 0 30px rgba(255,42,42,0.05)"; }, 500); }
       function contieneVolgarita(testo) { const testoLow = testo.toLowerCase(); const paroleBloccate = ["cazzo", "merda", "stronz", "puttan", "troia", "fanculo", "coglion", "bastard", "zoccola", "bestemmia", "dio", "madonn", "gesu", "cristo"]; return paroleBloccate.some(parola => testoLow.includes(parola)); }
       function toggleSort() { sortAsc = !sortAsc; document.getElementById("sort-icon").innerText = sortAsc ? "⬇️" : "⬆️"; render(); }
       function calcola() { const c = parseFloat(document.getElementById("in-costo").value) || 0; const p = parseFloat(document.getElementById("in-prezzo").value) || 0; const margEl = document.getElementById("in-margine"); if (p > 0) { margEl.value = Math.round(((p - c) / p) * 100) + "%"; } else { margEl.value = "0%"; } }
       function filtra(cat, btn) { categoriaAttiva = cat; document.querySelectorAll(".cat-btn").forEach(b => b.classList.remove("active")); btn.classList.add("active"); render(); }
-      function autoDetectCategory() { const nome = document.getElementById("in-nome").value.toLowerCase(), catSelect = document.getElementById("in-categoria"); const bevande = ["coca", "acqua", "birra", "vino", "the", "drink", "gin", "succo", "bibita"]; const cibo = ["pizza", "panino", "hamburger", "pasta", "fritto", "focaccia", "kebab", "piadina"]; let detected = "DOLCI"; if (bevande.some(k => nome.includes(k))) detected = "BEVANDE"; else if (cibo.some(k => nome.includes(k))) detected = "CIBI"; catSelect.value = detected; }
+      
+      function autoDetectCategory() { 
+          const nome = document.getElementById("in-nome").value.toLowerCase();
+          const bevande = ["coca", "acqua", "birra", "vino", "the", "drink", "gin", "succo", "bibita"]; 
+          const cibo = ["pizza", "panino", "hamburger", "pasta", "fritto", "focaccia", "kebab", "piadina"]; 
+          let detected = "DOLCI"; 
+          if (bevande.some(k => nome.includes(k))) detected = "BEVANDE"; 
+          else if (cibo.some(k => nome.includes(k))) detected = "CIBI"; 
+          setSelect('categoria', detected, detected, 'cat-options');
+      }
 
       function apriModale() { 
+        nascondiBtn(); // Il bottone sparisce mentre la scheda cresce!
         document.getElementById("in-id").value = ""; document.getElementById("modal-error-msg").innerText = ""; 
         document.querySelectorAll("#modal input[type='text'], #modal input[type='number']").forEach(i => { i.value = ""; i.classList.remove("input-error"); }); 
-        document.getElementById("in-categoria").value = categoriaAttiva === "TUTTI" ? "CIBI" : categoriaAttiva; document.getElementById("in-attivo").value = "SI"; document.getElementById("in-margine").value = ""; 
+        document.getElementById("in-margine").value = ""; 
+        
+        let startCat = categoriaAttiva === "TUTTI" ? "CIBI" : categoriaAttiva;
+        setSelect('categoria', startCat, startCat, 'cat-options');
+        setSelect('attivo', 'SI', 'DISPONIBILE', 'stato-options');
+        
         document.getElementById("modal").classList.add("active"); document.getElementById("in-nome").focus(); 
       }
       function modifica(id) { 
+        nascondiBtn();
         document.getElementById("modal-error-msg").innerText = ""; const p = prodotti.find(x => x.id === id); 
-        document.getElementById("in-id").value = p.id; document.getElementById("in-nome").value = p.nome; document.getElementById("in-costo").value = p.costo || 0; document.getElementById("in-prezzo").value = p.prezzo; document.getElementById("in-interni").value = p.interni; document.getElementById("in-categoria").value = p.categoria; document.getElementById("in-attivo").value = p.attivo; 
-        document.querySelectorAll("input, select").forEach(i => i.classList.remove("input-error")); calcola(); document.getElementById("modal").classList.add("active"); 
+        document.getElementById("in-id").value = p.id; document.getElementById("in-nome").value = p.nome; document.getElementById("in-costo").value = p.costo || 0; document.getElementById("in-prezzo").value = p.prezzo; document.getElementById("in-interni").value = p.interni; 
+        
+        setSelect('categoria', p.categoria, p.categoria, 'cat-options');
+        setSelect('attivo', p.attivo, p.attivo === 'SI' ? 'DISPONIBILE' : 'ESAURITO', 'stato-options');
+        
+        document.querySelectorAll("input").forEach(i => i.classList.remove("input-error")); calcola(); document.getElementById("modal").classList.add("active"); 
       }
       function duplica(id) {
+        nascondiBtn();
         document.getElementById("modal-error-msg").innerText = ""; const p = prodotti.find(x => x.id === id); 
-        document.getElementById("in-id").value = ""; document.getElementById("in-nome").value = p.nome + " (Copia)"; document.getElementById("in-costo").value = p.costo || 0; document.getElementById("in-prezzo").value = p.prezzo; document.getElementById("in-interni").value = p.interni; document.getElementById("in-categoria").value = p.categoria; document.getElementById("in-attivo").value = p.attivo; 
-        document.querySelectorAll("input, select").forEach(i => i.classList.remove("input-error")); calcola(); document.getElementById("modal").classList.add("active"); 
+        document.getElementById("in-id").value = ""; document.getElementById("in-nome").value = p.nome + " (Copia)"; document.getElementById("in-costo").value = p.costo || 0; document.getElementById("in-prezzo").value = p.prezzo; document.getElementById("in-interni").value = p.interni; 
+        
+        setSelect('categoria', p.categoria, p.categoria, 'cat-options');
+        setSelect('attivo', p.attivo, p.attivo === 'SI' ? 'DISPONIBILE' : 'ESAURITO', 'stato-options');
+        
+        document.querySelectorAll("input").forEach(i => i.classList.remove("input-error")); calcola(); document.getElementById("modal").classList.add("active"); 
       }
+      
       function salva() {
-        const elNome = document.getElementById("in-nome"), elCosto = document.getElementById("in-costo"), elPrezzo = document.getElementById("in-prezzo"), elInterni = document.getElementById("in-interni"), elAttivo = document.getElementById("in-attivo"), elErrorMsg = document.getElementById("modal-error-msg");
-        [elNome, elCosto, elPrezzo, elInterni, elAttivo].forEach(el => el.classList.remove("input-error")); elErrorMsg.innerText = "";
-        const nome = elNome.value.trim(), costo = parseFloat(elCosto.value), prezzo = parseFloat(elPrezzo.value), interni = parseFloat(elInterni.value), attivo = elAttivo.value; let hasError = false, errorText = "";
+        const elNome = document.getElementById("in-nome"), elCosto = document.getElementById("in-costo"), elPrezzo = document.getElementById("in-prezzo"), elInterni = document.getElementById("in-interni"), elErrorMsg = document.getElementById("modal-error-msg");
+        [elNome, elCosto, elPrezzo, elInterni].forEach(el => el.classList.remove("input-error")); elErrorMsg.innerText = "";
+        const nome = elNome.value.trim(), costo = parseFloat(elCosto.value), prezzo = parseFloat(elPrezzo.value), interni = parseFloat(elInterni.value);
+        const attivo = document.getElementById("in-attivo").value;
+        const categoria = document.getElementById("in-categoria").value;
+        let hasError = false, errorText = "";
+        
         if (!nome) { elNome.classList.add("input-error"); hasError = true; errorText = "Inserire il Nome Prodotto."; }
         if (!hasError && contieneVolgarita(nome)) { elNome.classList.add("input-error"); hasError = true; errorText = "ERRORE: LINGUAGGIO NON CONSENTITO"; }
         if (!hasError && (isNaN(costo) || costo < 0)) { elCosto.classList.add("input-error"); hasError = true; errorText = "Costo non valido."; }
@@ -467,14 +515,15 @@
         if (!hasError && (isNaN(interni) || interni <= 0)) { elInterni.classList.add("input-error"); hasError = true; errorText = "Prezzo staff non valido."; }
         if (!hasError) { if (costo > prezzo) { elCosto.classList.add("input-error"); elPrezzo.classList.add("input-error"); hasError = true; errorText = "Costo maggiore del Prezzo!"; } else if (costo > interni) { elCosto.classList.add("input-error"); elInterni.classList.add("input-error"); hasError = true; errorText = "Costo maggiore del Prezzo Staff!"; } }
         if (hasError) { elErrorMsg.innerText = errorText; animazioneErrore("form-prodotto"); return; }
+        
         const btn = document.getElementById('btn-salva-prodotto'); btn.innerText = "CARICAMENTO...";
-        fetch('/admin/add_product', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: document.getElementById("in-id").value || null, nome: nome, costo: costo, prezzo: prezzo, interni: interni, categoria: document.getElementById("in-categoria").value, attivo: attivo }) })
+        fetch('/admin/add_product', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: document.getElementById("in-id").value || null, nome: nome, costo: costo, prezzo: prezzo, interni: interni, categoria: categoria, attivo: attivo }) })
         .then(r => r.json()).then(res => { if(res.success) window.location.reload(); else { btn.innerText = "SALVA NEL DATABASE"; elErrorMsg.innerText = "ERRORE SALVATAGGIO."; animazioneErrore("form-prodotto"); } }).catch(e => { btn.innerText = "SALVA NEL DATABASE"; elErrorMsg.innerText = "ERRORE DATABASE."; animazioneErrore("form-prodotto"); });
       }
       function elimina(id) { apriConferma("ELIMINARE DEFINITIVAMENTE IL PRODOTTO?", () => { fetch('/admin/delete_product', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({id: id}) }).then(r=>r.json()).then(res=>{ if(res.success) window.location.reload(); }); }); }
 
-      function apriModaleGruppo() { document.getElementById("in-gruppo-id").value = ""; document.getElementById("modal-gruppo-error-msg").innerText = ""; document.getElementById("in-gruppo-nome").value = ""; document.getElementById("in-gruppo-nome").classList.remove("input-error"); document.getElementById("in-gruppo-esclusivo").checked = false; document.getElementById("in-gruppo-obbligatorio").checked = false; document.getElementById("modal-gruppo").classList.add("active"); }
-      function modificaGruppo(id) { const g = gruppiNote.find(x => x.id === id); document.getElementById("in-gruppo-id").value = g.id; document.getElementById("modal-gruppo-error-msg").innerText = ""; document.getElementById("in-gruppo-nome").value = g.nome; document.getElementById("in-gruppo-nome").classList.remove("input-error"); document.getElementById("in-gruppo-esclusivo").checked = g.esclusivo; document.getElementById("in-gruppo-obbligatorio").checked = g.obbligatorio; document.getElementById("modal-gruppo").classList.add("active"); }
+      function apriModaleGruppo() { nascondiBtn(); document.getElementById("in-gruppo-id").value = ""; document.getElementById("modal-gruppo-error-msg").innerText = ""; document.getElementById("in-gruppo-nome").value = ""; document.getElementById("in-gruppo-nome").classList.remove("input-error"); document.getElementById("in-gruppo-esclusivo").checked = false; document.getElementById("in-gruppo-obbligatorio").checked = false; document.getElementById("modal-gruppo").classList.add("active"); }
+      function modificaGruppo(id) { nascondiBtn(); const g = gruppiNote.find(x => x.id === id); document.getElementById("in-gruppo-id").value = g.id; document.getElementById("modal-gruppo-error-msg").innerText = ""; document.getElementById("in-gruppo-nome").value = g.nome; document.getElementById("in-gruppo-nome").classList.remove("input-error"); document.getElementById("in-gruppo-esclusivo").checked = g.esclusivo; document.getElementById("in-gruppo-obbligatorio").checked = g.obbligatorio; document.getElementById("modal-gruppo").classList.add("active"); }
       function salvaGruppo() { 
           const elNome = document.getElementById("in-gruppo-nome"), elError = document.getElementById("modal-gruppo-error-msg"); elNome.classList.remove("input-error"); elError.innerText = ""; 
           const nome = elNome.value.trim(), regexValido = /^[a-zA-ZÀ-ÿ\s']+$/; 
@@ -486,8 +535,8 @@
       }
       function eliminaGruppo(id) { apriConferma("CANCELLARE IL GRUPPO E TUTTE LE SUE NOTE?", () => { fetch('/admin/delete_note_group', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id: id}) }).then(r=>r.json()).then(res=>{ if(res.success) window.location.reload(); }); }); }
 
-      function apriModaleNota(idGruppo) { document.getElementById("in-nota-id-gruppo").value = idGruppo; document.getElementById("in-nota-id").value = ""; document.getElementById("modal-nota-error-msg").innerText = ""; document.getElementById("in-nota-nome").value = ""; document.getElementById("in-nota-nome").classList.remove("input-error"); document.getElementById("in-nota-prezzo").value = "0"; document.getElementById("modal-nota").classList.add("active"); }
-      function modificaNota(idGruppo, idNota) { const g = gruppiNote.find(x => x.id === idGruppo); const n = g.note.find(x => x.id === idNota); document.getElementById("in-nota-id-gruppo").value = g.id; document.getElementById("in-nota-id").value = n.id; document.getElementById("modal-nota-error-msg").innerText = ""; document.getElementById("in-nota-nome").value = n.nome; document.getElementById("in-nota-nome").classList.remove("input-error"); document.getElementById("in-nota-prezzo").value = n.delta; document.getElementById("modal-nota").classList.add("active"); }
+      function apriModaleNota(idGruppo) { nascondiBtn(); document.getElementById("in-nota-id-gruppo").value = idGruppo; document.getElementById("in-nota-id").value = ""; document.getElementById("modal-nota-error-msg").innerText = ""; document.getElementById("in-nota-nome").value = ""; document.getElementById("in-nota-nome").classList.remove("input-error"); document.getElementById("in-nota-prezzo").value = "0"; document.getElementById("modal-nota").classList.add("active"); }
+      function modificaNota(idGruppo, idNota) { nascondiBtn(); const g = gruppiNote.find(x => x.id === idGruppo); const n = g.note.find(x => x.id === idNota); document.getElementById("in-nota-id-gruppo").value = g.id; document.getElementById("in-nota-id").value = n.id; document.getElementById("modal-nota-error-msg").innerText = ""; document.getElementById("in-nota-nome").value = n.nome; document.getElementById("in-nota-nome").classList.remove("input-error"); document.getElementById("in-nota-prezzo").value = n.delta; document.getElementById("modal-nota").classList.add("active"); }
       function salvaNota() { 
           const elNome = document.getElementById("in-nota-nome"), elPrezzo = document.getElementById("in-nota-prezzo"), elError = document.getElementById("modal-nota-error-msg"); elNome.classList.remove("input-error"); elError.innerText = ""; 
           const nome = elNome.value.trim(), prezzo = parseFloat(elPrezzo.value) || 0, regexValido = /^[a-zA-ZÀ-ÿ\s']+$/; 
@@ -500,10 +549,6 @@
       function eliminaNota(id) { apriConferma("ELIMINARE QUESTA SINGOLA NOTA?", () => { fetch('/admin/delete_note', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id: id}) }).then(r=>r.json()).then(res=>{ if(res.success) window.location.reload(); }); }); }
 
       function render() {
-        const dashboard = document.getElementById('mainDashboard');
-        // Raccogliamo l'altezza prima di svuotare la tabella, se il dashboard esiste
-        const oldHeight = dashboard ? dashboard.getBoundingClientRect().height : 0;
-
         const tableBody = document.getElementById("mainTable"), searchTerm = document.getElementById("searchInput").value.toLowerCase(); 
         tableBody.innerHTML = "";
         
@@ -522,14 +567,16 @@
           
           tr.innerHTML = `
             <td><b style="color:${colorNome}; font-size:17px; letter-spacing:1px;">${p.nome}</b>${badgeStato} <span style="font-size:10px; color:#555; margin-left:10px;">[${p.categoria}]</span></td>
-            <td style="color:#888">€${pCosto.toFixed(2)}</td>
-            <td style="color:var(--neon-red); font-weight:700; text-shadow: 0 0 10px var(--neon-glow); font-size:18px;">€${pPrezzo.toFixed(2)}</td>
+            <td style="color:#888; white-space:nowrap;">€${pCosto.toFixed(2)}</td>
+            <td style="color:var(--neon-red); font-weight:700; text-shadow: 0 0 10px var(--neon-glow); font-size:18px; white-space:nowrap;">€${pPrezzo.toFixed(2)}</td>
             <td style="color:#00ff66; font-weight:600;">${margineCalcolato}%</td>
-            <td style="color:#bbb;">€${(p.interni || 0).toFixed(2)}</td>
-            <td style="text-align: right; display:flex; justify-content:flex-end; gap:8px;">
-              <button class="btn" onclick="modifica(${p.id})">MOD</button> 
-              <button class="btn btn-blue" onclick="duplica(${p.id})">DUP</button>
-              <button class="btn" style="border-color:#555; color:#aaa; background:transparent;" onclick="elimina(${p.id})">X</button>
+            <td style="color:#bbb; white-space:nowrap;">€${(p.interni || 0).toFixed(2)}</td>
+            <td>
+              <div style="display:flex; justify-content:flex-end; gap:8px;">
+                <button class="btn" onclick="modifica(${p.id})">MOD</button> 
+                <button class="btn btn-blue" onclick="duplica(${p.id})">DUP</button>
+                <button class="btn" style="border-color:#555; color:#aaa; background:transparent;" onclick="elimina(${p.id})">X</button>
+              </div>
             </td>
           `;
           tableBody.appendChild(tr);
@@ -569,20 +616,6 @@
               <div class="note-list-container">${htmlNote || '<span style="color:#555; font-size:12px; font-style:italic; font-family:\'Orbitron\'; border:none; background:transparent; display:block; text-align:center; padding:15px;">VUOTO</span>'}</div>`;
             notesContainer.appendChild(div);
         });
-
-        // ANIMAZIONE ALTEZZA FLUIDA (Con controllo di sicurezza)
-        if (dashboard && typeof dashboard.animate === 'function') {
-            const newHeight = dashboard.getBoundingClientRect().height;
-            if (oldHeight !== newHeight && oldHeight > 0) {
-                dashboard.animate([
-                    { height: `${oldHeight}px` },
-                    { height: `${newHeight}px` }
-                ], {
-                    duration: 450,
-                    easing: 'cubic-bezier(0.25, 1, 0.5, 1)'
-                });
-            }
-        }
       }
       window.onload = render;
     </script>

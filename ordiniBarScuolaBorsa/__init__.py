@@ -35,7 +35,7 @@ def create_app():
     app.register_blueprint(orders_bp)
 
     from ordiniBarScuolaBorsa.admin import bp as admin_bp
-    app.register_blueprint(admin_bp)
+    app.register_blueprint(admin_bp, url_prefix='/admin')
 
     from ordiniBarScuolaBorsa.toggle import bp as toggle_bp
     app.register_blueprint(toggle_bp)
