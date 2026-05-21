@@ -3,11 +3,10 @@ import logging
 
 from .models import db, Prodotto, NoteGruppo, Note, get_products, get_general_notes
 
-# Creiamo il Blueprint (il prefisso /admin è gestito da __init__.py)
 bp = Blueprint('admin', __name__)
 
 # ==============================================================================
-# L'INDIRIZZO SARA': http://localhost:5000/admin/ o /admin
+# CARICAMENTO DASHBOARD
 # ==============================================================================
 @bp.route('/', strict_slashes=False)
 def admin_page():
@@ -23,7 +22,7 @@ def admin_page():
     return render_template('admin.html', data=data)
 
 # ==============================================================================
-# GESTIONE PRODOTTI -> /admin/add_product
+# GESTIONE PRODOTTI
 # ==============================================================================
 @bp.route('/add_product', methods=['POST'])
 def add_product():
@@ -42,13 +41,26 @@ def add_product():
             prodotto.categoria = data.get('categoria')
             prodotto.attivo = is_attivo
         else: 
-            nuovo = Prodotto(
+            prodotto = Prodotto(
                 nome=data.get('nome'), costo=data.get('costo'), 
                 prezzo_euro=data.get('prezzo'), prezzo_interni=data.get('interni'),
                 categoria=data.get('categoria'), attivo=is_attivo
             )
-            db.session.add(nuovo)
+            db.session.add(prodotto)
+            db.session.flush() # Importante: Ottiene l'ID del nuovo prodotto prima del commit
             
+        # GESTIONE DEI LEGAMI GRUPPI NOTE <-> PRODOTTO
+        gruppi_selezionati = data.get('gruppi_note', [])
+        
+        # 1. Scollega i gruppi che sono stati deselezionati per questo prodotto
+        NoteGruppo.query.filter_by(id_prodotto=prodotto.id).update({NoteGruppo.id_prodotto: None})
+        
+        # 2. Collega i gruppi che sono attualmente selezionati
+        for g_id in gruppi_selezionati:
+            gruppo = NoteGruppo.query.get(g_id)
+            if gruppo:
+                gruppo.id_prodotto = prodotto.id
+
         db.session.commit()
         return jsonify({'success': True})
     except Exception as e:
@@ -69,13 +81,14 @@ def delete_product():
         return jsonify({'success': False}), 500
 
 # ==============================================================================
-# GESTIONE GRUPPI NOTE -> /admin/add_note_group
+# GESTIONE GRUPPI VARIANTI
 # ==============================================================================
 @bp.route('/add_note_group', methods=['POST'])
 def add_note_group():
     try:
         data = request.get_json()
         g_id = data.get('id')
+        id_prodotto = data.get('id_prodotto')
         
         if g_id: 
             gruppo = NoteGruppo.query.get(g_id)
@@ -83,10 +96,13 @@ def add_note_group():
             gruppo.nome = data.get('nome')
             gruppo.esclusivo = data.get('esclusivo')
             gruppo.obbligatorio_default = data.get('obbligatorio')
+            if id_prodotto:
+                gruppo.id_prodotto = id_prodotto
         else: 
             nuovo = NoteGruppo(
                 nome=data.get('nome'), esclusivo=data.get('esclusivo'),
-                obbligatorio_default=data.get('obbligatorio')
+                obbligatorio_default=data.get('obbligatorio'),
+                id_prodotto=id_prodotto if id_prodotto else None
             )
             db.session.add(nuovo)
             
@@ -110,7 +126,7 @@ def delete_note_group():
         return jsonify({'success': False}), 500
 
 # ==============================================================================
-# GESTIONE SINGOLE NOTE -> /admin/add_note
+# GESTIONE INGREDIENTI/OPZIONI SINGOLE
 # ==============================================================================
 @bp.route('/add_note', methods=['POST'])
 def add_note():

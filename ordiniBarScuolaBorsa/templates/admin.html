@@ -17,7 +17,6 @@
         --glass-frame: linear-gradient(135deg, rgba(30, 30, 30, 0.4) 0%, rgba(10, 10, 10, 0.6) 100%);
         --glass-border-top: rgba(255, 42, 42, 0.3);
         --glass-border-side: rgba(255, 255, 255, 0.03);
-        --glass-blur-main: blur(20px) saturate(120%);
       }
 
       ::-webkit-scrollbar { width: 8px; height: 8px; }
@@ -26,40 +25,62 @@
       ::-webkit-scrollbar-thumb:hover { background: var(--neon-red); box-shadow: 0 0 10px var(--neon-red); }
 
       /* =========================================
-         ANIMAZIONI DI MORPHING (BOTTONE -> SCHEDA)
+         MOTORE DI ANIMAZIONE: SLIDE E MORPHING
          ========================================= */
-      @keyframes bootSequence { 0% { opacity: 0; transform: scale(1.02); } 100% { opacity: 1; transform: scale(1); } }
-      
-      /* Il frame nasce dalle esatte coordinate del bottone in basso a destra */
-      @keyframes morphEntrance { 
-        0% { opacity: 0; transform: translate(calc(50vw - 75px), calc(50vh - 75px)) scale(0); border-radius: 50%; } 
+      @keyframes dynamicMorphEntrance { 
+        0% { opacity: 0; transform: translate(var(--morph-tx, 0px), var(--morph-ty, 0px)) scale(0); border-radius: 50%; } 
         100% { opacity: 1; transform: translate(0, 0) scale(1); border-radius: 24px; } 
       }
-      /* Il frame torna ad essere il bottone */
-      @keyframes morphExit { 
+      @keyframes dynamicMorphExit { 
         0% { opacity: 1; transform: translate(0, 0) scale(1); border-radius: 24px; } 
-        100% { opacity: 0; transform: translate(calc(50vw - 75px), calc(50vh - 75px)) scale(0); border-radius: 50%; } 
+        100% { opacity: 0; transform: translate(var(--morph-tx, 0px), var(--morph-ty, 0px)) scale(0); border-radius: 50%; } 
       }
       
-      @keyframes blurIn { from { background: rgba(0, 0, 0, 0); backdrop-filter: blur(0px); } to { background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(15px); } }
-      @keyframes blurOut { from { background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(15px); } to { background: rgba(0, 0, 0, 0); backdrop-filter: blur(0px); } }
+      @keyframes blurIn { from { background: rgba(0, 0, 0, 0); } to { background: rgba(0, 0, 0, 0.85); } }
+      @keyframes blurOut { from { background: rgba(0, 0, 0, 0.85); } to { background: rgba(0, 0, 0, 0); } }
       
       @keyframes floatLogo { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
       @keyframes pulseGlow { 0% { box-shadow: 0 0 15px rgba(255,42,42,0.2); } 100% { box-shadow: 0 0 30px rgba(255,42,42,0.5); } }
-      @keyframes slideInUp { 0% { opacity: 0; transform: translateY(40px); } 100% { opacity: 1; transform: translateY(0); } }
+      
+      @keyframes slideInRight { 
+        0% { opacity: 0; transform: translateX(250px); } 
+        100% { opacity: 1; transform: translateX(0); } 
+      }
+      @keyframes slideOutLeft { 
+        0% { opacity: 1; transform: translateX(0); } 
+        100% { opacity: 0; transform: translateX(-250px); } 
+      }
 
       body { 
         font-family: "Rajdhani", sans-serif; 
         background: radial-gradient(circle at 50% 0%, #1a0505 0%, var(--bg-deep) 60%); 
         background-attachment: fixed;
         color: #e0e0e0; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; overflow-x: hidden; 
-        animation: bootSequence 1s ease-out; 
       }
       
-      #boot-loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 10000; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.4s; }
-      .loader-bar-container { width: 250px; height: 2px; background: #222; margin-top: 20px; overflow: hidden; }
-      .loader-bar { height: 100%; background: var(--neon-red); box-shadow: 0 0 15px var(--neon-red); width: 0%; transition: width 0.8s ease; }
       canvas#sparks { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.6; }
+
+      /* =========================================
+         SISTEMA DI NOTIFICHE E ASSENZA RETE
+         ========================================= */
+      .network-warning {
+          position: fixed; top: 0; left: 0; width: 100%; background: var(--neon-red-dark); color: white;
+          text-align: center; font-family: 'Orbitron'; font-size: 14px; font-weight: bold; letter-spacing: 2px; padding: 12px;
+          z-index: 10000; transform: translateY(-100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+          box-shadow: 0 4px 15px rgba(255,0,0,0.5);
+      }
+      .network-warning.offline { transform: translateY(0); }
+
+      .cyber-toast {
+          position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
+          background: linear-gradient(135deg, rgba(20,5,5,0.95) 0%, rgba(10,0,0,0.98) 100%);
+          border: 1px solid var(--neon-red); border-left: 5px solid var(--neon-red);
+          color: #fff; font-family: 'Orbitron'; font-size: 13px; font-weight: 500; letter-spacing: 1px;
+          padding: 16px 32px; border-radius: 8px; z-index: 10000;
+          box-shadow: 0 10px 30px rgba(255, 42, 42, 0.4); opacity: 0; pointer-events: none;
+          transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); text-align: center; white-space: nowrap;
+      }
+      .cyber-toast.show { transform: translateX(-50%) translateY(0); opacity: 1; pointer-events: auto; }
 
       .cyber-logo-container { 
         position: absolute; top: 25px; left: 30px; width: 90px; height: 90px; border-radius: 50%; 
@@ -77,8 +98,7 @@
 
       .category-nav { display: flex; justify-content: center; gap: 20px; margin-bottom: 35px; flex-wrap: wrap;}
       .cat-btn { 
-        background: rgba(20, 20, 20, 0.85); 
-        border: 1px solid var(--glass-border-side); border-top: 1px solid rgba(255,255,255,0.1);
+        background: rgba(20, 20, 20, 0.85); border: 1px solid var(--glass-border-side); border-top: 1px solid rgba(255,255,255,0.1);
         color: #999; padding: 12px 30px; font-family: "Orbitron"; font-size: 12px; font-weight: 500; letter-spacing: 2px; cursor: pointer; 
         transition: all 0.3s ease; border-radius: 8px; box-shadow: 0 10px 20px rgba(0,0,0,0.5);
       }
@@ -87,7 +107,7 @@
 
       .search-bar { 
         width: 100%; max-width: 450px; margin: 0 auto 35px auto; display: block; text-align: center; 
-        background: var(--glass-panel); backdrop-filter: var(--glass-blur-main); -webkit-backdrop-filter: var(--glass-blur-main);
+        background: var(--glass-panel); 
         border: 1px solid var(--glass-border-side); border-bottom: 2px solid var(--neon-red-dark);
         padding: 15px; color: #fff; border-radius: 12px; outline: none; transition: all 0.3s ease; 
         font-family: "Orbitron"; font-size: 13px; letter-spacing: 2px; box-shadow: 0 10px 30px rgba(0,0,0,0.6);
@@ -96,21 +116,26 @@
       .search-bar::placeholder { color: #555; }
 
       .dashboard { 
-        background: var(--glass-panel); backdrop-filter: var(--glass-blur-main); -webkit-backdrop-filter: var(--glass-blur-main);
+        background: var(--glass-panel); 
         border: 1px solid var(--glass-border-side); border-top: 1px solid var(--glass-border-top);
         border-radius: 20px; padding: 25px; margin-bottom: 50px; 
         box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255,255,255,0.05); 
       }
       
+      .table-wrapper { width: 100%; overflow-x: hidden; padding-bottom: 10px; }
       table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
       .sortable-header { cursor: pointer; transition: 0.2s; user-select: none; }
       .sortable-header:hover { color: #fff; text-shadow: 0 0 12px var(--neon-red); }
       th { font-family: "Orbitron"; color: var(--neon-red); font-size: 11px; font-weight: 500; letter-spacing: 1px; padding: 12px 20px; text-align: left; text-transform: uppercase; border-bottom: 1px solid rgba(255,42,42,0.2); }
       
-      th:nth-child(1) { width: 38%; } th:nth-child(2) { width: 10%; } th:nth-child(3) { width: 12%; }
-      th:nth-child(4) { width: 10%; } th:nth-child(5) { width: 12%; } th:nth-child(6) { width: 18%; text-align: right; }
+      th:nth-child(1) { width: 32%; } th:nth-child(2) { width: 10%; } th:nth-child(3) { width: 10%; }
+      th:nth-child(4) { width: 10%; } th:nth-child(5) { width: 10%; } th:nth-child(6) { width: 28%; text-align: right; }
       
-      tr.row-frame { opacity: 0; animation: slideInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; transition: transform 0.3s ease; transform: translateZ(0); }
+      tr.row-frame { 
+        opacity: 0; 
+        animation: slideInRight 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
+        transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease; 
+      }
       tr.row-frame td { background: rgba(20, 20, 20, 0.85); border-top: 1px solid rgba(255,255,255,0.04); border-bottom: 1px solid rgba(0,0,0,0.6); padding: 16px 20px; font-size: 16px; font-weight: 500; color: #ccc; transition: all 0.3s ease; }
       tr.row-frame td:first-child { border-left: 1px solid rgba(255,255,255,0.02); border-top-left-radius: 12px; border-bottom-left-radius: 12px; color: #fff; }
       tr.row-frame td:last-child { border-right: 1px solid rgba(0,0,0,0.6); border-top-right-radius: 12px; border-bottom-right-radius: 12px; padding-right: 15px; }
@@ -120,84 +145,93 @@
       .badge-disponibile { background: rgba(0, 255, 102, 0.1); border: 1px solid rgba(0, 255, 102, 0.4); color: #00ff66; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; letter-spacing: 1px; box-shadow: inset 0 0 8px rgba(0, 255, 102, 0.2), 0 0 10px rgba(0, 255, 102, 0.1); font-family: 'Orbitron'; white-space: nowrap; display: inline-block; }
       .badge-esaurito { background: rgba(255, 0, 64, 0.1); border: 1px solid rgba(255, 0, 64, 0.4); color: #ff0040; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; letter-spacing: 1px; box-shadow: inset 0 0 8px rgba(255, 0, 64, 0.2), 0 0 10px rgba(255, 0, 64, 0.1); font-family: 'Orbitron'; white-space: nowrap; display: inline-block; }
 
-      .notes-section { padding-top: 20px; }
-      .note-card { background: rgba(18, 18, 18, 0.95); border: 1px solid var(--glass-border-side); border-top: 1px solid var(--glass-border-top); border-left: 5px solid var(--neon-red); border-radius: 16px; padding: 25px; margin-bottom: 25px; opacity: 0; animation: slideInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; transition: all 0.4s ease; box-shadow: 0 15px 35px rgba(0,0,0,0.6); transform: translateZ(0); }
-      .note-card:hover { background: linear-gradient(135deg, rgba(30, 5, 5, 0.95) 0%, rgba(10, 0, 0, 1) 100%); box-shadow: 0 20px 50px rgba(255,42,42,0.15); border-left-color: #fff; transform: translateY(-3px) translateZ(0); }
-      .note-header { width: 100%; display: flex; justify-content: space-between; margin-bottom: 20px; align-items: center; }
-      
-      .note-list-container { width: 100%; background: rgba(10, 10, 10, 0.8); padding: 15px 20px; border-radius: 12px; box-sizing: border-box; border: 1px solid rgba(255,255,255,0.03); border-top: 1px solid rgba(255,255,255,0.08); box-shadow: inset 0 5px 20px rgba(0,0,0,0.6); }
-      .single-note { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.04); padding: 12px 10px; font-size: 15px; color: #ddd; transition: all 0.3s ease; border-radius: 8px; margin-bottom: 4px; }
-      .single-note:last-child { border-bottom: none; margin-bottom: 0; }
-      .single-note:hover { background: rgba(255,42,42,0.08); border: 1px solid rgba(255,42,42,0.1); box-shadow: 0 5px 15px rgba(0,0,0,0.3); transform: translateX(6px); color: #fff; }
-
-      .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; justify-content: center; align-items: center; }
+      .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; justify-content: center; align-items: center; overflow-y: auto; padding: 20px 0; box-sizing: border-box; }
       .modal.active { display: flex; animation: blurIn 0.4s ease forwards; } 
       
-      /* Applichiamo il Morphing solo alla finestra della scheda */
-      .modal.active .modal-content { animation: morphEntrance 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards; } 
+      .modal.active .modal-content { animation: dynamicMorphEntrance 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards; } 
       .modal.closing { display: flex; animation: blurOut 0.4s ease forwards; }
-      .modal.closing .modal-content { animation: morphExit 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+      .modal.closing .modal-content { animation: dynamicMorphExit 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
       
       .modal-content { 
-        background: linear-gradient(135deg, rgba(25, 5, 5, 0.95) 0%, rgba(10, 10, 10, 0.98) 100%); 
-        backdrop-filter: blur(30px) saturate(200%); -webkit-backdrop-filter: blur(30px) saturate(200%);
+        background: linear-gradient(135deg, rgba(25, 5, 5, 1) 0%, rgba(10, 10, 10, 1) 100%); 
         border: 1px solid rgba(255,42,42,0.2); border-top: 1px solid rgba(255,42,42,0.5);
-        padding: 40px; width: 440px; border-radius: 24px; position: relative; 
-        box-shadow: 0 40px 80px rgba(0,0,0,0.9), inset 0 0 30px rgba(255,42,42,0.05); 
+        padding: 40px; width: 940px; max-height: 92vh; overflow-y: auto; border-radius: 24px; position: relative; 
+        box-shadow: 0 20px 50px rgba(0,0,0,0.9); 
       }
+      .product-grid-layout { display: flex; gap: 35px; margin-top: 15px; }
+      .grid-column-left { flex: 1.1; display: flex; flex-direction: column; }
+      .grid-column-right { flex: 1.3; display: flex; flex-direction: column; border-left: 1px solid rgba(255,255,255,0.05); padding-left: 30px; }
+
+      @keyframes morphConfirmEntrance { 0% { opacity: 0; transform: translate(var(--morph-tx, 0px), var(--morph-ty, 0px)) scale(0); border-radius: 50%; } 100% { opacity: 1; transform: translate(0, 0) scale(1); border-radius: 16px; } }
+      @keyframes morphConfirmExit { 0% { opacity: 1; transform: translate(0, 0) scale(1); border-radius: 16px; } 100% { opacity: 0; transform: translate(var(--morph-tx, 0px), var(--morph-ty, 0px)) scale(0); border-radius: 50%; } }
+      .modal.active .modal-conferma-box { animation: morphConfirmEntrance 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards !important; max-height: unset; overflow: unset; }
+      .modal.closing .modal-conferma-box { animation: morphConfirmExit 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards !important; max-height: unset; overflow: unset; }
 
       .input-error { border-color: var(--error-color) !important; box-shadow: 0 4px 15px rgba(255, 0, 64, 0.3) !important; }
-      .input-group { margin-bottom: 22px; } 
+      .input-group { margin-bottom: 22px; position: relative;}
       label { font-family: "Orbitron"; font-size: 10px; color: var(--neon-red); margin-bottom: 8px; display: block; letter-spacing: 1.5px; font-weight: 500; }
       
       input[type="text"], input[type="number"] { width: 100%; background: rgba(0, 0, 0, 0.6); border: none; border-bottom: 2px solid #333; color: #fff; padding: 12px 16px; font-family: "Rajdhani"; font-size: 17px; font-weight: 500; border-radius: 8px 8px 0 0; outline: none; box-sizing: border-box; transition: all 0.3s ease; box-shadow: inset 0 2px 10px rgba(0,0,0,0.8); }
       input[type="text"]:focus, input[type="number"]:focus { border-bottom-color: var(--neon-red); background: rgba(20,5,5,0.8); box-shadow: inset 0 2px 10px rgba(0,0,0,0.8), 0 10px 20px rgba(255,42,42,0.1); }
       
-      /* TENDINA CYBERPUNK */
-      .cyber-select { position: relative; width: 100%; user-select: none; }
+      .cyber-select { position: relative; width: 100%; user-select: none; z-index: 10; }
       .select-selected { background: rgba(0, 0, 0, 0.6); border-bottom: 2px solid #333; color: #fff; padding: 12px 16px; font-family: "Rajdhani"; font-size: 17px; font-weight: 600; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; box-shadow: inset 0 2px 10px rgba(0,0,0,0.8); position: relative; }
       .select-selected::after { content: '▼'; position: absolute; right: 16px; top: 15px; color: var(--neon-red); font-size: 12px; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
       .select-selected:hover { border-bottom-color: var(--neon-red); background: rgba(20,5,5,0.8); }
       .cyber-select.open .select-selected::after { transform: rotate(180deg); }
-      .select-items { position: absolute; top: 100%; left: 0; right: 0; z-index: 99; background: rgba(15, 5, 5, 0.98); border: 1px solid rgba(255,42,42,0.3); border-top: none; box-shadow: 0 15px 30px rgba(0,0,0,0.9); border-radius: 0 0 12px 12px; overflow: hidden; opacity: 0; transform: translateY(-10px); visibility: hidden; transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.25s; }
+      
+      .select-items { position: absolute; top: 100%; left: 0; right: 0; background: rgba(15, 5, 5, 0.98); border: 1px solid rgba(255,42,42,0.3); border-top: none; box-shadow: 0 20px 40px rgba(0,0,0,0.95); border-radius: 0 0 12px 12px; overflow: hidden; opacity: 0; transform: translateY(-10px); visibility: hidden; transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.25s; max-height: 250px; overflow-y: auto; z-index: 99999; }
       .select-items.open { opacity: 1; transform: translateY(0); visibility: visible; }
-      .select-items div { padding: 12px 16px; font-family: "Rajdhani"; font-size: 16px; font-weight: 600; color: #ccc; cursor: pointer; transition: 0.2s; border-bottom: 1px solid rgba(255,255,255,0.05); }
-      .select-items div:last-child { border-bottom: none; }
-      .select-items div:hover { background: rgba(255,42,42,0.2); color: #fff; padding-left: 24px; border-left: 4px solid var(--neon-red); }
+      .select-items div.option { padding: 10px 16px; font-family: "Rajdhani"; font-size: 16px; font-weight: 600; color: #ccc; cursor: pointer; transition: 0.2s; border-bottom: 1px solid rgba(255,255,255,0.05); }
+      .select-items div.option:last-child { border-bottom: none; }
+      .select-items div.option:hover { background: rgba(255,42,42,0.2); color: #fff; padding-left: 24px; border-left: 4px solid var(--neon-red); }
 
       .checkbox-group { display: flex; gap: 20px; align-items: center; background: rgba(0,0,0,0.4); padding: 16px; border-radius: 8px; border-left: 3px solid #333; transition: 0.3s; } 
       .checkbox-group:hover { border-left-color: var(--neon-red); background: rgba(20,5,5,0.6); }
       .checkbox-group label { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #ccc; cursor: pointer; margin:0; font-family: "Rajdhani"; letter-spacing: 1px;} 
       .checkbox-group input { cursor: pointer; width: 16px; height: 16px; accent-color: var(--neon-red); }
 
-      /* ==============================================
-         BOTTONE + (Scompare quando la scheda si apre)
-         ============================================== */
+      .cyber-embedded-notes-container {
+        background: rgba(5, 5, 5, 0.6); border: 1px solid rgba(255, 42, 42, 0.15);
+        border-radius: 12px; padding: 15px; min-height: 380px; max-height: 380px; overflow-y: auto;
+        box-shadow: inset 0 2px 15px rgba(0,0,0,0.8);
+      }
+      .embedded-group-card {
+        background: rgba(20, 20, 20, 0.7); border-left: 3px solid var(--neon-red-dark);
+        margin-bottom: 12px; padding: 12px; border-radius: 4px; transition: 0.2s;
+      }
+      .embedded-group-card:hover { border-left-color: var(--neon-red); background: rgba(30, 10, 10, 0.4); }
+      .embedded-group-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+      .embedded-group-actions { display: flex; gap: 6px; }
+
       .btn-plus-fixed { 
         background: linear-gradient(135deg, var(--neon-red) 0%, var(--neon-red-dark) 100%); color: white; font-size: 32px; font-weight: 300; width: 70px; height: 70px; 
         border-radius: 50%; position: fixed; bottom: 40px; right: 40px; box-shadow: 0 15px 35px rgba(255,42,42,0.4), inset 0 2px 5px rgba(255,255,255,0.3); border: none; cursor: pointer; z-index: 100; 
-        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); display: flex; justify-content: center; align-items: center;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); display: flex; justify-content: center; align-items: center;
       }
       .btn-plus-fixed:hover { transform: scale(1.1) rotate(90deg); box-shadow: 0 20px 50px rgba(255,42,42,0.6); background: #fff; color: var(--neon-red); }
       
-      /* Classe per nascondere il bottone e completare l'illusione ottica */
-      .btn-plus-fixed.hide-morph {
-        transform: scale(0);
-        opacity: 0;
-        pointer-events: none;
-      }
+      .btn { font-family: "Orbitron"; cursor: pointer; border: 1px solid rgba(255,42,42,0.5); background: rgba(255,42,42,0.05); color: var(--neon-red); padding: 8px 14px; font-size: 10px; font-weight: 500; border-radius: 6px; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 1px; }
+      .btn:hover { background: var(--neon-red); color: white; box-shadow: 0 6px 15px rgba(255,42,42,0.4); transform: translateY(-1px); }
       
-      .btn { font-family: "Orbitron"; cursor: pointer; border: 1px solid rgba(255,42,42,0.5); background: rgba(255,42,42,0.05); color: var(--neon-red); padding: 10px 18px; font-size: 11px; font-weight: 500; border-radius: 8px; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 1px; }
-      .btn:hover { background: var(--neon-red); color: white; box-shadow: 0 8px 20px rgba(255,42,42,0.4); transform: translateY(-2px); letter-spacing: 2px; }
+      .btn-red-action { border-color: rgba(255,42,42,0.5); color: var(--neon-red); background: rgba(255,42,42,0.05); font-weight: bold; }
+      .btn-red-action:hover { background: var(--neon-red); color: #fff; box-shadow: 0 6px 15px rgba(255,42,42,0.5); }
       .btn-blue { border-color: rgba(0,255,249,0.5); color: #00fff9; background: rgba(0,255,249,0.05); } 
-      .btn-blue:hover { background: #00fff9; box-shadow: 0 8px 20px rgba(0,255,249,0.4); color: #000; letter-spacing: 2px; }
+      .btn-blue:hover { background: #00fff9; box-shadow: 0 6px 15px rgba(0,255,249,0.4); color: #000; }
+      .btn-green { border-color: rgba(0,255,102,0.5); color: #00ff66; background: rgba(0,255,102,0.05); }
+      .btn-green:hover { background: #00ff66; box-shadow: 0 6px 15px rgba(0,255,102,0.4); color: #000; }
+      
+      .hide-morph { transform: scale(0) !important; opacity: 0 !important; pointer-events: none !important; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important; }
       .btn-submit { background: linear-gradient(135deg, var(--neon-red-dark) 0%, var(--neon-red) 100%); border: none; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.5); box-shadow: 0 10px 25px rgba(255,42,42,0.3); transition: all 0.3s ease; }
       .btn-submit:hover { background: linear-gradient(135deg, #ff4d4d 0%, var(--neon-red) 100%); color: #fff; box-shadow: 0 15px 35px rgba(255,42,42,0.6); transform: translateY(-2px); }
-
       .error-msg-box { color: var(--error-color); text-align: center; font-size: 12px; margin-bottom: 20px; font-family: "Orbitron"; min-height: 15px; font-weight: 500; letter-spacing: 1px; text-shadow: 0 0 8px rgba(255,0,0,0.6); }
     </style>
   </head>
   <body>
+
+    <div id="network-warning" class="network-warning">⚠️ ATTENZIONE: ASSENZA DI RETE - CONTROLLA LA CONNESSIONE ⚠️</div>
+
+    <div id="cyber-toast" class="cyber-toast"></div>
 
     <script id="backend-data" type="application/json">
       {% if data %}
@@ -207,10 +241,6 @@
       {% endif %}
     </script>
 
-    <div id="boot-loader">
-        <div style="font-family: 'Orbitron'; color: var(--neon-red); letter-spacing: 8px; font-size: 14px; text-shadow: 0 0 15px var(--neon-red);">SYSTEM INITIALIZATION...</div>
-        <div class="loader-bar-container"><div class="loader-bar" id="load-bar-fill"></div></div>
-    </div>
     <canvas id="sparks"></canvas>
     
     <div class="cyber-logo-container">
@@ -222,221 +252,275 @@
       <div id="debug-info">CONNESSIONE AL DATABASE...</div>
       
       <div class="category-nav">
-        <button class="cat-btn active" style="animation-delay: 0.0s" onclick="filtra('TUTTI', this)">TUTTI I PRODOTTI</button>
-        <button class="cat-btn" style="animation-delay: 0.1s" onclick="filtra('CIBI', this)">CIBI</button>
-        <button class="cat-btn" style="animation-delay: 0.2s" onclick="filtra('BEVANDE', this)">BEVANDE</button>
-        <button class="cat-btn" style="animation-delay: 0.3s" onclick="filtra('DOLCI', this)">DOLCI</button>
+        <button class="cat-btn active" style="animation-delay: 0.0s" onclick="cambiaCategoria('TUTTI', this)">TUTTI I PRODOTTI</button>
+        <button class="cat-btn" style="animation-delay: 0.1s" onclick="cambiaCategoria('CIBI', this)">CIBI</button>
+        <button class="cat-btn" style="animation-delay: 0.2s" onclick="cambiaCategoria('BEVANDE', this)">BEVANDE</button>
+        <button class="cat-btn" style="animation-delay: 0.3s" onclick="cambiaCategoria('DOLCI', this)">DOLCI</button>
       </div>
       
       <input type="text" id="searchInput" class="search-bar" placeholder="CERCA PRODOTTO..." oninput="render()" />
 
       <div class="dashboard" id="mainDashboard">
-        <table>
-          <thead>
-            <tr>
-              <th class="sortable-header" onclick="toggleSort()">Prodotto <span id="sort-icon">⬇️</span></th>
-              <th>Costo Acq.</th>
-              <th>Listino €</th>
-              <th>Margine</th>
-              <th>Prezzo Staff</th>
-              <th style="text-align: right">Azioni di Sistema</th>
-            </tr>
-          </thead>
-          <tbody id="mainTable"></tbody>
-        </table>
-      </div>
-
-      <div class="notes-section">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-            <h2 style="font-family: 'Orbitron'; font-size: 16px; color: #fff; margin: 0; letter-spacing: 2px;">VARIANTI E GRUPPI NOTE</h2>
-            <button class="btn" style="padding: 12px 25px;" onclick="apriModaleGruppo()">+ NUOVO GRUPPO</button>
+        <div class="table-wrapper">
+            <table>
+            <thead>
+                <tr>
+                <th class="sortable-header" onclick="toggleSort()">Prodotto <span id="sort-icon">⬇️</span></th>
+                <th>Costo Acq.</th>
+                <th>Listino €</th>
+                <th>Margine</th>
+                <th>Prezzo Staff</th>
+                <th style="text-align: right">Azioni di Sistema</th>
+                </tr>
+            </thead>
+            <tbody id="mainTable"></tbody>
+            </table>
         </div>
-        <div id="notesContainer"></div>
       </div>
     </div>
 
-    <button class="btn-plus-fixed" onclick="apriModale()">+</button>
+    <button class="btn-plus-fixed" id="main-add-fixed-btn" onclick="apriModale(this)">+</button>
 
     <div id="modal" class="modal">
       <div id="form-prodotto" class="modal-content">
-        <h2 style="font-family: 'Orbitron'; color: white; margin-top: 0; letter-spacing: 2px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; font-size: 18px;">SCHEDA PRODOTTO</h2>
+        <h2 style="font-family: 'Orbitron'; color: white; margin-top: 0; letter-spacing: 2px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; font-size: 18px;">SCHEDA E VARIANTI PRODOTTO</h2>
         <div id="modal-error-msg" class="error-msg-box"></div>
         <input type="hidden" id="in-id" value="">
 
-        <div class="input-group">
-          <label>NOME PRODOTTO</label>
-          <input type="text" id="in-nome" oninput="autoDetectCategory()" placeholder="Es: Burger Menu" />
-        </div>
-        
-        <div style="display: flex; gap: 20px">
-          <div class="input-group" style="flex:1"><label>COSTO ACQUISTO (€)</label><input type="number" id="in-costo" step="0.01" min="0.01" oninput="calcola()" /></div>
-          <div class="input-group" style="flex:1"><label>PREZZO VENDITA (€)</label><input type="number" id="in-prezzo" step="0.01" min="0.01" oninput="calcola()" /></div>
-        </div>
-        <div style="display: flex; gap: 20px">
-          <div class="input-group" style="flex: 1"><label>MARGINE LORDO</label><input type="text" id="in-margine" readonly style="color: #00ff66; font-weight: bold; background: rgba(0,255,100,0.05); border-bottom-color: #00ff66;" /></div>
-          <div class="input-group" style="flex: 1"><label>PREZZO STAFF (€)</label><input type="number" id="in-interni" step="0.01" min="0.01" /></div>
-        </div>
-        
-        <div style="display: flex; gap: 20px">
-          <div class="input-group" style="flex: 1">
-            <label>CATEGORIA</label>
-            <div class="cyber-select">
-                <div class="select-selected" id="disp-categoria" onclick="toggleDropdown('cat-options')">CIBI</div>
-                <div class="select-items" id="cat-options">
-                    <div onclick="setSelect('categoria', 'CIBI', 'CIBI', 'cat-options')">CIBI</div>
-                    <div onclick="setSelect('categoria', 'BEVANDE', 'BEVANDE', 'cat-options')">BEVANDE</div>
-                    <div onclick="setSelect('categoria', 'DOLCI', 'DOLCI', 'cat-options')">DOLCI</div>
+        <div class="product-grid-layout">
+            <div class="grid-column-left">
+                <div class="input-group">
+                  <label>NOME PRODOTTO</label>
+                  <input type="text" id="in-nome" oninput="autoDetectCategory()" placeholder="Es: Burger Menu" />
+                </div>
+                
+                <div style="display: flex; gap: 15px">
+                  <div class="input-group" style="flex:1"><label>COSTO ACQUISTO (€)</label><input type="number" id="in-costo" step="0.01" min="0.01" oninput="calcola()" /></div>
+                  <div class="input-group" style="flex:1"><label>PREZZO LISTINO (€)</label><input type="number" id="in-prezzo" step="0.01" min="0.01" oninput="calcola()" /></div>
+                </div>
+                
+                <div style="display: flex; gap: 15px">
+                  <div class="input-group" style="flex: 1"><label>MARGINE REALE</label><input type="text" id="in-margine" readonly style="color: #00ff66; font-weight: bold; background: rgba(0,255,100,0.05); border-bottom-color: #00ff66;" /></div>
+                  <div class="input-group" style="flex: 1"><label>PREZZO STAFF (€)</label><input type="number" id="in-interni" step="0.01" min="0.01" /></div>
+                </div>
+                
+                <div class="input-group">
+                    <label>CATEGORIA DI APPARTENENZA</label>
+                    <div class="cyber-select">
+                        <div class="select-selected" id="disp-categoria" onclick="toggleDropdown('cat-options', this)">CIBI</div>
+                        <div class="select-items" id="cat-options">
+                            <div class="option" onclick="setSelect('categoria', 'CIBI', 'CIBI', 'cat-options')">CIBI</div>
+                            <div class="option" onclick="setSelect('categoria', 'BEVANDE', 'BEVANDE', 'cat-options')">BEVANDE</div>
+                            <div class="option" onclick="setSelect('categoria', 'DOLCI', 'DOLCI', 'cat-options')">DOLCI</div>
+                        </div>
+                    </div>
+                    <input type="hidden" id="in-categoria" value="CIBI">
+                </div>
+                  
+                <div class="input-group">
+                    <label>STATO OPERATIVO DISPONIBILITÀ</label>
+                    <div class="cyber-select">
+                        <div class="select-selected" id="disp-attivo" onclick="toggleDropdown('stato-options', this)">DISPONIBILE</div>
+                        <div class="select-items" id="stato-options">
+                            <div class="option" onclick="setSelect('attivo', 'SI', 'DISPONIBILE', 'stato-options')">DISPONIBILE</div>
+                            <div class="option" onclick="setSelect('attivo', 'NO', 'ESAURITO', 'stato-options')">ESAURITO</div>
+                        </div>
+                    </div>
+                    <input type="hidden" id="in-attivo" value="SI">
                 </div>
             </div>
-            <input type="hidden" id="in-categoria" value="CIBI">
-          </div>
-          
-          <div class="input-group" style="flex: 1">
-            <label>STATO DISPONIBILITÀ</label>
-            <div class="cyber-select">
-                <div class="select-selected" id="disp-attivo" onclick="toggleDropdown('stato-options')">DISPONIBILE</div>
-                <div class="select-items" id="stato-options">
-                    <div onclick="setSelect('attivo', 'SI', 'DISPONIBILE', 'stato-options')">DISPONIBILE</div>
-                    <div onclick="setSelect('attivo', 'NO', 'ESAURITO', 'stato-options')">ESAURITO</div>
+
+            <div class="grid-column-right">
+                <div class="input-group" style="margin-bottom: 0;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <label style="margin: 0;">VARIANTI DEL PRODOTTO PER IL SITO WEB</label>
+                        <button class="btn btn-blue" style="padding: 6px 14px; font-size: 10px;" onclick="apriModaleGruppo()">+ NUOVO GRUPPO</button>
+                    </div>
+                    <div class="cyber-embedded-notes-container" id="embeddedNotesContainer">
+                        </div>
                 </div>
             </div>
-            <input type="hidden" id="in-attivo" value="SI">
-          </div>
         </div>
         
-        <button class="btn btn-submit" id="btn-salva-prodotto" style="width: 100%; padding: 18px; margin-top: 15px; font-size: 14px; border-radius: 10px;" onclick="salva()">SALVA NEL DATABASE</button>
-        <p onclick="chiudiModale('modal')" style="text-align: center; cursor: pointer; color: #777; margin-top: 25px; font-family: 'Orbitron'; font-size: 11px; letter-spacing: 2px; transition: 0.3s;">[ ANNULLA OPERAZIONE ]</p>
+        <div style="margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 20px; display: flex; align-items: center; justify-content: space-between;">
+            <span onclick="chiudiModale('modal')" style="cursor: pointer; color: #666; font-family: 'Orbitron'; font-size: 11px; letter-spacing: 2px;">[ ANNULLA E CHIUDI ]</span>
+            <button class="btn btn-submit" id="btn-salva-prodotto" style="padding: 16px 40px; font-size: 13px; border-radius: 8px; font-family: 'Orbitron'; letter-spacing: 2px;" onclick="salva()">SALVA SCHEDA PRODOTTO</button>
+        </div>
       </div>
     </div>
 
     <div id="modal-gruppo" class="modal">
-      <div id="modal-gruppo-box" class="modal-content">
-        <h2 style="font-family: 'Orbitron'; color: white; margin-top: 0; letter-spacing: 2px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; font-size: 18px;">CONFIGURA GRUPPO</h2>
+      <div id="modal-gruppo-box" class="modal-content" style="width: 440px;">
+        <h2 style="font-family: 'Orbitron'; color: white; margin-top: 0; letter-spacing: 2px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; font-size: 16px;">GRUPPO VARIANTI (Es: Salse)</h2>
         <div id="modal-gruppo-error-msg" class="error-msg-box"></div>
         <input type="hidden" id="in-gruppo-id" value="">
-        <div class="input-group"><label>NOME GRUPPO</label><input type="text" id="in-gruppo-nome" placeholder="Es: Salse, Cottura..." /></div>
+        <div class="input-group"><label>NOME GRUPPO</label><input type="text" id="in-gruppo-nome" placeholder="Es: Opzioni Cottura, Ghiaccio..." /></div>
         <div class="input-group checkbox-group"><label><input type="checkbox" id="in-gruppo-esclusivo"> SCELTA SINGOLA</label><label><input type="checkbox" id="in-gruppo-obbligatorio"> CAMPO OBBLIGATORIO</label></div>
-        <button class="btn btn-submit" id="btn-salva-gruppo" style="width: 100%; padding: 18px; margin-top: 15px; font-size: 14px; border-radius: 10px;" onclick="salvaGruppo()">SALVA GRUPPO</button>
-        <p onclick="chiudiModale('modal-gruppo')" style="text-align: center; cursor: pointer; color: #777; margin-top: 25px; font-family: 'Orbitron'; font-size: 11px; letter-spacing: 2px; transition: 0.3s;">[ ANNULLA ]</p>
+        <button class="btn btn-submit" id="btn-salva-gruppo" style="width: 100%; padding: 14px;" onclick="salvaGruppo()">SALVA GRUPPO</button>
+        <p onclick="chiudiModale('modal-gruppo')" style="text-align: center; cursor: pointer; color: #777; margin-top: 20px; font-family: 'Orbitron'; font-size: 11px; letter-spacing: 2px;">[ TORNA ALLA SCHEDA ]</p>
       </div>
     </div>
 
     <div id="modal-nota" class="modal">
-      <div id="modal-nota-box" class="modal-content">
-        <h2 style="font-family: 'Orbitron'; color: white; margin-top: 0; letter-spacing: 2px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; font-size: 18px;">AGGIUNGI NOTA</h2>
+      <div id="modal-nota-box" class="modal-content" style="width: 440px;">
+        <h2 style="font-family: 'Orbitron'; color: white; margin-top: 0; letter-spacing: 2px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; font-size: 16px;">OPZIONE (Es: Con Limone)</h2>
         <input type="hidden" id="in-nota-id-gruppo" />
         <input type="hidden" id="in-nota-id" value="" />
         <div id="modal-nota-error-msg" class="error-msg-box"></div>
-        <div class="input-group"><label>TESTO DELLA NOTA</label><input type="text" id="in-nota-nome" placeholder="Es: Senza Ketchup" /></div>
-        <div class="input-group"><label>VARIAZIONE PREZZO (€)</label><input type="number" step="0.01" id="in-nota-prezzo" value="0" /></div>
-        <button class="btn btn-submit" id="btn-salva-nota" style="width: 100%; padding: 18px; margin-top: 15px; font-size: 14px; border-radius: 10px;" onclick="salvaNota()">SALVA NOTA</button>
-        <p onclick="chiudiModale('modal-nota')" style="text-align: center; cursor: pointer; color: #777; margin-top: 25px; font-family: 'Orbitron'; font-size: 11px; letter-spacing: 2px; transition: 0.3s;">[ ANNULLA ]</p>
+        <div class="input-group"><label>TESTO OPZIONE</label><input type="text" id="in-nota-nome" placeholder="Es: + Ketchup, Senza Cipolla..." /></div>
+        <div class="input-group"><label>VARIAZIONE PREZZO (€) - Lascia 0 se gratis</label><input type="number" step="0.01" id="in-nota-prezzo" value="0" /></div>
+        <button class="btn btn-submit" id="btn-salva-nota" style="width: 100%; padding: 14px;" onclick="salvaNota()">SALVA OPZIONE</button>
+        <p onclick="chiudiModale('modal-nota')" style="text-align: center; cursor: pointer; color: #777; margin-top: 20px; font-family: 'Orbitron'; font-size: 11px; letter-spacing: 2px;">[ TORNA ALLA SCHEDA ]</p>
       </div>
     </div>
 
     <div id="modal-conferma" class="modal">
       <div class="modal-content modal-conferma-box" style="width: 380px;">
-        <h2 style="font-family: 'Orbitron'; color: var(--neon-red); margin-top: 0; letter-spacing: 2px;">ATTENZIONE SITO</h2>
-        <p id="testo-conferma" style="color: #ddd; margin-bottom: 30px; font-size: 17px; font-weight: 500;">Sei sicuro di voler procedere con l'eliminazione?</p>
+        <h2 style="font-family: 'Orbitron'; color: var(--neon-red); margin-top: 0; letter-spacing: 2px; font-size: 16px;">ELIMINAZIONE DATI</h2>
+        <p id="testo-conferma" style="color: #ddd; margin-bottom: 30px; font-size: 15px; font-weight: 500;">Sei sicuro di procedere?</p>
         <div style="display: flex; gap: 15px;">
-          <button class="btn" style="flex: 1; padding: 14px; background: rgba(255,0,0,0.15); border-color: var(--neon-red);" onclick="eseguiConferma()">CONFERMA</button>
-          <button class="btn" style="flex: 1; padding: 14px; border-color: #555; color: #999; background: transparent;" onclick="chiudiModale('modal-conferma')">ANNULLA</button>
+          <button class="btn" style="flex: 1; padding: 12px; background: rgba(255,0,0,0.15); border-color: var(--neon-red);" onclick="eseguiConferma()">ELIMINA</button>
+          <button class="btn" style="flex: 1; padding: 12px; border-color: #555; color: #999; background: transparent;" onclick="chiudiModale('modal-conferma')">ANNULLA</button>
         </div>
       </div>
     </div>
 
     <script>
-      window.addEventListener('load', () => { 
-          const bar = document.getElementById('load-bar-fill');
-          if (bar) setTimeout(() => { bar.style.width = '100%'; }, 100);
-          setTimeout(() => { 
-              const loader = document.getElementById('boot-loader'); 
-              if (loader) { loader.style.opacity = '0'; setTimeout(() => loader.style.display = 'none', 500); }
-          }, 1100); 
+      // =========================================================================
+      // FUNZIONE FIX: CONVERTE L'ID IN NUMERO SE NECESSARIO PER IL DATABASE
+      // =========================================================================
+      function formatId(val) {
+          if (val === null || val === undefined || val === '') return null;
+          if (!isNaN(val) && !isNaN(parseFloat(val))) return Number(val);
+          return val;
+      }
+
+      // GESTIONE CONNESSIONE E TOAST NOTIFICATIONS
+      function showToast(msg) {
+          const toast = document.getElementById('cyber-toast');
+          toast.innerText = msg;
+          toast.classList.add('show');
+          setTimeout(() => toast.classList.remove('show'), 4000);
+      }
+
+      window.addEventListener('offline', () => {
+          document.getElementById('network-warning').classList.add('offline');
+          showToast("⚠️ CONNESSIONE INTERROTTA");
       });
+      window.addEventListener('online', () => {
+          document.getElementById('network-warning').classList.remove('offline');
+          showToast("✅ CONNESSIONE RIPRISTINATA");
+      });
+
+      // EFFETTO PARTICELLE SFONDO
       const canvas = document.getElementById('sparks'); const ctx = canvas.getContext('2d'); let particles = [];
       function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; } window.onresize = resize; resize();
       class Particle { constructor() { this.reset(); } reset() { this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height; this.size = Math.random() * 2 + 0.5; this.speedY = Math.random() * 0.4 + 0.1; this.alpha = Math.random() * 0.4 + 0.1; } update() { this.y += this.speedY; if (this.y > canvas.height) this.reset(); } draw() { ctx.fillStyle = `rgba(255, 42, 42, ${this.alpha})`; ctx.shadowBlur = 5; ctx.shadowColor = "#ff2a2a"; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); ctx.shadowBlur = 0; } }
       for(let i=0; i<70; i++) particles.push(new Particle());
       function animate() { ctx.clearRect(0, 0, canvas.width, canvas.height); particles.forEach(p => { p.update(); p.draw(); }); requestAnimationFrame(animate); } animate();
 
-      // Funzioni per nascondere il bottone durante il morphing
-      function nascondiBtn() {
-          const btn = document.querySelector('.btn-plus-fixed');
-          if (btn) btn.classList.add('hide-morph');
-      }
-      function mostraBtn() {
-          const btn = document.querySelector('.btn-plus-fixed');
-          if (btn) btn.classList.remove('hide-morph');
+      // MORPHING ANIMATION E FIX VARIABILE BOTTONE ATTIVO
+      window.btnAttivo = null;
+      function preparaMorph(btn) {
+          if (!btn) return;
+          if (btn.closest('.modal-content')) return; 
+          const rect = btn.getBoundingClientRect();
+          const btnCentroX = rect.left + rect.width / 2;
+          const btnCentroY = rect.top + rect.height / 2;
+          document.documentElement.style.setProperty('--morph-tx', `${btnCentroX - (window.innerWidth / 2)}px`);
+          document.documentElement.style.setProperty('--morph-ty', `${btnCentroY - (window.innerHeight / 2)}px`);
+          btn.classList.add('hide-morph');
+          window.btnAttivo = btn;
       }
 
-      function toggleDropdown(id) {
-          const el = document.getElementById(id);
-          const parent = el.parentElement;
-          
-          document.querySelectorAll(".select-items").forEach(item => {
-              if(item.id !== id) {
-                  item.classList.remove("open");
-                  item.parentElement.classList.remove("open");
-              }
+      // UI TENDINE CUSTOM 
+      function toggleDropdown(id, btnClicked) {
+          document.querySelectorAll(".cyber-select").forEach(sel => {
+              sel.style.zIndex = "10";
+              sel.classList.remove("open");
+              sel.querySelector(".select-items").classList.remove("open");
           });
+
+          const el = document.getElementById(id);
+          const parent = el.parentElement; 
           
-          el.classList.toggle("open");
-          parent.classList.toggle("open");
+          if (!el.classList.contains("open")) {
+              parent.style.zIndex = "9999"; 
+              el.classList.add("open");
+              parent.classList.add("open");
+          }
       }
       
       function setSelect(inputId, value, text, dropdownId) {
           document.getElementById("in-" + inputId).value = value;
           document.getElementById("disp-" + inputId).innerText = text;
           const el = document.getElementById(dropdownId);
-          el.classList.remove("open");
+          el.classList.remove("open"); 
           el.parentElement.classList.remove("open");
+          el.parentElement.style.zIndex = "10"; 
       }
       
       document.addEventListener("click", function(e) {
           if (!e.target.matches('.select-selected')) {
-              document.querySelectorAll(".select-items").forEach(el => {
-                  el.classList.remove("open");
-                  el.parentElement.classList.remove("open");
+              document.querySelectorAll(".select-items").forEach(el => { 
+                  el.classList.remove("open"); 
+                  el.parentElement.classList.remove("open"); 
+                  el.parentElement.style.zIndex = "10";
               });
           }
       });
 
+      // =========================================================================
+      // LETTURA DATI: SALVA IL DATO ORIGINALE (rawId)
+      // =========================================================================
       let rawBackendData = { items: [], note_groups: [] };
-      try { const el = document.getElementById('backend-data'); if (el && el.textContent.trim() !== "") rawBackendData = JSON.parse(el.textContent); } catch(e) { console.error(e); }
-      let rawItems = rawBackendData.items || [];
-      let rawNoteGroups = rawBackendData.note_groups || [];
-
+      try { 
+          const el = document.getElementById('backend-data'); 
+          if (el && el.textContent.trim() !== "") rawBackendData = JSON.parse(el.textContent); 
+      } catch(e) { console.error("Errore nel parsing del JSON:", e); }
+      
+      let rawItems = rawBackendData.items || []; 
+      
+      let gruppiNoteGlobali = (rawBackendData.note_groups || []).map(g => {
+          g.raw_id_gruppo = g.id_gruppo !== undefined ? g.id_gruppo : g._id;
+          g.raw_id_prodotto = g.id_prodotto;
+          if (g.note) {
+              g.note.forEach(n => { n.raw_id = n.id !== undefined ? n.id : n._id; });
+          }
+          return g;
+      });
+      
       let prodotti = [];
       if (Array.isArray(rawItems)) {
           let uniqueProdotti = {};
           rawItems.forEach(item => {
-              if (item && !uniqueProdotti[item.id]) {
-                  let catString = (item.categoria || "").toUpperCase().trim();
-                  let catCorretta = catString; 
-                  if(catString.includes("CIB")) catCorretta = "CIBI";
-                  else if(catString.includes("BEV")) catCorretta = "BEVANDE";
-                  else if(catString.includes("DOLC") || catString.includes("SPEC")) catCorretta = "DOLCI";
-
-                  uniqueProdotti[item.id] = { 
-                      id: item.id, nome: item.prodotto || item.nome || "Senza Nome", 
-                      costo: item.costo ? parseFloat(item.costo) : 0, prezzo: item.prezzo_euro ? parseFloat(item.prezzo_euro) : 0, 
-                      interni: item.prezzo_interni ? parseFloat(item.prezzo_interni) : 0, 
-                      categoria: catCorretta, attivo: item.attivo ? "SI" : "NO" 
-                  };
+              if (item) {
+                  const originalId = item.id !== undefined ? item.id : item._id; 
+                  
+                  const itemId = String(originalId || '');
+                  if (!uniqueProdotti[itemId] && itemId !== '') {
+                      let catString = (item.categoria || item.category || "").toUpperCase().trim(); 
+                      let catCorretta = "CIBI"; 
+                      if(catString.includes("BEV")) catCorretta = "BEVANDE"; 
+                      else if(catString.includes("DOLC") || catString.includes("SPEC")) catCorretta = "DOLCI";
+                      
+                      uniqueProdotti[itemId] = { 
+                          id: itemId, 
+                          rawId: originalId, 
+                          nome: item.prodotto || item.nome || "Senza Nome", 
+                          costo: item.costo ? parseFloat(item.costo) : 0, 
+                          prezzo: item.prezzo_euro || item.prezzo || 0, 
+                          interni: item.prezzo_interni || 0, 
+                          categoria: catCorretta, 
+                          attivo: item.attivo === false || item.attivo === "NO" ? "NO" : "SI",
+                          gruppi_note: item.gruppi_note || [] 
+                      };
+                  }
               }
           });
           prodotti = Object.values(uniqueProdotti);
       }
       document.getElementById('debug-info').innerText = "PRODOTTI TROVATI NEL DATABASE: " + prodotti.length;
-
-      let gruppiNote = [];
-      if (Array.isArray(rawNoteGroups)) {
-          gruppiNote = rawNoteGroups.map(g => ({
-              id: g.id_gruppo, nome: g.nome_gruppo, esclusivo: g.esclusivo, obbligatorio: g.obbligatorio_default,
-              note: g.note ? g.note.map(n => ({ id: n.id, nome: n.nome, delta: n.price_delta_euro })) : []
-          }));
-      }
 
       let categoriaAttiva = "TUTTI", sortAsc = true, azioneConfermata = null; 
 
@@ -445,109 +529,454 @@
           modale.classList.add('closing'); 
           setTimeout(() => { 
               modale.classList.remove('active', 'closing'); 
-              mostraBtn(); // Riporta il bottone +
+              if (window.btnAttivo && (id === 'modal' || id === 'modal-conferma')) { 
+                  window.btnAttivo.classList.remove('hide-morph'); 
+                  window.btnAttivo = null; 
+              }
           }, 380); 
       }
       
-      function apriConferma(messaggio, callback) { document.getElementById("testo-conferma").innerText = messaggio; azioneConfermata = callback; document.getElementById("modal-conferma").classList.add("active"); nascondiBtn(); }
-      function eseguiConferma() { if (azioneConfermata) azioneConfermata(); chiudiModale('modal-conferma'); azioneConfermata = null; }
-      function animazioneErrore(idBox) { const box = document.getElementById(idBox); box.style.boxShadow = "0 0 60px #ff0040, 0 25px 50px rgba(0,0,0,0.8)"; setTimeout(() => { box.style.boxShadow = "0 40px 80px rgba(0,0,0,0.9), inset 0 0 30px rgba(255,42,42,0.05)"; }, 500); }
-      function contieneVolgarita(testo) { const testoLow = testo.toLowerCase(); const paroleBloccate = ["cazzo", "merda", "stronz", "puttan", "troia", "fanculo", "coglion", "bastard", "zoccola", "bestemmia", "dio", "madonn", "gesu", "cristo"]; return paroleBloccate.some(parola => testoLow.includes(parola)); }
+      function apriConferma(messaggio, callback, btn) { 
+          if(btn) preparaMorph(btn); 
+          document.getElementById("testo-conferma").innerText = messaggio; 
+          azioneConfermata = callback; 
+          document.getElementById("modal-conferma").classList.add("active"); 
+      }
+      
+      function eseguiConferma() { 
+          if (azioneConfermata) azioneConfermata(); 
+          chiudiModale('modal-conferma'); 
+          azioneConfermata = null; 
+      }
+      
+      function animazioneErrore(idBox) { const box = document.getElementById(idBox); box.style.boxShadow = "0 0 60px #ff0040, 0 25px 50px rgba(0,0,0,0.8)"; setTimeout(() => { box.style.boxShadow = "0 20px 50px rgba(0,0,0,0.9)"; }, 500); }
+      
       function toggleSort() { sortAsc = !sortAsc; document.getElementById("sort-icon").innerText = sortAsc ? "⬇️" : "⬆️"; render(); }
       function calcola() { const c = parseFloat(document.getElementById("in-costo").value) || 0; const p = parseFloat(document.getElementById("in-prezzo").value) || 0; const margEl = document.getElementById("in-margine"); if (p > 0) { margEl.value = Math.round(((p - c) / p) * 100) + "%"; } else { margEl.value = "0%"; } }
-      function filtra(cat, btn) { categoriaAttiva = cat; document.querySelectorAll(".cat-btn").forEach(b => b.classList.remove("active")); btn.classList.add("active"); render(); }
       
       function autoDetectCategory() { 
-          const nome = document.getElementById("in-nome").value.toLowerCase();
+          const nome = document.getElementById("in-nome").value.toLowerCase(); 
           const bevande = ["coca", "acqua", "birra", "vino", "the", "drink", "gin", "succo", "bibita"]; 
           const cibo = ["pizza", "panino", "hamburger", "pasta", "fritto", "focaccia", "kebab", "piadina"]; 
           let detected = "DOLCI"; 
           if (bevande.some(k => nome.includes(k))) detected = "BEVANDE"; 
           else if (cibo.some(k => nome.includes(k))) detected = "CIBI"; 
-          setSelect('categoria', detected, detected, 'cat-options');
+          setSelect('categoria', detected, detected, 'cat-options'); 
       }
 
-      function apriModale() { 
-        nascondiBtn(); // Il bottone sparisce mentre la scheda cresce!
+      // =========================================================================
+      // TRANSIZIONE CATEGORIE
+      // =========================================================================
+      function cambiaCategoria(cat, btn) {
+          if (categoriaAttiva === cat) return;
+          categoriaAttiva = cat;
+          document.querySelectorAll(".cat-btn").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+
+          const rows = document.querySelectorAll("#mainTable tr.row-frame");
+          
+          if (rows.length > 0) {
+              rows.forEach((row) => {
+                  row.style.animation = `slideOutLeft 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards`;
+              });
+              setTimeout(() => { render(); }, 300); 
+          } else {
+              render();
+          }
+      }
+
+      // =========================================================================
+      // RENDERING VARIANTI ISOLATE PER PRODOTTO 
+      // =========================================================================
+      function renderEmbeddedNotes(idProdotto) {
+          const container = document.getElementById("embeddedNotesContainer");
+          container.innerHTML = "";
+          
+          if (!idProdotto) {
+              container.innerHTML = `
+                <div style="padding:40px 20px; text-align:center; color:#555; font-size:12px; font-family:'Orbitron'; line-height:1.6;">
+                    SALVA PRIMA IL PRODOTTO<br>
+                    <span style="color:var(--neon-red); font-size:10px;">Per poter aggiungere varianti, devi registrare la scheda anagrafica.</span>
+                </div>`;
+              return;
+          }
+
+          let gruppiFiltrati = gruppiNoteGlobali.filter(g => String(g.id_prodotto) === String(idProdotto));
+
+          if (gruppiFiltrati.length === 0) {
+              container.innerHTML = `
+                <div style="padding:40px 15px; text-align:center; color:#555; font-size:13px; font-family:'Orbitron'; line-height:1.6;">
+                    NESSUN GRUPPO VARIANTI CONFIGURATO.<br>
+                    <span style="color:var(--neon-red); font-size:11px;">Clicca su "+ NUOVO GRUPPO" per aggiungerne uno.</span>
+                </div>`;
+              return;
+          }
+
+          gruppiFiltrati.forEach(g => {
+              const card = document.createElement("div");
+              card.className = "embedded-group-card";
+              
+              let htmlOpzioni = (g.note || []).map(n => `
+                  <div style="display:flex; justify-content:space-between; font-size:13px; color:#aaa; padding:5px 0; border-bottom:1px solid rgba(255,255,255,0.02);">
+                      <span>• ${n.nome} <span style="color:#666">(${n.price_delta_euro > 0 ? '+' : ''}€${parseFloat(n.price_delta_euro).toFixed(2)})</span></span>
+                      <div style="display:flex; gap:8px;">
+                          <span style="color:var(--neon-red); cursor:pointer; font-weight:600;" onclick="modificaNota('${g.id_gruppo}', '${n.id}')">[EDIT]</span>
+                          <span style="color:#555; cursor:pointer;" onclick="eliminaNota('${n.id}')">[X]</span>
+                      </div>
+                  </div>
+              `).join('');
+
+              card.innerHTML = `
+                  <div class="embedded-group-header">
+                      <div style="color:#fff; font-size:15px; font-weight:bold;">
+                          ${g.nome_gruppo} <span style="font-size:10px; color:#666; font-weight:normal; margin-left:8px;">[${g.esclusivo?'SINGOLA':'MULTIPLA'}]</span>
+                      </div>
+                      <div class="embedded-group-actions">
+                          <button class="btn btn-green" style="padding:2px 8px; font-size:9px;" onclick="apriModaleNota('${g.id_gruppo}')">+ OPZIONE</button>
+                          <button class="btn" style="padding:2px 6px; font-size:9px;" onclick="modificaGruppo('${g.id_gruppo}')">ED</button>
+                          <button class="btn" style="padding:2px 6px; font-size:9px; border-color:#444; color:#777;" onclick="eliminaGruppo('${g.id_gruppo}')">X</button>
+                      </div>
+                  </div>
+                  <div style="padding-left:15px; margin-top:5px; max-height:120px; overflow-y:auto;">
+                      ${htmlOpzioni || '<span style="color:#444; font-size:11px; font-style:italic;">Nessuna opzione inserita.</span>'}
+                  </div>
+              `;
+              container.appendChild(card);
+          });
+      }
+
+      // =========================================================================
+      // GESTIONE PRODOTTI
+      // =========================================================================
+      function apriModale(btn) { 
+        preparaMorph(btn);
         document.getElementById("in-id").value = ""; document.getElementById("modal-error-msg").innerText = ""; 
         document.querySelectorAll("#modal input[type='text'], #modal input[type='number']").forEach(i => { i.value = ""; i.classList.remove("input-error"); }); 
         document.getElementById("in-margine").value = ""; 
-        
         let startCat = categoriaAttiva === "TUTTI" ? "CIBI" : categoriaAttiva;
-        setSelect('categoria', startCat, startCat, 'cat-options');
-        setSelect('attivo', 'SI', 'DISPONIBILE', 'stato-options');
-        
+        setSelect('categoria', startCat, startCat, 'cat-options'); setSelect('attivo', 'SI', 'DISPONIBILE', 'stato-options');
+        renderEmbeddedNotes(null);
         document.getElementById("modal").classList.add("active"); document.getElementById("in-nome").focus(); 
       }
-      function modifica(id) { 
-        nascondiBtn();
-        document.getElementById("modal-error-msg").innerText = ""; const p = prodotti.find(x => x.id === id); 
+      
+      function modifica(id, btn) { 
+        preparaMorph(btn);
+        document.getElementById("modal-error-msg").innerText = ""; const p = prodotti.find(x => String(x.id) === String(id)); 
         document.getElementById("in-id").value = p.id; document.getElementById("in-nome").value = p.nome; document.getElementById("in-costo").value = p.costo || 0; document.getElementById("in-prezzo").value = p.prezzo; document.getElementById("in-interni").value = p.interni; 
-        
-        setSelect('categoria', p.categoria, p.categoria, 'cat-options');
-        setSelect('attivo', p.attivo, p.attivo === 'SI' ? 'DISPONIBILE' : 'ESAURITO', 'stato-options');
-        
-        document.querySelectorAll("input").forEach(i => i.classList.remove("input-error")); calcola(); document.getElementById("modal").classList.add("active"); 
+        setSelect('categoria', p.categoria, p.categoria, 'cat-options'); setSelect('attivo', p.attivo, p.attivo === 'SI' ? 'DISPONIBILE' : 'ESAURITO', 'stato-options');
+        document.querySelectorAll("input").forEach(i => i.classList.remove("input-error")); calcola(); 
+        renderEmbeddedNotes(p.id);
+        document.getElementById("modal").classList.add("active"); 
       }
-      function duplica(id) {
-        nascondiBtn();
-        document.getElementById("modal-error-msg").innerText = ""; const p = prodotti.find(x => x.id === id); 
+      
+      function duplica(id, btn) {
+        preparaMorph(btn);
+        document.getElementById("modal-error-msg").innerText = ""; const p = prodotti.find(x => String(x.id) === String(id)); 
         document.getElementById("in-id").value = ""; document.getElementById("in-nome").value = p.nome + " (Copia)"; document.getElementById("in-costo").value = p.costo || 0; document.getElementById("in-prezzo").value = p.prezzo; document.getElementById("in-interni").value = p.interni; 
-        
-        setSelect('categoria', p.categoria, p.categoria, 'cat-options');
-        setSelect('attivo', p.attivo, p.attivo === 'SI' ? 'DISPONIBILE' : 'ESAURITO', 'stato-options');
-        
-        document.querySelectorAll("input").forEach(i => i.classList.remove("input-error")); calcola(); document.getElementById("modal").classList.add("active"); 
+        setSelect('categoria', p.categoria, p.categoria, 'cat-options'); setSelect('attivo', p.attivo, p.attivo === 'SI' ? 'DISPONIBILE' : 'ESAURITO', 'stato-options');
+        document.querySelectorAll("input").forEach(i => i.classList.remove("input-error")); calcola(); 
+        renderEmbeddedNotes(null); 
+        document.getElementById("modal").classList.add("active"); 
       }
       
       function salva() {
+        if(!navigator.onLine) { showToast("⚠️ ERRORE: CONNESSIONE ASSENTE!"); return; }
+
         const elNome = document.getElementById("in-nome"), elCosto = document.getElementById("in-costo"), elPrezzo = document.getElementById("in-prezzo"), elInterni = document.getElementById("in-interni"), elErrorMsg = document.getElementById("modal-error-msg");
         [elNome, elCosto, elPrezzo, elInterni].forEach(el => el.classList.remove("input-error")); elErrorMsg.innerText = "";
         const nome = elNome.value.trim(), costo = parseFloat(elCosto.value), prezzo = parseFloat(elPrezzo.value), interni = parseFloat(elInterni.value);
-        const attivo = document.getElementById("in-attivo").value;
-        const categoria = document.getElementById("in-categoria").value;
-        let hasError = false, errorText = "";
+        const attivo = document.getElementById("in-attivo").value; const categoria = document.getElementById("in-categoria").value;
         
-        if (!nome) { elNome.classList.add("input-error"); hasError = true; errorText = "Inserire il Nome Prodotto."; }
-        if (!hasError && contieneVolgarita(nome)) { elNome.classList.add("input-error"); hasError = true; errorText = "ERRORE: LINGUAGGIO NON CONSENTITO"; }
-        if (!hasError && (isNaN(costo) || costo < 0)) { elCosto.classList.add("input-error"); hasError = true; errorText = "Costo non valido."; }
-        if (!hasError && (isNaN(prezzo) || prezzo <= 0)) { elPrezzo.classList.add("input-error"); hasError = true; errorText = "Prezzo non valido."; }
-        if (!hasError && (isNaN(interni) || interni <= 0)) { elInterni.classList.add("input-error"); hasError = true; errorText = "Prezzo staff non valido."; }
-        if (!hasError) { if (costo > prezzo) { elCosto.classList.add("input-error"); elPrezzo.classList.add("input-error"); hasError = true; errorText = "Costo maggiore del Prezzo!"; } else if (costo > interni) { elCosto.classList.add("input-error"); elInterni.classList.add("input-error"); hasError = true; errorText = "Costo maggiore del Prezzo Staff!"; } }
-        if (hasError) { elErrorMsg.innerText = errorText; animazioneErrore("form-prodotto"); return; }
+        const idAttuale = document.getElementById("in-id").value;
+
+        let hasError = false;
+        if (!nome) { elNome.classList.add("input-error"); hasError = true; }
+        if (isNaN(prezzo) || prezzo <= 0) { elPrezzo.classList.add("input-error"); hasError = true; }
+        if (hasError) { elErrorMsg.innerText = "NOME E PREZZO SONO OBBLIGATORI."; animazioneErrore("form-prodotto"); return; }
         
         const btn = document.getElementById('btn-salva-prodotto'); btn.innerText = "CARICAMENTO...";
-        fetch('/admin/add_product', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: document.getElementById("in-id").value || null, nome: nome, costo: costo, prezzo: prezzo, interni: interni, categoria: categoria, attivo: attivo }) })
-        .then(r => r.json()).then(res => { if(res.success) window.location.reload(); else { btn.innerText = "SALVA NEL DATABASE"; elErrorMsg.innerText = "ERRORE SALVATAGGIO."; animazioneErrore("form-prodotto"); } }).catch(e => { btn.innerText = "SALVA NEL DATABASE"; elErrorMsg.innerText = "ERRORE DATABASE."; animazioneErrore("form-prodotto"); });
-      }
-      function elimina(id) { apriConferma("ELIMINARE DEFINITIVAMENTE IL PRODOTTO?", () => { fetch('/admin/delete_product', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({id: id}) }).then(r=>r.json()).then(res=>{ if(res.success) window.location.reload(); }); }); }
+        
+        const pTarget = prodotti.find(p => String(p.id) === String(idAttuale));
+        const trueId = pTarget ? pTarget.rawId : (idAttuale || null);
 
-      function apriModaleGruppo() { nascondiBtn(); document.getElementById("in-gruppo-id").value = ""; document.getElementById("modal-gruppo-error-msg").innerText = ""; document.getElementById("in-gruppo-nome").value = ""; document.getElementById("in-gruppo-nome").classList.remove("input-error"); document.getElementById("in-gruppo-esclusivo").checked = false; document.getElementById("in-gruppo-obbligatorio").checked = false; document.getElementById("modal-gruppo").classList.add("active"); }
-      function modificaGruppo(id) { nascondiBtn(); const g = gruppiNote.find(x => x.id === id); document.getElementById("in-gruppo-id").value = g.id; document.getElementById("modal-gruppo-error-msg").innerText = ""; document.getElementById("in-gruppo-nome").value = g.nome; document.getElementById("in-gruppo-nome").classList.remove("input-error"); document.getElementById("in-gruppo-esclusivo").checked = g.esclusivo; document.getElementById("in-gruppo-obbligatorio").checked = g.obbligatorio; document.getElementById("modal-gruppo").classList.add("active"); }
+        fetch('/admin/add_product', { 
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, 
+            body: JSON.stringify({ id: trueId, nome: nome, costo: costo, prezzo: prezzo, interni: interni, categoria: categoria, attivo: attivo, gruppi_note: [] })
+        })
+        .then(r => r.json())
+        .then(res => { 
+            if(res.success) { 
+                btn.innerText = "SALVA SCHEDA PRODOTTO";
+                
+                const newId = trueId || res.id || ("temp_" + Date.now()); 
+                const pIndex = prodotti.findIndex(p => String(p.id) === String(newId) || String(p.id) === String(idAttuale));
+                
+                const prodAggiornato = {
+                    id: String(newId), 
+                    rawId: newId, 
+                    nome: nome, costo: costo, prezzo: prezzo, 
+                    interni: interni, categoria: categoria, attivo: attivo,
+                    gruppi_note: pIndex >= 0 ? prodotti[pIndex].gruppi_note : []
+                };
+                
+                if (pIndex >= 0) prodotti[pIndex] = prodAggiornato;
+                else prodotti.push(prodAggiornato);
+                
+                render(); 
+                chiudiModale('modal'); 
+                showToast("✅ PRODOTTO SALVATO!"); 
+            } else { 
+                btn.innerText = "SALVA SCHEDA PRODOTTO"; 
+                elErrorMsg.innerText = "ERRORE SALVATAGGIO DAL SERVER."; 
+                animazioneErrore("form-prodotto"); showToast("⚠️ ERRORE DEL SERVER."); 
+            } 
+        })
+        .catch(err => { 
+            btn.innerText = "SALVA SCHEDA PRODOTTO"; 
+            if(!navigator.onLine) showToast("⚠️ NESSUNA CONNESSIONE DI RETE!"); 
+            else showToast("⚠️ ERRORE DI COMUNICAZIONE COL SERVER."); 
+        });
+      }
+      
+      // =========================================================================
+      // NUOVA ELIMINAZIONE PRODOTTO (CON RICARICAMENTO FORZATO DELLA PAGINA)
+      // =========================================================================
+      function eliminaProdotto(id, btn) { 
+        apriConferma("ELIMINARE DEFINITIVAMENTE IL PRODOTTO?", () => { 
+          if(!navigator.onLine) { showToast("⚠️ ERRORE: CONNESSIONE ASSENTE!"); return; }
+          
+          const prodDaEliminare = prodotti.find(p => String(p.id) === String(id));
+          const trueId = prodDaEliminare ? prodDaEliminare.rawId : id;
+
+          fetch('/admin/delete_product', { 
+              method: 'POST', 
+              headers: { 'Content-Type': 'application/json' }, 
+              body: JSON.stringify({ id: trueId, _id: trueId }) 
+          })
+          .then(r => r.json())
+          .then(res => { 
+              if(res.success) {
+                  // RICARICAMENTO FORZATO E ASSOLUTO DELLA PAGINA COME RICHIESTO!
+                  window.location.reload();
+              } else {
+                  showToast("⚠️ IMPOSSIBILE ELIMINARE (Rifiutato dal Server)");
+              }
+          })
+          .catch(err => { 
+              if(!navigator.onLine) showToast("⚠️ NESSUNA CONNESSIONE DI RETE!"); 
+              else showToast("⚠️ ERRORE DEL SERVER DURANTE L'ELIMINAZIONE!"); 
+          }); 
+        }, btn); 
+      }
+
+      // =========================================================================
+      // GESTIONE GRUPPI E NOTE 
+      // =========================================================================
+      function apriModaleGruppo() { 
+          const idProdotto = document.getElementById("in-id").value;
+          if(!idProdotto || String(idProdotto).includes("temp_")) { 
+              document.getElementById("modal-error-msg").innerText = "ATTENZIONE: DEVI PRIMA SALVARE IL PRODOTTO!";
+              animazioneErrore("form-prodotto");
+              showToast("⚠️ DEVI PRIMA SALVARE LE MODIFICHE DELLA SCHEDA PRODOTTO!");
+              return; 
+          }
+          document.getElementById("in-gruppo-id").value = ""; 
+          document.getElementById("modal-gruppo-error-msg").innerText = ""; 
+          document.getElementById("in-gruppo-nome").value = ""; 
+          document.getElementById("in-gruppo-nome").classList.remove("input-error"); 
+          document.getElementById("in-gruppo-esclusivo").checked = false; 
+          document.getElementById("in-gruppo-obbligatorio").checked = false; 
+          document.getElementById("modal-gruppo").classList.add("active"); 
+      }
+      
+      function modificaGruppo(id) { 
+          const g = gruppiNoteGlobali.find(x => String(x.id_gruppo) === String(id)); 
+          document.getElementById("in-gruppo-id").value = String(g.id_gruppo); 
+          document.getElementById("modal-gruppo-error-msg").innerText = ""; 
+          document.getElementById("in-gruppo-nome").value = g.nome_gruppo; 
+          document.getElementById("in-gruppo-nome").classList.remove("input-error"); 
+          document.getElementById("in-gruppo-esclusivo").checked = g.esclusivo; 
+          document.getElementById("in-gruppo-obbligatorio").checked = g.obbligatorio_default; 
+          document.getElementById("modal-gruppo").classList.add("active"); 
+      }
+      
       function salvaGruppo() { 
-          const elNome = document.getElementById("in-gruppo-nome"), elError = document.getElementById("modal-gruppo-error-msg"); elNome.classList.remove("input-error"); elError.innerText = ""; 
-          const nome = elNome.value.trim(), regexValido = /^[a-zA-ZÀ-ÿ\s']+$/; 
-          if(!nome) { elNome.classList.add("input-error"); elError.innerText = "NOME GRUPPO MANCANTE"; return; } 
-          if(!regexValido.test(nome)) { elNome.classList.add("input-error"); elError.innerText = "CARATTERI NON AMMESSI"; animazioneErrore("modal-gruppo-box"); return; } 
-          if(contieneVolgarita(nome)) { elNome.classList.add("input-error"); elError.innerText = "LINGUAGGIO NON CONSENTITO"; animazioneErrore("modal-gruppo-box"); return; } 
+          if(!navigator.onLine) { showToast("⚠️ ERRORE: CONNESSIONE ASSENTE!"); return; }
+          const elNome = document.getElementById("in-gruppo-nome"), elError = document.getElementById("modal-gruppo-error-msg"); 
+          elNome.classList.remove("input-error"); elError.innerText = ""; 
+          const nome = elNome.value.trim();
+          const esclusivo = document.getElementById("in-gruppo-esclusivo").checked;
+          const obbligatorio = document.getElementById("in-gruppo-obbligatorio").checked;
+          
+          if(!nome) { elNome.classList.add("input-error"); elError.innerText = "NOME GRUPPO MANCANTE"; animazioneErrore("modal-gruppo-box"); return; } 
+          
+          const idGruppoForm = document.getElementById("in-gruppo-id").value;
+          const gTarget = gruppiNoteGlobali.find(g => String(g.id_gruppo) === String(idGruppoForm));
+          const trueIdGruppo = gTarget ? gTarget.raw_id_gruppo : (idGruppoForm || null);
+
+          const idProdottoForm = document.getElementById("in-id").value;
+          const pTarget = prodotti.find(p => String(p.id) === String(idProdottoForm));
+          const trueIdProdotto = pTarget ? pTarget.rawId : idProdottoForm;
+
           const btn = document.getElementById('btn-salva-gruppo'); btn.innerText = "CARICAMENTO...";
-          fetch('/admin/add_note_group', { method: 'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ id: document.getElementById("in-gruppo-id").value || null, nome: nome, esclusivo: document.getElementById("in-gruppo-esclusivo").checked, obbligatorio: document.getElementById("in-gruppo-obbligatorio").checked }) }).then(r=>r.json()).then(res=>{ if(res.success) window.location.reload(); else { btn.innerText = "SALVA GRUPPO"; elError.innerText="Errore server"; animazioneErrore("modal-gruppo-box"); } });
-      }
-      function eliminaGruppo(id) { apriConferma("CANCELLARE IL GRUPPO E TUTTE LE SUE NOTE?", () => { fetch('/admin/delete_note_group', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id: id}) }).then(r=>r.json()).then(res=>{ if(res.success) window.location.reload(); }); }); }
+          
+          fetch('/admin/add_note_group', { 
+              method: 'POST', headers:{'Content-Type':'application/json'}, 
+              body: JSON.stringify({ id: trueIdGruppo, nome: nome, esclusivo: esclusivo, obbligatorio: obbligatorio, id_prodotto: trueIdProdotto }) 
+          })
+          .then(r=>r.json())
+          .then(res=>{ 
+              if(res.success) {
+                  btn.innerText = "SALVA GRUPPO";
+                  
+                  const newId = trueIdGruppo || res.id || ("temp_g_" + Date.now());
+                  const index = gruppiNoteGlobali.findIndex(g => String(g.id_gruppo) === String(newId) || String(g.id_gruppo) === String(idGruppoForm));
+                  
+                  const nuovoGruppo = {
+                      id_gruppo: String(newId),
+                      raw_id_gruppo: newId,
+                      nome_gruppo: nome,
+                      esclusivo: esclusivo,
+                      obbligatorio_default: obbligatorio,
+                      id_prodotto: String(trueIdProdotto),
+                      raw_id_prodotto: trueIdProdotto,
+                      note: index >= 0 ? gruppiNoteGlobali[index].note : []
+                  };
 
-      function apriModaleNota(idGruppo) { nascondiBtn(); document.getElementById("in-nota-id-gruppo").value = idGruppo; document.getElementById("in-nota-id").value = ""; document.getElementById("modal-nota-error-msg").innerText = ""; document.getElementById("in-nota-nome").value = ""; document.getElementById("in-nota-nome").classList.remove("input-error"); document.getElementById("in-nota-prezzo").value = "0"; document.getElementById("modal-nota").classList.add("active"); }
-      function modificaNota(idGruppo, idNota) { nascondiBtn(); const g = gruppiNote.find(x => x.id === idGruppo); const n = g.note.find(x => x.id === idNota); document.getElementById("in-nota-id-gruppo").value = g.id; document.getElementById("in-nota-id").value = n.id; document.getElementById("modal-nota-error-msg").innerText = ""; document.getElementById("in-nota-nome").value = n.nome; document.getElementById("in-nota-nome").classList.remove("input-error"); document.getElementById("in-nota-prezzo").value = n.delta; document.getElementById("modal-nota").classList.add("active"); }
+                  if (index >= 0) gruppiNoteGlobali[index] = nuovoGruppo;
+                  else gruppiNoteGlobali.push(nuovoGruppo);
+
+                  renderEmbeddedNotes(idProdottoForm);
+                  chiudiModale('modal-gruppo');
+                  showToast("✅ GRUPPO SALVATO!");
+              } else {
+                  btn.innerText = "SALVA GRUPPO"; showToast("⚠️ ERRORE SALVATAGGIO.");
+              }
+          }).catch(err => { 
+              btn.innerText = "SALVA GRUPPO"; 
+              if(!navigator.onLine) showToast("⚠️ NESSUNA CONNESSIONE DI RETE!"); 
+          });
+      }
+      
+      function eliminaGruppo(id) { 
+          apriConferma("CANCELLARE IL GRUPPO E LE SUE OPZIONI?", () => { 
+            if(!navigator.onLine) { showToast("⚠️ ERRORE: CONNESSIONE ASSENTE!"); return; }
+            
+            const gTarget = gruppiNoteGlobali.find(g => String(g.id_gruppo) === String(id));
+            const trueIdGruppo = gTarget ? gTarget.raw_id_gruppo : id;
+
+            fetch('/admin/delete_note_group', { 
+                method:'POST', 
+                headers:{'Content-Type':'application/json'}, 
+                body: JSON.stringify({id: trueIdGruppo, _id: trueIdGruppo}) 
+            })
+            .then(r=>r.json())
+            .then(res=>{ 
+                if(res.success) {
+                    gruppiNoteGlobali = gruppiNoteGlobali.filter(g => String(g.id_gruppo) !== String(id));
+                    const idProdotto = document.getElementById("in-id").value;
+                    renderEmbeddedNotes(idProdotto);
+                    showToast("🗑️ GRUPPO ELIMINATO!");
+                } else { showToast("⚠️ IMPOSSIBILE ELIMINARE IL GRUPPO"); }
+            }).catch(err => { if(!navigator.onLine) showToast("⚠️ NESSUNA CONNESSIONE DI RETE!"); }); 
+          }); 
+      }
+
+      function apriModaleNota(idGruppo) { 
+          document.getElementById("in-nota-id-gruppo").value = idGruppo; document.getElementById("in-nota-id").value = ""; 
+          document.getElementById("modal-nota-error-msg").innerText = ""; document.getElementById("in-nota-nome").value = ""; 
+          document.getElementById("in-nota-nome").classList.remove("input-error"); document.getElementById("in-nota-prezzo").value = "0"; 
+          document.getElementById("modal-nota").classList.add("active"); 
+      }
+      
+      function modificaNota(idGruppo, idNota) { 
+          const g = gruppiNoteGlobali.find(x => String(x.id_gruppo) === String(idGruppo)); const n = g.note.find(x => String(x.id) === String(idNota)); 
+          document.getElementById("in-nota-id-gruppo").value = g.id_gruppo; document.getElementById("in-nota-id").value = n.id; 
+          document.getElementById("modal-nota-error-msg").innerText = ""; document.getElementById("in-nota-nome").value = n.nome; 
+          document.getElementById("in-nota-nome").classList.remove("input-error"); document.getElementById("in-nota-prezzo").value = n.price_delta_euro; 
+          document.getElementById("modal-nota").classList.add("active"); 
+      }
+      
       function salvaNota() { 
-          const elNome = document.getElementById("in-nota-nome"), elPrezzo = document.getElementById("in-nota-prezzo"), elError = document.getElementById("modal-nota-error-msg"); elNome.classList.remove("input-error"); elError.innerText = ""; 
-          const nome = elNome.value.trim(), prezzo = parseFloat(elPrezzo.value) || 0, regexValido = /^[a-zA-ZÀ-ÿ\s']+$/; 
-          if(!nome) { elNome.classList.add("input-error"); elError.innerText = "TESTO NOTA MANCANTE"; return; } 
-          if(!regexValido.test(nome)) { elNome.classList.add("input-error"); elError.innerText = "CARATTERI NON AMMESSI"; animazioneErrore("modal-nota-box"); return; } 
-          if(contieneVolgarita(nome)) { elNome.classList.add("input-error"); elError.innerText = "LINGUAGGIO NON CONSENTITO"; animazioneErrore("modal-nota-box"); return; } 
-          const btn = document.getElementById('btn-salva-nota'); btn.innerText = "CARICAMENTO...";
-          fetch('/admin/add_note', { method: 'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ id: document.getElementById("in-nota-id").value || null, id_gruppo: document.getElementById("in-nota-id-gruppo").value, nome: nome, prezzo: prezzo }) }).then(r=>r.json()).then(res=>{ if(res.success) window.location.reload(); else { btn.innerText = "SALVA NOTA"; elError.innerText="Errore server"; animazioneErrore("modal-nota-box"); } });
-      }
-      function eliminaNota(id) { apriConferma("ELIMINARE QUESTA SINGOLA NOTA?", () => { fetch('/admin/delete_note', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id: id}) }).then(r=>r.json()).then(res=>{ if(res.success) window.location.reload(); }); }); }
+          if(!navigator.onLine) { showToast("⚠️ ERRORE: CONNESSIONE ASSENTE!"); return; }
+          const elNome = document.getElementById("in-nota-nome"), elPrezzo = document.getElementById("in-nota-prezzo"), elError = document.getElementById("modal-nota-error-msg"); 
+          elNome.classList.remove("input-error"); elError.innerText = ""; 
+          const nome = elNome.value.trim(), prezzo = parseFloat(elPrezzo.value) || 0; 
+          
+          if(!nome) { elNome.classList.add("input-error"); elError.innerText = "TESTO MANCANTE"; animazioneErrore("modal-nota-box"); return; } 
+          
+          const idGruppoForm = document.getElementById("in-nota-id-gruppo").value;
+          const idNotaForm = document.getElementById("in-nota-id").value;
 
+          const gTarget = gruppiNoteGlobali.find(g => String(g.id_gruppo) === String(idGruppoForm));
+          const trueIdGruppo = gTarget ? gTarget.raw_id_gruppo : idGruppoForm;
+
+          let trueIdNota = idNotaForm || null;
+          if (gTarget && gTarget.note) {
+              const nTarget = gTarget.note.find(n => String(n.id) === String(idNotaForm));
+              if (nTarget) trueIdNota = nTarget.raw_id;
+          }
+
+          const btn = document.getElementById('btn-salva-nota'); btn.innerText = "CARICAMENTO...";
+          
+          fetch('/admin/add_note', { 
+              method: 'POST', headers:{'Content-Type':'application/json'}, 
+              body: JSON.stringify({ id: trueIdNota, id_gruppo: trueIdGruppo, nome: nome, prezzo: prezzo }) 
+          })
+          .then(r=>r.json())
+          .then(res=>{ 
+              if(res.success) {
+                  btn.innerText = "SALVA OPZIONE";
+                  const newId = trueIdNota || res.id || ("temp_n_" + Date.now());
+                  if (gTarget) {
+                      if (!gTarget.note) gTarget.note = [];
+                      const index = gTarget.note.findIndex(n => String(n.id) === String(newId) || String(n.id) === String(idNotaForm));
+                      const nuovaNota = { id: String(newId), raw_id: newId, nome: nome, price_delta_euro: prezzo };
+                      if (index >= 0) gTarget.note[index] = nuovaNota;
+                      else gTarget.note.push(nuovaNota);
+                  }
+                  const idProdotto = document.getElementById("in-id").value;
+                  renderEmbeddedNotes(idProdotto);
+                  chiudiModale('modal-nota');
+                  showToast("✅ OPZIONE SALVATA!");
+              } else { btn.innerText = "SALVA OPZIONE"; showToast("⚠️ ERRORE SALVATAGGIO."); }
+          }).catch(err => { btn.innerText = "SALVA OPZIONE"; if(!navigator.onLine) showToast("⚠️ NESSUNA CONNESSIONE DI RETE!"); });
+      }
+      
+      function eliminaNota(id) { 
+          apriConferma("ELIMINARE QUESTA OPZIONE?", () => { 
+            if(!navigator.onLine) { showToast("⚠️ ERRORE: CONNESSIONE ASSENTE!"); return; }
+            
+            let trueIdNota = id;
+            gruppiNoteGlobali.forEach(g => {
+                if (g.note) {
+                    const nTarget = g.note.find(n => String(n.id) === String(id));
+                    if (nTarget) trueIdNota = nTarget.raw_id;
+                }
+            });
+
+            fetch('/admin/delete_note', { 
+                method:'POST', 
+                headers:{'Content-Type':'application/json'}, 
+                body: JSON.stringify({id: trueIdNota, _id: trueIdNota}) 
+            })
+            .then(r=>r.json())
+            .then(res=>{ 
+                if(res.success) {
+                    gruppiNoteGlobali.forEach(g => {
+                        if (g.note) g.note = g.note.filter(n => String(n.id) !== String(id));
+                    });
+                    const idProdotto = document.getElementById("in-id").value;
+                    renderEmbeddedNotes(idProdotto);
+                    showToast("🗑️ OPZIONE ELIMINATA!");
+                } else { showToast("⚠️ IMPOSSIBILE ELIMINARE LA NOTA"); }
+            }).catch(err => { if(!navigator.onLine) showToast("⚠️ NESSUNA CONNESSIONE DI RETE!"); }); 
+          }); 
+      }
+
+      // =========================================================================
+      // TABELLA PRINCIPALE 
+      // =========================================================================
       function render() {
         const tableBody = document.getElementById("mainTable"), searchTerm = document.getElementById("searchInput").value.toLowerCase(); 
         tableBody.innerHTML = "";
@@ -556,14 +985,14 @@
         filtrati.sort((a, b) => { const nomeA = a.nome.toLowerCase(), nomeB = b.nome.toLowerCase(); if (nomeA < nomeB) return sortAsc ? -1 : 1; if (nomeA > nomeB) return sortAsc ? 1 : -1; return 0; });
         
         filtrati.forEach((p, index) => {
-          const delay = (index * 0.04).toFixed(2), pCosto = p.costo || 0, pPrezzo = p.prezzo || 0, margineCalcolato = pPrezzo > 0 ? Math.round(((pPrezzo - pCosto) / pPrezzo) * 100) : 0;
+          const delay = (index * 0.04).toFixed(2);
+          const pCosto = p.costo || 0, pPrezzo = p.prezzo || 0, margineCalcolato = pPrezzo > 0 ? Math.round(((pPrezzo - pCosto) / pPrezzo) * 100) : 0;
           const colorNome = (p.attivo === "NO") ? "#777" : "#fff";
-          
-          const badgeStato = (p.attivo === "NO") 
-                ? `<span class="badge-esaurito" style="margin-left:12px;">🔴 ESAURITO</span>` 
-                : `<span class="badge-disponibile" style="margin-left:12px;">🟢 DISPONIBILE</span>`;
+          const badgeStato = (p.attivo === "NO") ? `<span class="badge-esaurito" style="margin-left:12px;">🔴 ESAURITO</span>` : `<span class="badge-disponibile" style="margin-left:12px;">🟢 DISPONIBILE</span>`;
 
-          const tr = document.createElement("tr"); tr.className = "row-frame"; tr.style.animationDelay = `${delay}s`;
+          const tr = document.createElement("tr"); 
+          tr.className = "row-frame"; 
+          tr.style.animationDelay = `${delay}s`; 
           
           tr.innerHTML = `
             <td><b style="color:${colorNome}; font-size:17px; letter-spacing:1px;">${p.nome}</b>${badgeStato} <span style="font-size:10px; color:#555; margin-left:10px;">[${p.categoria}]</span></td>
@@ -572,51 +1001,19 @@
             <td style="color:#00ff66; font-weight:600;">${margineCalcolato}%</td>
             <td style="color:#bbb; white-space:nowrap;">€${(p.interni || 0).toFixed(2)}</td>
             <td>
-              <div style="display:flex; justify-content:flex-end; gap:8px;">
-                <button class="btn" onclick="modifica(${p.id})">MOD</button> 
-                <button class="btn btn-blue" onclick="duplica(${p.id})">DUP</button>
-                <button class="btn" style="border-color:#555; color:#aaa; background:transparent;" onclick="elimina(${p.id})">X</button>
+              <div style="display:flex; justify-content:flex-end; gap:6px;">
+                <button class="btn btn-red-action" onclick="modifica('${p.id}', this)">MODIFICA</button> 
+                <button class="btn btn-blue" onclick="duplica('${p.id}', this)">DUP</button>
+                <button class="btn" style="border-color:#555; color:#aaa; background:transparent;" onclick="eliminaProdotto('${p.id}', this)">X</button>
               </div>
             </td>
           `;
           tableBody.appendChild(tr);
         });
         
-        if(filtrati.length === 0) { tableBody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #666; background:transparent; backdrop-filter:none; border:none; padding:40px; font-family:'Orbitron'; font-size:12px;">NESSUN DATO RILEVATO</td></tr>`; }
-
-        const notesContainer = document.getElementById("notesContainer"); notesContainer.innerHTML = "";
-        if(gruppiNote.length === 0) { notesContainer.innerHTML = `<p style="color:#555; text-align:center; font-size:12px; font-family:'Orbitron'; margin-top:40px;">NESSUN GRUPPO CONFIGURATO</p>`; }
-        gruppiNote.forEach((g, index) => {
-            const delay = (index * 0.1).toFixed(2);
-            let htmlNote = g.note.map(n => `
-              <div class="single-note">
-                <span><span style="color:var(--neon-red); margin-right:8px;">></span> ${n.nome} <span style="color:#888; font-size:13px; margin-left:5px;">(${n.delta > 0 ? '+' : ''}€${n.delta.toFixed(2)})</span></span> 
-                <div style="display:flex; gap:6px;">
-                  <button class="btn" style="padding:6px 12px; font-size:10px;" onclick="modificaNota(${g.id}, ${n.id})">MOD</button>
-                  <button class="btn" style="padding:6px 12px; font-size:10px; border-color:#555; color:#aaa; background:transparent;" onclick="eliminaNota(${n.id})">X</button>
-                </div>
-              </div>`).join('');
-            
-            const div = document.createElement("div"); div.className = "note-card"; div.style.animationDelay = `${delay}s`;
-            div.innerHTML = `
-              <div class="note-header">
-                <div>
-                  <b style="font-size: 20px; letter-spacing: 2px; color:#fff; text-shadow: 0 0 10px rgba(255,255,255,0.2);">${g.nome}</b>
-                  <div style="font-size:11px; color:#888; margin-top:8px; font-family:'Orbitron'; letter-spacing:1px;">
-                    ESCLUSIVO: <span style="color:${g.esclusivo ? '#00ff66' : '#666'}">${g.esclusivo ? 'ON' : 'OFF'}</span> <span style="margin: 0 8px; color:#444;">|</span> 
-                    OBBLIGATORIO: <span style="color:${g.obbligatorio ? '#00ff66' : '#666'}">${g.obbligatorio ? 'ON' : 'OFF'}</span>
-                  </div>
-                </div>
-                <div style="display:flex; gap:10px;">
-                  <button class="btn" style="border-color: #00ff66; color: #00ff66; background: rgba(0,255,100,0.05);" onclick="apriModaleNota(${g.id})">+ ADD NOTA</button> 
-                  <button class="btn" style="border-color:#555; color:#ccc; background:transparent;" onclick="modificaGruppo(${g.id})">MOD GRUPPO</button>
-                  <button class="btn" style="border-color:#555; color:#aaa; background:transparent;" onclick="eliminaGruppo(${g.id})">X</button>
-                </div>
-              </div>
-              <div class="note-list-container">${htmlNote || '<span style="color:#555; font-size:12px; font-style:italic; font-family:\'Orbitron\'; border:none; background:transparent; display:block; text-align:center; padding:15px;">VUOTO</span>'}</div>`;
-            notesContainer.appendChild(div);
-        });
+        if(filtrati.length === 0) { tableBody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #666; background:transparent; border:none; padding:40px; font-family:'Orbitron'; font-size:12px;">NESSUN DATO RILEVATO</td></tr>`; }
       }
+      
       window.onload = render;
     </script>
   </body>
