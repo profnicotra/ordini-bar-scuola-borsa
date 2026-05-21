@@ -4,51 +4,99 @@
     <meta charset="UTF-8">
     <title>Gestione Palmare - Full Edit Mode</title>
     <style>
-        body { background-color: #8b0000; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; margin: 0; color: white; }
+        body { background-color: #151952; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; margin: 0; color: rgb(25, 43, 124); }
         .container { width: 98%; max-width: 1500px; display: flex; flex-direction: column; gap: 20px; }
-        .panel { background-color: black; padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid #333; }
+        .panel { background-color: rgb(15, 25, 109); padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgb(12, 32, 119); border: 1px solid #223392; }
         
         /* Form Aggiunta Prodotto */
         .add-product-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 10px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #444; }
-        input, select { background: #222; border: 1px solid #444; color: white; padding: 8px; border-radius: 4px; box-sizing: border-box; width: 100%; }
+        input, select { background: #cad0f3; border: 1px solid #444; color: rgb(14, 22, 95); padding: 8px; border-radius: 4px; box-sizing: border-box; width: 100%; }
         input[readonly] { background: #333; color: #aaa; cursor: not-allowed; }
-        label { font-size: 0.7em; color: #aaa; text-transform: uppercase; margin-bottom: 4px; display: block; }
+        label { font-size: 0.7em; color: #ffffff; text-transform: uppercase; margin-bottom: 4px; display: block; }
         
         table { border-collapse: collapse; width: 100%; color: white; }
-        th { color: #ff0000; padding: 12px; text-transform: uppercase; font-size: 0.75em; border-bottom: 1px solid #333; text-align: center; }
+        th { color: #ffffff; padding: 12px; text-transform: uppercase; font-size: 0.75em; border-bottom: 1px solid #333; text-align: center; }
         td { padding: 15px 10px; text-align: center; border-bottom: 1px solid #222; font-size: 0.85em; }
         .text-left { text-align: left; }
 
-        .btn { padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; border: none; text-transform: uppercase; font-size: 0.7em; background: transparent; }
-        .btn-add { background-color: #ff0000; color: white; border: none; }
-        .btn-note { border: 1px solid #2196F3; color: #2196F3; }
-        .btn-modifica { border: 1px solid #ff0000; color: #ff0000; margin-left: 5px; }
-        .btn-del { border: 1px solid #555; color: #aaa; margin-left: 5px; padding: 8px 12px; }
+        /* --- STILI PULSANTI AGGIORNATI --- */
+        .btn { 
+            padding: 8px 15px; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            border: none; 
+            text-transform: uppercase; 
+            font-size: 0.7em; 
+            background: transparent; 
+            transition: all 0.2s ease-in-out; /* Transizione fluida per i colori */
+        }
+        
+        .btn-add { 
+            background-color: #102b61; 
+            color: rgb(255, 255, 255); 
+            border: 1px solid #ffffff;
+        }
+        .btn-add:hover {
+            background-color: #122268;
+            border-color: #ffffff;
+        }
+
+        .btn-note { 
+            border: 1px solid #ffffff; 
+            color: #ffffff; 
+        }
+        .btn-note:hover {
+            background-color: #1a2252;
+            color: white;
+        }
+
+        .btn-modifica { 
+            border: 1px solid #ffffff; 
+            color: #ffffff; 
+            margin-left: 5px; 
+        }
+        .btn-modifica:hover {
+            background-color: #0a0c66;
+            color: white;
+        }
+
+        .btn-del { 
+            border: 1px solid #555; 
+            color: #ffffff; 
+            margin-left: 5px; 
+            padding: 8px 12px; 
+        }
+        .btn-del:hover {
+            background-color: #183f88;
+            border-color: #18338b;
+            color: white;
+        }
         
         /* POP-UP */
-        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 999; }
+        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(35, 39, 94, 0.85); z-index: 999; }
         .modal-box { 
             display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
-            background-color: #1a1a1a; padding: 25px; border-radius: 8px; z-index: 1000; 
-            width: 750px; max-height: 85vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+            background-color: #142b92; padding: 25px; border-radius: 8px; z-index: 1000; 
+            width: 750px; max-height: 85vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(7, 50, 143, 0.8);
             border: 1px solid #333;
         }
         
-        .cat-section { margin-bottom: 15px; border-left: 3px solid #ff0000; padding-left: 15px; background: #222; padding: 10px; border-radius: 0 8px 8px 0; }
-        .cat-name { color: #ff0000; font-size: 0.75em; font-weight: bold; margin-bottom: 8px; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; }
-        .cat-delete-x { color: #ff4444; font-size: 1.5em; cursor: pointer; font-weight: bold; padding: 0 5px; transition: 0.2s; }
-        .cat-delete-x:hover { color: #ff0000; transform: scale(1.1); }
+        .cat-section { margin-bottom: 15px; border-left: 3px solid #ffffff; padding-left: 15px; background: #ffffff; padding: 10px; border-radius: 0 8px 8px 0; }
+        .cat-name { color: #ffffff; font-size: 0.75em; font-weight: bold; margin-bottom: 8px; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; }
+        .cat-delete-x { color: #fbfcfd; font-size: 1.5em; cursor: pointer; font-weight: bold; padding: 0 5px; transition: 0.2s; }
+        .cat-delete-x:hover { color: #ffffff; transform: scale(1.1); }
 
         .note-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
-        .note-btn { background-color: #333; color: white; padding: 6px 10px; border-radius: 4px; font-size: 0.8em; display: flex; align-items: center; gap: 8px; border: 1px solid transparent; }
-        .note-delete-x { color: #ff4444; font-size: 1.2em; cursor: pointer; font-weight: bold; }
+        .note-btn { background-color: #17238f; color: white; padding: 6px 10px; border-radius: 4px; font-size: 0.8em; display: flex; align-items: center; gap: 8px; border: 1px solid transparent; }
+        .note-delete-x { color: #ffffff; font-size: 1.2em; cursor: pointer; font-weight: bold; }
 
         .add-note-inline { display: flex; gap: 5px; margin-top: 5px; }
         
         .edit-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
         .edit-form-grid div.full-width { grid-column: span 2; }
         
-        .add-category-row { display: flex; gap: 10px; margin-bottom: 20px; background: #111; padding: 10px; border-radius: 6px; border: 1px dashed #444; }
+        .add-category-row { display: flex; gap: 10px; margin-bottom: 20px; background: #112a7e; padding: 10px; border-radius: 6px; border: 1px dashed #444; }
     </style>
 </head>
 <body>
@@ -108,17 +156,18 @@
                 <button type="submit" class="btn btn-add" style="width: 100%; height: 35px;">AGGIUNGI</button>
             </div>
         </form>
+    </div>
+</div>
 
 <div id="noteOverlay" class="overlay" onclick="chiudiNote()"></div>
 <div id="noteBox" class="modal-box">
     <div style="font-size: 0.9em; margin-bottom:20px; border-bottom: 1px solid #333; padding-bottom: 10px;">
-       
         GESTIONE VARIANTI PER: <span id="nTitoloNome" style="color:#2196F3; font-weight:bold;"></span>
     </div>
     
     <div class="add-category-row">
         <input type="text" id="nuovaCategoriaInput" placeholder="Nuova categoria (es. COTTURA, GUSTO...)" style="flex-grow: 1;">
-        <button class="btn btn-add" style="background-color: #2196F3; white-space: nowrap;" onclick="aggiungiCategoria()">+ NUOVA CATEGORIA</button>
+        <button class="btn btn-add" style="background-color: #2196F3; border-color: #2196F3; white-space: nowrap;" onclick="aggiungiCategoria()">+ NUOVA CATEGORIA</button>
     </div>
 
     <div id="containerCategorie"></div>
@@ -127,7 +176,7 @@
 
 <div id="editOverlay" class="overlay" onclick="chiudiModifica()"></div>
 <div id="editBox" class="modal-box" style="width: 500px;">
-    <div style="font-size: 0.9em; margin-bottom:20px; border-bottom: 1px solid #333; padding-bottom: 10px; color:#ff0000; font-weight:bold;">
+    <div style="font-size: 0.9em; margin-bottom:20px; border-bottom: 1px solid #333; padding-bottom: 10px; color:#fffdfd; font-weight:bold;">
         MODIFICA PRODOTTO
     </div>
     <div class="edit-form-grid">
@@ -167,28 +216,9 @@
 </div>
 
 <script>
-    // Carichiamo i dati inviati dal database tramite Jinja2
-    const listinoDalDatabase = {{ data['items'] | tojson | safe }};
-
-    // Formattiamo i dati del database per adattarli alla nostra tabella
-    let listino = listinoDalDatabase.map(item => ({
-        id: item.id,
-        n: item.prodotto,           
-        c: item.costo || 0,         
-        p: item.prezzo_euro,        
-        i: item.prezzo_interni,     
-        m: item.margine || 0,       
-        a: item.attivo ? "si" : "no",
-        g: item.categoria,          
-        v: {} // Le varianti vuote per ora
-    }));
-
+    // Carichiamo i dati inviati dal database tramite Jinja2 direttamente nella variabile globale listino
+    let listino = {{ data['items'] | tojson | safe }};
     let prodottoCorrente = null;
-
-    // Disabilita il localStorage in modo che non crei conflitti col Database
-    function salvaDati() {
-        console.log("Salvataggio locale disabilitato: i dati ora risiedono nel DB SQLite.");
-    }
 
     function formatNumber(num) {
         return parseFloat(num || 0).toString().replace('.', ',');
@@ -219,8 +249,8 @@
                 <td>${formatNumber(d.p)}</td>
                 <td>${formatNumber(d.i)}</td>
                 <td>${formatNumber(d.m)}</td>
-                <td>${d.a || 'si'}</td>
-                <td>${d.g || '-'}</td>
+                <td>${d.a}</td>
+                <td>${d.g}</td>
                 <td style="white-space: nowrap;">
                     <button class="btn btn-note" onclick='apriNote(${d.id})'>NOTE</button>
                     <button class="btn btn-modifica" onclick='apriModifica(${d.id})'>MODIFICA</button>
@@ -232,11 +262,26 @@
     }
 
     function eliminaProdotto(id) {
-        alert("La funzione di eliminazione sarà collegata al database nel prossimo step!");
+        if(confirm("Sei sicuro di voler eliminare definitivamente questo prodotto?")) {
+            fetch(`/admin/delete_product/${id}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.success) {
+                    location.reload();
+                } else {
+                    alert("Errore durante l'eliminazione: " + data.error);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
     }
 
     function apriModifica(id) {
         prodottoCorrente = listino.find(p => p.id === id);
+        if(!prodottoCorrente) return;
         
         document.getElementById('editNome').value = prodottoCorrente.n;
         document.getElementById('editCosto').value = prodottoCorrente.c;
@@ -251,25 +296,133 @@
     }
 
     function salvaModificheProdotto() {
-        alert("La funzione di modifica sarà collegata al database nel prossimo step!");
-        chiudiModifica();
+        if (!prodottoCorrente) return;
+
+        const payload = {
+            nome: document.getElementById('editNome').value,
+            costo: document.getElementById('editCosto').value,
+            prezzo_euro: document.getElementById('editPrezzo').value,
+            prezzo_interni: document.getElementById('editInterni').value,
+            margine: document.getElementById('editMargine').value,
+            attivo: document.getElementById('editAttivo').value,
+            categoria: document.getElementById('editCategoria').value
+        };
+
+        fetch(`/admin/edit_product/${prodottoCorrente.id}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.success) {
+                chiudiModifica();
+                location.reload();
+            } else {
+                alert("Errore durante la modifica: " + data.error);
+            }
+        })
+        .catch(error => console.error('Error:', error));
     }
 
     function chiudiModifica() {
         document.getElementById('editOverlay').style.display = 'none';
         document.getElementById('editBox').style.display = 'none';
+        prodottoCorrente = null;
     }
 
     function apriNote(id) {
-        alert("La gestione delle varianti sarà collegata al database in futuro!");
+        prodottoCorrente = listino.find(p => p.id === id);
+        if(!prodottoCorrente) return;
+        
+        document.getElementById('nTitoloNome').innerText = prodottoCorrente.n.toUpperCase();
+        document.getElementById('nuovaCategoriaInput').value = ''; 
+        aggiornaUINote();
+        document.getElementById('noteOverlay').style.display = 'block';
+        document.getElementById('noteBox').style.display = 'block';
+    }
+
+    function aggiornaUINote() {
+        const cont = document.getElementById('containerCategorie');
+        cont.innerHTML = '';
+
+        if (!prodottoCorrente.v) prodottoCorrente.v = {};
+
+        for (const [categoria, note] of Object.entries(prodottoCorrente.v)) {
+            const sezione = document.createElement('div');
+            sezione.className = 'cat-section';
+            
+            sezione.innerHTML = `
+                <div class="cat-name">
+                    <span>${categoria}</span>
+                    <span class="cat-delete-x" onclick="eliminaCategoria('${categoria}')" title="Elimina Categoria">&times;</span>
+                </div>
+                <div class="note-grid" id="grid-${categoria}"></div>
+                <div class="add-note-inline">
+                    <input type="text" id="input-${categoria}" placeholder="Nuova nota per ${categoria}...">
+                    <button class="btn btn-add" style="background-color:#4CAF50; border-color:#4CAF50;" onclick="aggiungiNota('${categoria}')">+</button>
+                </div>
+            `;
+            cont.appendChild(sezione);
+
+            const grid = sezione.querySelector(`#grid-${categoria}`);
+            note.forEach(nota => {
+                const tag = document.createElement('div');
+                tag.className = 'note-btn';
+                tag.innerHTML = `
+                    <span>${nota.toUpperCase()}</span>
+                    <span class="note-delete-x" onclick="rimuoviNota('${categoria}', '${nota}')">&times;</span>
+                `;
+                grid.appendChild(tag);
+            });
+        }
+    }
+
+    function aggiungiCategoria() {
+        const input = document.getElementById('nuovaCategoriaInput');
+        let nomeCat = input.value.trim().toUpperCase();
+        if(!nomeCat) return;
+        if(!prodottoCorrente.v) prodottoCorrente.v = {};
+        
+        if(!prodottoCorrente.v[nomeCat]) {
+            prodottoCorrente.v[nomeCat] = [];
+            aggiornaUINote();
+            input.value = ''; 
+        } else {
+            alert("Questa categoria esiste già per questo prodotto!");
+        }
+    }
+
+    function eliminaCategoria(cat) {
+        if(confirm(`Sei sicuro di voler eliminare l'intera categoria "${cat}" e tutte le sue note?`)) {
+            delete prodottoCorrente.v[cat];
+            aggiornaUINote();
+        }
+    }
+
+    function aggiungiNota(cat) {
+        const input = document.getElementById(`input-${cat}`);
+        const valore = input.value.trim();
+        if(!valore) return;
+        if(!prodottoCorrente.v[cat].includes(valore)) {
+            prodottoCorrente.v[cat].push(valore);
+            aggiornaUINote();
+        }
+        input.value = '';
+    }
+
+    function rimuoviNota(cat, nota) {
+        prodottoCorrente.v[cat] = prodottoCorrente.v[cat].filter(n => n !== nota);
+        aggiornaUINote();
     }
 
     function chiudiNote() {
         document.getElementById('noteOverlay').style.display = 'none';
         document.getElementById('noteBox').style.display = 'none';
+        prodottoCorrente = null;
     }
 
-    // Disegniamo la tabella quando la pagina si carica
+    // Avvia il rendering iniziale della tabella
     renderTable();
 </script>
 
