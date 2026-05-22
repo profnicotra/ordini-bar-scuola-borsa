@@ -98,6 +98,56 @@
       .cyber-logo-container:hover { transform: scale(1.1) rotate(-5deg); border-color: var(--neon-red); box-shadow: 0 0 40px var(--neon-glow); }
       .cyber-logo-img { width: 85%; height: 85%; border-radius: 50%; object-fit: contain; filter: drop-shadow(0 0 8px var(--neon-glow)); }
 
+      /* =========================================
+         STATO BAR (APERTO/CHIUSO) IN ALTO A DESTRA
+         ========================================= */
+      .bar-status-container {
+        position: absolute;
+        top: 35px;
+        right: 40px;
+        z-index: 1000;
+      }
+      .bar-status-btn {
+        background: rgba(0, 255, 102, 0.1);
+        border: 1px solid rgba(0, 255, 102, 0.5);
+        color: #00ff66;
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-family: 'Orbitron';
+        font-size: 13px;
+        font-weight: bold;
+        letter-spacing: 2px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 15px rgba(0, 255, 102, 0.2);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .bar-status-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 25px rgba(0, 255, 102, 0.4);
+        background: rgba(0, 255, 102, 0.2);
+      }
+      .bar-status-btn.closed {
+        background: rgba(255, 0, 64, 0.1);
+        border-color: rgba(255, 0, 64, 0.5);
+        color: #ff0040;
+        box-shadow: 0 0 15px rgba(255, 0, 64, 0.2);
+      }
+      .bar-status-btn.closed:hover {
+        box-shadow: 0 0 25px rgba(255, 0, 64, 0.4);
+        background: rgba(255, 0, 64, 0.2);
+      }
+      .status-dot {
+        width: 12px; height: 12px; border-radius: 50%;
+        background: #00ff66; box-shadow: 0 0 10px #00ff66;
+        transition: all 0.3s ease;
+      }
+      .bar-status-btn.closed .status-dot {
+        background: #ff0040; box-shadow: 0 0 10px #ff0040;
+      }
+
       .container { width: 95%; max-width: 1400px; margin-top: 50px; z-index: 1; padding-bottom: 100px; }
       h1 { font-family: "Orbitron"; font-weight: 700; text-align: center; letter-spacing: 12px; text-shadow: 0 0 25px var(--neon-glow); margin-bottom: 10px; color: #fff; font-size: 32px; text-transform: uppercase; }
 
@@ -127,7 +177,7 @@
         border: 1px solid var(--glass-border-side); border-top: 1px solid var(--glass-border-top);
         border-radius: 20px; padding: 25px; margin-bottom: 50px; 
         box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255,255,255,0.05); 
-        overflow: hidden; /* IMPORTANTE PER ANIMAZIONE ALTEZZA */
+        overflow: hidden; 
         will-change: height;
       }
       
@@ -135,6 +185,11 @@
       table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
       .sortable-header { cursor: pointer; transition: 0.2s; user-select: none; }
       .sortable-header:hover { color: #fff; text-shadow: 0 0 12px var(--neon-red); }
+      
+      /* Stile del badge A-Z */
+      .sort-badge { background: rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 6px; font-size: 10px; margin-left: 8px; color: #fff; transition: 0.3s; }
+      .sortable-header:hover .sort-badge { background: var(--neon-red); box-shadow: 0 0 10px var(--neon-red); }
+
       th { font-family: "Orbitron"; color: var(--neon-red); font-size: 11px; font-weight: 500; letter-spacing: 1px; padding: 12px 20px; text-align: left; text-transform: uppercase; border-bottom: 1px solid rgba(255,42,42,0.2); }
       
       th:nth-child(1) { width: 32%; } th:nth-child(2) { width: 10%; } th:nth-child(3) { width: 10%; }
@@ -167,11 +222,8 @@
       .modal-content { 
         background: linear-gradient(135deg, rgba(25, 5, 5, 1) 0%, rgba(10, 10, 10, 1) 100%); 
         border: 1px solid rgba(255,42,42,0.2); border-top: 1px solid rgba(255,42,42,0.5);
-        padding: 40px; 
-        width: 1080px; /* <--- INGRANDITA DA 940px a 1080px */ 
-        max-height: 92vh; overflow-y: auto; border-radius: 24px; position: relative; 
-        box-shadow: 0 20px 50px rgba(0,0,0,0.9); 
-        transition: box-shadow 0.4s ease-out;
+        padding: 40px; width: 1080px; max-height: 92vh; overflow-y: auto; border-radius: 24px; position: relative; 
+        box-shadow: 0 20px 50px rgba(0,0,0,0.9); transition: box-shadow 0.4s ease-out;
       }
       .product-grid-layout { display: flex; gap: 35px; margin-top: 15px; }
       .grid-column-left { flex: 1.1; display: flex; flex-direction: column; }
@@ -262,6 +314,13 @@
         <img src="https://static.wixstatic.com/media/a24994_7448096f4def4357bb63b2ad620c6934~mv2.png" alt="Logo" class="cyber-logo-img">
     </div>
 
+    <div class="bar-status-container">
+        <div id="bar-status-btn" class="bar-status-btn" onclick="toggleBarStatus()">
+            <div class="status-dot"></div>
+            <span>STATO BAR: <span id="bar-status-text" style="color:#fff;">APERTO</span></span>
+        </div>
+    </div>
+
     <div class="container">
       <h1>MENÙ SYSTEM ADMIN</h1>
       <div id="debug-info">CONNESSIONE AL DATABASE...</div>
@@ -280,7 +339,7 @@
             <table>
             <thead>
                 <tr>
-                <th class="sortable-header" onclick="toggleSort()">Prodotto <span id="sort-icon">⬇️</span></th>
+                <th class="sortable-header" onclick="toggleSort()">Prodotto <span id="sort-icon" class="sort-badge">A-Z ⬇️</span></th>
                 <th>Costo Acq.</th>
                 <th>Listino €</th>
                 <th>Margine</th>
@@ -528,7 +587,28 @@
       document.getElementById('debug-info').innerText = "PRODOTTI TROVATI NEL DATABASE: " + prodotti.length;
 
       let categoriaAttiva = "TUTTI", sortAsc = true, azioneConfermata = null; 
-      let renderResizeTimeout = null; // Variabile per l'animazione dell'altezza
+      let renderResizeTimeout = null; 
+
+      // GESTIONE STATO BAR (Frontend UI)
+      let isBarOpen = true; 
+      function toggleBarStatus() {
+          isBarOpen = !isBarOpen;
+          const btn = document.getElementById('bar-status-btn');
+          const text = document.getElementById('bar-status-text');
+          
+          if(isBarOpen) {
+              btn.classList.remove('closed');
+              text.innerText = "APERTO";
+              showToast("🟢 IL BAR È ORA APERTO");
+          } else {
+              btn.classList.add('closed');
+              text.innerText = "CHIUSO";
+              showToast("🔴 IL BAR È ORA CHIUSO");
+          }
+          
+          // ---> QUI INSERIRE LA CHIAMATA FETCH AL SERVER PER SALVARE LO STATO EFFETTIVO DEL BAR <---
+          // fetch('/admin/set_bar_status', { method: 'POST', body: JSON.stringify({ open: isBarOpen }) });
+      }
 
       // CHIUSURA MODALI
       function chiudiModale(id) { 
@@ -566,12 +646,16 @@
           void box.offsetWidth; 
           box.classList.add("modal-error-pulse"); 
 
-          setTimeout(() => {
-              box.classList.remove("modal-error-pulse");
-          }, 400);
+          setTimeout(() => { box.classList.remove("modal-error-pulse"); }, 400);
       }
       
-      function toggleSort() { sortAsc = !sortAsc; document.getElementById("sort-icon").innerText = sortAsc ? "⬇️" : "⬆️"; render(); }
+      function toggleSort() { 
+          sortAsc = !sortAsc; 
+          // Aggiornato con i testi A-Z richiesti
+          document.getElementById("sort-icon").innerText = sortAsc ? "A-Z ⬇️" : "Z-A ⬆️"; 
+          render(); 
+      }
+      
       function calcola() { const c = parseFloat(document.getElementById("in-costo").value) || 0; const p = parseFloat(document.getElementById("in-prezzo").value) || 0; const margEl = document.getElementById("in-margine"); if (p > 0) { margEl.value = Math.round(((p - c) / p) * 100) + "%"; } else { margEl.value = "0%"; } }
       
       function autoDetectCategory() { 
@@ -926,13 +1010,12 @@
       }
 
       // =========================================================================
-      // TABELLA PRINCIPALE (CON ANIMAZIONE DINAMICA DELL'ALTEZZA)
+      // TABELLA PRINCIPALE (CON ANIMAZIONE DINAMICA DELL'ALTEZZA E ORDINAMENTO A-Z)
       // =========================================================================
       function render() {
         const dashboard = document.getElementById("mainDashboard");
         let prevHeight = dashboard.offsetHeight;
 
-        // Blocchiamo temporaneamente le transizioni per calcolare l'altezza esatta
         clearTimeout(renderResizeTimeout);
         dashboard.style.transition = "none";
         if (prevHeight > 0) dashboard.style.height = prevHeight + "px";
@@ -973,13 +1056,12 @@
         
         if(filtrati.length === 0) { tableBody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #666; background:transparent; border:none; padding:40px; font-family:'Orbitron'; font-size:12px;">NESSUN DATO RILEVATO</td></tr>`; }
 
-        // Avvio animazione fluida dell'altezza
         dashboard.style.height = "auto";
         const newHeight = dashboard.offsetHeight;
 
         if (prevHeight > 0 && prevHeight !== newHeight) {
             dashboard.style.height = prevHeight + "px";
-            void dashboard.offsetWidth; // Forza il browser a registrare il passaggio
+            void dashboard.offsetWidth; 
             
             dashboard.style.transition = "height 0.4s cubic-bezier(0.16, 1, 0.3, 1)";
             dashboard.style.height = newHeight + "px";
