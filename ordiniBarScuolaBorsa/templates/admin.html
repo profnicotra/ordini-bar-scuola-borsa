@@ -52,7 +52,7 @@
       }
 
       /* =========================================
-         EFFETTO AVVERTENZA (BAGLIORE ESTERNO DIETRO IL FRAME)
+         EFFETTO AVVERTENZA (BAGLIORE ESTERNO)
          ========================================= */
       .modal-error-pulse {
         box-shadow: 0 0 100px 30px rgba(255, 0, 64, 0.7), 0 20px 50px rgba(0,0,0,0.9) !important;
@@ -127,6 +127,8 @@
         border: 1px solid var(--glass-border-side); border-top: 1px solid var(--glass-border-top);
         border-radius: 20px; padding: 25px; margin-bottom: 50px; 
         box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255,255,255,0.05); 
+        overflow: hidden; /* IMPORTANTE PER ANIMAZIONE ALTEZZA */
+        will-change: height;
       }
       
       .table-wrapper { width: 100%; overflow-x: hidden; padding-bottom: 10px; }
@@ -153,7 +155,7 @@
       .badge-esaurito { background: rgba(255, 0, 64, 0.1); border: 1px solid rgba(255, 0, 64, 0.4); color: #ff0040; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; letter-spacing: 1px; box-shadow: inset 0 0 8px rgba(255, 0, 64, 0.2), 0 0 10px rgba(255, 0, 64, 0.1); font-family: 'Orbitron'; white-space: nowrap; display: inline-block; }
 
       /* =========================================
-         GESTIONE CLASSI ATTIVE MODALI (RIPRISTINATO MORPHING)
+         MODALI
          ========================================= */
       .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; justify-content: center; align-items: center; overflow-y: auto; padding: 20px 0; box-sizing: border-box; }
       .modal.active { display: flex; animation: blurIn 0.4s ease forwards; } 
@@ -165,9 +167,11 @@
       .modal-content { 
         background: linear-gradient(135deg, rgba(25, 5, 5, 1) 0%, rgba(10, 10, 10, 1) 100%); 
         border: 1px solid rgba(255,42,42,0.2); border-top: 1px solid rgba(255,42,42,0.5);
-        padding: 40px; width: 940px; max-height: 92vh; overflow-y: auto; border-radius: 24px; position: relative; 
+        padding: 40px; 
+        width: 1080px; /* <--- INGRANDITA DA 940px a 1080px */ 
+        max-height: 92vh; overflow-y: auto; border-radius: 24px; position: relative; 
         box-shadow: 0 20px 50px rgba(0,0,0,0.9); 
-        transition: box-shadow 0.4s ease-out; /* Cruciale per l'animazione di errore isolata */
+        transition: box-shadow 0.4s ease-out;
       }
       .product-grid-layout { display: flex; gap: 35px; margin-top: 15px; }
       .grid-column-left { flex: 1.1; display: flex; flex-direction: column; }
@@ -524,12 +528,13 @@
       document.getElementById('debug-info').innerText = "PRODOTTI TROVATI NEL DATABASE: " + prodotti.length;
 
       let categoriaAttiva = "TUTTI", sortAsc = true, azioneConfermata = null; 
+      let renderResizeTimeout = null; // Variabile per l'animazione dell'altezza
 
       // CHIUSURA MODALI
       function chiudiModale(id) { 
           const modale = document.getElementById(id); 
           const box = modale.querySelector('.modal-content');
-          if(box) box.classList.remove('modal-error-pulse'); // Pulizia extra
+          if(box) box.classList.remove('modal-error-pulse'); 
           
           modale.classList.add('closing'); 
           setTimeout(() => { 
@@ -554,16 +559,13 @@
           azioneConfermata = null; 
       }
       
-      // SISTEMATA L'ANIMAZIONE DI ERRORE PER NON BLOCCARE IL MORPHING
+      // ANIMAZIONE ERRORE SCOLLEGATA DALLE TRANSIZIONI PRINCIPALI
       function animazioneErrore(idBox) { 
           const box = document.getElementById(idBox);
           box.classList.remove("modal-error-pulse");
           void box.offsetWidth; 
           box.classList.add("modal-error-pulse"); 
 
-          // Rimuove la classe a metà tempo (400ms) per creare l'effetto "pulsazione" 
-          // sfruttando la transition CSS al posto del keyframe, così non si sovrappone 
-          // all'animazione di apertura e chiusura del morphing.
           setTimeout(() => {
               box.classList.remove("modal-error-pulse");
           }, 400);
@@ -643,7 +645,7 @@
           });
       }
 
-      // FUNZIONI DI APERTURA (MORPHING)
+      // FUNZIONI DI APERTURA E MODIFICA (MORPHING)
       function apriModale(btn) { 
         preparaMorph(btn);
         document.getElementById("in-id").value = ""; document.getElementById("modal-error-msg").innerText = ""; 
@@ -924,10 +926,19 @@
       }
 
       // =========================================================================
-      // TABELLA PRINCIPALE 
+      // TABELLA PRINCIPALE (CON ANIMAZIONE DINAMICA DELL'ALTEZZA)
       // =========================================================================
       function render() {
-        const tableBody = document.getElementById("mainTable"), searchTerm = document.getElementById("searchInput").value.toLowerCase(); 
+        const dashboard = document.getElementById("mainDashboard");
+        let prevHeight = dashboard.offsetHeight;
+
+        // Blocchiamo temporaneamente le transizioni per calcolare l'altezza esatta
+        clearTimeout(renderResizeTimeout);
+        dashboard.style.transition = "none";
+        if (prevHeight > 0) dashboard.style.height = prevHeight + "px";
+
+        const tableBody = document.getElementById("mainTable");
+        const searchTerm = document.getElementById("searchInput").value.toLowerCase(); 
         tableBody.innerHTML = "";
         
         let filtrati = prodotti.filter(p => (categoriaAttiva === "TUTTI" || p.categoria === categoriaAttiva) && p.nome.toLowerCase().includes(searchTerm));
@@ -961,6 +972,25 @@
         });
         
         if(filtrati.length === 0) { tableBody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #666; background:transparent; border:none; padding:40px; font-family:'Orbitron'; font-size:12px;">NESSUN DATO RILEVATO</td></tr>`; }
+
+        // Avvio animazione fluida dell'altezza
+        dashboard.style.height = "auto";
+        const newHeight = dashboard.offsetHeight;
+
+        if (prevHeight > 0 && prevHeight !== newHeight) {
+            dashboard.style.height = prevHeight + "px";
+            void dashboard.offsetWidth; // Forza il browser a registrare il passaggio
+            
+            dashboard.style.transition = "height 0.4s cubic-bezier(0.16, 1, 0.3, 1)";
+            dashboard.style.height = newHeight + "px";
+
+            renderResizeTimeout = setTimeout(() => {
+                dashboard.style.transition = "none";
+                dashboard.style.height = "auto";
+            }, 420); 
+        } else {
+            dashboard.style.height = "auto";
+        }
       }
       
       window.onload = render;
