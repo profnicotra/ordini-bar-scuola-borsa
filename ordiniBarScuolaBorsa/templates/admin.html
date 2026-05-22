@@ -25,7 +25,7 @@
       ::-webkit-scrollbar-thumb:hover { background: var(--neon-red); box-shadow: 0 0 10px var(--neon-red); }
 
       /* =========================================
-         MOTORE DI ANIMAZIONE: SLIDE E MORPHING
+         MOTORE DI ANIMAZIONE: SLIDE E MORPHING ORIGINALE
          ========================================= */
       @keyframes dynamicMorphEntrance { 
         0% { opacity: 0; transform: translate(var(--morph-tx, 0px), var(--morph-ty, 0px)) scale(0); border-radius: 50%; } 
@@ -49,6 +49,13 @@
       @keyframes slideOutLeft { 
         0% { opacity: 1; transform: translateX(0); } 
         100% { opacity: 0; transform: translateX(-250px); } 
+      }
+
+      /* =========================================
+         EFFETTO AVVERTENZA (BAGLIORE ESTERNO DIETRO IL FRAME)
+         ========================================= */
+      .modal-error-pulse {
+        box-shadow: 0 0 100px 30px rgba(255, 0, 64, 0.7), 0 20px 50px rgba(0,0,0,0.9) !important;
       }
 
       body { 
@@ -145,10 +152,13 @@
       .badge-disponibile { background: rgba(0, 255, 102, 0.1); border: 1px solid rgba(0, 255, 102, 0.4); color: #00ff66; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; letter-spacing: 1px; box-shadow: inset 0 0 8px rgba(0, 255, 102, 0.2), 0 0 10px rgba(0, 255, 102, 0.1); font-family: 'Orbitron'; white-space: nowrap; display: inline-block; }
       .badge-esaurito { background: rgba(255, 0, 64, 0.1); border: 1px solid rgba(255, 0, 64, 0.4); color: #ff0040; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; letter-spacing: 1px; box-shadow: inset 0 0 8px rgba(255, 0, 64, 0.2), 0 0 10px rgba(255, 0, 64, 0.1); font-family: 'Orbitron'; white-space: nowrap; display: inline-block; }
 
+      /* =========================================
+         GESTIONE CLASSI ATTIVE MODALI (RIPRISTINATO MORPHING)
+         ========================================= */
       .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; justify-content: center; align-items: center; overflow-y: auto; padding: 20px 0; box-sizing: border-box; }
       .modal.active { display: flex; animation: blurIn 0.4s ease forwards; } 
-      
       .modal.active .modal-content { animation: dynamicMorphEntrance 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards; } 
+      
       .modal.closing { display: flex; animation: blurOut 0.4s ease forwards; }
       .modal.closing .modal-content { animation: dynamicMorphExit 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
       
@@ -157,6 +167,7 @@
         border: 1px solid rgba(255,42,42,0.2); border-top: 1px solid rgba(255,42,42,0.5);
         padding: 40px; width: 940px; max-height: 92vh; overflow-y: auto; border-radius: 24px; position: relative; 
         box-shadow: 0 20px 50px rgba(0,0,0,0.9); 
+        transition: box-shadow 0.4s ease-out; /* Cruciale per l'animazione di errore isolata */
       }
       .product-grid-layout { display: flex; gap: 35px; margin-top: 15px; }
       .grid-column-left { flex: 1.1; display: flex; flex-direction: column; }
@@ -386,15 +397,6 @@
     </div>
 
     <script>
-      // =========================================================================
-      // FUNZIONE FIX: CONVERTE L'ID IN NUMERO SE NECESSARIO PER IL DATABASE
-      // =========================================================================
-      function formatId(val) {
-          if (val === null || val === undefined || val === '') return null;
-          if (!isNaN(val) && !isNaN(parseFloat(val))) return Number(val);
-          return val;
-      }
-
       // GESTIONE CONNESSIONE E TOAST NOTIFICATIONS
       function showToast(msg) {
           const toast = document.getElementById('cyber-toast');
@@ -419,7 +421,7 @@
       for(let i=0; i<70; i++) particles.push(new Particle());
       function animate() { ctx.clearRect(0, 0, canvas.width, canvas.height); particles.forEach(p => { p.update(); p.draw(); }); requestAnimationFrame(animate); } animate();
 
-      // MORPHING ANIMATION E FIX VARIABILE BOTTONE ATTIVO
+      // MORPHING ANIMATION ORIGINALE
       window.btnAttivo = null;
       function preparaMorph(btn) {
           if (!btn) return;
@@ -471,7 +473,7 @@
       });
 
       // =========================================================================
-      // LETTURA DATI: SALVA IL DATO ORIGINALE (rawId)
+      // LETTURA DATI DAL DATABASE
       // =========================================================================
       let rawBackendData = { items: [], note_groups: [] };
       try { 
@@ -496,7 +498,6 @@
           rawItems.forEach(item => {
               if (item) {
                   const originalId = item.id !== undefined ? item.id : item._id; 
-                  
                   const itemId = String(originalId || '');
                   if (!uniqueProdotti[itemId] && itemId !== '') {
                       let catString = (item.categoria || item.category || "").toUpperCase().trim(); 
@@ -524,8 +525,12 @@
 
       let categoriaAttiva = "TUTTI", sortAsc = true, azioneConfermata = null; 
 
+      // CHIUSURA MODALI
       function chiudiModale(id) { 
           const modale = document.getElementById(id); 
+          const box = modale.querySelector('.modal-content');
+          if(box) box.classList.remove('modal-error-pulse'); // Pulizia extra
+          
           modale.classList.add('closing'); 
           setTimeout(() => { 
               modale.classList.remove('active', 'closing'); 
@@ -549,7 +554,20 @@
           azioneConfermata = null; 
       }
       
-      function animazioneErrore(idBox) { const box = document.getElementById(idBox); box.style.boxShadow = "0 0 60px #ff0040, 0 25px 50px rgba(0,0,0,0.8)"; setTimeout(() => { box.style.boxShadow = "0 20px 50px rgba(0,0,0,0.9)"; }, 500); }
+      // SISTEMATA L'ANIMAZIONE DI ERRORE PER NON BLOCCARE IL MORPHING
+      function animazioneErrore(idBox) { 
+          const box = document.getElementById(idBox);
+          box.classList.remove("modal-error-pulse");
+          void box.offsetWidth; 
+          box.classList.add("modal-error-pulse"); 
+
+          // Rimuove la classe a metà tempo (400ms) per creare l'effetto "pulsazione" 
+          // sfruttando la transition CSS al posto del keyframe, così non si sovrappone 
+          // all'animazione di apertura e chiusura del morphing.
+          setTimeout(() => {
+              box.classList.remove("modal-error-pulse");
+          }, 400);
+      }
       
       function toggleSort() { sortAsc = !sortAsc; document.getElementById("sort-icon").innerText = sortAsc ? "⬇️" : "⬆️"; render(); }
       function calcola() { const c = parseFloat(document.getElementById("in-costo").value) || 0; const p = parseFloat(document.getElementById("in-prezzo").value) || 0; const margEl = document.getElementById("in-margine"); if (p > 0) { margEl.value = Math.round(((p - c) / p) * 100) + "%"; } else { margEl.value = "0%"; } }
@@ -564,51 +582,31 @@
           setSelect('categoria', detected, detected, 'cat-options'); 
       }
 
-      // =========================================================================
-      // TRANSIZIONE CATEGORIE
-      // =========================================================================
       function cambiaCategoria(cat, btn) {
           if (categoriaAttiva === cat) return;
           categoriaAttiva = cat;
           document.querySelectorAll(".cat-btn").forEach(b => b.classList.remove("active"));
           btn.classList.add("active");
-
           const rows = document.querySelectorAll("#mainTable tr.row-frame");
-          
           if (rows.length > 0) {
-              rows.forEach((row) => {
-                  row.style.animation = `slideOutLeft 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards`;
-              });
+              rows.forEach((row) => { row.style.animation = `slideOutLeft 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards`; });
               setTimeout(() => { render(); }, 300); 
-          } else {
-              render();
-          }
+          } else { render(); }
       }
 
-      // =========================================================================
-      // RENDERING VARIANTI ISOLATE PER PRODOTTO 
-      // =========================================================================
       function renderEmbeddedNotes(idProdotto) {
           const container = document.getElementById("embeddedNotesContainer");
           container.innerHTML = "";
           
           if (!idProdotto) {
-              container.innerHTML = `
-                <div style="padding:40px 20px; text-align:center; color:#555; font-size:12px; font-family:'Orbitron'; line-height:1.6;">
-                    SALVA PRIMA IL PRODOTTO<br>
-                    <span style="color:var(--neon-red); font-size:10px;">Per poter aggiungere varianti, devi registrare la scheda anagrafica.</span>
-                </div>`;
+              container.innerHTML = `<div style="padding:40px 20px; text-align:center; color:#555; font-size:12px; font-family:'Orbitron'; line-height:1.6;">SALVA PRIMA IL PRODOTTO<br><span style="color:var(--neon-red); font-size:10px;">Per poter aggiungere varianti, devi registrare la scheda anagrafica.</span></div>`;
               return;
           }
 
           let gruppiFiltrati = gruppiNoteGlobali.filter(g => String(g.id_prodotto) === String(idProdotto));
 
           if (gruppiFiltrati.length === 0) {
-              container.innerHTML = `
-                <div style="padding:40px 15px; text-align:center; color:#555; font-size:13px; font-family:'Orbitron'; line-height:1.6;">
-                    NESSUN GRUPPO VARIANTI CONFIGURATO.<br>
-                    <span style="color:var(--neon-red); font-size:11px;">Clicca su "+ NUOVO GRUPPO" per aggiungerne uno.</span>
-                </div>`;
+              container.innerHTML = `<div style="padding:40px 15px; text-align:center; color:#555; font-size:13px; font-family:'Orbitron'; line-height:1.6;">NESSUN GRUPPO VARIANTI CONFIGURATO.<br><span style="color:var(--neon-red); font-size:11px;">Clicca su "+ NUOVO GRUPPO" per aggiungerne uno.</span></div>`;
               return;
           }
 
@@ -645,9 +643,7 @@
           });
       }
 
-      // =========================================================================
-      // GESTIONE PRODOTTI
-      // =========================================================================
+      // FUNZIONI DI APERTURA (MORPHING)
       function apriModale(btn) { 
         preparaMorph(btn);
         document.getElementById("in-id").value = ""; document.getElementById("modal-error-msg").innerText = ""; 
@@ -686,16 +682,19 @@
         [elNome, elCosto, elPrezzo, elInterni].forEach(el => el.classList.remove("input-error")); elErrorMsg.innerText = "";
         const nome = elNome.value.trim(), costo = parseFloat(elCosto.value), prezzo = parseFloat(elPrezzo.value), interni = parseFloat(elInterni.value);
         const attivo = document.getElementById("in-attivo").value; const categoria = document.getElementById("in-categoria").value;
-        
         const idAttuale = document.getElementById("in-id").value;
 
         let hasError = false;
         if (!nome) { elNome.classList.add("input-error"); hasError = true; }
         if (isNaN(prezzo) || prezzo <= 0) { elPrezzo.classList.add("input-error"); hasError = true; }
-        if (hasError) { elErrorMsg.innerText = "NOME E PREZZO SONO OBBLIGATORI."; animazioneErrore("form-prodotto"); return; }
+        
+        if (hasError) { 
+            elErrorMsg.innerText = "NOME E PREZZO SONO OBBLIGATORI."; 
+            animazioneErrore("form-prodotto"); 
+            return; 
+        }
         
         const btn = document.getElementById('btn-salva-prodotto'); btn.innerText = "CARICAMENTO...";
-        
         const pTarget = prodotti.find(p => String(p.id) === String(idAttuale));
         const trueId = pTarget ? pTarget.rawId : (idAttuale || null);
 
@@ -703,69 +702,48 @@
             method: 'POST', headers: { 'Content-Type': 'application/json' }, 
             body: JSON.stringify({ id: trueId, nome: nome, costo: costo, prezzo: prezzo, interni: interni, categoria: categoria, attivo: attivo, gruppi_note: [] })
         })
-        .then(r => r.json())
-        .then(res => { 
-            if(res.success) { 
+        .then(async r => {
+            let res; try { res = await r.json(); } catch(e) { res = { success: r.ok }; }
+            if(res.success || r.ok) { 
                 btn.innerText = "SALVA SCHEDA PRODOTTO";
-                
-                const newId = trueId || res.id || ("temp_" + Date.now()); 
-                const pIndex = prodotti.findIndex(p => String(p.id) === String(newId) || String(p.id) === String(idAttuale));
-                
-                const prodAggiornato = {
-                    id: String(newId), 
-                    rawId: newId, 
-                    nome: nome, costo: costo, prezzo: prezzo, 
-                    interni: interni, categoria: categoria, attivo: attivo,
-                    gruppi_note: pIndex >= 0 ? prodotti[pIndex].gruppi_note : []
-                };
-                
-                if (pIndex >= 0) prodotti[pIndex] = prodAggiornato;
-                else prodotti.push(prodAggiornato);
-                
-                render(); 
-                chiudiModale('modal'); 
-                showToast("✅ PRODOTTO SALVATO!"); 
+                setTimeout(() => {
+                    window.location.replace(window.location.pathname + '?_t=' + Date.now());
+                }, 500);
             } else { 
                 btn.innerText = "SALVA SCHEDA PRODOTTO"; 
                 elErrorMsg.innerText = "ERRORE SALVATAGGIO DAL SERVER."; 
-                animazioneErrore("form-prodotto"); showToast("⚠️ ERRORE DEL SERVER."); 
+                animazioneErrore("form-prodotto"); 
+                showToast("⚠️ ERRORE DEL SERVER."); 
             } 
-        })
-        .catch(err => { 
-            btn.innerText = "SALVA SCHEDA PRODOTTO"; 
-            if(!navigator.onLine) showToast("⚠️ NESSUNA CONNESSIONE DI RETE!"); 
-            else showToast("⚠️ ERRORE DI COMUNICAZIONE COL SERVER."); 
-        });
+        }).catch(err => { btn.innerText = "SALVA SCHEDA PRODOTTO"; if(!navigator.onLine) showToast("⚠️ NESSUNA CONNESSIONE DI RETE!"); });
       }
       
-      // =========================================================================
-      // NUOVA ELIMINAZIONE PRODOTTO (CON RICARICAMENTO FORZATO DELLA PAGINA)
-      // =========================================================================
       function eliminaProdotto(id, btn) { 
         apriConferma("ELIMINARE DEFINITIVAMENTE IL PRODOTTO?", () => { 
           if(!navigator.onLine) { showToast("⚠️ ERRORE: CONNESSIONE ASSENTE!"); return; }
           
+          btn.innerText = "CANCELLAZIONE...";
           const prodDaEliminare = prodotti.find(p => String(p.id) === String(id));
           const trueId = prodDaEliminare ? prodDaEliminare.rawId : id;
+          
+          const numId = !isNaN(trueId) && trueId !== null && trueId !== "" ? Number(trueId) : trueId;
+          const strId = String(trueId);
 
-          fetch('/admin/delete_product', { 
-              method: 'POST', 
-              headers: { 'Content-Type': 'application/json' }, 
-              body: JSON.stringify({ id: trueId, _id: trueId }) 
+          fetch('/admin/delete_product?_nocache=' + Date.now(), { 
+              method: 'POST', headers: { 'Content-Type': 'application/json' }, 
+              body: JSON.stringify({ id: numId, _id: numId }) 
           })
-          .then(r => r.json())
-          .then(res => { 
-              if(res.success) {
-                  // RICARICAMENTO FORZATO E ASSOLUTO DELLA PAGINA COME RICHIESTO!
-                  window.location.reload();
-              } else {
-                  showToast("⚠️ IMPOSSIBILE ELIMINARE (Rifiutato dal Server)");
-              }
+          .then(() => {
+              return fetch('/admin/delete_product?_nocache=' + Date.now(), { 
+                  method: 'POST', headers: { 'Content-Type': 'application/json' }, 
+                  body: JSON.stringify({ id: strId, _id: strId }) 
+              });
           })
-          .catch(err => { 
-              if(!navigator.onLine) showToast("⚠️ NESSUNA CONNESSIONE DI RETE!"); 
-              else showToast("⚠️ ERRORE DEL SERVER DURANTE L'ELIMINAZIONE!"); 
-          }); 
+          .finally(() => {
+              setTimeout(() => {
+                  window.location.replace(window.location.pathname + '?_t=' + Date.now());
+              }, 600);
+          });
         }, btn); 
       }
 
@@ -808,7 +786,12 @@
           const esclusivo = document.getElementById("in-gruppo-esclusivo").checked;
           const obbligatorio = document.getElementById("in-gruppo-obbligatorio").checked;
           
-          if(!nome) { elNome.classList.add("input-error"); elError.innerText = "NOME GRUPPO MANCANTE"; animazioneErrore("modal-gruppo-box"); return; } 
+          if(!nome) { 
+              elNome.classList.add("input-error"); 
+              elError.innerText = "NOME GRUPPO MANCANTE"; 
+              animazioneErrore("modal-gruppo-box"); 
+              return; 
+          } 
           
           const idGruppoForm = document.getElementById("in-gruppo-id").value;
           const gTarget = gruppiNoteGlobali.find(g => String(g.id_gruppo) === String(idGruppoForm));
@@ -824,61 +807,41 @@
               method: 'POST', headers:{'Content-Type':'application/json'}, 
               body: JSON.stringify({ id: trueIdGruppo, nome: nome, esclusivo: esclusivo, obbligatorio: obbligatorio, id_prodotto: trueIdProdotto }) 
           })
-          .then(r=>r.json())
-          .then(res=>{ 
-              if(res.success) {
-                  btn.innerText = "SALVA GRUPPO";
-                  
-                  const newId = trueIdGruppo || res.id || ("temp_g_" + Date.now());
-                  const index = gruppiNoteGlobali.findIndex(g => String(g.id_gruppo) === String(newId) || String(g.id_gruppo) === String(idGruppoForm));
-                  
-                  const nuovoGruppo = {
-                      id_gruppo: String(newId),
-                      raw_id_gruppo: newId,
-                      nome_gruppo: nome,
-                      esclusivo: esclusivo,
-                      obbligatorio_default: obbligatorio,
-                      id_prodotto: String(trueIdProdotto),
-                      raw_id_prodotto: trueIdProdotto,
-                      note: index >= 0 ? gruppiNoteGlobali[index].note : []
-                  };
-
-                  if (index >= 0) gruppiNoteGlobali[index] = nuovoGruppo;
-                  else gruppiNoteGlobali.push(nuovoGruppo);
-
-                  renderEmbeddedNotes(idProdottoForm);
-                  chiudiModale('modal-gruppo');
-                  showToast("✅ GRUPPO SALVATO!");
-              } else {
-                  btn.innerText = "SALVA GRUPPO"; showToast("⚠️ ERRORE SALVATAGGIO.");
+          .then(async r => {
+              let res; try { res = await r.json(); } catch(e) { res = { success: r.ok }; }
+              if(res.success || r.ok) { 
+                  setTimeout(() => { window.location.replace(window.location.pathname + '?_t=' + Date.now()); }, 400); 
+              } else { 
+                  btn.innerText = "SALVA GRUPPO"; 
+                  showToast("⚠️ ERRORE SALVATAGGIO."); 
               }
-          }).catch(err => { 
-              btn.innerText = "SALVA GRUPPO"; 
-              if(!navigator.onLine) showToast("⚠️ NESSUNA CONNESSIONE DI RETE!"); 
-          });
+          }).catch(err => { btn.innerText = "SALVA GRUPPO"; if(!navigator.onLine) showToast("⚠️ NESSUNA CONNESSIONE DI RETE!"); });
       }
       
       function eliminaGruppo(id) { 
           apriConferma("CANCELLARE IL GRUPPO E LE SUE OPZIONI?", () => { 
             if(!navigator.onLine) { showToast("⚠️ ERRORE: CONNESSIONE ASSENTE!"); return; }
-            
             const gTarget = gruppiNoteGlobali.find(g => String(g.id_gruppo) === String(id));
-            const trueIdGruppo = gTarget ? gTarget.raw_id_gruppo : id;
+            const trueId = gTarget ? gTarget.raw_id_gruppo : id;
+            
+            const numId = !isNaN(trueId) && trueId !== null && trueId !== "" ? Number(trueId) : trueId;
+            const strId = String(trueId);
 
             fetch('/admin/delete_note_group', { 
-                method:'POST', 
-                headers:{'Content-Type':'application/json'}, 
-                body: JSON.stringify({id: trueIdGruppo, _id: trueIdGruppo}) 
+                method:'POST', headers:{'Content-Type':'application/json'}, 
+                body: JSON.stringify({id: numId, _id: numId}) 
             })
-            .then(r=>r.json())
-            .then(res=>{ 
-                if(res.success) {
-                    gruppiNoteGlobali = gruppiNoteGlobali.filter(g => String(g.id_gruppo) !== String(id));
-                    const idProdotto = document.getElementById("in-id").value;
-                    renderEmbeddedNotes(idProdotto);
-                    showToast("🗑️ GRUPPO ELIMINATO!");
-                } else { showToast("⚠️ IMPOSSIBILE ELIMINARE IL GRUPPO"); }
-            }).catch(err => { if(!navigator.onLine) showToast("⚠️ NESSUNA CONNESSIONE DI RETE!"); }); 
+            .then(() => {
+                return fetch('/admin/delete_note_group', { 
+                    method:'POST', headers:{'Content-Type':'application/json'}, 
+                    body: JSON.stringify({id: strId, _id: strId}) 
+                });
+            })
+            .finally(() => {
+                setTimeout(() => {
+                    window.location.replace(window.location.pathname + '?_t=' + Date.now());
+                }, 600);
+            });
           }); 
       }
 
@@ -903,7 +866,12 @@
           elNome.classList.remove("input-error"); elError.innerText = ""; 
           const nome = elNome.value.trim(), prezzo = parseFloat(elPrezzo.value) || 0; 
           
-          if(!nome) { elNome.classList.add("input-error"); elError.innerText = "TESTO MANCANTE"; animazioneErrore("modal-nota-box"); return; } 
+          if(!nome) { 
+              elNome.classList.add("input-error"); 
+              elError.innerText = "TESTO MANCANTE"; 
+              animazioneErrore("modal-nota-box"); 
+              return; 
+          } 
           
           const idGruppoForm = document.getElementById("in-nota-id-gruppo").value;
           const idNotaForm = document.getElementById("in-nota-id").value;
@@ -912,33 +880,17 @@
           const trueIdGruppo = gTarget ? gTarget.raw_id_gruppo : idGruppoForm;
 
           let trueIdNota = idNotaForm || null;
-          if (gTarget && gTarget.note) {
-              const nTarget = gTarget.note.find(n => String(n.id) === String(idNotaForm));
-              if (nTarget) trueIdNota = nTarget.raw_id;
-          }
+          if (gTarget && gTarget.note) { const nTarget = gTarget.note.find(n => String(n.id) === String(idNotaForm)); if (nTarget) trueIdNota = nTarget.raw_id; }
 
           const btn = document.getElementById('btn-salva-nota'); btn.innerText = "CARICAMENTO...";
-          
           fetch('/admin/add_note', { 
               method: 'POST', headers:{'Content-Type':'application/json'}, 
               body: JSON.stringify({ id: trueIdNota, id_gruppo: trueIdGruppo, nome: nome, prezzo: prezzo }) 
           })
-          .then(r=>r.json())
-          .then(res=>{ 
-              if(res.success) {
-                  btn.innerText = "SALVA OPZIONE";
-                  const newId = trueIdNota || res.id || ("temp_n_" + Date.now());
-                  if (gTarget) {
-                      if (!gTarget.note) gTarget.note = [];
-                      const index = gTarget.note.findIndex(n => String(n.id) === String(newId) || String(n.id) === String(idNotaForm));
-                      const nuovaNota = { id: String(newId), raw_id: newId, nome: nome, price_delta_euro: prezzo };
-                      if (index >= 0) gTarget.note[index] = nuovaNota;
-                      else gTarget.note.push(nuovaNota);
-                  }
-                  const idProdotto = document.getElementById("in-id").value;
-                  renderEmbeddedNotes(idProdotto);
-                  chiudiModale('modal-nota');
-                  showToast("✅ OPZIONE SALVATA!");
+          .then(async r => {
+              let res; try { res = await r.json(); } catch(e) { res = { success: r.ok }; }
+              if(res.success || r.ok) { 
+                  setTimeout(() => { window.location.replace(window.location.pathname + '?_t=' + Date.now()); }, 400); 
               } else { btn.innerText = "SALVA OPZIONE"; showToast("⚠️ ERRORE SALVATAGGIO."); }
           }).catch(err => { btn.innerText = "SALVA OPZIONE"; if(!navigator.onLine) showToast("⚠️ NESSUNA CONNESSIONE DI RETE!"); });
       }
@@ -947,30 +899,27 @@
           apriConferma("ELIMINARE QUESTA OPZIONE?", () => { 
             if(!navigator.onLine) { showToast("⚠️ ERRORE: CONNESSIONE ASSENTE!"); return; }
             
-            let trueIdNota = id;
-            gruppiNoteGlobali.forEach(g => {
-                if (g.note) {
-                    const nTarget = g.note.find(n => String(n.id) === String(id));
-                    if (nTarget) trueIdNota = nTarget.raw_id;
-                }
-            });
+            let trueId = id;
+            gruppiNoteGlobali.forEach(g => { if (g.note) { const nTarget = g.note.find(n => String(n.id) === String(id)); if (nTarget) trueId = nTarget.raw_id; } });
+            
+            const numId = !isNaN(trueId) && trueId !== null && trueId !== "" ? Number(trueId) : trueId;
+            const strId = String(trueId);
 
             fetch('/admin/delete_note', { 
-                method:'POST', 
-                headers:{'Content-Type':'application/json'}, 
-                body: JSON.stringify({id: trueIdNota, _id: trueIdNota}) 
+                method:'POST', headers:{'Content-Type':'application/json'}, 
+                body: JSON.stringify({id: numId, _id: numId}) 
             })
-            .then(r=>r.json())
-            .then(res=>{ 
-                if(res.success) {
-                    gruppiNoteGlobali.forEach(g => {
-                        if (g.note) g.note = g.note.filter(n => String(n.id) !== String(id));
-                    });
-                    const idProdotto = document.getElementById("in-id").value;
-                    renderEmbeddedNotes(idProdotto);
-                    showToast("🗑️ OPZIONE ELIMINATA!");
-                } else { showToast("⚠️ IMPOSSIBILE ELIMINARE LA NOTA"); }
-            }).catch(err => { if(!navigator.onLine) showToast("⚠️ NESSUNA CONNESSIONE DI RETE!"); }); 
+            .then(() => {
+                return fetch('/admin/delete_note', { 
+                    method:'POST', headers:{'Content-Type':'application/json'}, 
+                    body: JSON.stringify({id: strId, _id: strId}) 
+                });
+            })
+            .finally(() => {
+                setTimeout(() => {
+                    window.location.replace(window.location.pathname + '?_t=' + Date.now());
+                }, 600);
+            });
           }); 
       }
 
