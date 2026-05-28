@@ -25,7 +25,7 @@
       ::-webkit-scrollbar-thumb:hover { background: var(--neon-red); box-shadow: 0 0 10px var(--neon-red); }
 
       /* =========================================
-         MOTORE DI ANIMAZIONE: SLIDE E MORPHING ORIGINALE
+         MOTORE DI ANIMAZIONE: SLIDE E MORPHING
          ========================================= */
       @keyframes dynamicMorphEntrance { 
         0% { opacity: 0; transform: translate(var(--morph-tx, 0px), var(--morph-ty, 0px)) scale(0); border-radius: 50%; } 
@@ -51,9 +51,16 @@
         100% { opacity: 0; transform: translateX(-250px); } 
       }
 
-      /* =========================================
-         EFFETTO AVVERTENZA (BAGLIORE ESTERNO)
-         ========================================= */
+      /* EFFETTO RESIZE DASHBOARD (GLOW ANIMATO) */
+      @keyframes panelPulse {
+        0% { box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255,255,255,0.05), 0 0 0px transparent; }
+        50% { box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255,255,255,0.05), 0 0 40px var(--neon-glow); }
+        100% { box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255,255,255,0.05), 0 0 0px transparent; }
+      }
+      .dashboard-resize-pulse {
+        animation: panelPulse 0.4s ease-out;
+      }
+
       .modal-error-pulse {
         box-shadow: 0 0 100px 30px rgba(255, 0, 64, 0.7), 0 20px 50px rgba(0,0,0,0.9) !important;
       }
@@ -99,54 +106,15 @@
       .cyber-logo-img { width: 85%; height: 85%; border-radius: 50%; object-fit: contain; filter: drop-shadow(0 0 8px var(--neon-glow)); }
 
       /* =========================================
-         STATO BAR (APERTO/CHIUSO) IN ALTO A DESTRA
+         STATO BAR (APERTO/CHIUSO)
          ========================================= */
-      .bar-status-container {
-        position: absolute;
-        top: 35px;
-        right: 40px;
-        z-index: 1000;
-      }
-      .bar-status-btn {
-        background: rgba(0, 255, 102, 0.1);
-        border: 1px solid rgba(0, 255, 102, 0.5);
-        color: #00ff66;
-        padding: 12px 20px;
-        border-radius: 8px;
-        font-family: 'Orbitron';
-        font-size: 13px;
-        font-weight: bold;
-        letter-spacing: 2px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        box-shadow: 0 0 15px rgba(0, 255, 102, 0.2);
-        display: flex;
-        align-items: center;
-        gap: 12px;
-      }
-      .bar-status-btn:hover {
-        transform: scale(1.05);
-        box-shadow: 0 0 25px rgba(0, 255, 102, 0.4);
-        background: rgba(0, 255, 102, 0.2);
-      }
-      .bar-status-btn.closed {
-        background: rgba(255, 0, 64, 0.1);
-        border-color: rgba(255, 0, 64, 0.5);
-        color: #ff0040;
-        box-shadow: 0 0 15px rgba(255, 0, 64, 0.2);
-      }
-      .bar-status-btn.closed:hover {
-        box-shadow: 0 0 25px rgba(255, 0, 64, 0.4);
-        background: rgba(255, 0, 64, 0.2);
-      }
-      .status-dot {
-        width: 12px; height: 12px; border-radius: 50%;
-        background: #00ff66; box-shadow: 0 0 10px #00ff66;
-        transition: all 0.3s ease;
-      }
-      .bar-status-btn.closed .status-dot {
-        background: #ff0040; box-shadow: 0 0 10px #ff0040;
-      }
+      .bar-status-container { position: absolute; top: 35px; right: 40px; z-index: 1000; }
+      .bar-status-btn { background: rgba(0, 255, 102, 0.1); border: 1px solid rgba(0, 255, 102, 0.5); color: #00ff66; padding: 12px 20px; border-radius: 8px; font-family: 'Orbitron'; font-size: 13px; font-weight: bold; letter-spacing: 2px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 0 15px rgba(0, 255, 102, 0.2); display: flex; align-items: center; gap: 12px; }
+      .bar-status-btn:hover { transform: scale(1.05); box-shadow: 0 0 25px rgba(0, 255, 102, 0.4); background: rgba(0, 255, 102, 0.2); }
+      .bar-status-btn.closed { background: rgba(255, 0, 64, 0.1); border-color: rgba(255, 0, 64, 0.5); color: #ff0040; box-shadow: 0 0 15px rgba(255, 0, 64, 0.2); }
+      .bar-status-btn.closed:hover { box-shadow: 0 0 25px rgba(255, 0, 64, 0.4); background: rgba(255, 0, 64, 0.2); }
+      .status-dot { width: 12px; height: 12px; border-radius: 50%; background: #00ff66; box-shadow: 0 0 10px #00ff66; transition: all 0.3s ease; }
+      .bar-status-btn.closed .status-dot { background: #ff0040; box-shadow: 0 0 10px #ff0040; }
 
       .container { width: 95%; max-width: 1400px; margin-top: 50px; z-index: 1; padding-bottom: 100px; }
       h1 { font-family: "Orbitron"; font-weight: 700; text-align: center; letter-spacing: 12px; text-shadow: 0 0 25px var(--neon-glow); margin-bottom: 10px; color: #fff; font-size: 32px; text-transform: uppercase; }
@@ -154,31 +122,27 @@
       #debug-info { text-align: center; color: #00ff66; font-family: "Orbitron"; font-size: 14px; font-weight: bold; margin-bottom: 35px; text-shadow: 0 0 10px rgba(0, 255, 102, 0.5); letter-spacing: 2px; }
 
       .category-nav { display: flex; justify-content: center; gap: 20px; margin-bottom: 35px; flex-wrap: wrap;}
-      .cat-btn { 
-        background: rgba(20, 20, 20, 0.85); border: 1px solid var(--glass-border-side); border-top: 1px solid rgba(255,255,255,0.1);
-        color: #999; padding: 12px 30px; font-family: "Orbitron"; font-size: 12px; font-weight: 500; letter-spacing: 2px; cursor: pointer; 
-        transition: all 0.3s ease; border-radius: 8px; box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-      }
+      .cat-btn { background: rgba(20, 20, 20, 0.85); border: 1px solid var(--glass-border-side); border-top: 1px solid rgba(255,255,255,0.1); color: #999; padding: 12px 30px; font-family: "Orbitron"; font-size: 12px; font-weight: 500; letter-spacing: 2px; cursor: pointer; transition: all 0.3s ease; border-radius: 8px; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
       .cat-btn:hover { transform: translateY(-4px); color: #fff; border-color: rgba(255,42,42,0.4); box-shadow: 0 15px 25px rgba(255,42,42,0.1); }
       .cat-btn.active { border-color: var(--neon-red); color: #fff; background: linear-gradient(135deg, rgba(255,42,42,0.15) 0%, rgba(20,0,0,0.8) 100%); text-shadow: 0 0 10px #fff; box-shadow: 0 0 25px rgba(255,42,42,0.3); }
 
-      .search-bar { 
-        width: 100%; max-width: 450px; margin: 0 auto 35px auto; display: block; text-align: center; 
-        background: var(--glass-panel); 
-        border: 1px solid var(--glass-border-side); border-bottom: 2px solid var(--neon-red-dark);
-        padding: 15px; color: #fff; border-radius: 12px; outline: none; transition: all 0.3s ease; 
-        font-family: "Orbitron"; font-size: 13px; letter-spacing: 2px; box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-      }
+      .search-bar { width: 100%; max-width: 450px; margin: 0 auto 35px auto; display: block; text-align: center; background: var(--glass-panel); border: 1px solid var(--glass-border-side); border-bottom: 2px solid var(--neon-red-dark); padding: 15px; color: #fff; border-radius: 12px; outline: none; transition: all 0.3s ease; font-family: "Orbitron"; font-size: 13px; letter-spacing: 2px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
       .search-bar:focus { border-bottom-color: var(--neon-red); background: rgba(20,5,5,0.8); box-shadow: 0 15px 40px rgba(255,42,42,0.2); transform: translateY(-2px); }
       .search-bar::placeholder { color: #555; }
 
+      /* =========================================
+         TABELLA DINAMICA E DASHBOARD ELASTICA
+         ========================================= */
       .dashboard { 
-        background: var(--glass-panel); 
-        border: 1px solid var(--glass-border-side); border-top: 1px solid var(--glass-border-top);
+        background: var(--glass-panel); border: 1px solid var(--glass-border-side); border-top: 1px solid var(--glass-border-top); 
         border-radius: 20px; padding: 25px; margin-bottom: 50px; 
         box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255,255,255,0.05); 
         overflow: hidden; 
-        will-change: height;
+        will-change: height, width; /* Preparato per l'animazione doppia */
+        width: max-content; /* Si restringe in base al contenuto */
+        min-width: 60%; /* Evita che diventi minuscola se c'è un solo prodotto */
+        max-width: 100%; /* Evita che esca dallo schermo */
+        margin-left: auto; margin-right: auto;
       }
       
       .table-wrapper { width: 100%; overflow-x: hidden; padding-bottom: 10px; }
@@ -186,21 +150,21 @@
       .sortable-header { cursor: pointer; transition: 0.2s; user-select: none; }
       .sortable-header:hover { color: #fff; text-shadow: 0 0 12px var(--neon-red); }
       
-      /* Stile del badge A-Z */
       .sort-badge { background: rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 6px; font-size: 10px; margin-left: 8px; color: #fff; transition: 0.3s; }
       .sortable-header:hover .sort-badge { background: var(--neon-red); box-shadow: 0 0 10px var(--neon-red); }
 
-      th { font-family: "Orbitron"; color: var(--neon-red); font-size: 11px; font-weight: 500; letter-spacing: 1px; padding: 12px 20px; text-align: left; text-transform: uppercase; border-bottom: 1px solid rgba(255,42,42,0.2); }
+      th { font-family: "Orbitron"; color: var(--neon-red); font-size: 11px; font-weight: 500; letter-spacing: 1px; padding: 12px 20px; text-align: left; text-transform: uppercase; border-bottom: 1px solid rgba(255,42,42,0.2); white-space: nowrap; }
       
-      th:nth-child(1) { width: 32%; } th:nth-child(2) { width: 10%; } th:nth-child(3) { width: 10%; }
-      th:nth-child(4) { width: 10%; } th:nth-child(5) { width: 10%; } th:nth-child(6) { width: 28%; text-align: right; }
+      /* LARGHENZZA AUTO: Le celle prendono solo lo spazio necessario per la scritta */
+      th:nth-child(1) { width: auto; padding-right: 30px; } 
+      th:nth-child(2) { width: auto; padding-right: 30px; } 
+      th:nth-child(3) { width: auto; padding-right: 30px; }
+      th:nth-child(4) { width: auto; padding-right: 30px; } 
+      th:nth-child(5) { width: auto; padding-right: 30px; } 
+      th:nth-child(6) { width: auto; text-align: right; }
       
-      tr.row-frame { 
-        opacity: 0; 
-        animation: slideInRight 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
-        transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease; 
-      }
-      tr.row-frame td { background: rgba(20, 20, 20, 0.85); border-top: 1px solid rgba(255,255,255,0.04); border-bottom: 1px solid rgba(0,0,0,0.6); padding: 16px 20px; font-size: 16px; font-weight: 500; color: #ccc; transition: all 0.3s ease; }
+      tr.row-frame { opacity: 0; animation: slideInRight 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards; transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease; }
+      tr.row-frame td { background: rgba(20, 20, 20, 0.85); border-top: 1px solid rgba(255,255,255,0.04); border-bottom: 1px solid rgba(0,0,0,0.6); padding: 16px 20px; font-size: 16px; font-weight: 500; color: #ccc; transition: all 0.3s ease; white-space: nowrap; /* Mantiene tutto su una riga spingendo i bordi all'infuori */ }
       tr.row-frame td:first-child { border-left: 1px solid rgba(255,255,255,0.02); border-top-left-radius: 12px; border-bottom-left-radius: 12px; color: #fff; }
       tr.row-frame td:last-child { border-right: 1px solid rgba(0,0,0,0.6); border-top-right-radius: 12px; border-bottom-right-radius: 12px; padding-right: 15px; }
       tr.row-frame:hover { transform: scale(1.01) translateY(-3px) translateZ(0); }
@@ -222,7 +186,7 @@
       .modal-content { 
         background: linear-gradient(135deg, rgba(25, 5, 5, 1) 0%, rgba(10, 10, 10, 1) 100%); 
         border: 1px solid rgba(255,42,42,0.2); border-top: 1px solid rgba(255,42,42,0.5);
-        padding: 40px; width: 1080px; max-height: 92vh; overflow-y: auto; border-radius: 24px; position: relative; 
+        padding: 40px; width: 1200px; max-width: 95vw; max-height: 92vh; overflow-y: auto; border-radius: 24px; position: relative; 
         box-shadow: 0 20px 50px rgba(0,0,0,0.9); transition: box-shadow 0.4s ease-out;
       }
       .product-grid-layout { display: flex; gap: 35px; margin-top: 15px; }
@@ -241,8 +205,8 @@
       input[type="text"], input[type="number"] { width: 100%; background: rgba(0, 0, 0, 0.6); border: none; border-bottom: 2px solid #333; color: #fff; padding: 12px 16px; font-family: "Rajdhani"; font-size: 17px; font-weight: 500; border-radius: 8px 8px 0 0; outline: none; box-sizing: border-box; transition: all 0.3s ease; box-shadow: inset 0 2px 10px rgba(0,0,0,0.8); }
       input[type="text"]:focus, input[type="number"]:focus { border-bottom-color: var(--neon-red); background: rgba(20,5,5,0.8); box-shadow: inset 0 2px 10px rgba(0,0,0,0.8), 0 10px 20px rgba(255,42,42,0.1); }
       
-      .cyber-select { position: relative; width: 100%; user-select: none; z-index: 10; }
-      .select-selected { background: rgba(0, 0, 0, 0.6); border-bottom: 2px solid #333; color: #fff; padding: 12px 16px; font-family: "Rajdhani"; font-size: 17px; font-weight: 600; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; box-shadow: inset 0 2px 10px rgba(0,0,0,0.8); position: relative; }
+      .cyber-select { position: relative; width: 100%; user-select: none; z-index: 10; white-space: nowrap; }
+      .select-selected { background: rgba(0, 0, 0, 0.6); border-bottom: 2px solid #333; color: #fff; padding: 12px 16px; font-family: "Rajdhani"; font-size: 17px; font-weight: 600; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; box-shadow: inset 0 2px 10px rgba(0,0,0,0.8); position: relative; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 30px; }
       .select-selected::after { content: '▼'; position: absolute; right: 16px; top: 15px; color: var(--neon-red); font-size: 12px; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
       .select-selected:hover { border-bottom-color: var(--neon-red); background: rgba(20,5,5,0.8); }
       .cyber-select.open .select-selected::after { transform: rotate(180deg); }
@@ -258,24 +222,13 @@
       .checkbox-group label { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #ccc; cursor: pointer; margin:0; font-family: "Rajdhani"; letter-spacing: 1px;} 
       .checkbox-group input { cursor: pointer; width: 16px; height: 16px; accent-color: var(--neon-red); }
 
-      .cyber-embedded-notes-container {
-        background: rgba(5, 5, 5, 0.6); border: 1px solid rgba(255, 42, 42, 0.15);
-        border-radius: 12px; padding: 15px; min-height: 380px; max-height: 380px; overflow-y: auto;
-        box-shadow: inset 0 2px 15px rgba(0,0,0,0.8);
-      }
-      .embedded-group-card {
-        background: rgba(20, 20, 20, 0.7); border-left: 3px solid var(--neon-red-dark);
-        margin-bottom: 12px; padding: 12px; border-radius: 4px; transition: 0.2s;
-      }
+      .cyber-embedded-notes-container { background: rgba(5, 5, 5, 0.6); border: 1px solid rgba(255, 42, 42, 0.15); border-radius: 12px; padding: 15px; min-height: 380px; max-height: 380px; overflow-y: auto; box-shadow: inset 0 2px 15px rgba(0,0,0,0.8); }
+      .embedded-group-card { background: rgba(20, 20, 20, 0.7); border-left: 3px solid var(--neon-red-dark); margin-bottom: 12px; padding: 12px; border-radius: 4px; transition: 0.2s; }
       .embedded-group-card:hover { border-left-color: var(--neon-red); background: rgba(30, 10, 10, 0.4); }
       .embedded-group-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
       .embedded-group-actions { display: flex; gap: 6px; }
 
-      .btn-plus-fixed { 
-        background: linear-gradient(135deg, var(--neon-red) 0%, var(--neon-red-dark) 100%); color: white; font-size: 32px; font-weight: 300; width: 70px; height: 70px; 
-        border-radius: 50%; position: fixed; bottom: 40px; right: 40px; box-shadow: 0 15px 35px rgba(255,42,42,0.4), inset 0 2px 5px rgba(255,255,255,0.3); border: none; cursor: pointer; z-index: 100; 
-        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); display: flex; justify-content: center; align-items: center;
-      }
+      .btn-plus-fixed { background: linear-gradient(135deg, var(--neon-red) 0%, var(--neon-red-dark) 100%); color: white; font-size: 32px; font-weight: 300; width: 70px; height: 70px; border-radius: 50%; position: fixed; bottom: 40px; right: 40px; box-shadow: 0 15px 35px rgba(255,42,42,0.4), inset 0 2px 5px rgba(255,255,255,0.3); border: none; cursor: pointer; z-index: 100; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); display: flex; justify-content: center; align-items: center; }
       .btn-plus-fixed:hover { transform: scale(1.1) rotate(90deg); box-shadow: 0 20px 50px rgba(255,42,42,0.6); background: #fff; color: var(--neon-red); }
       
       .btn { font-family: "Orbitron"; cursor: pointer; border: 1px solid rgba(255,42,42,0.5); background: rgba(255,42,42,0.05); color: var(--neon-red); padding: 8px 14px; font-size: 10px; font-weight: 500; border-radius: 6px; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 1px; }
@@ -484,7 +437,7 @@
       for(let i=0; i<70; i++) particles.push(new Particle());
       function animate() { ctx.clearRect(0, 0, canvas.width, canvas.height); particles.forEach(p => { p.update(); p.draw(); }); requestAnimationFrame(animate); } animate();
 
-      // MORPHING ANIMATION ORIGINALE
+      // MORPHING ANIMATION
       window.btnAttivo = null;
       function preparaMorph(btn) {
           if (!btn) return;
@@ -589,7 +542,7 @@
       let categoriaAttiva = "TUTTI", sortAsc = true, azioneConfermata = null; 
       let renderResizeTimeout = null; 
 
-      // GESTIONE STATO BAR (Frontend UI)
+      // GESTIONE STATO BAR 
       let isBarOpen = true; 
       function toggleBarStatus() {
           isBarOpen = !isBarOpen;
@@ -605,12 +558,8 @@
               text.innerText = "CHIUSO";
               showToast("🔴 IL BAR È ORA CHIUSO");
           }
-          
-          // ---> QUI INSERIRE LA CHIAMATA FETCH AL SERVER PER SALVARE LO STATO EFFETTIVO DEL BAR <---
-          // fetch('/admin/set_bar_status', { method: 'POST', body: JSON.stringify({ open: isBarOpen }) });
       }
 
-      // CHIUSURA MODALI
       function chiudiModale(id) { 
           const modale = document.getElementById(id); 
           const box = modale.querySelector('.modal-content');
@@ -639,19 +588,16 @@
           azioneConfermata = null; 
       }
       
-      // ANIMAZIONE ERRORE SCOLLEGATA DALLE TRANSIZIONI PRINCIPALI
       function animazioneErrore(idBox) { 
           const box = document.getElementById(idBox);
           box.classList.remove("modal-error-pulse");
           void box.offsetWidth; 
           box.classList.add("modal-error-pulse"); 
-
           setTimeout(() => { box.classList.remove("modal-error-pulse"); }, 400);
       }
       
       function toggleSort() { 
           sortAsc = !sortAsc; 
-          // Aggiornato con i testi A-Z richiesti
           document.getElementById("sort-icon").innerText = sortAsc ? "A-Z ⬇️" : "Z-A ⬆️"; 
           render(); 
       }
@@ -729,7 +675,6 @@
           });
       }
 
-      // FUNZIONI DI APERTURA E MODIFICA (MORPHING)
       function apriModale(btn) { 
         preparaMorph(btn);
         document.getElementById("in-id").value = ""; document.getElementById("modal-error-msg").innerText = ""; 
@@ -833,9 +778,6 @@
         }, btn); 
       }
 
-      // =========================================================================
-      // GESTIONE GRUPPI E NOTE 
-      // =========================================================================
       function apriModaleGruppo() { 
           const idProdotto = document.getElementById("in-id").value;
           if(!idProdotto || String(idProdotto).includes("temp_")) { 
@@ -1009,16 +951,19 @@
           }); 
       }
 
-      // =========================================================================
-      // TABELLA PRINCIPALE (CON ANIMAZIONE DINAMICA DELL'ALTEZZA E ORDINAMENTO A-Z)
-      // =========================================================================
+      /* =========================================
+         MOTORE DI RENDER CON DOPPIA ANIMAZIONE (ALTEZZA + LARGHEZZA)
+         ========================================= */
       function render() {
         const dashboard = document.getElementById("mainDashboard");
         let prevHeight = dashboard.offsetHeight;
+        let prevWidth = dashboard.offsetWidth;
 
+        // Blocca la transizione per prendere le misure attuali esatte
         clearTimeout(renderResizeTimeout);
         dashboard.style.transition = "none";
         if (prevHeight > 0) dashboard.style.height = prevHeight + "px";
+        if (prevWidth > 0) dashboard.style.width = prevWidth + "px";
 
         const tableBody = document.getElementById("mainTable");
         const searchTerm = document.getElementById("searchInput").value.toLowerCase(); 
@@ -1038,7 +983,7 @@
           tr.style.animationDelay = `${delay}s`; 
           
           tr.innerHTML = `
-            <td><b style="color:${colorNome}; font-size:17px; letter-spacing:1px;">${p.nome}</b>${badgeStato} <span style="font-size:10px; color:#555; margin-left:10px;">[${p.categoria}]</span></td>
+            <td style="white-space: nowrap;"><b style="color:${colorNome}; font-size:17px; letter-spacing:1px;">${p.nome}</b>${badgeStato} <span style="font-size:10px; color:#555; margin-left:10px;">[${p.categoria}]</span></td>
             <td style="color:#888; white-space:nowrap;">€${pCosto.toFixed(2)}</td>
             <td style="color:var(--neon-red); font-weight:700; text-shadow: 0 0 10px var(--neon-glow); font-size:18px; white-space:nowrap;">€${pPrezzo.toFixed(2)}</td>
             <td style="color:#00ff66; font-weight:600;">${margineCalcolato}%</td>
@@ -1056,22 +1001,39 @@
         
         if(filtrati.length === 0) { tableBody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #666; background:transparent; border:none; padding:40px; font-family:'Orbitron'; font-size:12px;">NESSUN DATO RILEVATO</td></tr>`; }
 
+        // Mettiamo i valori automatici per capire a che dimensione dobbiamo arrivare
         dashboard.style.height = "auto";
+        dashboard.style.width = "max-content"; 
+        
         const newHeight = dashboard.offsetHeight;
+        const newWidth = dashboard.offsetWidth;
 
-        if (prevHeight > 0 && prevHeight !== newHeight) {
-            dashboard.style.height = prevHeight + "px";
-            void dashboard.offsetWidth; 
+        // Se le dimensioni cambiano, avvia l'animazione doppia
+        if (prevHeight > 0 && (prevHeight !== newHeight || prevWidth !== newWidth)) {
             
-            dashboard.style.transition = "height 0.4s cubic-bezier(0.16, 1, 0.3, 1)";
-            dashboard.style.height = newHeight + "px";
+            // Riporta il pannello alla misura di prima istantaneamente
+            dashboard.style.height = prevHeight + "px";
+            dashboard.style.width = prevWidth + "px";
+            void dashboard.offsetWidth; // Forza il browser a registrare il momento
+            
+            // Applica l'effetto bagliore al neon
+            dashboard.classList.add("dashboard-resize-pulse");
 
+            // Lancia le doppie transizioni fluide (elastiche)
+            dashboard.style.transition = "height 0.4s cubic-bezier(0.16, 1, 0.3, 1), width 0.4s cubic-bezier(0.16, 1, 0.3, 1)";
+            dashboard.style.height = newHeight + "px";
+            dashboard.style.width = newWidth + "px";
+
+            // Pulisci a fine corsa
             renderResizeTimeout = setTimeout(() => {
                 dashboard.style.transition = "none";
                 dashboard.style.height = "auto";
+                dashboard.style.width = "max-content";
+                dashboard.classList.remove("dashboard-resize-pulse");
             }, 420); 
         } else {
             dashboard.style.height = "auto";
+            dashboard.style.width = "max-content";
         }
       }
       
