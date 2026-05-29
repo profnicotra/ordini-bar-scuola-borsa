@@ -466,7 +466,9 @@
 
       let categoriaAttiva = "TUTTI", sortAsc = true, azioneConfermata = null, renderResizeTimeout = null; 
       
-      // GESTIONE STATO BAR CON SALVATAGGIO IN LOCALSTORAGE
+      // =========================================
+      // GESTIONE STATO BAR COLLEGATA AL SERVER
+      // =========================================
       let isBarOpen = localStorage.getItem('barStatus') !== 'closed'; 
       
       function updateBarStatusUI(showNotification = true) {
@@ -484,12 +486,39 @@
       }
 
       function toggleBarStatus() { 
-          isBarOpen = !isBarOpen; 
-          localStorage.setItem('barStatus', isBarOpen ? 'open' : 'closed');
-          updateBarStatusUI(true); 
+          if(!navigator.onLine) { showToast("⚠️ ERRORE: CONNESSIONE ASSENTE!"); return; }
+          const btn = document.getElementById('bar-status-btn');
+          
+          // Effetto visivo di caricamento per farti capire che sta inviando al server
+          btn.style.pointerEvents = "none";
+          btn.style.opacity = "0.7";
+
+          // Chiamata AJAX al server usando l'indirizzo trovato nel tuo toggle.html
+          fetch('/toggle/changeBarStatus', { 
+              method: 'POST'
+          })
+          .then(response => {
+              // Rimetto a posto il pulsante
+              btn.style.pointerEvents = "auto";
+              btn.style.opacity = "1";
+              
+              if(response.ok) {
+                  // Se il server dice OK, inverto lo stato e lo salvo nel browser
+                  isBarOpen = !isBarOpen; 
+                  localStorage.setItem('barStatus', isBarOpen ? 'open' : 'closed');
+                  updateBarStatusUI(true); 
+              } else {
+                  showToast("⚠️ ERRORE DAL SERVER DURANTE L'AGGIORNAMENTO");
+              }
+          })
+          .catch(error => {
+              btn.style.pointerEvents = "auto";
+              btn.style.opacity = "1";
+              showToast("⚠️ ERRORE DI CONNESSIONE AL SERVER");
+          });
       }
 
-      // Applica lo stato salvato non appena la pagina viene caricata (senza far suonare la notifica)
+      // Applica lo stato salvato non appena la pagina viene caricata
       document.addEventListener('DOMContentLoaded', () => { updateBarStatusUI(false); });
 
       function chiudiModale(id) { const modale = document.getElementById(id); const box = modale.querySelector('.modal-content'); if(box) box.classList.remove('modal-error-pulse'); modale.classList.add('closing'); setTimeout(() => { modale.classList.remove('active', 'closing'); if (window.btnAttivo && (id === 'modal' || id === 'modal-conferma')) { window.btnAttivo.classList.remove('hide-morph'); window.btnAttivo = null; } }, 380); }
