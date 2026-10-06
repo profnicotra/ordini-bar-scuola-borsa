@@ -67,6 +67,8 @@
          ========================================== */
       body {
         font-family: "Rajdhani", sans-serif;
+        font-size: 18px;
+        font-weight: 500;
         background: var(--bg-dark);
         color: #fff;
         margin: 0;
@@ -133,14 +135,14 @@
       /* CONTENITORE PRINCIPALE */
       .container { width: 95%; max-width: 1200px; margin-top: 40px; z-index: 1; padding-bottom: 100px; }
 
-      h1 { font-family: "Orbitron"; text-align: center; letter-spacing: 8px; text-shadow: 0 0 20px var(--neon-red); margin-bottom: 25px; color: white; }
+      h1 { font-size: 2.2rem; font-family: "Orbitron"; text-align: center; letter-spacing: 8px; text-shadow: 0 0 20px var(--neon-red); margin-bottom: 25px; color: white; }
 
       /* MENU CATEGORIE E RICERCA */
       .category-nav { display: flex; justify-content: center; gap: 15px; margin-bottom: 25px; }
 
       .cat-btn {
         background: rgba(255, 255, 255, 0.05); border: 1px solid #333; color: #888;
-        padding: 12px 25px; font-family: "Orbitron"; font-size: 11px; cursor: pointer;
+        padding: 12px 25px; font-family: "Orbitron"; font-size: 15px; cursor: pointer;
         transition: 0.3s; border-radius: 4px; animation: slideIn 0.5s both;
       }
       .cat-btn:hover { transform: translateY(-3px); color: white; border-color: var(--neon-red); }
@@ -163,8 +165,8 @@
       table { width: 100%; border-collapse: collapse; }
       .sortable-header { cursor: pointer; transition: 0.2s; user-select: none; }
       .sortable-header:hover { color: white; text-shadow: 0 0 10px var(--neon-red); }
-      th { font-family: "Orbitron"; color: var(--neon-red); font-size: 10px; padding: 15px; text-align: left; border-bottom: 2px solid var(--neon-red); text-transform: uppercase; }
-      td { padding: 15px; border-bottom: 1px solid #222; font-size: 16px; }
+      th { font-family: "Orbitron"; color: var(--neon-red); font-size: 14px; padding: 15px; text-align: left; border-bottom: 2px solid var(--neon-red); text-transform: uppercase; }
+      td { padding: 15px; border-bottom: 1px solid #222; font-size: 20px; }
 
       .row-frame { animation: slideIn 0.4s both; }
 
@@ -178,7 +180,7 @@
       .note-card:hover { transform: scale(1.01) translateX(10px); background: rgba(255, 255, 255, 0.05); }
       .note-header { width: 100%; display: flex; justify-content: space-between; margin-bottom: 10px; align-items: center; }
       .note-list-container { width: 100%; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 4px; box-sizing: border-box; }
-      .single-note { display: flex; justify-content: space-between; border-bottom: 1px solid #333; padding: 8px 0; font-size: 14px; }
+      .single-note { display: flex; justify-content: space-between; border-bottom: 1px solid #333; padding: 8px 0; font-size: 18px; }
       .single-note:last-child { border-bottom: none; }
 
       /* ==========================================
@@ -195,27 +197,27 @@
 
       .modal-content {
         background: #0f0f0f; border: 2px solid var(--neon-red); padding: 30px;
-        width: 420px; border-radius: 10px; position: relative; box-shadow: 0 0 40px rgba(255, 49, 49, 0.2);
+        width: 480px; max-width: 92vw; border-radius: 10px; position: relative; box-shadow: 0 0 40px rgba(255, 49, 49, 0.2);
       }
 
-      .modal-conferma-box { width: 320px; text-align: center; }
+      .modal-conferma-box { width: 360px; text-align: center; }
 
       .input-error { border-color: var(--error-color) !important; box-shadow: 0 0 15px rgba(255, 0, 0, 0.5) !important; }
       .input-group { margin-bottom: 15px; }
-      label { font-family: "Orbitron"; font-size: 9px; color: var(--neon-red); margin-bottom: 6px; display: block; }
+      label { font-family: "Orbitron"; font-size: 13px; color: var(--neon-red); margin-bottom: 6px; display: block; }
       
       input[type="text"], input[type="number"], select {
         width: 100%; background: #000; border: 1px solid #333; color: #fff;
-        padding: 12px; font-family: "Rajdhani"; font-size: 16px; border-radius: 4px; outline: none;
+        padding: 12px; font-family: "Rajdhani"; font-size: 20px; border-radius: 4px; outline: none;
         box-sizing: border-box; transition: 0.3s;
       }
 
       .checkbox-group { display: flex; gap: 15px; align-items: center; }
-      .checkbox-group label { display: flex; align-items: center; gap: 5px; font-size: 12px; color: #ccc; cursor: pointer;}
+      .checkbox-group label { display: flex; align-items: center; gap: 5px; font-size: 16px; color: #ccc; cursor: pointer;}
       .checkbox-group input { width: auto; cursor: pointer; }
 
       .btn-plus-fixed {
-        background: var(--neon-red); color: white; font-size: 28px; width: 60px; height: 60px;
+        background: var(--neon-red); color: white; font-size: 32px; width: 60px; height: 60px;
         border-radius: 50%; position: fixed; bottom: 30px; right: 30px;
         box-shadow: 0 0 30px var(--neon-red); border: none; cursor: pointer;
         z-index: 100; transition: transform 0.3s;
@@ -224,12 +226,12 @@
 
       .btn {
         font-family: "Orbitron"; cursor: pointer; border: 1px solid var(--neon-red);
-        background: transparent; color: var(--neon-red); padding: 6px 12px;
-        font-size: 10px; border-radius: 3px; transition: 0.2s;
+        background: transparent; color: var(--neon-red); padding: 8px 14px;
+        font-size: 14px; border-radius: 3px; transition: 0.2s;
       }
       .btn:hover { background: var(--neon-red); color: white; box-shadow: 0 0 15px var(--neon-red); }
 
-      .error-msg-box { color: var(--error-color); text-align: center; font-size: 11px; margin-bottom: 10px; font-family: "Orbitron"; min-height: 15px; }
+      .error-msg-box { color: var(--error-color); text-align: center; font-size: 15px; margin-bottom: 10px; font-family: "Orbitron"; min-height: 15px; }
 
     </style>
   </head>
@@ -245,7 +247,7 @@
         <img src="https://static.wixstatic.com/media/a24994_7448096f4def4357bb63b2ad620c6934~mv2.png" alt="Logo" class="cyber-logo-img">
     </div>
 
-    <div class="container">z
+    <div class="container">
       <h1>MENÙ V 3.0 TEST</h1>
 
       <div class="category-nav">
@@ -274,7 +276,7 @@
 
       <div class="notes-section">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <h2 style="font-family: 'Orbitron'; font-size: 14px; color: var(--neon-red); margin: 0;">[ GRUPPI NOTE / VARIANTI ]</h2>
+            <h2 style="font-family: 'Orbitron'; font-size: 20px; color: var(--neon-red); margin: 0;">[ GRUPPI NOTE / VARIANTI ]</h2>
             <button class="btn" onclick="apriModaleGruppo()">+ NUOVO GRUPPO</button>
         </div>
         <div id="notesContainer"></div>
@@ -335,7 +337,7 @@
         </div>
 
         <button class="btn" style="width: 100%; padding: 15px; font-weight: bold; margin-top: 10px;" onclick="salva()">ESEGUI UPLOAD</button>
-        <p onclick="chiudiModale('modal')" style="text-align: center; cursor: pointer; color: #444; margin-top: 15px; font-family: 'Orbitron'; font-size: 10px;">[ ANNULLA_OPERAZIONE ]</p>
+        <p onclick="chiudiModale('modal')" style="text-align: center; cursor: pointer; color: #444; margin-top: 15px; font-family: 'Orbitron'; font-size: 14px;">[ ANNULLA_OPERAZIONE ]</p>
       </div>
     </div>
 
@@ -354,7 +356,7 @@
           <label><input type="checkbox" id="in-gruppo-obbligatorio"> Scelta Obbligatoria</label>
         </div>
         <button class="btn" style="width: 100%; padding: 15px; font-weight: bold; margin-top: 10px;" onclick="salvaGruppo()">CREA GRUPPO</button>
-        <p onclick="chiudiModale('modal-gruppo')" style="text-align: center; cursor: pointer; color: #444; margin-top: 15px; font-family: 'Orbitron'; font-size: 10px;">[ ANNULLA ]</p>
+        <p onclick="chiudiModale('modal-gruppo')" style="text-align: center; cursor: pointer; color: #444; margin-top: 15px; font-family: 'Orbitron'; font-size: 14px;">[ ANNULLA ]</p>
       </div>
     </div>
 
@@ -374,14 +376,14 @@
           <input type="number" step="0.01" id="in-nota-prezzo" value="0" />
         </div>
         <button class="btn" style="width: 100%; padding: 15px; font-weight: bold; margin-top: 10px;" onclick="salvaNota()">AGGIUNGI NOTA</button>
-        <p onclick="chiudiModale('modal-nota')" style="text-align: center; cursor: pointer; color: #444; margin-top: 15px; font-family: 'Orbitron'; font-size: 10px;">[ ANNULLA ]</p>
+        <p onclick="chiudiModale('modal-nota')" style="text-align: center; cursor: pointer; color: #444; margin-top: 15px; font-family: 'Orbitron'; font-size: 14px;">[ ANNULLA ]</p>
       </div>
     </div>
 
     <div id="modal-conferma" class="modal">
       <div class="modal-content modal-conferma-box">
         <h2 style="font-family: 'Orbitron'; color: var(--neon-red); margin-top: 0; letter-spacing: 2px;">ATTENZIONE</h2>
-        <p id="testo-conferma" style="color: white; margin-bottom: 25px; font-size: 16px;">Sei sicuro di voler procedere?</p>
+        <p id="testo-conferma" style="color: white; margin-bottom: 25px; font-size: 20px;">Sei sicuro di voler procedere?</p>
         <div style="display: flex; gap: 10px;">
           <button class="btn" style="flex: 1; padding: 12px; background: rgba(255,0,0,0.1);" onclick="eseguiConferma()">SI, PROCEDI</button>
           <button class="btn" style="flex: 1; padding: 12px; border-color: #555; color: #888;" onclick="chiudiModale('modal-conferma')">ANNULLA</button>
@@ -697,7 +699,7 @@
           const pPrezzo = p.prezzo || 0;
           const margineCalcolato = pPrezzo > 0 ? Math.round(((pPrezzo - pCosto) / pPrezzo) * 100) : 0;
           const colorNome = (p.attivo === "NO") ? "#888" : "#eee";
-          const tagEsaurito = (p.attivo === "NO") ? `<span style="color:var(--neon-red); font-size:9px; margin-left:5px;">[ ESAURITO ]</span>` : "";
+          const tagEsaurito = (p.attivo === "NO") ? `<span style="color:var(--neon-red); font-size: 13px; margin-left:5px;">[ ESAURITO ]</span>` : "";
 
           const tr = document.createElement("tr");
           tr.className = "row-frame";
@@ -728,15 +730,15 @@
         notesContainer.innerHTML = "";
 
         if(gruppiNote.length === 0) { 
-            notesContainer.innerHTML = `<p style="color:#555; text-align:center; font-size:12px;">Nessun gruppo note configurato.</p>`; 
+            notesContainer.innerHTML = `<p style="color:#555; text-align:center; font-size: 16px;">Nessun gruppo note configurato.</p>`; 
         }
 
         gruppiNote.forEach((g, index) => {
             const delay = (index * 0.1).toFixed(2); // Ritardo a cascata per le note
             let htmlNote = g.note.map(n => `
                 <div class="single-note">
-                    <span>- ${n.nome} <span style="color:#aaa; font-size:12px;">(${n.delta > 0 ? '+' : ''}€${n.delta.toFixed(2)})</span></span>
-                    <button class="btn" style="padding:2px 6px; font-size:9px; border-color:#444;" onclick="eliminaNota(${g.id}, ${n.id})">X</button>
+                    <span>- ${n.nome} <span style="color:#aaa; font-size: 16px;">(${n.delta > 0 ? '+' : ''}€${n.delta.toFixed(2)})</span></span>
+                    <button class="btn" style="padding:2px 6px; font-size: 13px; border-color:#444;" onclick="eliminaNota(${g.id}, ${n.id})">X</button>
                 </div>
             `).join('');
 
@@ -746,8 +748,8 @@
             div.innerHTML = `
                 <div class="note-header">
                     <div>
-                        <b style="font-size: 18px; letter-spacing: 1px; color:white;">${g.nome}</b>
-                        <div style="font-size:10px; color:#888; margin-top:5px;">
+                        <b style="font-size: 24px; letter-spacing: 1px; color:white;">${g.nome}</b>
+                        <div style="font-size: 14px; color:#888; margin-top:5px;">
                             ESCLUSIVO: <span style="color:${g.esclusivo ? '#00ff00' : '#888'}">${g.esclusivo ? 'SI' : 'NO'}</span> | 
                             OBBLIGATORIO: <span style="color:${g.obbligatorio ? '#00ff00' : '#888'}">${g.obbligatorio ? 'SI' : 'NO'}</span>
                         </div>
@@ -758,7 +760,7 @@
                     </div>
                 </div>
                 <div class="note-list-container">
-                    ${htmlNote || '<span style="color:#555; font-size:12px; font-style:italic;">Nessuna nota in questo gruppo. Clicca "+ NOTA" per aggiungerne.</span>'}
+                    ${htmlNote || '<span style="color:#555; font-size: 16px; font-style:italic;">Nessuna nota in questo gruppo. Clicca "+ NOTA" per aggiungerne.</span>'}
                 </div>
             `;
             notesContainer.appendChild(div);
@@ -769,4 +771,4 @@
 
     </script>
   </body>
-</html> 
+</html>
