@@ -12,6 +12,9 @@ login_manager = LoginManager()
 scheduler = BackgroundScheduler()
 
 def create_app():
+    # Load the package .env without replacing explicit deployment variables.
+    from dotenv import load_dotenv
+    load_dotenv(os.path.join(os.path.dirname(__file__), '.env'))
     app = Flask(__name__)
     
     # Carica la configurazione dal file config.py nella stessa directory
@@ -20,6 +23,8 @@ def create_app():
 
     db.init_app(app)
     login_manager.init_app(app)
+    from ordiniBarScuolaBorsa.security import csrf_token
+    app.jinja_env.globals['csrf_token'] = csrf_token
 
     # Importa e registra i blueprint
     from ordiniBarScuolaBorsa.index import bp as index_bp
@@ -58,7 +63,10 @@ def create_app():
 
     @login_manager.user_loader
     def load_user(user_id):
-        return User.query.get(int(user_id))
+        try:
+            return db.session.get(User, int(user_id))
+        except (TypeError, ValueError):
+            return None
 
     with app.app_context():
         db.create_all()

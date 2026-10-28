@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Menù V 3.0 TEST</title>
+    <title>{{ data.title }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet" />
     <style>
       :root {
@@ -138,7 +138,7 @@
       h1 { font-size: 2.2rem; font-family: "Orbitron"; text-align: center; letter-spacing: 8px; text-shadow: 0 0 20px var(--neon-red); margin-bottom: 25px; color: white; }
 
       /* MENU CATEGORIE E RICERCA */
-      .category-nav { display: flex; justify-content: center; gap: 15px; margin-bottom: 25px; }
+      .category-nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-bottom: 25px; }
 
       .cat-btn {
         background: rgba(255, 255, 255, 0.05); border: 1px solid #333; color: #888;
@@ -216,14 +216,6 @@
       .checkbox-group label { display: flex; align-items: center; gap: 5px; font-size: 16px; color: #ccc; cursor: pointer;}
       .checkbox-group input { width: auto; cursor: pointer; }
 
-      .btn-plus-fixed {
-        background: var(--neon-red); color: white; font-size: 32px; width: 60px; height: 60px;
-        border-radius: 50%; position: fixed; bottom: 30px; right: 30px;
-        box-shadow: 0 0 30px var(--neon-red); border: none; cursor: pointer;
-        z-index: 100; transition: transform 0.3s;
-      }
-      .btn-plus-fixed:hover { transform: scale(1.2) rotate(90deg); }
-
       .btn {
         font-family: "Orbitron"; cursor: pointer; border: 1px solid var(--neon-red);
         background: transparent; color: var(--neon-red); padding: 8px 14px;
@@ -248,13 +240,10 @@
     </div>
 
     <div class="container">
-      <h1>MENÙ V 3.0 TEST</h1>
+      <h1>AMMINISTRAZIONE BAR</h1>
+      <p style="text-align: center;">Prodotti in sola consultazione. Aggiunta, modifica, duplicazione ed eliminazione non sono disponibili.</p>
 
-      <div class="category-nav">
-        <button class="cat-btn active" style="animation-delay: 0.1s" onclick="filtra('CIBO', this)">CIBO</button>
-        <button class="cat-btn" style="animation-delay: 0.2s" onclick="filtra('BEVANDE', this)">BEVANDE</button>
-        <button class="cat-btn" style="animation-delay: 0.3s" onclick="filtra('SPECIALITÀ', this)">SPECIALITÀ</button>
-      </div>
+      <div class="category-nav" id="categoryNav"></div>
 
       <input type="text" id="searchInput" class="search-bar" placeholder="[ CERCA PRODOTTO PER NOME ]" oninput="render()" />
 
@@ -267,7 +256,7 @@
               <th>Listino €</th>
               <th>Margine</th>
               <th>Staff/Int.</th>
-              <th style="text-align: right">SISTEMA</th>
+              <th>Disponibilità</th>
             </tr>
           </thead>
           <tbody id="mainTable"></tbody>
@@ -280,64 +269,6 @@
             <button class="btn" onclick="apriModaleGruppo()">+ NUOVO GRUPPO</button>
         </div>
         <div id="notesContainer"></div>
-      </div>
-    </div>
-
-    <button class="btn-plus-fixed" onclick="apriModale()">+</button>
-
-    <div id="modal" class="modal">
-      <div id="modal-box" class="modal-content">
-        <h2 style="font-family: 'Orbitron'; color: white; margin-top: 0; letter-spacing: 2px;">GESTIONE PRODOTTO</h2>
-        
-        <div id="modal-error-msg" class="error-msg-box"></div>
-
-        <div class="input-group">
-          <label>Nome Prodotto</label>
-          <input type="text" id="in-nome" oninput="autoDetectCategory()" placeholder="Esempio: Pizza Margherita" />
-        </div>
-        
-        <div style="display: flex; gap: 10px">
-          <div class="input-group" style="flex:1">
-            <label>Costo Acquisto (€)</label>
-            <input type="number" id="in-costo" step="0.01" min="0.01" oninput="calcola()" />
-          </div>
-          <div class="input-group" style="flex:1">
-            <label>Prezzo Vendita (€)</label>
-            <input type="number" id="in-prezzo" step="0.01" min="0.01" oninput="calcola()" />
-          </div>
-        </div>
-        
-        <div style="display: flex; gap: 10px">
-          <div class="input-group" style="flex: 1">
-            <label>Margine Lordo</label>
-            <input type="text" id="in-margine" readonly style="color: #00ff00; font-weight: bold;" />
-          </div>
-          <div class="input-group" style="flex: 1">
-            <label>Prezzo Staff (€)</label>
-            <input type="number" id="in-interni" step="0.01" min="0.01" />
-          </div>
-        </div>
-        
-        <div style="display: flex; gap: 10px">
-          <div class="input-group" style="flex: 1">
-            <label>Categoria</label>
-            <select id="in-categoria">
-              <option value="CIBO">CIBO</option>
-              <option value="BEVANDE">BEVANDE</option>
-              <option value="SPECIALITÀ">SPECIALITÀ</option>
-            </select>
-          </div>
-          <div class="input-group" style="flex: 1">
-            <label>Disponibile (Attivo)</label>
-            <select id="in-attivo">
-              <option value="SI">SI (Disponibile)</option>
-              <option value="NO">NO (Esaurito)</option>
-            </select>
-          </div>
-        </div>
-
-        <button class="btn" style="width: 100%; padding: 15px; font-weight: bold; margin-top: 10px;" onclick="salva()">ESEGUI UPLOAD</button>
-        <p onclick="chiudiModale('modal')" style="text-align: center; cursor: pointer; color: #444; margin-top: 15px; font-family: 'Orbitron'; font-size: 14px;">[ ANNULLA_OPERAZIONE ]</p>
       </div>
     </div>
 
@@ -428,12 +359,11 @@
       animate();
 
       // ==========================
-      // VARIABILI GLOBALI E DB LOCALE
+      // PRODOTTI DAL DATABASE E NOTE LOCALI
       // ==========================
-      let prodotti = JSON.parse(localStorage.getItem('cyber_menu_v3')) || [];
+      const prodotti = {{ data['items'] | tojson }};
       let gruppiNote = JSON.parse(localStorage.getItem('cyber_note_v3')) || [];
-      let categoriaAttiva = "CIBO";
-      let editId = null;
+      let categoriaAttiva = null;
       let sortAsc = true;
       let azioneConfermata = null; 
 
@@ -474,64 +404,31 @@
       }
 
       // ==========================
-      // LOGICA PRODOTTI (SALVA / VALIDA)
+      // CONSULTAZIONE PRODOTTI
       // ==========================
       function toggleSort() { sortAsc = !sortAsc; document.getElementById("sort-icon").innerText = sortAsc ? "⬇️" : "⬆️"; render(); }
       
-      function calcola() {
-        const c = parseFloat(document.getElementById("in-costo").value) || 0;
-        const p = parseFloat(document.getElementById("in-prezzo").value) || 0;
-        const margEl = document.getElementById("in-margine");
-        if (p > 0) {
-          margEl.value = Math.round(((p - c) / p) * 100) + "%";
-        } else {
-          margEl.value = "0%";
-        }
+      function normalizzaCategoria(categoria) {
+        const valore = (categoria || '').trim().toLowerCase();
+        return valore === 'cibi' ? 'cibo' : valore;
       }
 
-      function salva() {
-        const elNome = document.getElementById("in-nome"), elCosto = document.getElementById("in-costo");
-        const elPrezzo = document.getElementById("in-prezzo"), elInterni = document.getElementById("in-interni");
-        const elAttivo = document.getElementById("in-attivo"), elErrorMsg = document.getElementById("modal-error-msg");
+      function creaFiltriCategorie() {
+        const nav = document.getElementById('categoryNav');
+        const categorie = [...new Set(prodotti.map(p => normalizzaCategoria(p.categoria)))];
+        categorie.sort((a, b) => a.localeCompare(b, 'it'));
+        [null, ...categorie].forEach(categoria => {
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'cat-btn' + (categoria === null ? ' active' : '');
+          button.textContent = categoria === null ? 'TUTTI' : (categoria || 'Senza categoria').toUpperCase();
+          button.addEventListener('click', () => filtra(categoria, button));
+          nav.appendChild(button);
+        });
+      }
 
-        [elNome, elCosto, elPrezzo, elInterni, elAttivo].forEach(el => el.classList.remove("input-error"));
-        elErrorMsg.innerText = "";
-
-        const nome = elNome.value.trim(), costo = parseFloat(elCosto.value), prezzo = parseFloat(elPrezzo.value);
-        const interni = parseFloat(elInterni.value), attivo = elAttivo.value;
-        let hasError = false, errorText = "";
-
-        if (!nome) { elNome.classList.add("input-error"); hasError = true; errorText = "Inserire il Nome Prodotto."; }
-        if (!hasError && contieneVolgarita(nome)) { elNome.classList.add("input-error"); hasError = true; errorText = "ERRORE: LINGUAGGIO NON CONSENTITO"; }
-        if (!hasError && (isNaN(costo) || costo <= 0)) { elCosto.classList.add("input-error"); hasError = true; errorText = "Il costo deve essere un numero > 0."; }
-        if (!hasError && (isNaN(prezzo) || prezzo <= 0)) { elPrezzo.classList.add("input-error"); hasError = true; errorText = "Il prezzo deve essere un numero > 0."; }
-        if (!hasError && (isNaN(interni) || interni <= 0)) { elInterni.classList.add("input-error"); hasError = true; errorText = "Il prezzo staff deve essere un numero > 0."; }
-
-        if (!hasError) {
-            if (costo > prezzo) { elCosto.classList.add("input-error"); elPrezzo.classList.add("input-error"); hasError = true; errorText = "ERRORE: Costo maggiore del prezzo di vendita!"; }
-            else if (costo > interni) { elCosto.classList.add("input-error"); elInterni.classList.add("input-error"); hasError = true; errorText = "ERRORE: Costo maggiore del prezzo staff!"; }
-        }
-        if (!hasError && attivo !== "SI" && attivo !== "NO") { elAttivo.classList.add("input-error"); hasError = true; errorText = "Scegliere disponibilità valida."; }
-
-        if (hasError) {
-            elErrorMsg.innerText = errorText;
-            animazioneErrore("modal-box");
-            return;
-        }
-
-        const data = { 
-            id: editId || Date.now(), 
-            nome: nome, costo: costo, prezzo: prezzo, 
-            margine: Math.round(((prezzo - costo) / prezzo) * 100), 
-            interni: interni, categoria: document.getElementById("in-categoria").value, 
-            attivo: attivo, stato: attivo === "SI" ? "DISPONIBILE" : "NON DISPONIBILE" 
-        };
-        
-        if (editId) { prodotti[prodotti.findIndex(x => x.id === editId)] = data; } else { prodotti.push(data); }
-
-        localStorage.setItem('cyber_menu_v3', JSON.stringify(prodotti));
-        render(); 
-        chiudiModale('modal');
+      function formattaImporto(valore) {
+        return valore === null ? '—' : `€${valore.toFixed(2)}`;
       }
 
       function filtra(cat, btn) {
@@ -539,68 +436,6 @@
         document.querySelectorAll(".cat-btn").forEach(b => b.classList.remove("active"));
         btn.classList.add("active"); 
         render();
-      }
-
-      function apriModale() {
-        editId = null;
-        document.getElementById("modal-error-msg").innerText = ""; 
-        document.querySelectorAll("#modal input").forEach(i => { i.value = ""; i.classList.remove("input-error"); });
-        document.querySelectorAll("#modal select").forEach(s => s.classList.remove("input-error"));
-        document.getElementById("in-categoria").value = categoriaAttiva; 
-        document.getElementById("in-attivo").value = "SI"; 
-        document.getElementById("in-margine").value = ""; 
-        document.getElementById("modal").classList.add("active"); 
-        document.getElementById("in-nome").focus();
-      }
-
-      function modifica(id) {
-        editId = id; 
-        document.getElementById("modal-error-msg").innerText = ""; 
-        const p = prodotti.find(x => x.id === id);
-        document.getElementById("in-nome").value = p.nome; 
-        document.getElementById("in-costo").value = p.costo;
-        document.getElementById("in-prezzo").value = p.prezzo; 
-        document.getElementById("in-interni").value = p.interni;
-        document.getElementById("in-categoria").value = p.categoria; 
-        document.getElementById("in-attivo").value = p.attivo || "SI";
-        document.querySelectorAll("input, select").forEach(i => i.classList.remove("input-error"));
-        calcola(); 
-        document.getElementById("modal").classList.add("active");
-      }
-
-      function elimina(id) { 
-          apriConferma("TERMINARE RECORD PRODOTTO?", function() { 
-              prodotti = prodotti.filter(x => x.id !== id); 
-              localStorage.setItem('cyber_menu_v3', JSON.stringify(prodotti)); 
-              render(); 
-          }); 
-      }
-
-      function duplica(id) {
-        const originale = prodotti.find(p => p.id === id);
-        if (!originale) return;
-
-        apriConferma("DUPLICARE QUESTO PRODOTTO?", function () {
-            const copia = {
-              ...originale,
-              id: Date.now(),
-              nome: originale.nome + " (Copia)"
-            };
-
-            prodotti.push(copia);
-            localStorage.setItem('cyber_menu_v3', JSON.stringify(prodotti));
-            render();
-        });
-      }
-       
-      function autoDetectCategory() {
-        const nome = document.getElementById("in-nome").value.toLowerCase(), catSelect = document.getElementById("in-categoria");
-        const bevande = ["coca", "acqua", "birra", "vino", "the", "drink", "gin", "succo", "bibita"];
-        const cibo = ["pizza", "panino", "hamburger", "pasta", "fritto", "dolce", "kebab", "piadina"];
-        let detected = "SPECIALITÀ";
-        if (bevande.some(k => nome.includes(k))) detected = "BEVANDE"; 
-        else if (cibo.some(k => nome.includes(k))) detected = "CIBO";
-        catSelect.value = detected;
       }
 
       // ==========================
@@ -684,7 +519,7 @@
         const tableBody = document.getElementById("mainTable"), searchTerm = document.getElementById("searchInput").value.toLowerCase(); 
         tableBody.innerHTML = "";
 
-        let filtrati = prodotti.filter(p => p.categoria === categoriaAttiva && p.nome.toLowerCase().includes(searchTerm));
+        let filtrati = prodotti.filter(p => (categoriaAttiva === null || normalizzaCategoria(p.categoria) === categoriaAttiva) && p.nome.toLowerCase().includes(searchTerm));
 
         filtrati.sort((a, b) => {
           const nomeA = a.nome.toLowerCase(), nomeB = b.nome.toLowerCase();
@@ -695,30 +530,27 @@
         
         filtrati.forEach((p, index) => {
           const delay = (index * 0.05).toFixed(2); // Ritardo per l'animazione a cascata
-          const pCosto = p.costo || 0;
-          const pPrezzo = p.prezzo || 0;
-          const margineCalcolato = pPrezzo > 0 ? Math.round(((pPrezzo - pCosto) / pPrezzo) * 100) : 0;
-          const colorNome = (p.attivo === "NO") ? "#888" : "#eee";
-          const tagEsaurito = (p.attivo === "NO") ? `<span style="color:var(--neon-red); font-size: 13px; margin-left:5px;">[ ESAURITO ]</span>` : "";
+          const margineCalcolato = p.costo !== null && p.prezzo > 0
+            ? Math.round(((p.prezzo - p.costo) / p.prezzo) * 100) + '%' : '—';
+          const colorNome = (!p.attivo) ? "#888" : "#eee";
+          const tagEsaurito = (!p.attivo) ? `<span style="color:var(--neon-red); font-size: 13px; margin-left:5px;">[ ESAURITO ]</span>` : "";
 
           const tr = document.createElement("tr");
           tr.className = "row-frame";
+          tr.dataset.productId = p.id;
           tr.style.animationDelay = `${delay}s`;
           tr.innerHTML = `
             <td>
-              <b style="color:${colorNome}">${p.nome}</b>
+              <b style="color:${colorNome}"></b>
               ${tagEsaurito}
             </td>
-            <td style="color:#888">€${pCosto.toFixed(2)}</td>
-            <td style="color:var(--neon-red); font-weight:bold; text-shadow: 0 0 10px var(--neon-glow)">€${pPrezzo.toFixed(2)}</td>
-            <td style="color:#00ff00">${margineCalcolato}%</td>
-            <td>€${(p.interni || 0).toFixed(2)}</td>
-            <td style="text-align: right;">
-              <button class="btn" onclick="modifica(${p.id})">MOD</button>
-              <button class="btn" style="border-color:#00ffcc; color:#00ffcc" onclick="duplica(${p.id})">DUP</button>
-              <button class="btn" style="border-color:#555; color:#888" onclick="elimina(${p.id})">X</button>
-            </td>
+            <td style="color:#888">${formattaImporto(p.costo)}</td>
+            <td style="color:var(--neon-red); font-weight:bold; text-shadow: 0 0 10px var(--neon-glow)">${formattaImporto(p.prezzo)}</td>
+            <td style="color:#00ff00">${margineCalcolato}</td>
+            <td>${formattaImporto(p.interni)}</td>
+            <td>${p.attivo ? 'Disponibile' : 'Esaurito'}</td>
           `;
+          tr.querySelector('b').textContent = p.nome;
           tableBody.appendChild(tr);
         });
 
@@ -767,6 +599,7 @@
         });
       }
 
+      creaFiltriCategorie();
       window.onload = render;
 
     </script>

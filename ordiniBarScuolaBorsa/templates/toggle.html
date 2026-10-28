@@ -31,7 +31,7 @@ body {
   position: fixed; 
   inset: 0; 
   z-index: 0;
-  background: url('{{ url_for("static", filename="hero.jpg") }}') center/cover no-repeat;
+  background: url('{{ url_for("static", filename="open o close.jpg") }}') center/cover no-repeat;
   filter: brightness(0.18) saturate(0.5);
   transform: scale(1.04);
 }
@@ -283,6 +283,7 @@ body {
       <div class="card-title">Siamo<br>aperti</div>
       <p class="card-sub">Il servizio è attivo.<br>Gli studenti possono ordinare online.</p>
       <form method="post" action="{{ url_for('toggle.changeBarStatus') }}" style="width:100%;">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <button type="submit" class="toggle-btn close-bar">
           <span class="btn-icon">⏻</span> Chiudi il bar
         </button>
@@ -295,6 +296,7 @@ body {
       <div class="card-title">Siamo<br>chiusi</div>
       <p class="card-sub">Il servizio è sospeso.<br>Premi per riaprire il bar.</p>
       <form method="post" action="{{ url_for('toggle.changeBarStatus') }}" style="width:100%;">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <button type="submit" class="toggle-btn open-bar">
           <span class="btn-icon">⏻</span> Apri il bar
         </button>

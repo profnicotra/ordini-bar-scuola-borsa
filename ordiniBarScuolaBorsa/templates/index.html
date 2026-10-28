@@ -385,26 +385,8 @@ body { font-family: var(--font); background: var(--dark); color: black; overflow
   <div class="modal-inner">
     <button id="close-login">&times;</button>
     <div class="form-container">
-      <p class="modal-title" id="modal-title">Login</p>
-      <form class="form" id="login-form">
-        <div class="input-group"><label>Username</label><input type="text" name="username" placeholder="Il tuo username"></div>
-        <div class="input-group"><label>Password</label><input type="password" name="password" placeholder="••••••••"></div>
-        <div class="forgot"><a href="#">Password dimenticata?</a></div>
-        <button class="sign" type="submit">Accedi</button>
-      </form>
-      <div class="social-message"><div class="modal-line"></div><span class="message">oppure</span><div class="modal-line"></div></div>
-      <p class="signup">Non hai un account? <a id="to-register">Registrati</a></p>
-      <div id="register-form" style="display:none;">
-        <form class="form" style="margin-top:12px;">
-          <div class="input-group"><label>Nome</label><input type="text" placeholder="Nome"></div>
-          <div class="input-group"><label>Cognome</label><input type="text" placeholder="Cognome"></div>
-          <div class="input-group"><label>Email</label><input type="email" placeholder="email@esempio.it"></div>
-          <div class="input-group"><label>Password</label><input type="password" placeholder="••••••••"></div>
-          <div class="input-group"><label>Conferma Password</label><input type="password" placeholder="••••••••"></div>
-          <button class="sign" type="submit">Crea Account</button>
-        </form>
-        <p class="signup" style="margin-top:10px;">Hai già un account? <a id="to-login">Accedi</a></p>
-      </div>
+      <p class="modal-title">Accedi</p>
+      {% include 'google_signin.html' %}
     </div>
   </div>
 </div>
@@ -483,15 +465,6 @@ var loginModal = document.getElementById('login-modal');
 document.getElementById('login-btn').addEventListener('click', function(e) { e.preventDefault(); loginModal.style.display = 'flex'; });
 document.getElementById('close-login').addEventListener('click', function() { loginModal.style.display = 'none'; });
 window.addEventListener('click', function(e) { if (e.target === loginModal) loginModal.style.display = 'none'; });
-var lf = document.getElementById("login-form");
-var rf = document.getElementById("register-form");
-var sm = document.querySelector(".social-message");
-var mt = document.getElementById("modal-title");
-document.getElementById("login-form").addEventListener("submit", function(e) { e.preventDefault(); });
-document.querySelector("#register-form form").addEventListener("submit", function(e) { e.preventDefault(); });
-document.getElementById("to-register").addEventListener("click", function() { lf.style.display="none"; rf.style.display="block"; sm.style.display="none"; mt.textContent="Registrati"; });
-document.getElementById("to-login").addEventListener("click", function() { lf.style.display="flex"; rf.style.display="none"; sm.style.display="flex"; mt.textContent="Login"; });
-
 // 8. SCROLL REVEAL
 var revealObs = new IntersectionObserver(function(entries) { entries.forEach(function(e) { if (e.isIntersecting) e.target.classList.add('visible'); }); }, { threshold: 0.15 });
 document.querySelectorAll('.step-card, .step-connector, .how-header, .how-cta').forEach(function(el) { revealObs.observe(el); });

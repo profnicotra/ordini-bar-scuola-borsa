@@ -4,9 +4,11 @@ from ordiniBarScuolaBorsa import models
 from ordiniBarScuolaBorsa.models import db, Ordine
 import logging
 from datetime import datetime, timedelta
+from .security import require_operator
 
 logger = logging.getLogger(__name__)
 bp = Blueprint("queue", __name__, url_prefix="/queue")
+bp.before_request(require_operator)
 
 @bp.get("/")
 def queue():
@@ -25,26 +27,30 @@ def get_ordini():
         return jsonify(ordini), 200 
     except Exception as e:
         logger.error(f"Errore in get_ordini: {str(e)}", exc_info=True)
-        return jsonify({"error": str(e)}), 500
+        return jsonify(error="Impossibile caricare gli ordini. Riprova."), 500
 
 @bp.post("/api/ordini/<int:ordine_id>/stato")
 def update_ordine_stato(ordine_id):
     """Aggiorna lo stato di un ordine"""
     try:
-        data = request.get_json()
+        data = request.get_json(silent=True)
+        if not isinstance(data, dict) or not isinstance(data.get('stato'), str) or data['stato'] not in {
+            'NUOVO', 'IN_PREPARAZIONE', 'PRONTO', 'DA_SPARECCHIARE'
+        }:
+            return jsonify(error="Stato ordine non valido."), 400
         nuovo_stato = data.get('stato')
         
-        ordine = Ordine.query.get(ordine_id)
+        ordine = db.session.get(Ordine, ordine_id)
         if not ordine:
             return jsonify({"error": "Ordine non trovato"}), 404
         
         ordine.stato = nuovo_stato
         
         # Se lo stato diventa PRONTO, registra il timestamp
-        if nuovo_stato == 'PRONTO':
+        if nuovo_stato == 'PRONTO' and ordine.stato_pronto_da is None:
             ordine.stato_pronto_da = datetime.now()
             logger.info(f"Ordine {ordine_id} impostato PRONTO. Timer di 10 minuti attivato.")
-        else:
+        elif nuovo_stato != 'PRONTO':
             # Se lo stato cambia da PRONTO a qualcos'altro, resetta il timestamp
             ordine.stato_pronto_da = None
         
@@ -53,13 +59,14 @@ def update_ordine_stato(ordine_id):
         return jsonify({"success": True, "stato": nuovo_stato}), 200
     except Exception as e:
         db.session.rollback()
-        return jsonify({"error": str(e)}), 500
+        logger.exception("Impossibile aggiornare lo stato")
+        return jsonify(error="Impossibile aggiornare lo stato. Riprova."), 500
 
 @bp.delete("/api/ordini/<int:ordine_id>")
 def delete_ordine(ordine_id):
     """Elimina un ordine"""
     try:
-        ordine = Ordine.query.get(ordine_id)
+        ordine = db.session.get(Ordine, ordine_id)
         if not ordine:
             return jsonify({"error": "Ordine non trovato"}), 404
         
@@ -69,7 +76,8 @@ def delete_ordine(ordine_id):
         return jsonify({"success": True}), 200
     except Exception as e:
         db.session.rollback()
-        return jsonify({"error": str(e)}), 500
+        logger.exception("Impossibile eliminare l'ordine")
+        return jsonify(error="Impossibile eliminare l'ordine. Riprova."), 500
 
 
 def check_and_update_ready_orders():

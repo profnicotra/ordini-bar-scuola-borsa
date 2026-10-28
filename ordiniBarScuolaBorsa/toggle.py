@@ -1,7 +1,9 @@
 from flask import Blueprint, render_template, redirect
 from ordiniBarScuolaBorsa.models import toggle_bar_open, is_bar_open
+from .security import require_operator
 
 bp = Blueprint("toggle", __name__, url_prefix="/toggle")
+bp.before_request(require_operator)
 
 @bp.get("/")
 def toggle():

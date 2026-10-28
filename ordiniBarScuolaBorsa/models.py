@@ -45,7 +45,7 @@ class Prodotto(db.Model):
     def get_price(self, user=None):
         """Ritorna il prezzo corretto in base all'utente"""
         if user and user.is_professor:
-            return float(self.prezzo_interni) if self.prezzo_interni else float(self.prezzo_euro)
+            return float(self.prezzo_interni) if self.prezzo_interni is not None else float(self.prezzo_euro)
         return float(self.prezzo_euro)
 
 class Posizione(db.Model):
@@ -160,7 +160,7 @@ def get_products(user=None):
     for prodotto in prodotti:
         # Determina quale prezzo mostrare
         if user and user.is_professor:
-            prezzo_da_mostrare = prodotto.prezzo_interni if prodotto.prezzo_interni else prodotto.prezzo_euro
+            prezzo_da_mostrare = prodotto.prezzo_interni if prodotto.prezzo_interni is not None else prodotto.prezzo_euro
         else:
             prezzo_da_mostrare = prodotto.prezzo_euro
         
@@ -194,7 +194,7 @@ def get_products(user=None):
             'id': prodotto.id,
             'prodotto': prodotto.nome,
             'prezzo_euro': float(prodotto.prezzo_euro) if prodotto.prezzo_euro else 0,
-            'prezzo_interni': float(prodotto.prezzo_interni) if prodotto.prezzo_interni else None,
+            'prezzo_interni': float(prodotto.prezzo_interni) if prodotto.prezzo_interni is not None else None,
             'prezzo_mostrato': float(prezzo_da_mostrare) if prezzo_da_mostrare else 0,
             'categoria': prodotto.categoria,
             'note_gruppi': gruppi_data
@@ -219,17 +219,12 @@ def get_queue():
                     OrdineRigaNota, Note.id == OrdineRigaNota.nota_id
                 ).filter(OrdineRigaNota.ordine_riga_id == riga.id).all()
 
-                # Se non ci sono note, mantieni almeno un elemento None per compatibilità
-                if not note_query:
-                    note_query = [None]
-
-                for nota in note_query:
-                    items.append({
-                        'prodotto': prodotto.nome if prodotto else 'Prodotto sconosciuto',
-                        'quantita': riga.quantita,
-                        'nota': nota.nome if nota else None,
-                        'prezzo_unit': float(riga.prezzo_euro_unit) if riga.prezzo_euro_unit else None
-                    })
+                items.append({
+                    'prodotto': prodotto.nome if prodotto else 'Prodotto sconosciuto',
+                    'quantita': riga.quantita,
+                    'nota': ', '.join(nota.nome for nota in note_query) or None,
+                    'prezzo_unit': float(riga.prezzo_euro_unit) if riga.prezzo_euro_unit is not None else None
+                })
 
             # Informazioni utente
             user_info = ""
@@ -255,83 +250,6 @@ def get_queue():
     except Exception as e:
         logging.error(f"Errore in get_queue: {str(e)}", exc_info=True)
         raise
-
-def add_queue(posizione_id, righe, creato_da=None, totale_euro=None, stato='NUOVO', user=None):
-    """
-    Aggiunge un ordine alla coda
-    
-    COMPATIBILE con codice esistente + supporto autenticazione
-    Supporta anche note_selezionate per ogni riga
-    """
-    try:
-        # Determina il tipo di prezzo
-        tipo_prezzo = 'interni' if (user and user.is_professor) else 'pubblico'
-        
-        # Se user è fornito e creato_da è None, usa i dati dell'utente
-        if user and not creato_da:
-            creato_da = f"{user.nome} {user.cognome}"
-        
-        new_order = Ordine(
-            posizione_id=posizione_id, 
-            stato=stato,
-            user_id=user.id if user else None,
-            creato_da=creato_da or 'system',
-            tipo_prezzo=tipo_prezzo,
-            totale_euro=totale_euro or 0
-        )
-
-        # Se righe è una lista, processala
-        if isinstance(righe, list) and len(righe) > 0:
-            for riga in righe:
-                prodotto = db.session.query(Prodotto).filter(Prodotto.id == riga['prodotto_id']).first()
-                if prodotto:
-                    prezzo_unit = prodotto.get_price(user)
-                    
-                    ordine_riga = OrdineRiga(
-                        prodotto_id=riga['prodotto_id'],
-                        quantita=riga['quantita'],
-                        prezzo_euro_unit=prezzo_unit
-                    )
-                    # Append to the parent collection so delete-orphan cascade
-                    # does not treat the new row as an orphan before commit.
-                    new_order.righe.append(ordine_riga)
-                    
-                    # Aggiungi le note selezionate per questa riga
-                    note_selezionate = riga.get('note_selezionate', {})
-                    if note_selezionate:
-                        # note_selezionate è un dict: {id_gruppo: nota_o_array_di_note}
-                        for gruppo_id, nota_data in note_selezionate.items():
-                            try:
-                                # nota_data può essere:
-                                # - Per radio: {'id': nota_id, 'nome': 'nome_nota'}
-                                # - Per checkbox: [{'id': nota_id, 'nome': 'nome_nota'}, ...]
-                                
-                                note_ids = []
-                                if isinstance(nota_data, dict) and 'id' in nota_data:
-                                    # Radio button - singola nota
-                                    note_ids = [nota_data['id']]
-                                elif isinstance(nota_data, list):
-                                    # Checkbox - array di note
-                                    note_ids = [n['id'] for n in nota_data if isinstance(n, dict) and 'id' in n]
-                                
-                                # Crea OrdineRigaNota per ogni nota selezionata
-                                for nota_id in note_ids:
-                                    ordine_riga_nota = OrdineRigaNota(
-                                        ordine_riga_id=None,  # sarà assegnato dopo il commit
-                                        nota_id=nota_id
-                                    )
-                                    ordine_riga.note_righe.append(ordine_riga_nota)
-                            except Exception as e:
-                                logging.warning(f"Errore nell'aggiunta della nota per gruppo {gruppo_id}: {e}")
-
-        db.session.add(new_order)
-        db.session.commit()
-        
-        return True
-    except Exception as e:
-        logging.error(f"Errore in add_queue: {str(e)}", exc_info=True)
-        db.session.rollback()
-        return False
 
 def get_all_positions():
     try:

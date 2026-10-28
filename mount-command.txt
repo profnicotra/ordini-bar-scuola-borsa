@@ -1,0 +1,1 @@
+sudo mount -t cifs "//192.168.1.254/Volume 500go" /mnt/500go -o username=freebox,uid=1000,gid=1000,iocharset=utf8

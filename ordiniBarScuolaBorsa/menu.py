@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template
+from flask_login import current_user
 from ordiniBarScuolaBorsa.models import get_products, is_bar_open
-import json
 import logging
 
 logger = logging.getLogger(__name__)
@@ -11,8 +11,7 @@ bp = Blueprint("menu", __name__, url_prefix="/menu")
 @bp.route("")
 def menu():
     try:
-        prodotti_raw = get_products()  # restituisce lista di DIZIONARI con note_gruppi
-        print(prodotti_raw)  # Debug: stampa i dati grezzi
+        prodotti_raw = get_products(current_user if current_user.is_authenticated else None)
     except Exception as e:
         logger.error(f"Errore get_products(): {e}", exc_info=True)
         prodotti_raw = []
@@ -46,7 +45,6 @@ def menu():
             logger.warning(f"Errore serializzazione prodotto {p}: {e}")
             continue
 
-    data_json = json.dumps(prodotti_lista, ensure_ascii=False)
     logger.info(f"Menu: {len(prodotti_lista)} prodotti caricati")
 
     # is_bar_open() ritorna stringa 'true'/'false' oppure None (impostazione non in DB)
@@ -59,6 +57,6 @@ def menu():
 
     return render_template(
         'bar.html',
-        data_json=data_json,
+        products=prodotti_lista,
         bar_open=bar_open_val
     )

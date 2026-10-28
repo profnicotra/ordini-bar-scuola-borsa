@@ -269,15 +269,15 @@ body::after {
   width: 100%; 
 }
 
-.order-card.s-new .stripe { 
+.order-card.s-nuovo .stripe {
   background: linear-gradient(90deg, var(--red), transparent); 
 }
 
-.order-card.s-prep .stripe { 
+.order-card.s-in-preparazione .stripe {
   background: linear-gradient(90deg, var(--gold), transparent); 
 }
 
-.order-card.s-ready .stripe { 
+.order-card.s-pronto .stripe {
   background: linear-gradient(90deg, var(--green), transparent); 
   box-shadow: 0 0 14px rgba(34,197,94,0.4); 
 }
@@ -337,19 +337,19 @@ body::after {
   white-space: nowrap;
 }
 
-.t-new { 
+.t-nuovo {
   background: rgba(230,57,70,0.15); 
   border: 1px solid rgba(230,57,70,0.3); 
   color: #ff8080; 
 }
 
-.t-prep { 
+.t-in-preparazione {
   background: rgba(245,158,11,0.15); 
   border: 1px solid rgba(245,158,11,0.3); 
   color: #fbbf24; 
 }
 
-.t-ready { 
+.t-pronto {
   background: rgba(34,197,94,0.15); 
   border: 1px solid rgba(34,197,94,0.3); 
   color: #4ade80; 
@@ -612,10 +612,11 @@ body::after {
   <div class="stat-chip sc-ready"><span class="n" id="cnt-ready">0</span>Pronti</div>
 </div>
 
+<p id="queue-error" role="alert" style="color:#ff8080;text-align:center;"></p>
 <main class="grid" id="orders-container">
   {% if queue %}
     {% for ordine in queue %}
-    <div class="order-card s-{{ ordine.stato | lower | replace('_', '-') }}" data-id="{{ ordine.id }}">
+    <div class="order-card s-{{ ordine.stato | lower | replace('_', '-') }}" data-id="{{ ordine.id }}" data-status="{{ ordine.stato }}">
       <div class="stripe"></div>
 
       <div class="card-top">
@@ -668,73 +669,76 @@ body::after {
 
 <script>
 function updateCounts() {
-  document.getElementById('cnt-new').textContent = document.querySelectorAll('.order-card.s-new').length;
-  document.getElementById('cnt-prep').textContent = document.querySelectorAll('.order-card.s-prep').length;
-  document.getElementById('cnt-ready').textContent = document.querySelectorAll('.order-card.s-ready').length;
+  document.getElementById('cnt-new').textContent = document.querySelectorAll('.order-card.s-nuovo').length;
+  document.getElementById('cnt-prep').textContent = document.querySelectorAll('.order-card.s-in-preparazione').length;
+  document.getElementById('cnt-ready').textContent = document.querySelectorAll('.order-card.s-pronto').length;
 }
 
-function setStatus(btn, status) {
-  const card = btn.closest('.order-card');
+const csrfToken = {{ csrf_token() | tojson }};
+const labels = { NUOVO: 'Nuovo', IN_PREPARAZIONE: 'In preparazione', PRONTO: 'Pronto ✓', DA_SPARECCHIARE: 'Da sparecchiare' };
+function applyStatus(card, stato) {
   const tag = card.querySelector('.status-tag');
-  const bPrep = card.querySelector('.act-prep');
-  const bReady = card.querySelector('.act-ready');
-
-  card.classList.remove('s-new', 's-prep', 's-ready');
-  tag.classList.remove('t-new', 't-prep', 't-ready');
-
-  if (status === 'prep') {
-    card.classList.add('s-prep');
-    tag.classList.add('t-prep');
-    tag.textContent = 'In preparazione';
-    bPrep.disabled = true;
-    bReady.disabled = false;
-  } else {
-    card.classList.add('s-ready');
-    tag.classList.add('t-ready');
-    tag.textContent = 'Pronto ✓';
-    bPrep.disabled = true;
-    bReady.disabled = true;
+  for (const value of Object.keys(labels)) {
+    const suffix = value.toLowerCase().replaceAll('_', '-');
+    card.classList.remove('s-' + suffix);
+    tag.classList.remove('t-' + suffix);
   }
-
-  // Sync con API
-  const id = card.dataset.id;
-  const stato = status === 'prep' ? 'IN_PREPARAZIONE' : 'PRONTO';
-  fetch(`/queue/api/ordini/${id}/stato`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ stato })
-  }).catch(e => console.warn('API error:', e));
-
-  updateCounts();
+  const suffix = stato.toLowerCase().replaceAll('_', '-');
+  card.classList.add('s-' + suffix);
+  tag.classList.add('t-' + suffix);
+  tag.textContent = labels[stato] || stato;
+  card.dataset.status = stato;
+  card.querySelector('.act-prep').disabled = stato !== 'NUOVO';
+  card.querySelector('.act-ready').disabled = !['NUOVO', 'IN_PREPARAZIONE'].includes(stato);
 }
-
-function removeCard(btn) {
+async function mutateOrder(card, suffix, method, body) {
+  const response = await fetch(`/queue/api/ordini/${card.dataset.id}${suffix}`, {
+    method, headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrfToken },
+    ...(body ? { body: JSON.stringify(body) } : {})
+  });
+  const result = await response.json();
+  if (!response.ok || !result.success) throw new Error(result.error || 'Operazione non riuscita. Riprova.');
+  return result;
+}
+async function setStatus(btn, status) {
   const card = btn.closest('.order-card');
-  const id = card.dataset.id;
-
-  card.style.transition = 'opacity 0.35s ease, transform 0.35s ease';
-  card.style.opacity = '0';
-  card.style.transform = 'scale(0.94) translateY(-10px)';
-
-  fetch(`/queue/api/ordini/${id}`, { method: 'DELETE' })
-    .catch(e => console.warn('API error:', e));
-
-  setTimeout(() => {
+  if (card.dataset.pending) return;
+  card.dataset.pending = 'true';
+  document.getElementById('queue-error').textContent = '';
+  card.querySelectorAll('button').forEach(button => button.disabled = true);
+  try {
+    const result = await mutateOrder(card, '/stato', 'POST', { stato: status === 'prep' ? 'IN_PREPARAZIONE' : 'PRONTO' });
+    card.dataset.status = result.stato;
+  } catch (error) {
+    document.getElementById('queue-error').textContent = error.message;
+  } finally {
+    delete card.dataset.pending;
+    card.querySelector('.act-del').disabled = false;
+    applyStatus(card, card.dataset.status);
+    updateCounts();
+  }
+}
+async function removeCard(btn) {
+  const card = btn.closest('.order-card');
+  if (card.dataset.pending) return;
+  card.dataset.pending = 'true';
+  document.getElementById('queue-error').textContent = '';
+  card.querySelectorAll('button').forEach(button => button.disabled = true);
+  try {
+    await mutateOrder(card, '', 'DELETE');
     card.remove();
     updateCounts();
-    
-    // Check if empty
-    if (document.querySelectorAll('.order-card').length === 0) {
-      document.getElementById('orders-container').innerHTML = `
-        <div class="empty">
-          <div class="empty-icon">📋</div>
-          <div class="empty-title">Nessun ordine</div>
-          <div class="empty-sub">Gli ordini arriveranno qui in tempo reale</div>
-        </div>
-      `;
+    if (!document.querySelector('.order-card')) {
+      document.getElementById('orders-container').innerHTML = '<div class="empty"><div class="empty-title">Nessun ordine</div></div>';
     }
-  }, 350);
+  } catch (error) {
+    delete card.dataset.pending;
+    card.querySelector('.act-del').disabled = false;
+    applyStatus(card, card.dataset.status);
+    document.getElementById('queue-error').textContent = error.message;
+  }
 }
+document.querySelectorAll('.order-card').forEach(card => applyStatus(card, card.dataset.status));
 
 updateCounts();
 

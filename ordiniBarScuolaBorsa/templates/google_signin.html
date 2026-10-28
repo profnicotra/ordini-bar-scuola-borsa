@@ -1,0 +1,14 @@
+{% if login_error %}<p role="alert">{{ login_error }}</p>{% endif %}
+{% for category, message in get_flashed_messages(with_categories=true) %}
+  <p role="status">{{ message }}</p>
+{% endfor %}
+{% if current_user.is_authenticated %}
+  <p>Accesso effettuato come {{ current_user.email }}.</p>
+  <a href="{{ url_for('auth.profile') }}">Il tuo profilo</a>
+  <a href="{{ url_for('auth.logout') }}">Esci</a>
+{% elif config.GOOGLE_CLIENT_ID and config.GOOGLE_CLIENT_SECRET %}
+  <p>Accedi con il tuo account Google.</p>
+  <a href="{{ url_for('auth.login') }}" class="btn-google">Continua con Google</a>
+{% else %}
+  <p>Accesso Google non disponibile. Contatta il gestore del bar.</p>
+{% endif %}

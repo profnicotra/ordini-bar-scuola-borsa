@@ -3,11 +3,11 @@ auth.py - Blueprint per autenticazione Google OAuth
 Bar Scuola Borsa - Gestione login/logout professori e studenti
 """
 
-from flask import Blueprint, redirect, url_for, session, flash, request
+from flask import Blueprint, redirect, url_for, session, flash, current_app, render_template
 from flask_login import login_user, logout_user, current_user
 from authlib.integrations.flask_client import OAuth
 from werkzeug.security import gen_salt
-import os
+from markupsafe import escape
 from .models import db, User
 
 # Crea Blueprint
@@ -45,12 +45,19 @@ def login():
         flash('Sei già autenticato!', 'info')
         return redirect(url_for('menu.menu'))
 
+    if not current_app.config.get('GOOGLE_CLIENT_ID') or not current_app.config.get('GOOGLE_CLIENT_SECRET'):
+        return render_template('login.html', login_error="Accesso Google non disponibile. Contatta il gestore del bar."), 503
+
     # Genera nonce per sicurezza
     nonce = gen_salt(16)
     session['nonce'] = nonce
 
     redirect_uri = url_for('auth.callback', _external=True)
-    return oauth.google.authorize_redirect(redirect_uri, nonce=nonce)
+    try:
+        return oauth.google.authorize_redirect(redirect_uri, nonce=nonce)
+    except Exception:
+        current_app.logger.exception("Impossibile avviare l'accesso Google")
+        return render_template('login.html', login_error="Google non è raggiungibile. Riprova tra poco."), 503
 
 
 @bp.route('/callback')
@@ -75,12 +82,13 @@ def callback():
         google_id = user_info.get('sub')
         picture = user_info.get('picture', '')
 
-        if not email or not google_id:
+        if not email or not google_id or user_info.get('email_verified') is not True:
             flash("Impossibile ottenere informazioni dall'account Google", 'danger')
             return redirect(url_for('index.index'))
 
         # Determina se è un professore (dominio @scuola-borsa.it)
-        dominio_professori = os.getenv('DOMINIO_PROFESSORI', 'scuola-borsa.it')
+        email = email.strip().lower()
+        dominio_professori = current_app.config['DOMINIO_PROFESSORI']
         is_professor = email.endswith(f'@{dominio_professori}')  # FIX: era is_professore
 
         # Cerca utente esistente
@@ -113,8 +121,9 @@ def callback():
 
         return redirect(url_for('menu.menu'))
 
-    except Exception as e:
-        print(f"Errore durante autenticazione: {str(e)}")
+    except Exception:
+        db.session.rollback()
+        current_app.logger.exception("Errore durante autenticazione Google")
         flash("Errore durante l'autenticazione. Riprova.", 'danger')
         return redirect(url_for('index.index'))
 
@@ -167,7 +176,7 @@ def profile():
         <div class="profile">
             <h1>Il Tuo Profilo</h1>
             {''.join(f'<div class="info-row"><span class="label">{k}:</span> {v}</div>'
-                     for k, v in info.items())}
+                     for k, v in ((escape(k), escape(str(v))) for k, v in info.items()))}
             <div style="margin-top: 30px;">
                 <a href="{url_for('menu.menu')}" class="btn">Vai al Menu</a>
                 <a href="{url_for('auth.logout')}" class="btn"
@@ -186,8 +195,8 @@ def profile():
 
 def is_professor_email(email):
     """Controlla se una email appartiene a un professore"""
-    dominio = os.getenv('DOMINIO_PROFESSORI', 'scuola-borsa.it')
-    return email.endswith(f'@{dominio}')
+    dominio = current_app.config['DOMINIO_PROFESSORI']
+    return email.lower().endswith(f'@{dominio}')
 
 
 def get_user_discount_type(user):

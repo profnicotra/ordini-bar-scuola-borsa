@@ -957,10 +957,7 @@ body::after {
   transform: translateY(-2px); 
   box-shadow: 0 8px 28px rgba(230,57,70,0.55); 
 }
-.popup-close-btn{
-  display: none;
-  
-}
+
 .btn-ghost { 
   width: 100%; 
   padding: 13px; 
@@ -1196,7 +1193,7 @@ body::after {
     <li><a href="/#chi-siamo">Chi siamo</a></li>
     <li><a href="/#gallery">Galleria</a></li>
     <li><a href="/#contatti">Contatti</a></li>
-    <li><a href="#">Login</a></li>
+    <li><a href="{{ url_for('login.login') }}">Login</a></li>
   </ul>
 
   <div class="social-icons">
@@ -1206,7 +1203,9 @@ body::after {
   </div>
 </header>
 
+<script id="catalog-data" type="application/json">{{ catalog | tojson }}</script>
 <form action="{{ url_for('orders.new_order') }}" method="POST" id="order-form">
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 <div class="page">
 
   <div class="page-head">
@@ -1258,11 +1257,11 @@ body::after {
       <div class="name-row">
         <div class="field">
           <i class="fi fas fa-user"></i>
-          <input id="nome" type="text" name="nome" placeholder="Nome" required/>
+          <input id="nome" type="text" name="nome" placeholder="Nome" value="{{ user_info.nome if user_info else '' }}" required/>
         </div>
         <div class="field">
           <i class="fi fas fa-user"></i>
-          <input id="cognome" type="text" name="cognome" placeholder="Cognome" required/>
+          <input id="cognome" type="text" name="cognome" placeholder="Cognome" value="{{ user_info.cognome if user_info else '' }}" required/>
         </div>
       </div>
 
@@ -1272,19 +1271,20 @@ body::after {
         <span class="sel-arrow"><i class="fas fa-chevron-down"></i></span>
         <div class="sel-dropdown" id="sel-dropdown">
           {% for c in listClass %}
-            <div class="sel-option" data-value="{{ c.nome }}">{{ c.nome }}</div>
+            <div class="sel-option" data-value="{{ c.id }}">{{ c.nome }}</div>
           {% endfor %}
         </div>
       </div>
       <select id="classe" name="classe" required>
         <option value="" disabled selected></option>
         {% for c in listClass %}
-          <option value="{{ c.nome }}">{{ c.nome }}</option>
+          <option value="{{ c.id }}">{{ c.nome }}</option>
         {% endfor %}
       </select>
 
       <input type="hidden" id="totalInput" name="total" value="0">
 
+      <p id="order-error" role="alert" style="color:#ff8080;"></p>
       <button class="submit-btn" id="invia" type="button">
         <i class="fas fa-paper-plane"></i> Conferma ordine
       </button>
@@ -1334,7 +1334,50 @@ body::after {
 <script>
 document.addEventListener("DOMContentLoaded", function () {
   let sent = false;
-  let products = JSON.parse(localStorage.getItem("orderedItems") || "[]").filter(p => p.name && !isNaN(p.price));
+  const catalog = Object.fromEntries(JSON.parse(document.getElementById('catalog-data').textContent).map(p => [p.id, p]));
+  const errorBox = document.getElementById('order-error');
+  let products = [];
+  let cartInvalid = false;
+  try {
+    const saved = JSON.parse(localStorage.getItem('orderedItems') || '[]');
+    if (!Array.isArray(saved)) throw new Error();
+    products = saved.map(item => {
+      const product = item && catalog[item.id];
+      if (!product || !Number.isInteger(item.qty) || item.qty < 1 || item.qty > 10) throw new Error();
+      const notes = {};
+      for (const group of product.note_gruppi) {
+        const savedChoices = item.selectedNotes?.[group.id];
+        const choices = Array.isArray(savedChoices) ? savedChoices : (savedChoices ? [savedChoices] : []);
+        const valid = group.note.filter(note => choices.some(choice => choice && choice.id === note.id))
+          .map(note => ({ id: note.id, nome: note.nome }));
+        if (valid.length) notes[group.id] = group.esclusivo ? valid[0] : valid;
+      }
+      return {
+        id: product.id, name: product.prodotto, price: Number(product.prezzo_mostrato),
+        qty: item.qty, note_gruppi: product.note_gruppi,
+        selectedNotes: notes
+      };
+    });
+  } catch (_) {
+    cartInvalid = true;
+    errorBox.textContent = 'Il carrello contiene prodotti non più disponibili o dati non validi. Svuotalo e seleziona nuovamente i prodotti dal menù.';
+  }
+
+  function escapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, c => ({'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'}[c]));
+  }
+
+  function unitCents(product) {
+    let cents = Math.round(product.price * 100);
+    for (const group of product.note_gruppi || []) {
+      const selected = product.selectedNotes[group.id];
+      const choices = Array.isArray(selected) ? selected : (selected ? [selected] : []);
+      for (const note of group.note || []) {
+        if (choices.some(choice => choice.id === note.id)) cents += Math.round(Number(note.price_delta_euro || 0) * 100);
+      }
+    }
+    return cents;
+  }
 
   const container = document.getElementById("product-container");
   const overlay = document.getElementById("overlay");
@@ -1393,8 +1436,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Helpers
   function save() {
-    localStorage.setItem("orderedItems", JSON.stringify(products));
+    try { localStorage.setItem("orderedItems", JSON.stringify(products)); } catch (_) {}
     document.getElementById("prodottiSelezionati").value = JSON.stringify(products);
+  }
+
+  function clearStoredCart() {
+    try {
+      localStorage.removeItem('orderedItems');
+      localStorage.removeItem('sel');
+    } catch (_) {}
   }
 
   function fmt(n) {
@@ -1414,20 +1464,20 @@ document.addEventListener("DOMContentLoaded", function () {
           <button class="prod-note-btn" data-i="${i}" type="button">
             <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
           </button>
-          <span class="prod-name" title="${p.name}">${p.name}</span>
+          <span class="prod-name" title="${escapeHtml(p.name)}">${escapeHtml(p.name)}</span>
         </div>
         <div class="qty-ctrl">
           <button class="qty-btn" data-i="${i}" data-a="−" type="button">−</button>
           <span class="qty-num">${qty}</span>
           <button class="qty-btn" data-i="${i}" data-a="+" type="button">+</button>
         </div>
-        <div class="prod-price">€${fmt(p.price * qty)}</div>
+        <div class="prod-price">€${fmt(unitCents(p) * qty / 100)}</div>
       `;
       container.appendChild(row);
-      total += p.price * qty;
+      total += unitCents(p) * qty;
     });
-    document.getElementById("total-num").textContent = fmt(total);
-    document.getElementById("totalInput").value = total.toFixed(2);
+    document.getElementById("total-num").textContent = fmt(total / 100);
+    document.getElementById("totalInput").value = (total / 100).toFixed(2);
     document.getElementById("prodottiSelezionati").value = JSON.stringify(products);
   }
 
@@ -1473,8 +1523,20 @@ document.addEventListener("DOMContentLoaded", function () {
         // Intestazione del gruppo
         const gruppoHeader = document.createElement("div");
         gruppoHeader.style.cssText = "margin-bottom:12px; padding-top:8px; padding-bottom:8px; border-bottom:1px solid rgba(255,255,255,0.1);";
-        gruppoHeader.innerHTML = `<strong style="font-size:13px; color:rgba(255,255,255,0.88);">${gruppo.nome_gruppo}</strong>`;
+        gruppoHeader.innerHTML = `<strong style="font-size:13px; color:rgba(255,255,255,0.88);">${escapeHtml(gruppo.nome_gruppo)}</strong>`;
         ingBox.appendChild(gruppoHeader);
+        if (gruppo.esclusivo && !gruppo.obbligatorio_default) {
+          const clear = document.createElement('button');
+          clear.type = 'button';
+          clear.textContent = 'Nessuna opzione';
+          clear.addEventListener('click', () => {
+            delete prod.selectedNotes[gruppo.id];
+            save();
+            render();
+            openNotePopup();
+          });
+          ingBox.appendChild(clear);
+        }
         
         // Note del gruppo
         if (gruppo.note && gruppo.note.length > 0) {
@@ -1491,11 +1553,11 @@ document.addEventListener("DOMContentLoaded", function () {
             const isSelected = prod.selectedNotes[gruppo.id] && 
                               (inputType === "radio" 
                                 ? prod.selectedNotes[gruppo.id].id === nota.id 
-                                : prod.selectedNotes[gruppo.id].includes(nota.id));
+                                : prod.selectedNotes[gruppo.id].some(n => n.id === nota.id));
             
-            let notaText = nota.nome;
+            let notaText = escapeHtml(nota.nome);
             if (nota.price_delta_euro && nota.price_delta_euro !== 0) {
-              const sign = nota.price_delta_euro > 0 ? '+' : '';
+              const sign = nota.price_delta_euro > 0 ? '+' : '−';
               notaText += ` (${sign}€${Math.abs(nota.price_delta_euro).toFixed(2)})`;
             }
             
@@ -1524,6 +1586,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
               }
               save();
+              render();
             });
             
             ingBox.appendChild(notaContainer);
@@ -1546,15 +1609,15 @@ document.addEventListener("DOMContentLoaded", function () {
         ingBox.appendChild(d);
       });
     }
-    gestisciDeselezioneRadio(); 
     openPopup(notePopup);
   }
   document.getElementById("back").addEventListener("click", () => closePopup(notePopup));
 
   // Success
   document.getElementById("success-close").addEventListener("click", () => {
+    location.href = "/menu";
     closePopup(successPop);
-    localStorage.removeItem("orderedItems");
+    clearStoredCart();
     products = [];
     render();
     ["nome", "cognome", "noteGenerali"].forEach(id => {
@@ -1571,7 +1634,7 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("clearCartBtn").addEventListener("click", () => openPopup(clearPop));
   document.getElementById("clear-cancel").addEventListener("click", () => closePopup(clearPop));
   document.getElementById("clear-confirm").addEventListener("click", () => {
-    localStorage.removeItem("orderedItems");
+    clearStoredCart();
     location.reload();
   });
 
@@ -1589,65 +1652,65 @@ document.addEventListener("DOMContentLoaded", function () {
     overlay.classList.remove("active");
   });
 
-  // Validation + submit
-  document.getElementById("invia").addEventListener("click", () => {
-    if (sent) return;
+  // Confirm only after the server has saved the complete order.
+  document.getElementById("invia").addEventListener("click", async () => {
+    if (sent || cartInvalid) return;
+    errorBox.textContent = '';
+    const nome = document.getElementById('nome');
+    const cognome = document.getElementById('cognome');
     let ok = true;
-    const nome = document.getElementById("nome");
-    const cognome = document.getElementById("cognome");
-
-    function checkField(el, regex) {
-      el.classList.remove("err");
-      if (!regex.test(el.value.trim())) {
-        el.classList.add("err");
-        ok = false;
+    if (!{{ (user_info is not none) | tojson }}) {
+      for (const field of [nome, cognome]) {
+        const valid = /^[\p{L}][\p{L}\s'’–-]{1,99}$/u.test(field.value.trim());
+        field.classList.toggle('err', !valid);
+        ok = ok && valid;
       }
     }
-    checkField(nome, /^[A-Za-zÀ-öø-ÿ\s]{2,}$/);
-    checkField(cognome, /^[A-Za-zÀ-öø-ÿ\s]{2,}$/);
-
-    if (!selectedVal) {
-      wrap.classList.add("err");
-      ok = false;
-    }
-    if (!ok) {
-      nome.scrollIntoView({ behavior: "smooth", block: "center" });
+    wrap.classList.toggle('err', !selectedVal);
+    if (!ok || !selectedVal) {
+      errorBox.textContent = 'Inserisci nome, cognome e classe o tavolo.';
       return;
     }
     if (!products.length) {
-      alert("Seleziona almeno un prodotto dal menu.");
+      errorBox.textContent = 'Seleziona almeno un prodotto dal menù.';
       return;
     }
-
-    document.getElementById("prodottiSelezionati").value = JSON.stringify(products);
+    for (const product of products) {
+      for (const group of product.note_gruppi || []) {
+        const chosen = product.selectedNotes[group.id];
+        const count = Array.isArray(chosen) ? chosen.length : (chosen ? 1 : 0);
+        if (group.obbligatorio_default && !count) {
+          errorBox.textContent = `Scegli un'opzione per ${group.nome_gruppo} (${product.name}).`;
+          return;
+        }
+      }
+    }
+    const form = document.getElementById('order-form');
+    save();
+    const button = document.getElementById('invia');
+    button.disabled = true;
     sent = true;
-    openPopup(successPop);
-    setTimeout(() => document.getElementById("order-form").submit(), 2800);
+    try {
+      const response = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
+      const result = await response.json();
+      if (!response.ok || !result.success) throw new Error(result.error || 'Ordine non salvato. Riprova.');
+      clearStoredCart();
+      products = [];
+      render();
+      openPopup(successPop);
+    } catch (error) {
+      errorBox.textContent = error.message || 'Connessione non disponibile. Riprova.';
+      sent = false;
+      button.disabled = false;
+    }
+  });
+  document.getElementById('order-form').addEventListener('submit', event => {
+    event.preventDefault();
+    document.getElementById('invia').click();
   });
 
   render();
 });
-function gestisciDeselezioneRadio() {
-    // Seleziona tutti i radio button nel corpo del popup
-    const radios = document.querySelectorAll('.popup-body input[type="radio"]');
-
-    radios.forEach(radio => {
-        radio.onclick = function() {
-            // Se il radio era già cliccato in precedenza...
-            if (this.getAttribute('data-checked') === 'true') {
-                this.checked = false; // Lo deselezioniamo
-                this.setAttribute('data-checked', 'false');
-            } else {
-                // Altrimenti, resettiamo gli altri del gruppo e selezioniamo questo
-                const name = this.getAttribute('name');
-                document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
-                    r.setAttribute('data-checked', 'false');
-                });
-                this.setAttribute('data-checked', 'true');
-            }
-        };
-    });
-}
 </script>
 </body>
 </html>

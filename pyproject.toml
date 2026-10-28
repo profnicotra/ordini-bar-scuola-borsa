@@ -8,6 +8,7 @@ dependencies = [
     "flask_login",
     "apscheduler",
     "authlib",
+    "python-dotenv",
     "requests"
 ]
 

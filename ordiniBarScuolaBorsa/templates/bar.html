@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
 <title>Menu — Bar Scuola Borsa</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-<script id="prodotti-data" type="application/json">{{ data_json | safe }}</script>
+<script id="prodotti-data" type="application/json">{{ products | tojson }}</script>
 
 <style>
 /* ══════════════════════════════════════════
@@ -1171,51 +1171,8 @@ body::after {
     <div class="lm-stripe"></div>
     <button class="lm-x" id="lm-close" aria-label="Chiudi">✕</button>
     <div class="lm-body">
-      <div class="lm-tabs">
-        <button class="lm-tab active" onclick="lmPanel('login')" aria-selected="true">Accedi</button>
-        <button class="lm-tab" onclick="lmPanel('register')" aria-selected="false">Registrati</button>
-      </div>
-      <div id="lm-panel-login">
-        <div class="lm-title">Bentornato</div>
-        <p class="lm-sub">Accedi per ordinare con i tuoi dati salvati.</p>
-        <a href="{{ url_for('auth.login') }}" class="btn-google">
-          <svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
-          Continua con Google
-        </a>
-        <div class="lm-divider"><div class="dl"></div><span>oppure</span><div class="dl"></div></div>
-        <form action="/login" method="POST">
-          <div class="lm-field"><i class="fas fa-user" aria-hidden="true"></i><input type="text" name="username" placeholder="Username" required autocomplete="username"/></div>
-          <div class="lm-field icon-right">
-            <i class="fas fa-lock" aria-hidden="true"></i>
-            <input type="password" name="password" id="pw-login" placeholder="Password" required autocomplete="current-password"/>
-            <button type="button" class="eye-btn" onclick="toggleEye('pw-login',this)" aria-label="Mostra/nascondi password"><i class="fas fa-eye"></i></button>
-          </div>
-          <div class="lm-forgot"><a href="#">Password dimenticata?</a></div>
-          <button class="lm-submit" type="submit"><i class="fas fa-sign-in-alt" aria-hidden="true"></i> Accedi</button>
-        </form>
-      </div>
-      <div id="lm-panel-register" hidden>
-        <div class="lm-title">Crea account</div>
-        <p class="lm-sub">Registrati per un'esperienza personalizzata.</p>
-        <form action="/register" method="POST">
-          <div class="lm-name-row">
-            <div class="lm-field"><i class="fas fa-user" aria-hidden="true"></i><input type="text" name="nome" placeholder="Nome" required autocomplete="given-name"/></div>
-            <div class="lm-field"><i class="fas fa-user" aria-hidden="true"></i><input type="text" name="cognome" placeholder="Cognome" required autocomplete="family-name"/></div>
-          </div>
-          <div class="lm-field"><i class="fas fa-envelope" aria-hidden="true"></i><input type="email" name="email" placeholder="Email" required autocomplete="email"/></div>
-          <div class="lm-field icon-right">
-            <i class="fas fa-lock" aria-hidden="true"></i>
-            <input type="password" name="password" id="pw-reg" placeholder="Password" required autocomplete="new-password"/>
-            <button type="button" class="eye-btn" onclick="toggleEye('pw-reg',this)" aria-label="Mostra/nascondi password"><i class="fas fa-eye"></i></button>
-          </div>
-          <div class="lm-field icon-right">
-            <i class="fas fa-lock" aria-hidden="true"></i>
-            <input type="password" name="password2" id="pw-reg2" placeholder="Conferma password" required autocomplete="new-password"/>
-            <button type="button" class="eye-btn" onclick="toggleEye('pw-reg2',this)" aria-label="Mostra/nascondi conferma password"><i class="fas fa-eye-slash"></i></button>
-          </div>
-          <button class="lm-submit" type="submit"><i class="fas fa-user-plus" aria-hidden="true"></i> Crea Account</button>
-        </form>
-      </div>
+      <div class="lm-title">Accedi</div>
+      {% include 'google_signin.html' %}
     </div>
   </div>
 </div>
@@ -1253,7 +1210,7 @@ function subcat(name, map, fb) {
 const cats = { cibo:{}, bevande:{}, dolci:{} };
 listaItems.forEach(p => {
   const c = (p.categoria || '').toLowerCase().trim();
-  const entry = { name: p.prodotto, price: p.prezzo_euro, note_gruppi: p.note_gruppi || [] };
+  const entry = { id: p.id, name: p.prodotto, price: p.prezzo_euro, note_gruppi: p.note_gruppi || [] };
   let g, s;
   if      (c === 'bevande') { g='bevande'; s=subcat(p.prodotto, bevsMap, 'Altre Bevande'); }
   else if (c === 'dolci')   { g='dolci';   s=subcat(p.prodotto, dolciMap, 'Altri Dolci'); }
@@ -1269,17 +1226,25 @@ const ORDER = {
 };
 
 /* ─── STATE ─── */
+const catalogo = Object.fromEntries(listaItems.map(p => [p.id, {
+  id: p.id, name: p.prodotto, price: Number(p.prezzo_euro), note_gruppi: p.note_gruppi || []
+}]));
 let sel = {}, currentCat = 'cibo', switching = false;
 try {
-  const s = localStorage.getItem('sel');
-  if (s) {
-    const raw = JSON.parse(s);
-    // Migrate old format (value was a plain price string) to new { price, qty }
-    Object.entries(raw).forEach(([k, v]) => {
-      sel[k] = (typeof v === 'object' && v !== null) ? v : { price: parseFloat(v), qty: 1 };
+  const raw = JSON.parse(localStorage.getItem('sel') || '{}');
+  if (raw && typeof raw === 'object' && !Array.isArray(raw)) {
+    Object.entries(raw).forEach(([id, value]) => {
+      if (catalogo[id] && value && Number.isInteger(value.qty) && value.qty >= 1 && value.qty <= 10) {
+        sel[id] = { qty: value.qty };
+      }
     });
   }
-} catch(_) {}
+  localStorage.setItem('sel', JSON.stringify(sel));
+} catch (_) {}
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, c => ({'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'}[c]));
+}
 
 /* ─── MOBILE NAV ─── */
 const navLinks    = document.getElementById('nav-links');
@@ -1335,7 +1300,6 @@ document.querySelectorAll('.tab').forEach(tab => {
 const container = document.getElementById('product-container');
 const ctaBtn    = document.getElementById('cta-btn');
 const ctaBadge  = document.getElementById('cta-badge');
-const prodottiMap = {}; // Mappa nome -> {price, note_gruppi, ...}
 
 function renderCat(cat) {
   if (switching) return;
@@ -1373,13 +1337,13 @@ function buildContent(cat) {
     container.appendChild(h);
     const g = document.createElement('div'); g.className = 'product-grid visible';
     g.innerHTML = items.map((p, i) => `
-      <div class="prod-item ${sel[p.name] ? 'selected' : ''}"
-           data-name="${p.name}" data-price="${p.price}"
+      <div class="prod-item ${sel[p.id] ? 'selected' : ''}"
+           data-id="${p.id}" data-name="${escapeHtml(p.name)}" data-price="${p.price}"
            style="animation-delay:${si * .065 + i * .038}s"
-           role="button" tabindex="0" aria-pressed="${!!sel[p.name]}">
+           role="button" tabindex="0" aria-pressed="${!!sel[p.id]}">
         <div class="prod-inner">
           <div class="prod-check" aria-hidden="true"></div>
-          <span class="prod-name">${p.name}</span>
+          <span class="prod-name">${escapeHtml(p.name)}</span>
           <div class="prod-qty" aria-hidden="true">
             <button class="pq-btn pq-minus" type="button" tabindex="-1">−</button>
             <span class="pq-num">1</span>
@@ -1389,13 +1353,9 @@ function buildContent(cat) {
         </div>
       </div>`).join('');
     container.appendChild(g);
-    // Salva i dati dei prodotti nella mappa per recuperarli dopo
-    items.forEach(p => {
-      prodottiMap[p.name] = p;
-    });
     // Restore qty display for already-selected items
     g.querySelectorAll('.prod-item.selected').forEach(row => {
-      const entry = sel[row.dataset.name];
+      const entry = sel[row.dataset.id];
       if (!entry) return;
       const qty = entry.qty || 1;
       const qn = row.querySelector('.pq-num');
@@ -1435,10 +1395,10 @@ function ripple(el, e) {
 
 /* ─── TOGGLE ─── */
 function toggle(row) {
-  const { name, price } = row.dataset;
-  if (sel[name]) {
+  const { id, price } = row.dataset;
+  if (sel[id]) {
     // Deselect
-    delete sel[name];
+    delete sel[id];
     row.classList.remove('selected');
     row.setAttribute('aria-pressed', 'false');
     // Reset qty display
@@ -1448,7 +1408,7 @@ function toggle(row) {
     updateRowPrice(row, parseFloat(price), 1);
   } else {
     // Select with qty = 1
-    sel[name] = { price: parseFloat(price), qty: 1 };
+    sel[id] = { qty: 1 };
     row.classList.add('selected');
     row.setAttribute('aria-pressed', 'true');
     const ck = row.querySelector('.prod-check');
@@ -1461,11 +1421,11 @@ function toggle(row) {
 
 /* ─── ADJUST QTY ─── */
 function adjustQty(row, delta) {
-  const { name, price } = row.dataset;
-  if (!sel[name]) return; // not selected
-  const current = sel[name].qty || 1;
+  const { id, price } = row.dataset;
+  if (!sel[id]) return; // not selected
+  const current = sel[id].qty || 1;
   const next = Math.max(1, Math.min(10, current + delta));
-  sel[name].qty = next;
+  sel[id].qty = next;
   // Update qty number shown
   const qn = row.querySelector('.pq-num');
   if (qn) qn.textContent = next;
@@ -1509,11 +1469,8 @@ function tickCount(from, to) {
 
 ctaBtn.addEventListener('click', () => {
   if (!Object.keys(sel).length) { showToast(); return; }
-  const items = Object.entries(sel).map(([name, v]) => ({
-    name,
-    price: v.price,
-    qty:   v.qty || 1,
-    note_gruppi: prodottiMap[name]?.note_gruppi || []
+  const items = Object.entries(sel).map(([id, value]) => ({
+    ...catalogo[id], qty: value.qty
   }));
   try { localStorage.setItem('orderedItems', JSON.stringify(items)); } catch(_) {}
   location.href = '/orders';
@@ -1554,25 +1511,6 @@ document.addEventListener('keydown', e => {
     menuToggle.textContent = '☰';
   }
 });
-
-function lmPanel(p) {
-  document.getElementById('lm-panel-login').style.display    = p === 'login'    ? 'block' : 'none';
-  document.getElementById('lm-panel-register').style.display = p === 'register' ? 'block' : 'none';
-  document.getElementById('lm-panel-login').hidden    = p !== 'login';
-  document.getElementById('lm-panel-register').hidden = p !== 'register';
-  document.querySelectorAll('.lm-tab').forEach((t, i) => {
-    const a = (p === 'login') === !i;
-    t.classList.toggle('active', a);
-    t.setAttribute('aria-selected', a);
-  });
-}
-
-function toggleEye(id, btn) {
-  const el   = document.getElementById(id);
-  const show = el.type === 'password';
-  el.type     = show ? 'text' : 'password';
-  btn.innerHTML = show ? '<i class="fas fa-eye-slash"></i>' : '<i class="fas fa-eye"></i>';
-}
 
 /* ─── INIT ─── */
 setTimeout(() => {
