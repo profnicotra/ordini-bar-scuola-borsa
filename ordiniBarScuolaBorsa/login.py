@@ -1,11 +1,13 @@
-from flask import Blueprint, render_template, redirect, url_for
-from flask_login import current_user
+from flask import Blueprint, render_template
+from ordiniBarScuolaBorsa.models import get_products, is_bar_open
 
 bp = Blueprint("login", __name__, url_prefix="/login")
 
-@bp.get("")
 @bp.get("/")
 def login():
-    if current_user.is_authenticated:
-        return redirect(url_for('menu.menu'))
-    return render_template('login.html')
+    a = get_products()
+    print (a)
+    data = {"title" : "Menu Bar Scuola Borsa",
+            "open": is_bar_open(),   
+            "items" : get_products()}
+    return render_template('login.html', data=data)
