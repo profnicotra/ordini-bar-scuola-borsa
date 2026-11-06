@@ -4,6 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>Coda Ordini — Bar Scuola Borsa</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,800&display=swap" rel="stylesheet"/>
 <style>
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
@@ -615,7 +616,7 @@ body::after {
 <main class="grid" id="orders-container">
   {% if queue %}
     {% for ordine in queue %}
-    <div class="order-card s-{{ ordine.stato | lower | replace('_', '-') }}" data-id="{{ ordine.id }}">
+    <div class="order-card s-new" data-id="{{ ordine.id }}">
       <div class="stripe"></div>
 
       <div class="card-top">
@@ -625,12 +626,7 @@ body::after {
           <div class="card-loc">📍 {{ ordine.posizione }}</div>
         </div>
         <div class="card-right">
-          <span class="status-tag t-{{ ordine.stato | lower | replace('_', '-') }}">
-  {% if ordine.stato == 'NUOVO' %}Nuovo
-  {% elif ordine.stato == 'IN_PREPARAZIONE' %}In preparazione
-  {% elif ordine.stato == 'PRONTO' %}Pronto ✓
-  {% else %}{{ ordine.stato }}{% endif %}
-</span>
+          <span class="status-tag t-new">Nuovo</span>
           <span class="card-time">{{ ordine.creato_il }}</span>
         </div>
       </div>

@@ -4,6 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
 <title>Menu — Bar Scuola Borsa</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,800&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 <script id="prodotti-data" type="application/json">{{ data_json | safe }}</script>
 
@@ -14,8 +15,8 @@
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
 :root {
-  --sans:  'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
-  --serif: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
+  --sans:  'Montserrat', sans-serif;
+  --serif: 'Playfair Display', Georgia, serif;
   --red:   #e63946;
   --dark:  #070304;
   --surface: rgba(255,255,255,0.045);
@@ -1253,7 +1254,7 @@ function subcat(name, map, fb) {
 const cats = { cibo:{}, bevande:{}, dolci:{} };
 listaItems.forEach(p => {
   const c = (p.categoria || '').toLowerCase().trim();
-  const entry = { name: p.prodotto, price: p.prezzo_euro, note_gruppi: p.note_gruppi || [] };
+  const entry = { name: p.prodotto, price: p.prezzo_euro };
   let g, s;
   if      (c === 'bevande') { g='bevande'; s=subcat(p.prodotto, bevsMap, 'Altre Bevande'); }
   else if (c === 'dolci')   { g='dolci';   s=subcat(p.prodotto, dolciMap, 'Altri Dolci'); }
@@ -1335,7 +1336,6 @@ document.querySelectorAll('.tab').forEach(tab => {
 const container = document.getElementById('product-container');
 const ctaBtn    = document.getElementById('cta-btn');
 const ctaBadge  = document.getElementById('cta-badge');
-const prodottiMap = {}; // Mappa nome -> {price, note_gruppi, ...}
 
 function renderCat(cat) {
   if (switching) return;
@@ -1389,10 +1389,6 @@ function buildContent(cat) {
         </div>
       </div>`).join('');
     container.appendChild(g);
-    // Salva i dati dei prodotti nella mappa per recuperarli dopo
-    items.forEach(p => {
-      prodottiMap[p.name] = p;
-    });
     // Restore qty display for already-selected items
     g.querySelectorAll('.prod-item.selected').forEach(row => {
       const entry = sel[row.dataset.name];
@@ -1512,8 +1508,7 @@ ctaBtn.addEventListener('click', () => {
   const items = Object.entries(sel).map(([name, v]) => ({
     name,
     price: v.price,
-    qty:   v.qty || 1,
-    note_gruppi: prodottiMap[name]?.note_gruppi || []
+    qty:   v.qty || 1
   }));
   try { localStorage.setItem('orderedItems', JSON.stringify(items)); } catch(_) {}
   location.href = '/orders';

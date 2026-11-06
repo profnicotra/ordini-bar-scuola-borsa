@@ -34,8 +34,11 @@ def create_app():
     from ordiniBarScuolaBorsa.orders import bp as orders_bp
     app.register_blueprint(orders_bp)
 
+    from ordiniBarScuolaBorsa.coda import bp as coda_bp
+    app.register_blueprint(coda_bp)
+
     from ordiniBarScuolaBorsa.admin import bp as admin_bp
-    app.register_blueprint(admin_bp)
+    app.register_blueprint(admin_bp, url_prefix='/admin')
 
     from ordiniBarScuolaBorsa.toggle import bp as toggle_bp
     app.register_blueprint(toggle_bp)
@@ -67,9 +70,13 @@ def create_app():
     with app.app_context():
         from ordiniBarScuolaBorsa.queue import check_and_update_ready_orders
         
+        def job_wrapper():
+            with app.app_context():
+                check_and_update_ready_orders()
+        
         if not scheduler.running:
             scheduler.add_job(
-                func=check_and_update_ready_orders,
+                func=job_wrapper,
                 trigger="interval",
                 seconds=60,  # Controlla ogni 60 secondi
                 id="check_ready_orders",

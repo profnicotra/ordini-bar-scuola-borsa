@@ -4,6 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>Stato Bar — Scuola Borsa</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,800&display=swap" rel="stylesheet"/>
 <style>
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
@@ -11,8 +12,8 @@
   --red:   #e63946;
   --green: #22c55e;
   --dark:  #080404;
-  --sans:  'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
-  --serif: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
+  --sans:  'Montserrat', sans-serif;
+  --serif: 'Playfair Display', Georgia, serif;
 }
 
 body {
@@ -27,6 +28,7 @@ body {
   overflow: hidden;
 }
 
+/* Background image */
 .bg {
   position: fixed; 
   inset: 0; 
@@ -36,6 +38,7 @@ body {
   transform: scale(1.04);
 }
 
+/* Gradient vignette */
 .bg-vignette {
   position: fixed; 
   inset: 0; 
@@ -45,6 +48,7 @@ body {
     radial-gradient(ellipse at 50% 100%, rgba(0,0,0,0.8) 0%, transparent 60%);
 }
 
+/* Grid texture */
 .bg-grid {
   position: fixed; 
   inset: 0; 
@@ -57,6 +61,7 @@ body {
   mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
 }
 
+/* Content */
 .content {
   position: relative; 
   z-index: 3;
@@ -74,6 +79,7 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* Logo area */
 .logo-area {
   display: flex; 
   flex-direction: column; 
@@ -105,6 +111,7 @@ body {
   font-weight: 700;
 }
 
+/* Card */
 .card {
   width: 100%;
   background: rgba(12,5,5,0.85);
@@ -116,6 +123,7 @@ body {
   position: relative;
 }
 
+/* Top accent line */
 .card-line {
   height: 3px;
   background: linear-gradient(90deg, transparent, var(--line-color, #e63946), transparent);
@@ -131,6 +139,7 @@ body {
   gap: 0;
 }
 
+/* Status pill */
 .pill {
   display: inline-flex; 
   align-items: center; 
@@ -179,6 +188,7 @@ body {
   50% { opacity: 0.6; transform: scale(1.4); } 
 }
 
+/* Title */
 .card-title {
   font-family: var(--serif);
   font-size: clamp(48px, 11vw, 68px);
@@ -197,6 +207,7 @@ body {
   font-weight: 300;
 }
 
+/* Toggle button */
 .toggle-btn {
   width: 100%; 
   padding: 21px 32px;
@@ -227,25 +238,37 @@ body {
   transition: opacity 0.3s;
 }
 
-.toggle-btn:hover::before { opacity: 1; }
-.toggle-btn:hover { transform: translateY(-3px); }
+.toggle-btn:hover::before { 
+  opacity: 1; 
+}
+
+.toggle-btn:hover { 
+  transform: translateY(-3px); 
+}
 
 .toggle-btn.close-bar {
   background: linear-gradient(135deg, #7f1010, #e63946);
   box-shadow: 0 8px 36px rgba(230,57,70,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
 }
 
-.toggle-btn.close-bar:hover { box-shadow: 0 14px 48px rgba(230,57,70,0.7); }
+.toggle-btn.close-bar:hover { 
+  box-shadow: 0 14px 48px rgba(230,57,70,0.7); 
+}
 
 .toggle-btn.open-bar {
   background: linear-gradient(135deg, #064e35, #22c55e);
   box-shadow: 0 8px 36px rgba(34,197,94,0.45), inset 0 1px 0 rgba(255,255,255,0.1);
 }
 
-.toggle-btn.open-bar:hover { box-shadow: 0 14px 48px rgba(34,197,94,0.65); }
+.toggle-btn.open-bar:hover { 
+  box-shadow: 0 14px 48px rgba(34,197,94,0.65); 
+}
 
-.btn-icon { font-size: 19px; }
+.btn-icon { 
+  font-size: 19px; 
+}
 
+/* Footer note */
 .card-footer-note {
   margin-top: 22px;
   font-size: 11px; 
@@ -254,11 +277,24 @@ body {
   text-align: center;
 }
 
+/* ── RESPONSIVE ── */
 @media (max-width:480px) {
-  .card-body { padding: 38px 28px 34px; }
-  .logo-area { margin-bottom: 40px; }
-  .logo-area img { width: 56px; height: 56px; }
-  .pill { padding: 8px 18px; }
+  .card-body { 
+    padding: 38px 28px 34px; 
+  }
+  
+  .logo-area { 
+    margin-bottom: 40px; 
+  }
+  
+  .logo-area img {
+    width: 56px;
+    height: 56px;
+  }
+  
+  .pill {
+    padding: 8px 18px;
+  }
 }
 </style>
 </head>

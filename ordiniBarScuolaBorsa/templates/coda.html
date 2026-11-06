@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ data.title }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --neon-red: #ff2a2a;
+        --neon-red-dark: #b30000;
+        --neon-glow: rgba(255, 42, 42, 0.5);
+        --bg-deep: #030303;
+        --error-color: #ff0040;
+        
+        --glass-panel: linear-gradient(135deg, rgba(20, 20, 20, 0.8) 0%, rgba(8, 8, 8, 0.9) 100%);
+        --glass-frame: linear-gradient(135deg, rgba(30, 30, 30, 0.4) 0%, rgba(10, 10, 10, 0.6) 100%);
+        --glass-border-top: rgba(255, 42, 42, 0.3);
+        --glass-border-side: rgba(255, 255, 255, 0.03);
+      }
+
+      ::-webkit-scrollbar { width: 8px; height: 8px; }
+      ::-webkit-scrollbar-track { background: #050505; border-left: 1px solid #111; }
+      ::-webkit-scrollbar-thumb { background: var(--neon-red-dark); border-radius: 10px; }
+      ::-webkit-scrollbar-thumb:hover { background: var(--neon-red); box-shadow: 0 0 10px var(--neon-red); }
+
+      @keyframes floatLogo { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+      @keyframes pulseGlow { 0% { box-shadow: 0 0 15px rgba(255,42,42,0.2); } 100% { box-shadow: 0 0 30px rgba(255,42,42,0.5); } }
+      
+      @keyframes slideInRight { 
+        0% { opacity: 0; transform: translateY(20px); } 
+        100% { opacity: 1; transform: translateY(0); } 
+      }
+
+      body { 
+        font-family: "Rajdhani", sans-serif; 
+        background: radial-gradient(circle at 50% 0%, #1a0505 0%, var(--bg-deep) 60%); 
+        background-attachment: fixed;
+        color: #e0e0e0; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; overflow-x: hidden; 
+      }
+      
+      canvas#sparks { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.6; }
+
+      .network-warning {
+          position: fixed; top: 0; left: 0; width: 100%; background: var(--neon-red-dark); color: white;
+          text-align: center; font-family: 'Orbitron'; font-size: 14px; font-weight: bold; letter-spacing: 2px; padding: 12px;
+          z-index: 10000; transform: translateY(-100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+          box-shadow: 0 4px 15px rgba(255,0,0,0.5);
+      }
+      .network-warning.offline { transform: translateY(0); }
+
+      .cyber-toast {
+          position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
+          background: linear-gradient(135deg, rgba(20,5,5,0.95) 0%, rgba(10,0,0,0.98) 100%);
+          border: 1px solid var(--neon-red); border-left: 5px solid var(--neon-red);
+          color: #fff; font-family: 'Orbitron'; font-size: 13px; font-weight: 500; letter-spacing: 1px;
+          padding: 16px 32px; border-radius: 8px; z-index: 10000;
+          box-shadow: 0 10px 30px rgba(255, 42, 42, 0.4); opacity: 0; pointer-events: none;
+          transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); text-align: center; white-space: nowrap;
+      }
+      .cyber-toast.show { transform: translateX(-50%) translateY(0); opacity: 1; pointer-events: auto; }
+
+      .cyber-logo-container { 
+        position: absolute; top: 25px; left: 30px; width: 90px; height: 90px; border-radius: 50%; 
+        border: 2px solid var(--neon-red-dark); background: rgba(5, 5, 5, 0.9); 
+        z-index: 1000; display: flex; justify-content: center; align-items: center; 
+        animation: floatLogo 5s ease-in-out infinite, pulseGlow 3s infinite alternate; transition: all 0.4s ease;
+      }
+      .cyber-logo-container:hover { transform: scale(1.1) rotate(-5deg); border-color: var(--neon-red); box-shadow: 0 0 40px var(--neon-glow); }
+      .cyber-logo-img { width: 85%; height: 85%; border-radius: 50%; object-fit: contain; filter: drop-shadow(0 0 8px var(--neon-glow)); }
+
+      .container { width: 95%; max-width: 1400px; margin-top: 50px; z-index: 1; padding-bottom: 100px; }
+      h1 { font-family: "Orbitron"; font-weight: 700; text-align: center; letter-spacing: 8px; text-shadow: 0 0 25px var(--neon-glow); margin-bottom: 10px; color: #fff; font-size: 30px; text-transform: uppercase; }
+      #debug-info { text-align: center; color: #00ff66; font-family: "Orbitron"; font-size: 13px; font-weight: bold; margin-bottom: 35px; text-shadow: 0 0 10px rgba(0, 255, 102, 0.5); letter-spacing: 2px; }
+
+      /* COLONNE DELLA CODA */
+      .queue-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 25px; }
+      @media (max-width: 1024px) { .queue-grid { grid-template-columns: 1fr; } }
+
+      .queue-column {
+        background: var(--glass-panel); border: 1px solid var(--glass-border-side); border-top: 1px solid var(--glass-border-top);
+        border-radius: 20px; padding: 20px; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255,255,255,0.05);
+        display: flex; flex-direction: column; min-height: 550px;
+      }
+      .column-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,42,42,0.2); padding-bottom: 15px; margin-bottom: 20px; }
+      .column-title { font-family: "Orbitron"; font-size: 14px; font-weight: bold; letter-spacing: 1px; color: #fff; display: flex; align-items: center; gap: 10px; }
+      .counter-badge { background: rgba(255,255,255,0.08); padding: 4px 10px; border-radius: 6px; font-family: "Orbitron"; font-size: 11px; color: #fff; border: 1px solid rgba(255,255,255,0.1); }
+
+      .orders-container { display: flex; flex-direction: column; gap: 15px; flex-grow: 1; overflow-y: auto; max-height: 65vh; padding-right: 5px; }
+
+      /* SCHEDA ORDINE */
+      .order-card {
+        background: rgba(15, 15, 15, 0.85); border: 1px solid rgba(255, 255, 255, 0.05); border-left: 4px solid var(--neon-red);
+        border-radius: 12px; padding: 16px; animation: slideInRight 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease; position: relative;
+      }
+      .order-card:hover { transform: translateY(-2px); border-color: rgba(255,42,42,0.4); box-shadow: 0 10px 25px rgba(0,0,0,0.6); }
+      
+      .order-card.col-nuovo { border-left-color: #00fff9; }
+      .order-card.col-pronto { border-left-color: #ffb800; }
+      .order-card.col-sparecchiare { border-left-color: #ff0040; background: rgba(30, 10, 15, 0.85); }
+
+      .order-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px; }
+      .order-id { font-family: "Orbitron"; font-weight: bold; font-size: 15px; color: #fff; }
+      .order-user { font-size: 13px; color: #888; font-family: "Rajdhani"; }
+      
+      .order-items { font-size: 15px; color: #ccc; margin-bottom: 12px; display: flex; flex-direction: column; gap: 4px; }
+      .order-item-row { display: flex; justify-content: space-between; }
+      .item-note { color: #ffb800; font-size: 13px; }
+
+      .order-footer { display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: #666; margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.03); }
+
+      /* BOTTONI */
+      .btn { font-family: "Orbitron"; cursor: pointer; border: 1px solid rgba(255,42,42,0.5); background: rgba(255,42,42,0.05); color: var(--neon-red); padding: 8px 14px; font-size: 10px; font-weight: 500; border-radius: 6px; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 1px; width: 100%; text-align: center; display: block; margin-top: 10px; }
+      .btn:hover { background: var(--neon-red); color: white; box-shadow: 0 6px 15px rgba(255,42,42,0.4); transform: translateY(-1px); }
+      
+      .btn-pronto { border-color: rgba(255,184,0,0.5); color: #ffb800; background: rgba(255,184,0,0.05); }
+      .btn-pronto:hover { background: #ffb800; color: #000; box-shadow: 0 6px 15px rgba(255,184,0,0.4); }
+
+      .btn-sparecchiare { border-color: rgba(255,0,64,0.5); color: #ff0040; background: rgba(255,0,64,0.05); }
+      .btn-sparecchiare:hover { background: #ff0040; color: #fff; box-shadow: 0 6px 15px rgba(255,0,64,0.4); }
+
+      .btn-completa { border-color: rgba(0,255,102,0.5); color: #00ff66; background: rgba(0,255,102,0.05); }
+      .btn-completa:hover { background: #00ff66; color: #000; box-shadow: 0 6px 15px rgba(0,255,102,0.4); }
+
+      .timer-box { display: flex; justify-content: space-between; align-items: center; background: rgba(255,184,0,0.08); border: 1px solid rgba(255,184,0,0.3); padding: 8px 12px; border-radius: 6px; margin-top: 10px; font-family: "Orbitron"; font-size: 11px; color: #ffb800; }
+    </style>
+  </head>
+  <body>
+
+    <div id="network-warning" class="network-warning">⚠️ ATTENZIONE: ASSENZA DI RETE - CONTROLLA LA CONNESSIONE ⚠️</div>
+    <div id="cyber-toast" class="cyber-toast"></div>
+
+    <canvas id="sparks"></canvas>
+    
+    <div class="cyber-logo-container">
+        <img src="https://static.wixstatic.com/media/a24994_7448096f4def4357bb63b2ad620c6934~mv2.png" alt="Logo" class="cyber-logo-img">
+    </div>
+
+    <div class="container">
+      <h1>⚡ MONITOR CODA BAR ⚡</h1>
+      <div id="debug-info">SISTEMA ATTIVO - AGGIORNAMENTO IN TEMPO REALE</div>
+      
+      <!-- GRIGLIA DELLE TRE COLONNE -->
+      <div class="queue-grid">
+        
+        <!-- COLONNA NUOVI -->
+        <div class="queue-column">
+          <div class="column-header">
+            <div class="column-title" style="color: #00fff9;">📌 NUOVI ORDINI</div>
+            <div id="count-nuovi" class="counter-badge">0</div>
+          </div>
+          <div id="colonna-nuovo" class="orders-container"></div>
+        </div>
+
+        <!-- COLONNA PRONTI -->
+        <div class="queue-column">
+          <div class="column-header">
+            <div class="column-title" style="color: #ffb800;">🔥 PRONTI PER IL RITIRO</div>
+            <div id="count-pronti" class="counter-badge">0</div>
+          </div>
+          <div id="colonna-pronto" class="orders-container"></div>
+        </div>
+
+        <!-- COLONNA DA SPARECCHIARE -->
+        <div class="queue-column">
+          <div class="column-header">
+            <div class="column-title" style="color: #ff0040;">⚠️ DA SPARECCHIARE</div>
+            <div id="count-sparecchiare" class="counter-badge">0</div>
+          </div>
+          <div id="colonna-sparecchiare" class="orders-container"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <script>
+      function showToast(msg) {
+          const toast = document.getElementById('cyber-toast');
+          toast.innerText = msg;
+          toast.classList.add('show');
+          setTimeout(() => toast.classList.remove('show'), 4000);
+      }
+
+      window.addEventListener('offline', () => {
+          document.getElementById('network-warning').classList.add('offline');
+          showToast("⚠️ CONNESSIONE INTERROTTA");
+      });
+      window.addEventListener('online', () => {
+          document.getElementById('network-warning').classList.remove('offline');
+          showToast("✅ CONNESSIONE RIPRISTINATA");
+      });
+
+      // Effetto particelle (sparks) identico al pannello admin
+      const canvas = document.getElementById('sparks'); 
+      const ctx = canvas.getContext('2d'); 
+      let particles = [];
+      function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; } 
+      window.onresize = resize; 
+      resize();
+
+      class Particle { 
+        constructor() { this.reset(); } 
+        reset() { this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height; this.size = Math.random() * 2 + 0.5; this.speedY = Math.random() * 0.4 + 0.1; this.alpha = Math.random() * 0.4 + 0.1; } 
+        update() { this.y += this.speedY; if (this.y > canvas.height) this.reset(); } 
+        draw() { ctx.fillStyle = `rgba(255, 42, 42, ${this.alpha})`; ctx.shadowBlur = 5; ctx.shadowColor = "#ff2a2a"; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); ctx.shadowBlur = 0; } 
+      }
+      for(let i=0; i<70; i++) particles.push(new Particle());
+      function animate() { ctx.clearRect(0, 0, canvas.width, canvas.height); particles.forEach(p => { p.update(); p.draw(); }); requestAnimationFrame(animate); } 
+      animate();
+
+      // Funzione per cambiare lo stato dell'ordine via API
+      async function cambiaStato(ordineId, nuovoStato) {
+          if(!navigator.onLine) { showToast("⚠️ ERRORE: CONNESSIONE ASSENTE!"); return; }
+          try {
+              const res = await fetch(`/queue/api/ordini/${ordineId}/stato`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ stato: nuovoStato })
+              });
+              if(res.ok) {
+                  fetchOrdini();
+                  showToast(`✅ ORDINE #${ordineId} AGGIORNATO`);
+              } else {
+                  showToast("⚠️ ERRORE DURANTE L'AGGIORNAMENTO");
+              }
+          } catch(e) {
+              console.error("Errore:", e);
+              showToast("⚠️ ERRORE DI CONNESSIONE");
+          }
+      }
+
+      // Funzione per eliminare l'ordine una volta sparecchiato
+      async function eliminaOrdine(ordineId) {
+          if(!navigator.onLine) { showToast("⚠️ ERRORE: CONNESSIONE ASSENTE!"); return; }
+          try {
+              const res = await fetch(`/queue/api/ordini/${ordineId}`, {
+                  method: 'DELETE'
+              });
+              if(res.ok) {
+                  fetchOrdini();
+                  showToast(`🗑️ ORDINE #${ordineId} COMPLETATO ED ELIMINATO`);
+              } else {
+                  showToast("⚠️ ERRORE NELLA CANCELLAZIONE");
+              }
+          } catch(e) {
+              console.error("Errore:", e);
+              showToast("⚠️ ERRORE DI CONNESSIONE");
+          }
+      }
+
+      // Recupero ordini dal server in tempo reale
+      async function fetchOrdini() {
+          try {
+              const response = await fetch('/queue/api/ordini');
+              if (!response.ok) throw new Error('Errore di connessione');
+              const ordini = await response.json();
+              renderOrdini(ordini);
+          } catch (error) {
+              console.error("Errore recupero coda:", error);
+          }
+      }
+
+      function renderOrdini(ordini) {
+          const colNuovo = document.getElementById('colonna-nuovo');
+          const colPronto = document.getElementById('colonna-pronto');
+          const colSparecchiare = document.getElementById('colonna-sparecchiare');
+
+          colNuovo.innerHTML = '';
+          colPronto.innerHTML = '';
+          colSparecchiare.innerHTML = '';
+
+          let countN = 0, countP = 0, countS = 0;
+
+          ordini.forEach(o => {
+              const card = document.createElement('div');
+              card.className = "order-card";
+              
+              let itemsHtml = o.items.map(i => `
+                  <div class="order-item-row">
+                      <span>• [${i.quantita}x] ${i.prodotto}</span>
+                      ${i.nota ? `<span class="item-note">(${i.nota})</span>` : ''}
+                  </div>
+              `).join('');
+
+              let baseHtml = `
+                  <div class="order-header">
+                      <span class="order-id">#${o.id} - ${o.posizione}</span>
+                      <span class="order-user">${o.utente}</span>
+                  </div>
+                  <div class="order-items">${itemsHtml}</div>
+              `;
+
+              let footerHtml = `<div class="order-footer"><span>Creato il: ${o.creato_il}</span></div>`;
+
+              if (o.stato === 'NUOVO') {
+                  countN++;
+                  card.classList.add('col-nuovo');
+                  card.innerHTML = baseHtml + footerHtml + `
+                      <button class="btn btn-pronto" onclick="cambiaStato(${o.id}, 'PRONTO')">🔥 SEGNALA PRONTO (10 MIN)</button>
+                  `;
+                  colNuovo.appendChild(card);
+
+              } else if (o.stato === 'PRONTO') {
+                  countP++;
+                  card.classList.add('col-pronto');
+                  
+                  // Gestione timer countdown 10 minuti
+                  let timerId = `timer-${o.id}`;
+                  card.innerHTML = baseHtml + `
+                      <div class="timer-box">
+                          <span>⏱️ TEMPO RIMASTO:</span>
+                          <span id="${timerId}" style="font-weight:bold;">Calcolo...</span>
+                      </div>
+                  ` + footerHtml + `
+                      <button class="btn btn-sparecchiare" onclick="cambiaStato(${o.id}, 'DA_SPARECCHIARE')">⚠️ SPOSTA A SPARECCHIARE</button>
+                  `;
+                  colPronto.appendChild(card);
+
+                  if (o.stato_pronto_da) {
+                      const prontoTime = new Date(o.stato_pronto_da).getTime();
+                      const scadenzaTime = prontoTime + (10 * 60 * 1000);
+                      
+                      const updateTimer = () => {
+                          const now = new Date().getTime();
+                          const diff = scadenzaTime - now;
+                          const timerEl = document.getElementById(timerId);
+                          if (timerEl) {
+                              if (diff <= 0) {
+                                  timerEl.innerHTML = `<span style="color:#ff0040;">SCADUTO ⚠️</span>`;
+                              } else {
+                                  const min = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                                  const sec = Math.floor((diff % (1000 * 60)) / 1000);
+                                  timerEl.innerText = `${min}:${sec < 10 ? '0' : ''}${sec}`;
+                              }
+                          }
+                      };
+                      updateTimer();
+                      setInterval(updateTimer, 1000);
+                  }
+
+              } else if (o.stato === 'DA_SPARECCHIARE') {
+                  countS++;
+                  card.classList.add('col-sparecchiare');
+                  card.innerHTML = baseHtml + footerHtml + `
+                      <button class="btn btn-completa" onclick="eliminaOrdine(${o.id})">✅ COMPLETA ED ELIMINA</button>
+                  `;
+                  colSparecchiare.appendChild(card);
+              }
+          });
+
+          document.getElementById('count-nuovi').innerText = countN;
+          document.getElementById('count-pronti').innerText = countP;
+          document.getElementById('count-sparecchiare').innerText = countS;
+      }
+
+      // Polling automatico ogni 4 secondi per aggiornare la coda in tempo reale
+      setInterval(fetchOrdini, 4000);
+      fetchOrdini();
+    </script>
+  </body>
+</html>
