@@ -1,0 +1,721 @@
+!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MemoryBridge — Un ponte tra generazioni</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        warmbg: '#FAF7F2',
+                        cardbg: '#FFFFFF',
+                        primary: '#B45309', // Warm amber-700
+                        primaryhover: '#92400E',
+                        accent: '#D97706',
+                        darktext: '#1F2937',
+                        muted: '#6B7280',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        serif: ['Georgia', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #FAF7F2;
+            color: #1F2937;
+        }
+        /* Custom pulse for active recording */
+        @keyframes pulse-red {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.08); opacity: 0.8; }
+        }
+        .recording-pulse {
+            animation: pulse-red 1.5s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans antialiased selection:bg-amber-200">
+
+    <!-- Header / Navbar -->
+    <header class="bg-white border-b border-amber-200/60 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center space-x-3 text-center sm:text-left">
+                <div class="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center text-amber-800 shadow-inner">
+                    <i data-lucide="heart-handshake" class="w-7 h-7"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl sm:text-3xl font-serif font-bold text-amber-950 leading-tight">MemoryBridge</h1>
+                    <p class="text-sm font-medium text-amber-800/80">Un ponte tra generazioni</p>
+                </div>
+            </div>
+            
+            <nav class="flex items-center space-x-2 bg-amber-50 p-1.5 rounded-2xl border border-amber-200/80">
+                <button id="nav-record-btn" onclick="switchTab('record')" class="flex items-center space-x-2 px-4 py-2.5 rounded-xl font-semibold text-base transition-all bg-amber-700 text-white shadow-sm">
+                    <i data-lucide="mic" class="w-5 h-5"></i>
+                    <span>Registra</span>
+                </button>
+                <button id="nav-archive-btn" onclick="switchTab('archive')" class="flex items-center space-x-2 px-4 py-2.5 rounded-xl font-semibold text-base transition-all text-amber-900 hover:bg-amber-100/60">
+                    <i data-lucide="book-open" class="w-5 h-5"></i>
+                    <span>Archivio (<span id="archive-count">0</span>)</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow max-w-5xl w-full mx-auto px-4 sm:px-6 py-8">
+
+        <!-- SECTION 1: RECORDING & PROMPTS -->
+        <section id="tab-record" class="space-y-8">
+            
+            <!-- Hero banner -->
+            <div class="bg-gradient-to-r from-amber-800 to-amber-900 rounded-3xl p-6 sm:p-8 text-white shadow-lg">
+                <h2 class="text-2xl sm:text-3xl font-serif font-bold mb-2">Custodisci i ricordi più preziosi</h2>
+                <p class="text-amber-100 text-base sm:text-lg max-w-2xl leading-relaxed">
+                    Scegli una domanda guida qui sotto o scrivine una personalizzata, quindi premi il microfono per ascoltare e registrare le storie dei tuoi cari.
+                </p>
+            </div>
+
+            <!-- Categories & Prompts Selector -->
+            <div class="bg-white rounded-3xl p-6 shadow-sm border border-amber-200/60 space-y-6">
+                <div class="flex items-center justify-between border-b border-gray-100 pb-4">
+                    <h3 class="text-xl font-bold text-gray-900 flex items-center gap-2">
+                        <i data-lucide="sparkles" class="w-6 h-6 text-amber-600"></i>
+                        <span>1. Scegli o inserisci una domanda</span>
+                    </h3>
+                </div>
+
+                <!-- Category Tabs -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    <button onclick="selectCategory('youth')" id="cat-youth" class="cat-btn flex items-center justify-center gap-2 p-3 rounded-2xl border text-sm sm:text-base font-semibold transition-all border-amber-700 bg-amber-50 text-amber-900 shadow-sm">
+                        <i data-lucide="baby" class="w-5 h-5"></i>
+                        <span>Infanzia</span>
+                    </button>
+                    <button onclick="selectCategory('love')" id="cat-love" class="cat-btn flex items-center justify-center gap-2 p-3 rounded-2xl border text-sm sm:text-base font-semibold transition-all border-gray-200 hover:border-amber-300 text-gray-700">
+                        <i data-lucide="heart" class="w-5 h-5"></i>
+                        <span>Amore</span>
+                    </button>
+                    <button onclick="selectCategory('work')" id="cat-work" class="cat-btn flex items-center justify-center gap-2 p-3 rounded-2xl border text-sm sm:text-base font-semibold transition-all border-gray-200 hover:border-amber-300 text-gray-700">
+                        <i data-lucide="briefcase" class="w-5 h-5"></i>
+                        <span>Lavoro</span>
+                    </button>
+                    <button onclick="selectCategory('wisdom')" id="cat-wisdom" class="cat-btn flex items-center justify-center gap-2 p-3 rounded-2xl border text-sm sm:text-base font-semibold transition-all border-gray-200 hover:border-amber-300 text-gray-700">
+                        <i data-lucide="sun" class="w-5 h-5"></i>
+                        <span>Saggezza</span>
+                    </button>
+                </div>
+
+                <!-- Suggested Questions List -->
+                <div class="space-y-2">
+                    <label class="block text-sm font-semibold text-gray-600 uppercase tracking-wider">Domande suggerite:</label>
+                    <div id="questions-list" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Custom Question Input -->
+                <div class="pt-2 border-t border-gray-100">
+                    <label for="custom-question" class="block text-sm font-semibold text-gray-700 mb-2">
+                        Oppure scrivi la tua domanda personalizzata:
+                    </label>
+                    <div class="flex gap-2">
+                        <input type="text" id="custom-question" placeholder="Es. Qual è stato il tuo primo viaggio indimenticabile?" 
+                            class="flex-grow p-3 sm:p-4 rounded-xl border border-gray-300 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-base sm:text-lg">
+                        <button onclick="useCustomQuestion()" class="px-5 py-3 bg-amber-800 hover:bg-amber-900 text-white font-semibold rounded-xl text-base transition-colors shrink-0">
+                            Usa
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Selected Question Banner -->
+                <div class="p-4 bg-amber-50 border-l-4 border-amber-600 rounded-r-2xl">
+                    <span class="text-xs uppercase font-bold text-amber-800 tracking-wider">Domanda Selezionata:</span>
+                    <p id="selected-question-text" class="text-lg sm:text-xl font-serif font-bold text-amber-950 mt-1">
+                        Caricamento domanda...
+                    </p>
+                </div>
+            </div>
+
+            <!-- Studio / Recording Console -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-amber-200/60 space-y-6 text-center">
+                <h3 class="text-xl font-bold text-gray-900 flex items-center justify-center gap-2">
+                    <i data-lucide="disc" class="w-6 h-6 text-amber-600"></i>
+                    <span>2. Registra la voce</span>
+                </h3>
+
+                <!-- Speaker Name Field -->
+                <div class="max-w-md mx-auto text-left">
+                    <label for="speaker-name" class="block text-sm font-semibold text-gray-700 mb-1">Chi sta parlando?</label>
+                    <input type="text" id="speaker-name" placeholder="Es. Nonno Giovanni, Mamma Lucia..." value="Nonno"
+                        class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-amber-500 font-medium">
+                </div>
+
+                <!-- Recording Status & Timer -->
+                <div class="py-4">
+                    <div id="recording-status" class="text-lg font-semibold text-gray-500 mb-2">
+                        Pronto per registrare
+                    </div>
+                    <div id="recording-timer" class="text-4xl sm:text-5xl font-mono font-bold text-gray-800">
+                        00:00
+                    </div>
+                </div>
+
+                <!-- Action Button -->
+                <div class="flex justify-center items-center gap-4">
+                    <button id="record-toggle-btn" onclick="toggleRecording()" 
+                        class="w-24 h-24 rounded-full bg-red-600 hover:bg-red-700 text-white shadow-lg flex flex-col items-center justify-center transition-all transform active:scale-95 focus:outline-none focus:ring-4 focus:ring-red-200">
+                        <i id="rec-icon" data-lucide="mic" class="w-10 h-10 mb-1"></i>
+                        <span id="rec-text" class="text-xs font-bold uppercase tracking-wider">Avvia</span>
+                    </button>
+                </div>
+
+                <!-- Speech Recognition Live Indicator -->
+                <div id="stt-status-badge" class="hidden inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 text-sm font-medium border border-emerald-200">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+                    Trascrizione automatica in corso...
+                </div>
+
+                <!-- Live or Manual Transcription Area -->
+                <div class="text-left space-y-2 pt-4 border-t border-gray-100">
+                    <div class="flex items-center justify-between">
+                        <label for="transcription-text" class="text-sm font-bold text-gray-700 uppercase tracking-wider flex items-center gap-1.5">
+                            <i data-lucide="file-text" class="w-4 h-4 text-amber-600"></i>
+                            Trascrizione del testo:
+                        </label>
+                        <span class="text-xs text-gray-500">(Puoi modificare o scrivere liberamente qui)</span>
+                    </div>
+                    <textarea id="transcription-text" rows="5" 
+                        placeholder="Il testo trascritto apparirà qui durante la registrazione, oppure puoi scriverlo o correggerlo manualmente..."
+                        class="w-full p-4 rounded-2xl border border-gray-300 focus:ring-2 focus:ring-amber-500 text-gray-800 text-base sm:text-lg leading-relaxed"></textarea>
+                </div>
+
+                <!-- Preview Audio Player (Post Recording) -->
+                <div id="audio-preview-container" class="hidden p-4 bg-gray-50 rounded-2xl border border-gray-200 text-left space-y-3">
+                    <span class="text-sm font-bold text-gray-700 uppercase tracking-wider block">Anteprima Audio Registrato:</span>
+                    <audio id="audio-preview" controls class="w-full"></audio>
+                </div>
+
+                <!-- Save Memory Button -->
+                <div class="pt-4">
+                    <button id="save-memory-btn" onclick="saveCurrentMemory()" disabled
+                        class="w-full sm:w-auto px-8 py-4 bg-emerald-700 hover:bg-emerald-800 disabled:bg-gray-300 disabled:cursor-not-allowed text-white text-lg font-bold rounded-2xl shadow-md transition-all flex items-center justify-center gap-3 mx-auto">
+                        <i data-lucide="bookmark-plus" class="w-6 h-6"></i>
+                        <span>Salva Questo Ricordo nell'Archivio</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: ARCHIVE -->
+        <section id="tab-archive" class="hidden space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-3xl border border-amber-200/60 shadow-sm">
+                <div>
+                    <h2 class="text-2xl sm:text-3xl font-serif font-bold text-gray-900">Archivio dei Ricordi</h2>
+                    <p class="text-gray-600 text-sm sm:text-base">Tutte le storie e le voci raccolte per la tua famiglia.</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="exportArchiveJSON()" class="px-4 py-2.5 bg-amber-100 hover:bg-amber-200 text-amber-900 font-semibold rounded-xl text-sm transition-colors flex items-center gap-2">
+                        <i data-lucide="download" class="w-4 h-4"></i>
+                        <span>Esporta Dati</span>
+                    </button>
+                    <button onclick="clearAllArchive()" class="px-4 py-2.5 bg-red-50 hover:bg-red-100 text-red-700 font-semibold rounded-xl text-sm transition-colors flex items-center gap-2">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        <span>Svuota</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Memories List -->
+            <div id="archive-list" class="space-y-4">
+                <!-- Populated dynamically -->
+            </div>
+
+            <!-- Empty State -->
+            <div id="archive-empty" class="text-center py-16 bg-white rounded-3xl border border-dashed border-gray-300 p-8">
+                <div class="w-16 h-16 bg-amber-50 text-amber-700 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i data-lucide="book-open-check" class="w-8 h-8"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">Nessun ricordo salvato ancora</h3>
+                <p class="text-gray-500 max-w-md mx-auto mb-6">Inizia selezionando una domanda e registrando la prima storia speciale della tua famiglia.</p>
+                <button onclick="switchTab('record')" class="px-6 py-3 bg-amber-700 hover:bg-amber-800 text-white font-bold rounded-xl shadow-md transition-colors">
+                    Vai alla Registrazione
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-auto bg-white border-t border-amber-200/60 py-6 text-center text-sm text-gray-500">
+        <p class="font-medium text-amber-900">MemoryBridge — Un ponte tra generazioni</p>
+        <p class="text-xs text-gray-400 mt-1">Progetto per la conservazione della memoria orale e affettiva della famiglia.</p>
+    </footer>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-6 right-6 transform translate-y-20 opacity-0 transition-all duration-300 bg-gray-900 text-white px-5 py-3 rounded-2xl shadow-xl flex items-center gap-3 z-50">
+        <i id="toast-icon" data-lucide="info" class="w-5 h-5 text-amber-400"></i>
+        <span id="toast-msg" class="text-sm font-semibold">Messaggio</span>
+    </div>
+
+    <!-- Application JavaScript Logic -->
+    <script>
+        // --- DATA & STATE ---
+        const questionCategories = {
+            youth: {
+                label: "Infanzia e Giovinezza",
+                color: "bg-blue-100 text-blue-800 border-blue-200",
+                questions: [
+                    "Qual è il tuo ricordo più bello di quando eri bambino/a?",
+                    "Com'era la tua casa d'infanzia e il tuo quartiere o paese?",
+                    "A cosa ti piaceva giocare da piccolo/a e con chi?",
+                    "Com'era la scuola ai tuoi tempi e chi era il tuo maestro/a?"
+                ]
+            },
+            love: {
+                label: "Amore e Famiglia",
+                color: "bg-rose-100 text-rose-800 border-rose-200",
+                questions: [
+                    "Come hai conosciuto l'amore della tua vita?",
+                    "Come è stato il giorno del tuo matrimonio o una festa speciale?",
+                    "Cosa hai provato quando sono nati i tuoi figli?",
+                    "Qual era la tradizione di famiglia che amavi di più?"
+                ]
+            },
+            work: {
+                label: "Lavoro e Passioni",
+                color: "bg-amber-100 text-amber-800 border-amber-200",
+                questions: [
+                    "Qual è stato il tuo primo lavoro e cosa hai imparato?",
+                    "Qual è il traguardo lavorativo o personale di cui sei più orgoglioso/a?",
+                    "Quali erano i tuoi hobby o le tue passioni nel tempo libero?",
+                    "Come hai affrontato i momenti più difficili della vita?"
+                ]
+            },
+            wisdom: {
+                label: "Saggezza e Ricordi",
+                color: "bg-emerald-100 text-emerald-800 border-emerald-200",
+                questions: [
+                    "Qual è il consiglio più importante che vorresti lasciare ai tuoi nipoti?",
+                    "Qual è il valore della vita a cui ti sei sempre affidato/a?",
+                    "Qual è stato il viaggio o la scoperta che ti ha cambiato di più?",
+                    "Cosa vorresti che la gente ricordasse sempre di te?"
+                ]
+            }
+        };
+
+        let currentCategoryKey = 'youth';
+        let currentQuestion = questionCategories.youth.questions[0];
+
+        // Audio & Speech STT State
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let recordedAudioBlob = null;
+        let recordedAudioUrl = null;
+        let isRecording = false;
+        let timerInterval = null;
+        let secondsElapsed = 0;
+
+        // Web Speech API
+        let recognition = null;
+        let isSpeechSupported = false;
+
+        // Local Storage Key
+        const STORAGE_KEY = 'memorybridge_archive_v1';
+
+        // --- INITIALIZATION ---
+        window.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            initSpeechRecognition();
+            selectCategory('youth');
+            loadArchiveUI();
+        });
+
+        // --- NAVIGATION ---
+        function switchTab(tab) {
+            const recordTab = document.getElementById('tab-record');
+            const archiveTab = document.getElementById('tab-archive');
+            const navRecordBtn = document.getElementById('nav-record-btn');
+            const navArchiveBtn = document.getElementById('nav-archive-btn');
+
+            if (tab === 'record') {
+                recordTab.classList.remove('hidden');
+                archiveTab.classList.add('hidden');
+                navRecordBtn.className = "flex items-center space-x-2 px-4 py-2.5 rounded-xl font-semibold text-base transition-all bg-amber-700 text-white shadow-sm";
+                navArchiveBtn.className = "flex items-center space-x-2 px-4 py-2.5 rounded-xl font-semibold text-base transition-all text-amber-900 hover:bg-amber-100/60";
+            } else {
+                recordTab.classList.add('hidden');
+                archiveTab.classList.remove('hidden');
+                navArchiveBtn.className = "flex items-center space-x-2 px-4 py-2.5 rounded-xl font-semibold text-base transition-all bg-amber-700 text-white shadow-sm";
+                navRecordBtn.className = "flex items-center space-x-2 px-4 py-2.5 rounded-xl font-semibold text-base transition-all text-amber-900 hover:bg-amber-100/60";
+                loadArchiveUI();
+            }
+        }
+
+        // --- CATEGORY & PROMPT LOGIC ---
+        function selectCategory(catKey) {
+            currentCategoryKey = catKey;
+
+            // Highlight Category Tab
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                btn.className = "cat-btn flex items-center justify-center gap-2 p-3 rounded-2xl border text-sm sm:text-base font-semibold transition-all border-gray-200 hover:border-amber-300 text-gray-700";
+            });
+            const activeBtn = document.getElementById(`cat-${catKey}`);
+            if (activeBtn) {
+                activeBtn.className = "cat-btn flex items-center justify-center gap-2 p-3 rounded-2xl border text-sm sm:text-base font-semibold transition-all border-amber-700 bg-amber-50 text-amber-900 shadow-sm";
+            }
+
+            // Render Questions
+            const qList = document.getElementById('questions-list');
+            qList.innerHTML = '';
+            const catData = questionCategories[catKey];
+
+            catData.questions.forEach((qText, index) => {
+                const btn = document.createElement('button');
+                btn.className = "text-left p-3.5 rounded-xl border border-gray-200 hover:border-amber-500 hover:bg-amber-50/50 transition-all text-sm sm:text-base font-medium text-gray-800 flex items-start gap-2";
+                btn.innerHTML = `<i data-lucide="help-circle" class="w-5 h-5 text-amber-600 shrink-0 mt-0.5"></i><span>${qText}</span>`;
+                btn.onclick = () => setQuestion(qText);
+                qList.appendChild(btn);
+            });
+
+            // Set default question from category
+            setQuestion(catData.questions[0]);
+            lucide.createIcons();
+        }
+
+        function setQuestion(text) {
+            currentQuestion = text;
+            document.getElementById('selected-question-text').innerText = text;
+        }
+
+        function useCustomQuestion() {
+            const customInput = document.getElementById('custom-question');
+            const val = customInput.value.trim();
+            if (val) {
+                setQuestion(val);
+                showToast("Domanda personalizzata impostata!");
+            } else {
+                showToast("Inserisci un testo per la domanda personalizzata", "alert-circle");
+            }
+        }
+
+        // --- SPEECH RECOGNITION (STT) SETUP ---
+        function initSpeechRecognition() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (SpeechRecognition) {
+                recognition = new SpeechRecognition();
+                recognition.continuous = true;
+                recognition.interimResults = true;
+                recognition.lang = 'it-IT';
+
+                recognition.onresult = (event) => {
+                    let transcript = '';
+                    for (let i = 0; i < event.results.length; i++) {
+                        transcript += event.results[i][0].transcript + ' ';
+                    }
+                    document.getElementById('transcription-text').value = transcript;
+                };
+
+                recognition.onerror = (e) => {
+                    console.warn("Speech recognition error:", e.error);
+                };
+
+                isSpeechSupported = true;
+            } else {
+                console.log("Web Speech API not supported in this browser.");
+            }
+        }
+
+        // --- AUDIO RECORDING ENGINE ---
+        async function toggleRecording() {
+            if (!isRecording) {
+                startRecording();
+            } else {
+                stopRecording();
+            }
+        }
+
+        async function startRecording() {
+            audioChunks = [];
+            recordedAudioBlob = null;
+            document.getElementById('transcription-text').value = '';
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+
+                mediaRecorder.ondataavailable = (e) => {
+                    if (e.data.size > 0) {
+                        audioChunks.push(e.data);
+                    }
+                };
+
+                mediaRecorder.onstop = () => {
+                    recordedAudioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    recordedAudioUrl = URL.createObjectURL(recordedAudioBlob);
+                    
+                    const previewAudio = document.getElementById('audio-preview');
+                    previewAudio.src = recordedAudioUrl;
+                    document.getElementById('audio-preview-container').classList.remove('hidden');
+
+                    // Enable Save button
+                    document.getElementById('save-memory-btn').disabled = false;
+                };
+
+                mediaRecorder.start();
+                isRecording = true;
+
+                // Start STT if supported
+                if (isSpeechSupported && recognition) {
+                    try {
+                        recognition.start();
+                        document.getElementById('stt-status-badge').classList.remove('hidden');
+                    } catch (err) {
+                        console.warn("STT Start Error:", err);
+                    }
+                }
+
+                // Update UI for Recording State
+                const toggleBtn = document.getElementById('record-toggle-btn');
+                toggleBtn.className = "w-24 h-24 rounded-full bg-amber-600 hover:bg-amber-700 text-white shadow-xl flex flex-col items-center justify-center transition-all recording-pulse focus:outline-none focus:ring-4 focus:ring-amber-200";
+                document.getElementById('rec-icon').setAttribute('data-lucide', 'square');
+                document.getElementById('rec-text').innerText = "Stop";
+                document.getElementById('recording-status').innerText = "Registrazione in corso...";
+                document.getElementById('recording-status').className = "text-lg font-bold text-red-600 animate-pulse mb-2";
+
+                // Start Timer
+                secondsElapsed = 0;
+                updateTimerDisplay();
+                timerInterval = setInterval(() => {
+                    secondsElapsed++;
+                    updateTimerDisplay();
+                }, 1000);
+
+                lucide.createIcons();
+
+            } catch (err) {
+                console.error("Microphone access error:", err);
+                showToast("Impossibile accedere al microfono. Verifica i permessi del browser.", "alert-circle");
+            }
+        }
+
+        function stopRecording() {
+            if (mediaRecorder && isRecording) {
+                mediaRecorder.stop();
+                // Stop audio tracks
+                mediaRecorder.stream.getTracks().forEach(track => track.stop());
+            }
+
+            if (isSpeechSupported && recognition) {
+                try {
+                    recognition.stop();
+                } catch(e){}
+                document.getElementById('stt-status-badge').classList.add('hidden');
+            }
+
+            isRecording = false;
+            clearInterval(timerInterval);
+
+            // Update UI
+            const toggleBtn = document.getElementById('record-toggle-btn');
+            toggleBtn.className = "w-24 h-24 rounded-full bg-red-600 hover:bg-red-700 text-white shadow-lg flex flex-col items-center justify-center transition-all transform active:scale-95 focus:outline-none focus:ring-4 focus:ring-red-200";
+            document.getElementById('rec-icon').setAttribute('data-lucide', 'mic');
+            document.getElementById('rec-text').innerText = "Avvia";
+            document.getElementById('recording-status').innerText = "Registrazione completata!";
+            document.getElementById('recording-status').className = "text-lg font-bold text-emerald-700 mb-2";
+
+            lucide.createIcons();
+            showToast("Registrazione completata!");
+        }
+
+        function updateTimerDisplay() {
+            const mins = Math.floor(secondsElapsed / 60).toString().padStart(2, '0');
+            const secs = (secondsElapsed % 60).toString().padStart(2, '0');
+            document.getElementById('recording-timer').innerText = `${mins}:${secs}`;
+        }
+
+        // --- SAVE MEMORY TO ARCHIVE ---
+        function saveCurrentMemory() {
+            const speaker = document.getElementById('speaker-name').value.trim() || 'Parente';
+            const text = document.getElementById('transcription-text').value.trim();
+
+            if (!recordedAudioBlob && !text) {
+                showToast("Inserisci almeno un'audio o un testo prima di salvare.", "alert-circle");
+                return;
+            }
+
+            // Convert Audio Blob to Base64 Data URL for persistent storage in localStorage
+            const reader = new FileReader();
+            reader.readAsDataURL(recordedAudioBlob);
+            reader.onloadend = function () {
+                const base64Audio = reader.result;
+
+                const memoryItem = {
+                    id: Date.now().toString(),
+                    date: new Date().toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' }),
+                    speaker: speaker,
+                    categoryKey: currentCategoryKey,
+                    categoryLabel: questionCategories[currentCategoryKey].label,
+                    question: currentQuestion,
+                    transcription: text || "(Nessuna trascrizione testuale inserita)",
+                    audioData: base64Audio,
+                    duration: document.getElementById('recording-timer').innerText
+                };
+
+                const existingArchive = getArchiveData();
+                existingArchive.unshift(memoryItem);
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(existingArchive));
+
+                showToast("Ricordo salvato con successo nell'Archivio!");
+
+                // Reset Console UI
+                resetRecordingConsole();
+                updateArchiveCount();
+            };
+        }
+
+        function resetRecordingConsole() {
+            document.getElementById('audio-preview-container').classList.add('hidden');
+            document.getElementById('audio-preview').src = '';
+            document.getElementById('transcription-text').value = '';
+            document.getElementById('save-memory-btn').disabled = true;
+            document.getElementById('recording-status').innerText = "Pronto per registrare";
+            document.getElementById('recording-status').className = "text-lg font-semibold text-gray-500 mb-2";
+            document.getElementById('recording-timer').innerText = "00:00";
+            recordedAudioBlob = null;
+        }
+
+        // --- ARCHIVE STORAGE & RENDER ---
+        function getArchiveData() {
+            const data = localStorage.getItem(STORAGE_KEY);
+            return data ? JSON.parse(data) : [];
+        }
+
+        function updateArchiveCount() {
+            const list = getArchiveData();
+            document.getElementById('archive-count').innerText = list.length;
+        }
+
+        function loadArchiveUI() {
+            const list = getArchiveData();
+            const archiveContainer = document.getElementById('archive-list');
+            const emptyState = document.getElementById('archive-empty');
+
+            updateArchiveCount();
+
+            if (list.length === 0) {
+                archiveContainer.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            archiveContainer.innerHTML = '';
+
+            list.forEach(item => {
+                const catInfo = questionCategories[item.categoryKey] || { color: "bg-gray-100 text-gray-800 border-gray-200" };
+                
+                const card = document.createElement('div');
+                card.className = "bg-white rounded-3xl p-6 border border-amber-200/70 shadow-sm space-y-4";
+                card.innerHTML = `
+                    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-gray-100 pb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="px-3 py-1 rounded-full text-xs font-bold border ${catInfo.color}">
+                                ${item.categoryLabel}
+                            </span>
+                            <span class="text-sm font-semibold text-amber-900 bg-amber-50 px-3 py-1 rounded-full">
+                                <i data-lucide="user" class="w-3.5 h-3.5 inline mr-1"></i>${item.speaker}
+                            </span>
+                        </div>
+                        <span class="text-xs text-gray-400 font-medium">${item.date}</span>
+                    </div>
+
+                    <div>
+                        <h4 class="text-lg font-serif font-bold text-gray-900 mb-2">"${item.question}"</h4>
+                        <div class="p-4 bg-amber-50/50 rounded-2xl border border-amber-100 text-gray-800 text-base leading-relaxed whitespace-pre-wrap">${item.transcription}</div>
+                    </div>
+
+                    ${item.audioData ? `
+                        <div class="pt-2">
+                            <audio controls class="w-full">
+                                <source src="${item.audioData}" type="audio/webm">
+                                Il tuo browser non supporta l'elemento audio.
+                            </audio>
+                        </div>
+                    ` : ''}
+
+                    <div class="flex justify-end pt-2 border-t border-gray-100">
+                        <button onclick="deleteMemory('${item.id}')" class="text-xs font-semibold text-red-600 hover:text-red-800 flex items-center gap-1 p-2 hover:bg-red-50 rounded-lg transition-colors">
+                            <i data-lucide="trash" class="w-4 h-4"></i> Elimina Ricordo
+                        </button>
+                    </div>
+                `;
+                archiveContainer.appendChild(card);
+            });
+
+            lucide.createIcons();
+        }
+
+        function deleteMemory(id) {
+            if (confirm("Sei sicuro di voler eliminare questo ricordo dall'archivio?")) {
+                let list = getArchiveData();
+                list = list.filter(item => item.id !== id);
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+                loadArchiveUI();
+                showToast("Ricordo eliminato.");
+            }
+        }
+
+        function clearAllArchive() {
+            if (confirm("Attenzione: Vuoi davvero svuotare l'intero archivio dei ricordi?")) {
+                localStorage.removeItem(STORAGE_KEY);
+                loadArchiveUI();
+                showToast("Archivio svuotato.");
+            }
+        }
+
+        function exportArchiveJSON() {
+            const list = getArchiveData();
+            if (list.length === 0) {
+                showToast("L'archivio è vuoto, niente da esportare.", "alert-circle");
+                return;
+            }
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(list, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", `MemoryBridge_Archivio_${new Date().toISOString().slice(0,10)}.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        }
+
+        // --- TOAST NOTIFICATIONS ---
+        function showToast(message, iconName = "check-circle") {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-msg');
+            const toastIcon = document.getElementById('toast-icon');
+
+            toastMsg.innerText = message;
+            toastIcon.setAttribute('data-lucide', iconName);
+            lucide.createIcons();
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

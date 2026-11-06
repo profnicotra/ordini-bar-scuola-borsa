@@ -4,18 +4,19 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>Coda Ordini — Bar Scuola Borsa</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,800&display=swap" rel="stylesheet"/>
 <style>
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
 :root {
-  --red:   #e63946;
-  --gold:  #f59e0b;
-  --green: #22c55e;
-  --dark:  #080404;
-  --card:  rgba(14,6,6,0.88);
-  --border:rgba(255,255,255,0.08);
-  --sans:  'Montserrat', sans-serif;
-  --serif: 'Playfair Display', Georgia, serif;
+  --red:    #e63946;
+  --gold:   #f59e0b;
+  --green:  #22c55e;
+  --dark:   #080404;
+  --card:   rgba(14,6,6,0.88);
+  --border: rgba(255,255,255,0.08);
+  --sans:   'Montserrat', sans-serif;
+  --serif:  'Playfair Display', Georgia, serif;
 }
 
 body {
@@ -160,6 +161,35 @@ body::after {
 @keyframes puls { 
   0%, 100% { opacity: 1; transform: scale(1); } 
   50% { opacity: 0.6; transform: scale(1.4); } 
+}
+
+/* Pulsante Suono Campanello */
+.audio-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 50px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.6);
+  cursor: pointer;
+  transition: all 0.25s;
+}
+
+.audio-btn.active {
+  background: rgba(230,57,70,0.15);
+  border-color: rgba(230,57,70,0.4);
+  color: #ff8080;
+}
+
+.audio-btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.2);
 }
 
 .refresh-btn {
@@ -593,7 +623,7 @@ body::after {
     <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" onerror="this.style.visibility='hidden'">
     <div class="h-logo-div"></div>
     <div class="h-logo-text">
-      <span class="lt">Sala &amp; Bar</span>
+      <span class="lt">Sala & Bar</span>
       <span class="lb">Scuola Borsa</span>
     </div>
   </div>
@@ -601,6 +631,9 @@ body::after {
   <div class="h-center">Coda Ordini</div>
 
   <div class="h-right">
+    <button class="audio-btn active" id="audio-toggle" onclick="toggleAudio()" title="Attiva/Disattiva Suono">
+      <span id="audio-icon">🔔</span> Suono On
+    </button>
     <div class="live-pill"><div class="live-dot"></div>Live</div>
     <button class="refresh-btn" onclick="location.reload()" title="Aggiorna">↻</button>
   </div>
@@ -615,22 +648,17 @@ body::after {
 <main class="grid" id="orders-container">
   {% if queue %}
     {% for ordine in queue %}
-    <div class="order-card s-{{ ordine.stato | lower | replace('_', '-') }}" data-id="{{ ordine.id }}">
+    <div class="order-card s-new" data-id="{{ ordine.id }}">
       <div class="stripe"></div>
 
       <div class="card-top">
         <div class="card-left">
           <div class="card-id">Ordine #{{ ordine.id }}</div>
           <div class="card-name">{{ ordine.utente }}</div>
-          <div class="card-loc">📍 {{ ordine.posizione }}</div>
+          <div class="card-loc"> {{ ordine.posizione }}</div>
         </div>
         <div class="card-right">
-          <span class="status-tag t-{{ ordine.stato | lower | replace('_', '-') }}">
-  {% if ordine.stato == 'NUOVO' %}Nuovo
-  {% elif ordine.stato == 'IN_PREPARAZIONE' %}In preparazione
-  {% elif ordine.stato == 'PRONTO' %}Pronto ✓
-  {% else %}{{ ordine.stato }}{% endif %}
-</span>
+          <span class="status-tag t-new">Nuovo</span>
           <span class="card-time">{{ ordine.creato_il }}</span>
         </div>
       </div>
@@ -640,7 +668,7 @@ body::after {
         <div class="order-item">
           <div class="item-info">
             <span class="item-name">{{ item.prodotto }}</span>
-            {% if item.nota %}<span class="item-nota">📝 {{ item.nota }}</span>{% endif %}
+            {% if item.nota %}<span class="item-nota"> {{ item.nota }}</span>{% endif %}
           </div>
           <div class="item-qty">×{{ item.quantita }}</div>
         </div>
@@ -650,7 +678,7 @@ body::after {
       <div class="card-footer">
         <div class="footer-total"><span class="sym">€</span>{{ "%.2f"|format(ordine.totale_euro) }}</div>
         <div class="actions">
-          <button class="act-btn act-prep" onclick="setStatus(this,'prep')">🔥 Preparazione</button>
+          <button class="act-btn act-prep" onclick="setStatus(this,'prep')"> Preparazione</button>
           <button class="act-btn act-ready" onclick="setStatus(this,'ready')">✓ Pronto</button>
           <button class="act-btn act-del" onclick="removeCard(this)">🗑</button>
         </div>
@@ -659,7 +687,7 @@ body::after {
     {% endfor %}
   {% else %}
     <div class="empty">
-      <div class="empty-icon">📋</div>
+      <div class="empty-icon">☕</div>
       <div class="empty-title">Nessun ordine</div>
       <div class="empty-sub">Gli ordini arriveranno qui in tempo reale</div>
     </div>
@@ -667,6 +695,80 @@ body::after {
 </main>
 
 <script>
+let soundEnabled = true;
+let audioCtx = null;
+
+// Gestione attivazione/disattivazione suono
+function toggleAudio() {
+  soundEnabled = !soundEnabled;
+  const btn = document.getElementById('audio-toggle');
+  const icon = document.getElementById('audio-icon');
+  
+  if (soundEnabled) {
+    btn.classList.add('active');
+    btn.childNodes[2].nodeValue = " Suono On";
+    icon.textContent = "🔔";
+    initAudioContext();
+    playBellSound(); // Prova suono al click
+  } else {
+    btn.classList.remove('active');
+    btn.childNodes[2].nodeValue = " Suono Off";
+    icon.textContent = "🔕";
+  }
+}
+
+// Inizializza Web Audio API dopo il primo click dell'utente per superare le restrizioni browser
+function initAudioContext() {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  if (audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+}
+
+// Genera un suono di campanello da bar (Ding-Dong) sintetizzato
+function playBellSound() {
+  if (!soundEnabled) return;
+  try {
+    initAudioContext();
+
+    const now = audioCtx.currentTime;
+
+    // Primo tono (Ding - High pitch)
+    const osc1 = audioCtx.createOscillator();
+    const gain1 = audioCtx.createGain();
+    osc1.type = 'sine';
+    osc1.frequency.setValueAtTime(987.77, now); // Nota B5
+    gain1.gain.setValueAtTime(0.5, now);
+    gain1.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
+    osc1.connect(gain1);
+    gain1.connect(audioCtx.destination);
+    osc1.start(now);
+    osc1.stop(now + 1.2);
+
+    // Secondo tono (Dong - Low pitch) dopo 0.15 secondi
+    const osc2 = audioCtx.createOscillator();
+    const gain2 = audioCtx.createGain();
+    osc2.type = 'sine';
+    osc2.frequency.setValueAtTime(659.25, now + 0.15); // Nota E5
+    gain2.gain.setValueAtTime(0.6, now + 0.15);
+    gain2.gain.exponentialRampToValueAtTime(0.001, now + 1.8);
+    osc2.connect(gain2);
+    gain2.connect(audioCtx.destination);
+    osc2.start(now + 0.15);
+    osc2.stop(now + 1.8);
+  } catch(e) {
+    console.warn("Impossibile riprodurre l'audio:", e);
+  }
+}
+
+// Inizializza AudioContext al primo click su qualsiasi elemento della pagina
+document.addEventListener('click', function unlockAudio() {
+  initAudioContext();
+  document.removeEventListener('click', unlockAudio);
+}, { once: true });
+
 function updateCounts() {
   document.getElementById('cnt-new').textContent = document.querySelectorAll('.order-card.s-new').length;
   document.getElementById('cnt-prep').textContent = document.querySelectorAll('.order-card.s-prep').length;
@@ -727,7 +829,7 @@ function removeCard(btn) {
     if (document.querySelectorAll('.order-card').length === 0) {
       document.getElementById('orders-container').innerHTML = `
         <div class="empty">
-          <div class="empty-icon">📋</div>
+          <div class="empty-icon">☕</div>
           <div class="empty-title">Nessun ordine</div>
           <div class="empty-sub">Gli ordini arriveranno qui in tempo reale</div>
         </div>
@@ -736,14 +838,80 @@ function removeCard(btn) {
   }, 350);
 }
 
-updateCounts();
+// Crea l'HTML di una nuova scheda ordine
+function buildOrderCardHtml(ordine) {
+  let itemsHtml = (ordine.items || []).map(item => `
+    <div class="order-item">
+      <div class="item-info">
+        <span class="item-name">${item.prodotto}</span>
+        ${item.nota ? `<span class="item-nota">${item.nota}</span>` : ''}
+      </div>
+      <div class="item-qty">×${item.quantita}</div>
+    </div>
+  `).join('');
 
-// Auto-refresh ogni 30s
-let autoRefresh = setTimeout(() => location.reload(), 30000);
-document.addEventListener('click', () => {
-  clearTimeout(autoRefresh);
-  autoRefresh = setTimeout(() => location.reload(), 30000);
-});
+  return `
+    <div class="order-card s-new" data-id="${ordine.id}">
+      <div class="stripe"></div>
+      <div class="card-top">
+        <div class="card-left">
+          <div class="card-id">Ordine #${ordine.id}</div>
+          <div class="card-name">${ordine.utente}</div>
+          <div class="card-loc">${ordine.posizione}</div>
+        </div>
+        <div class="card-right">
+          <span class="status-tag t-new">Nuovo</span>
+          <span class="card-time">${ordine.creato_il}</span>
+        </div>
+      </div>
+      <div class="card-items">${itemsHtml}</div>
+      <div class="card-footer">
+        <div class="footer-total"><span class="sym">€</span>${parseFloat(ordine.totale_euro).toFixed(2)}</div>
+        <div class="actions">
+          <button class="act-btn act-prep" onclick="setStatus(this,'prep')"> Preparazione</button>
+          <button class="act-btn act-ready" onclick="setStatus(this,'ready')">✓ Pronto</button>
+          <button class="act-btn act-del" onclick="removeCard(this)">🗑</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// Controllo in background per nuovi ordini via API ogni 5 secondi
+function checkNewOrders() {
+  fetch('/queue/api/ordini')
+    .then(res => res.json())
+    .then(data => {
+      if (!Array.isArray(data)) return;
+      
+      const container = document.getElementById('orders-container');
+      let hasNewOrder = false;
+
+      data.forEach(ordine => {
+        // Se l'ordine non è ancora a schermo
+        if (!document.querySelector(`.order-card[data-id="${ordine.id}"]`)) {
+          // Rimuove lo stato empty se presente
+          const emptyElem = container.querySelector('.empty');
+          if (emptyElem) emptyElem.remove();
+
+          // Inserisce in cima
+          container.insertAdjacentHTML('afterbegin', buildOrderCardHtml(ordine));
+          hasNewOrder = true;
+        }
+      });
+
+      if (hasNewOrder) {
+        playBellSound();
+        updateCounts();
+      }
+    })
+    .catch(err => console.debug('Polling error/idle:', err));
+}
+
+// Avvia controllo automatico ogni 5s
+setInterval(checkNewOrders, 5000);
+
+updateCounts();
 </script>
 </body>
 </html>
