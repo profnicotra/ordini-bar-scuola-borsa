@@ -288,6 +288,48 @@ body::after {
   color: var(--red); 
 }
 
+.add-product {
+  margin-bottom: 22px;
+}
+
+.add-product-label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.add-product-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+}
+
+.add-product-btn {
+  border: 1px solid rgba(230,57,70,0.4);
+  border-radius: 12px;
+  padding: 0 16px;
+  background: rgba(230,57,70,0.14);
+  color: white;
+  font: 700 12px var(--sans);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.add-product-btn:hover {
+  background: rgba(230,57,70,0.3);
+}
+
+.product-search-message {
+  min-height: 16px;
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
 .s-head::after { 
   content:""; 
   flex: 1; 
@@ -523,22 +565,6 @@ body::after {
   z-index: 2; 
 }
 
-.custom-select-wrap .sel-arrow { 
-  position: absolute; 
-  right: 16px; 
-  top: 50%; 
-  transform: translateY(-50%); 
-  font-size: 11px; 
-  color: var(--muted); 
-  pointer-events: none; 
-  z-index: 2; 
-  transition: transform 0.25s; 
-}
-
-.custom-select-wrap.open .sel-arrow { 
-  transform: translateY(-50%) rotate(180deg); 
-}
-
 .sel-trigger {
   width: 100%; 
   background: var(--surface); 
@@ -549,85 +575,26 @@ body::after {
   font-weight: 400; 
   font-family: var(--sans);
   color: rgba(255,255,255,0.3);
-  cursor: pointer; 
   transition: all 0.25s; 
   text-align: left;
-  user-select: none;
+  cursor: text;
+  outline: none;
 }
+
+.sel-trigger::placeholder { color: rgba(255,255,255,0.3); }
 
 .sel-trigger.has-value { 
   color: white; 
 }
 
-.sel-trigger:hover, .custom-select-wrap.open .sel-trigger {
+.sel-trigger:hover, .sel-trigger:focus {
   border-color: rgba(230,57,70,0.5);
   background: rgba(255,255,255,0.06);
 }
 
-.custom-select-wrap.err .sel-trigger { 
+.sel-trigger.err {
   border-color: var(--red); 
   animation: shake 0.3s ease;
-}
-
-.sel-dropdown {
-  position: absolute; 
-  top: calc(100% + 8px); 
-  left: 0; 
-  right: 0; 
-  z-index: 999;
-  background: rgba(15,8,8,0.96);
-  backdrop-filter: blur(20px);
-  border: 1px solid var(--border-h);
-  border-radius: 14px; 
-  padding: 8px;
-  max-height: 260px; 
-  overflow-y: auto;
-  box-shadow: 0 16px 48px rgba(0,0,0,0.8);
-  display: none;
-  animation: dropIn 0.2s ease;
-}
-
-@keyframes dropIn { 
-  from { opacity: 0; transform: translateY(-8px); } 
-  to { opacity: 1; transform: translateY(0); } 
-}
-
-.custom-select-wrap.open .sel-dropdown { 
-  display: block; 
-}
-
-.sel-dropdown::-webkit-scrollbar { 
-  width: 4px; 
-}
-
-.sel-dropdown::-webkit-scrollbar-thumb { 
-  background: rgba(230,57,70,0.3); 
-  border-radius: 10px; 
-}
-
-.sel-option {
-  padding: 11px 16px; 
-  border-radius: 10px;
-  font-size: 13px; 
-  font-weight: 400; 
-  color: rgba(255,255,255,0.75);
-  cursor: pointer; 
-  transition: all 0.18s;
-}
-
-.sel-option:hover { 
-  background: rgba(255,255,255,0.08); 
-  color: white; 
-}
-
-.sel-option.selected { 
-  background: rgba(230,57,70,0.18); 
-  color: white; 
-  font-weight: 600; 
-}
-
-#classe { 
-  display: none; 
 }
 
 /* ── CHECKOUT ── */
@@ -1123,6 +1090,22 @@ body::after {
   <div class="card">
     <div class="card-inner">
       <div class="s-head"><span class="s-label">Prodotti</span></div>
+      <div class="add-product">
+        <label class="add-product-label" for="product-search">Aggiungi scrivendo il nome</label>
+        <div class="add-product-row">
+          <div class="field">
+            <i class="fi fas fa-magnifying-glass"></i>
+            <input id="product-search" type="text" list="available-products" placeholder="Cerca un prodotto..." autocomplete="off"/>
+            <datalist id="available-products">
+              {% for product in available_products %}
+                <option value="{{ product.name }}">
+              {% endfor %}
+            </datalist>
+          </div>
+          <button class="add-product-btn" id="add-product-btn" type="button">Aggiungi</button>
+        </div>
+        <p class="product-search-message" id="product-search-message" aria-live="polite">Scrivi il nome e seleziona un prodotto suggerito.</p>
+      </div>
       <div class="col-head">
         <span>Prodotto</span>
         <span class="c-qty">Quantità</span>
@@ -1171,22 +1154,16 @@ body::after {
         </div>
       </div>
 
-      <div class="custom-select-wrap" id="classe-wrap">
+      <div class="custom-select-wrap">
         <i class="fi fas fa-graduation-cap"></i>
-        <div class="sel-trigger" id="sel-trigger">Seleziona classe o tavolo…</div>
-        <span class="sel-arrow"><i class="fas fa-chevron-down"></i></span>
-        <div class="sel-dropdown" id="sel-dropdown">
+        <input class="sel-trigger" id="sel-trigger" type="text" name="classe"
+               placeholder="Scrivi o seleziona classe o tavolo…" list="class-options" required/>
+        <datalist id="class-options">
           {% for c in listClass %}
-            <div class="sel-option" data-value="{{ c.nome }}">{{ c.nome }}</div>
+            <option value="{{ c.nome }}"></option>
           {% endfor %}
-        </div>
+        </datalist>
       </div>
-      <select id="classe" name="classe" required>
-        <option value="" disabled selected></option>
-        {% for c in listClass %}
-          <option value="{{ c.nome }}">{{ c.nome }}</option>
-        {% endfor %}
-      </select>
 
       <input type="hidden" id="totalInput" name="total" value="0">
 
@@ -1240,8 +1217,11 @@ body::after {
 document.addEventListener("DOMContentLoaded", function () {
   let sent = false;
   let products = JSON.parse(localStorage.getItem("orderedItems") || "[]").filter(p => p.name && !isNaN(p.price));
+  const availableProducts = {{ available_products | tojson }};
 
   const container = document.getElementById("product-container");
+  const productSearch = document.getElementById("product-search");
+  const productSearchMessage = document.getElementById("product-search-message");
   const overlay = document.getElementById("overlay");
   const notePopup = document.getElementById("note-popup");
   const ingBox = document.getElementById("ingredient-container");
@@ -1268,32 +1248,11 @@ document.addEventListener("DOMContentLoaded", function () {
   }, { passive: true });
 
   // Custom select
-  const wrap = document.getElementById("classe-wrap");
   const trigger = document.getElementById("sel-trigger");
-  const dropdown = document.getElementById("sel-dropdown");
-  const realSelect = document.getElementById("classe");
-  let selectedVal = "";
 
-  trigger.addEventListener("click", e => {
-    e.stopPropagation();
-    wrap.classList.toggle("open");
-  });
-
-  dropdown.querySelectorAll(".sel-option").forEach(opt => {
-    opt.addEventListener("click", () => {
-      selectedVal = opt.dataset.value;
-      trigger.textContent = opt.textContent;
-      trigger.classList.add("has-value");
-      realSelect.value = selectedVal;
-      dropdown.querySelectorAll(".sel-option").forEach(o => o.classList.remove("selected"));
-      opt.classList.add("selected");
-      wrap.classList.remove("open");
-      wrap.classList.remove("err");
-    });
-  });
-
-  document.addEventListener("click", e => {
-    if (!wrap.contains(e.target)) wrap.classList.remove("open");
+  trigger.addEventListener("input", () => {
+    trigger.classList.remove("err");
+    trigger.classList.toggle("has-value", Boolean(trigger.value.trim()));
   });
 
   // Helpers
@@ -1305,6 +1264,42 @@ document.addEventListener("DOMContentLoaded", function () {
   function fmt(n) {
     return n.toLocaleString("it-IT", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
+
+  function addProduct() {
+    const searchValue = productSearch.value.trim();
+    const product = availableProducts.find(item =>
+      item.name.localeCompare(searchValue, "it", { sensitivity: "base" }) === 0
+    );
+
+    if (!product) {
+      productSearchMessage.textContent = "Scegli un prodotto presente tra i suggerimenti.";
+      productSearch.focus();
+      return;
+    }
+
+    const existing = products.find(item =>
+      item.name.localeCompare(product.name, "it", { sensitivity: "base" }) === 0
+    );
+    if (existing) {
+      existing.qty = Math.min(10, (existing.qty || 1) + 1);
+    } else {
+      products.push({ name: product.name, price: product.price, qty: 1 });
+    }
+
+    save();
+    render();
+    productSearch.value = "";
+    productSearchMessage.textContent = `${product.name} aggiunto all'ordine.`;
+    productSearch.focus();
+  }
+
+  document.getElementById("add-product-btn").addEventListener("click", addProduct);
+  productSearch.addEventListener("keydown", event => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      addProduct();
+    }
+  });
 
   // Render
   function render() {
@@ -1378,10 +1373,8 @@ document.addEventListener("DOMContentLoaded", function () {
       const el = document.getElementById(id);
       if (el) el.value = "";
     });
-    trigger.textContent = "Seleziona classe o tavolo…";
+    trigger.value = "";
     trigger.classList.remove("has-value");
-    realSelect.value = "";
-    selectedVal = "";
   });
 
   // Clear
@@ -1423,8 +1416,9 @@ document.addEventListener("DOMContentLoaded", function () {
     checkField(nome, /^[A-Za-zÀ-öø-ÿ\s]{2,}$/);
     checkField(cognome, /^[A-Za-zÀ-öø-ÿ\s]{2,}$/);
 
-    if (!selectedVal) {
-      wrap.classList.add("err");
+    trigger.classList.remove("err");
+    if (!trigger.value.trim()) {
+      trigger.classList.add("err");
       ok = false;
     }
     if (!ok) {

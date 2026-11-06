@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for
 from flask_login import current_user
 from ordiniBarScuolaBorsa.models import (
     get_products, is_bar_open, get_all_positions,
-    get_general_notes, add_queue, Prodotto, db
+    get_general_notes, add_queue, Posizione, Prodotto, db
 )
 import json
 import logging
@@ -20,6 +20,20 @@ def orders():
     user      = current_user if current_user.is_authenticated else None
     posizioni = get_all_positions()
     general_notes = get_general_notes()
+    available_products = []
+    seen_products = set()
+
+    for product in get_products(user):
+        name = str(product.get('prodotto', '')).strip()
+        normalized_name = name.casefold()
+        if not name or normalized_name in seen_products:
+            continue
+
+        seen_products.add(normalized_name)
+        available_products.append({
+            'name': name,
+            'price': float(product.get('prezzo_mostrato') or 0)
+        })
 
     user_info = None
     if current_user.is_authenticated:
@@ -39,7 +53,8 @@ def orders():
         positions=posizioni,
         listClass=posizioni,
         general_notes=general_notes,
-        user_info=user_info
+        user_info=user_info,
+        available_products=available_products
     )
 
 
@@ -113,14 +128,24 @@ def new_order():
         position_id = None
 
         if position:
-            try:
-                position_id = int(position)
-            except ValueError:
-                pname = position.lower()
-                for p in positions:
-                    if p.get('nome', '').strip().lower() == pname:
-                        position_id = p.get('id')
-                        break
+            for existing_position in positions:
+                if existing_position.get('nome', '').strip().casefold() == position.casefold():
+                    position_id = existing_position.get('id')
+                    break
+
+            if position_id is None:
+                try:
+                    requested_id = int(position)
+                except ValueError:
+                    requested_id = None
+
+                if any(p.get('id') == requested_id for p in positions):
+                    position_id = requested_id
+                else:
+                    new_position = Posizione(nome=position)
+                    db.session.add(new_position)
+                    db.session.flush()
+                    position_id = new_position.id
 
         if not position_id:
             logger.warning(f"Posizione non trovata: '{position}'")
