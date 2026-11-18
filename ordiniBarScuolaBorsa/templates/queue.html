@@ -413,6 +413,23 @@ body::after {
   flex-shrink: 0;
 }
 
+/* audio toggle*/
+.audio-toggle {
+  padding: 10px 16px;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 10px;
+  background: rgba(255,255,255,0.08);
+  color: white;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+}
+
+.audio-toggle[aria-pressed="true"] {
+  border-color: #22c55e;
+  color: #4ade80;
+}
+
 /* Card footer */
 .card-footer {
   padding: 16px 24px 20px;
@@ -601,6 +618,14 @@ body::after {
   <div class="h-center">Coda Ordini</div>
 
   <div class="h-right">
+    <button
+      type="button"
+      id="audio-toggle"
+      class="audio-toggle"
+      onclick="toggleAudio()"
+      aria-pressed="false">
+      🔕 Attiva suono
+    </button>
     <div class="live-pill"><div class="live-dot"></div>Live</div>
     <button class="refresh-btn" onclick="location.reload()" title="Aggiorna">↻</button>
   </div>
@@ -668,6 +693,39 @@ body::after {
 </main>
 
 <script>
+  const bellAudio = new Audio(
+  "{{ url_for('static', filename='bell.mp3') }}"
+);
+
+bellAudio.preload = "auto";
+
+let soundEnabled = false;
+
+async function toggleAudio() {
+  const button = document.getElementById('audio-toggle');
+
+  if (!soundEnabled) {
+    try {
+      bellAudio.currentTime = 0;
+      await bellAudio.play();
+      soundEnabled = true;
+    } catch (error) {
+      document.getElementById('queue-error').textContent =
+        "Impossibile attivare l'audio. Controlla i permessi del browser.";
+      return;
+    }
+  } else {
+    soundEnabled = false;
+    bellAudio.pause();
+    bellAudio.currentTime = 0;
+  }
+
+  button.textContent = soundEnabled
+    ? "🔔 Suono attivo"
+    : "🔕 Attiva suono";
+
+  button.setAttribute("aria-pressed", String(soundEnabled));
+}
 function updateCounts() {
   document.getElementById('cnt-new').textContent = document.querySelectorAll('.order-card.s-nuovo').length;
   document.getElementById('cnt-prep').textContent = document.querySelectorAll('.order-card.s-in-preparazione').length;
@@ -742,12 +800,105 @@ document.querySelectorAll('.order-card').forEach(card => applyStatus(card, card.
 
 updateCounts();
 
-// Auto-refresh ogni 30s
-let autoRefresh = setTimeout(() => location.reload(), 30000);
-document.addEventListener('click', () => {
-  clearTimeout(autoRefresh);
-  autoRefresh = setTimeout(() => location.reload(), 30000);
-});
+// Memorizza gli ordini già visualizzati
+let knownOrders = new Map(
+  Array.from(document.querySelectorAll('.order-card[data-id]'))
+    .map(card => [card.dataset.id, card.dataset.status])
+);
+
+let polling = false;
+
+async function checkNewOrders() {
+  // Evita richieste sovrapposte o aggiornamenti durante operazioni
+  if (polling || document.querySelector('.order-card[data-pending]')) {
+    return;
+  }
+
+  polling = true;
+
+  try {
+    const response = await fetch(
+      "{{ url_for('queue.get_ordini') }}",
+      { cache: 'no-store' }
+    );
+
+    if (!response.ok) throw new Error("Errore API ordini");
+
+    const orders = await response.json();
+
+    if (!Array.isArray(orders)) {
+      throw new Error("Formato risposta non valido");
+    }
+
+    const currentOrders = new Map(
+      orders.map(order => [String(order.id), order.stato])
+    );
+
+    const newArrival = orders.some(order =>
+      order.stato === 'NUOVO' &&
+      !knownOrders.has(String(order.id))
+    );
+
+    const changed =
+      currentOrders.size !== knownOrders.size ||
+      [...currentOrders].some(
+        ([id, stato]) => knownOrders.get(id) !== stato
+      );
+
+    if (changed) {
+      // Recupera le schede già renderizzate e protette da Jinja
+      const pageResponse = await fetch(
+        "{{ url_for('queue.queue') }}",
+        { cache: 'no-store' }
+      );
+
+      if (!pageResponse.ok) {
+        throw new Error("Impossibile aggiornare la coda");
+      }
+
+      const html = await pageResponse.text();
+      const documentNew = new DOMParser().parseFromString(
+        html, 'text/html'
+      );
+
+      const newContainer =
+        documentNew.getElementById('orders-container');
+
+      if (!newContainer) {
+        throw new Error("Contenitore ordini non trovato");
+      }
+
+      // Non sostituire schede mentre è in corso un'operazione
+      if (document.querySelector('.order-card[data-pending]')) return;
+
+      document.getElementById('orders-container')
+        .replaceWith(newContainer);
+
+      document.querySelectorAll('.order-card').forEach(
+        card => applyStatus(card, card.dataset.status)
+      );
+
+      updateCounts();
+      knownOrders = currentOrders;
+
+      if (newArrival && soundEnabled) {
+        bellAudio.currentTime = 0;
+        bellAudio.play().catch(error => {
+          console.warn("Riproduzione bloccata:", error);
+          document.getElementById('queue-error').textContent =
+            "Audio bloccato dal browser: riattiva il suono.";
+        });
+      }
+    }
+  } catch (error) {
+    console.warn("Errore aggiornamento coda:", error);
+  } finally {
+    polling = false;
+  }
+}
+
+// Controlla la coda ogni 5 secondi
+setInterval(checkNewOrders, 5000);
 </script>
 </body>
 </html>
